@@ -8,12 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E61B2CBABB00304F8F /* AppDelegate.swift */; };
-		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
+		170825E91B2CBABB00304F8F /* SiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
+		170825FC1B2CBABB00304F8F /* NightscouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825FB1B2CBABB00304F8F /* NightscouterTests.swift */; };
+		170826071B2CBABB00304F8F /* NightscouterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170826061B2CBABB00304F8F /* NightscouterUITests.swift */; };
 		171140EA1B31F7F700AB4335 /* TestHarnessForCompassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */; };
 		171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */; };
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
-		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
 		171140F11B31F96900AB4335 /* EntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* EntryLogTableViewCell.swift */; };
 		173454491B30740A00931278 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173454481B30740A00931278 /* Site.swift */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
@@ -27,27 +28,49 @@
 		1739B1C61B31151800C22762 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C51B31151800C22762 /* NSAssetKit.swift */; };
 		1739B1C91B31152C00C22762 /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C71B31152C00C22762 /* CompassControl.swift */; };
 		1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */; };
-		174414691B41901100B1E70D /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
-		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
-		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
-		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
-		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
+		17D946C81B404A4D007A3D8B /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17D946C51B404A4D007A3D8B /* Labs.storyboard */; };
+		17D946C91B404A4D007A3D8B /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D946C61B404A4D007A3D8B /* ServerConfiguration.swift */; };
+		17D946CA1B404A4D007A3D8B /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D946C71B404A4D007A3D8B /* WatchEntry.swift */; };
+		17D946CD1B404AA7007A3D8B /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17D946CB1B404AA7007A3D8B /* LaunchScreen.xib */; };
+		17D946CF1B404AC7007A3D8B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17D946CE1B404AC7007A3D8B /* Images.xcassets */; };
 		17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */; };
 		83F4E8991B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		170825F81B2CBABB00304F8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 170825E21B2CBABB00304F8F;
+			remoteInfo = Nightscouter;
+		};
+		170826031B2CBABB00304F8F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 170825E21B2CBABB00304F8F;
+			remoteInfo = Nightscouter;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		170825E31B2CBABB00304F8F /* Nightscouter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nightscouter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		170825E61B2CBABB00304F8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		170825E81B2CBABB00304F8F /* SiteFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteFormViewController.swift; sourceTree = "<group>"; };
+		170825E81B2CBABB00304F8F /* SiteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteViewController.swift; sourceTree = "<group>"; };
 		170825EB1B2CBABB00304F8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		170825F21B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		170825F71B2CBABB00304F8F /* NightscouterTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscouterTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		170825FB1B2CBABB00304F8F /* NightscouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscouterTests.swift; sourceTree = "<group>"; };
+		170825FD1B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		170826021B2CBABB00304F8F /* NightscouterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscouterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		170826061B2CBABB00304F8F /* NightscouterUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscouterUITests.swift; sourceTree = "<group>"; };
+		170826081B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForCompassViewController.swift; sourceTree = "<group>"; };
 		171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForLogTableViewController.swift; sourceTree = "<group>"; };
 		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
-		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
 		171140F01B31F96900AB4335 /* EntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryLogTableViewCell.swift; sourceTree = "<group>"; };
 		171FD6261B32685100E7C471 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Scratchpad.playground; path = Nightscouter/Scratchpad.playground; sourceTree = "<group>"; };
 		173454481B30740A00931278 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
@@ -62,13 +85,13 @@
 		1739B1C51B31151800C22762 /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKit.swift; sourceTree = "<group>"; };
 		1739B1C71B31152C00C22762 /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompassControl.swift; sourceTree = "<group>"; };
 		1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailViewController.swift; sourceTree = "<group>"; };
-		174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAssetKit+Helpers.swift"; sourceTree = "<group>"; };
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
-		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
-		17C95CAF1B40AD0B0035922A /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
-		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		17D946C51B404A4D007A3D8B /* Labs.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Labs.storyboard; sourceTree = "<group>"; };
+		17D946C61B404A4D007A3D8B /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
+		17D946C71B404A4D007A3D8B /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
+		17D946CC1B404AA7007A3D8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		17D946CE1B404AC7007A3D8B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Identifiers.swift"; sourceTree = "<group>"; };
 		83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboardSegue+Identifiers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,14 +104,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		170825F41B2CBABB00304F8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		170825FF1B2CBABB00304F8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		170825DA1B2CBABA00304F8F = {
 			isa = PBXGroup;
 			children = (
-				170825E51B2CBABB00304F8F /* Nightscouter */,
 				179CD46B1B326AD300957412 /* Playgrounds */,
+				170825E51B2CBABB00304F8F /* Nightscouter */,
+				170825FA1B2CBABB00304F8F /* NightscouterTests */,
+				170826051B2CBABB00304F8F /* NightscouterUITests */,
 				170825E41B2CBABB00304F8F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +136,8 @@
 			isa = PBXGroup;
 			children = (
 				170825E31B2CBABB00304F8F /* Nightscouter.app */,
+				170825F71B2CBABB00304F8F /* NightscouterTests.xctest */,
+				170826021B2CBABB00304F8F /* NightscouterUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,6 +157,24 @@
 			path = Nightscouter;
 			sourceTree = "<group>";
 		};
+		170825FA1B2CBABB00304F8F /* NightscouterTests */ = {
+			isa = PBXGroup;
+			children = (
+				170825FB1B2CBABB00304F8F /* NightscouterTests.swift */,
+				170825FD1B2CBABB00304F8F /* Info.plist */,
+			);
+			path = NightscouterTests;
+			sourceTree = "<group>";
+		};
+		170826051B2CBABB00304F8F /* NightscouterUITests */ = {
+			isa = PBXGroup;
+			children = (
+				170826061B2CBABB00304F8F /* NightscouterUITests.swift */,
+				170826081B2CBABB00304F8F /* Info.plist */,
+			);
+			path = NightscouterUITests;
+			sourceTree = "<group>";
+		};
 		171140E61B31F7DD00AB4335 /* Labs */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,7 +189,6 @@
 		173454541B308F0C00931278 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
-				174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */,
 				173454601B30B81900931278 /* NSCalendar+Extension.swift */,
 				173454521B308EEC00931278 /* Double+Extension.swift */,
 				83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */,
@@ -146,7 +204,7 @@
 				1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */,
 				1734544A1B30771300931278 /* SiteListTableViewController.swift */,
 				176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */,
-				170825E81B2CBABB00304F8F /* SiteFormViewController.swift */,
+				170825E81B2CBABB00304F8F /* SiteViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -154,11 +212,11 @@
 		173454561B308F2300931278 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1734544C1B308DF100931278 /* Entry.swift */,
 				176CF74B1B385C6A009B7E92 /* ModelController.swift */,
-				17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */,
+				1734544C1B308DF100931278 /* Entry.swift */,
+				17D946C71B404A4D007A3D8B /* WatchEntry.swift */,
+				17D946C61B404A4D007A3D8B /* ServerConfiguration.swift */,
 				173454481B30740A00931278 /* Site.swift */,
-				17C95CAF1B40AD0B0035922A /* WatchEntry.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -175,9 +233,9 @@
 		1739B1BB1B3113AA00C22762 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
-				17C95CB31B40AD400035922A /* LaunchScreen.xib */,
+				17D946CB1B404AA7007A3D8B /* LaunchScreen.xib */,
+				17D946C51B404A4D007A3D8B /* Labs.storyboard */,
 				170825EA1B2CBABB00304F8F /* Main.storyboard */,
-				171140ED1B31F85500AB4335 /* Labs.storyboard */,
 			);
 			name = Storyboards;
 			sourceTree = "<group>";
@@ -185,9 +243,9 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				17D946CE1B404AC7007A3D8B /* Images.xcassets */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
 				1739B1BD1B31141000C22762 /* html */,
-				17C95CAD1B40AD0B0035922A /* Assets.xcassets */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -230,6 +288,42 @@
 			productReference = 170825E31B2CBABB00304F8F /* Nightscouter.app */;
 			productType = "com.apple.product-type.application";
 		};
+		170825F61B2CBABB00304F8F /* NightscouterTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1708260E1B2CBABB00304F8F /* Build configuration list for PBXNativeTarget "NightscouterTests" */;
+			buildPhases = (
+				170825F31B2CBABB00304F8F /* Sources */,
+				170825F41B2CBABB00304F8F /* Frameworks */,
+				170825F51B2CBABB00304F8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				170825F91B2CBABB00304F8F /* PBXTargetDependency */,
+			);
+			name = NightscouterTests;
+			productName = NightscouterTests;
+			productReference = 170825F71B2CBABB00304F8F /* NightscouterTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		170826011B2CBABB00304F8F /* NightscouterUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 170826111B2CBABB00304F8F /* Build configuration list for PBXNativeTarget "NightscouterUITests" */;
+			buildPhases = (
+				170825FE1B2CBABB00304F8F /* Sources */,
+				170825FF1B2CBABB00304F8F /* Frameworks */,
+				170826001B2CBABB00304F8F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				170826041B2CBABB00304F8F /* PBXTargetDependency */,
+			);
+			name = NightscouterUITests;
+			productName = NightscouterUITests;
+			productReference = 170826021B2CBABB00304F8F /* NightscouterUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -249,6 +343,14 @@
 							};
 						};
 					};
+					170825F61B2CBABB00304F8F = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 170825E21B2CBABB00304F8F;
+					};
+					170826011B2CBABB00304F8F = {
+						CreatedOnToolsVersion = 7.0;
+						TestTargetID = 170825E21B2CBABB00304F8F;
+					};
 				};
 			};
 			buildConfigurationList = 170825DE1B2CBABA00304F8F /* Build configuration list for PBXProject "Nightscouter" */;
@@ -265,6 +367,8 @@
 			projectRoot = "";
 			targets = (
 				170825E21B2CBABB00304F8F /* Nightscouter */,
+				170825F61B2CBABB00304F8F /* NightscouterTests */,
+				170826011B2CBABB00304F8F /* NightscouterUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -274,11 +378,25 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
-				171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */,
+				17D946CD1B404AA7007A3D8B /* LaunchScreen.xib in Resources */,
+				17D946CF1B404AC7007A3D8B /* Images.xcassets in Resources */,
+				17D946C81B404A4D007A3D8B /* Labs.storyboard in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
-				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		170825F51B2CBABB00304F8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		170826001B2CBABB00304F8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,23 +409,22 @@
 			files = (
 				1734544D1B308DF100931278 /* Entry.swift in Sources */,
 				173454611B30B81900931278 /* NSCalendar+Extension.swift in Sources */,
-				170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */,
+				170825E91B2CBABB00304F8F /* SiteViewController.swift in Sources */,
 				173454491B30740A00931278 /* Site.swift in Sources */,
 				1739B1C91B31152C00C22762 /* CompassControl.swift in Sources */,
 				171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */,
 				17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */,
 				171140F11B31F96900AB4335 /* EntryLogTableViewCell.swift in Sources */,
-				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
+				17D946C91B404A4D007A3D8B /* ServerConfiguration.swift in Sources */,
+				17D946CA1B404A4D007A3D8B /* WatchEntry.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
 				1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */,
 				1734545A1B3090E300931278 /* NightscoutAPIClient.swift in Sources */,
-				17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */,
 				173454511B308E5700931278 /* Constants.swift in Sources */,
 				171140EA1B31F7F700AB4335 /* TestHarnessForCompassViewController.swift in Sources */,
 				173454531B308EEC00931278 /* Double+Extension.swift in Sources */,
-				174414691B41901100B1E70D /* NSAssetKit+Helpers.swift in Sources */,
 				83F4E8991B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift in Sources */,
 				171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */,
 				170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */,
@@ -316,7 +433,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		170825F31B2CBABB00304F8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				170825FC1B2CBABB00304F8F /* NightscouterTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		170825FE1B2CBABB00304F8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				170826071B2CBABB00304F8F /* NightscouterUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		170825F91B2CBABB00304F8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 170825E21B2CBABB00304F8F /* Nightscouter */;
+			targetProxy = 170825F81B2CBABB00304F8F /* PBXContainerItemProxy */;
+		};
+		170826041B2CBABB00304F8F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 170825E21B2CBABB00304F8F /* Nightscouter */;
+			targetProxy = 170826031B2CBABB00304F8F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		170825EA1B2CBABB00304F8F /* Main.storyboard */ = {
@@ -327,18 +473,10 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		171140ED1B31F85500AB4335 /* Labs.storyboard */ = {
+		17D946CB1B404AA7007A3D8B /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				171140EE1B31F85500AB4335 /* Base */,
-			);
-			name = Labs.storyboard;
-			sourceTree = "<group>";
-		};
-		17C95CB31B40AD400035922A /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				17C95CB41B40AD400035922A /* Base */,
+				17D946CC1B404AA7007A3D8B /* Base */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";
@@ -455,6 +593,54 @@
 			};
 			name = Release;
 		};
+		1708260F1B2CBABB00304F8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = NightscouterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nightscouter.app/Nightscouter";
+			};
+			name = Debug;
+		};
+		170826101B2CBABB00304F8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = NightscouterTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nightscouter.app/Nightscouter";
+			};
+			name = Release;
+		};
+		170826121B2CBABB00304F8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = NightscouterUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Nightscouter;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		170826131B2CBABB00304F8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = NightscouterUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_TARGET_NAME = Nightscouter;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -472,6 +658,24 @@
 			buildConfigurations = (
 				1708260C1B2CBABB00304F8F /* Debug */,
 				1708260D1B2CBABB00304F8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1708260E1B2CBABB00304F8F /* Build configuration list for PBXNativeTarget "NightscouterTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1708260F1B2CBABB00304F8F /* Debug */,
+				170826101B2CBABB00304F8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		170826111B2CBABB00304F8F /* Build configuration list for PBXNativeTarget "NightscouterUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				170826121B2CBABB00304F8F /* Debug */,
+				170826131B2CBABB00304F8F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

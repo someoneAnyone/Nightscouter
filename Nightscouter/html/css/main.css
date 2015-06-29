@@ -1,0 +1,37 @@
+body {
+    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    fill: #fff;
+/*    background: #000;*/
+
+    background: transparent;
+    color: #808080;
+    overflow: hidden;
+}
+
+.container {
+    overflow: hidden;
+    display: block;
+    height: 95%;
+    width: 100%;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    top: 0px;
+    z-index: 2;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #ffffff;
+  shape-rendering: crispEdges;
+}
+
+#chartContainer { position: absolute; left: 0; right: 0; bottom: 0; top: 0; }
+
+svg { width: 100%; height: 100%; }
+
+.grid path, .axis line {
+  stroke: #808080;
+  stroke-opacity: 1;
+}
