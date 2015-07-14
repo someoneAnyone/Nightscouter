@@ -156,9 +156,9 @@ extension ServerConfiguration {
                                                 options[stringItem] = EnabledOptions(rawValue: stringItem)
                                             }
                                             enabledOptions = options
-                                            
+                                            // Defaults object is not always there make sure not to lump other things up with it.
                                             if let dd = dict[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
-                                                units = Units(rawValue: dict[ConfigurationPropertyKey.unitsKey] as! String)!
+                                                units = Units(rawValue: dd[ConfigurationPropertyKey.unitsKey] as! String)!
                                                 
                                                 timeFormat = (dd[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
                                                 
@@ -182,13 +182,13 @@ extension ServerConfiguration {
                                                 
                                                 language = dd[ConfigurationPropertyKey.languageKey] as! String
                                                 
-                                                if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
-                                                    let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Int
-                                                    let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Int
-                                                    let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Int
-                                                    let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Int
-                                                    thresholds = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
-                                                }
+                                            }
+                                            if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
+                                                let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Int
+                                                let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Int
+                                                let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Int
+                                                let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Int
+                                                thresholds = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
                                             }
                                         }
                                     }
@@ -222,8 +222,6 @@ extension ServerConfiguration {
     }
     
 }
-
-
 
 enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
