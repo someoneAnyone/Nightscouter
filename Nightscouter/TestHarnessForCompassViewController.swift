@@ -116,7 +116,7 @@ extension TestHarnessForCompassViewController {
     
     func updateSgv(){
         sgvLabel.text = placeholderSgvString + ": " + NSNumberFormatter.localizedStringFromNumber(self.sgvSlider.value, numberStyle: .NoStyle)
-        compassControlView.sgv = CGFloat(self.sgvSlider.value)
+        compassControlView.sgvText = String(stringInterpolationSegment: self.sgvSlider.value)
         self.view.tintColor = compassControlView.color
 
 //        self.imageRep.image = compassControlView.pb_takeSnapshot()

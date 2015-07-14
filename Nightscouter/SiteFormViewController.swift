@@ -80,6 +80,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     }
     
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        
         checkValidSiteName()
         return true
     }
@@ -92,7 +93,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         nextButton.enabled = valid
         //        print("Evaluating text \(text), which is currently \(valid).")
         if valid {
-            navigationItem.title = NSURL(string: text)?.host
+//            navigationItem.title = NSURL(string: text)?.host
         }
     }
     
@@ -103,7 +104,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             let urlString = urlTextField.text ?? ""
             
             if let url = NSURL(string: urlString) {
-                site = Site(url: url, apiSecret: " ")
+                site = Site(url: url, apiSecret: "")
                 
                 // Hide the keyboard
                 urlTextField.resignFirstResponder()
@@ -126,7 +127,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     }
     
     func validateUrl (stringURL : NSString) -> Bool {
-        let urlRegEx = "((https|http)://)((\\w|-)+)(([.]|[/])((\\w|-)+))+"
+        let urlRegEx = "(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
         let predicate = NSPredicate(format:"SELF MATCHES %@", argumentArray:[urlRegEx])
         //        var urlTest = NSPredicate.predicateWithSubstitutionVariables(predicate)
         return predicate.evaluateWithObject(stringURL)

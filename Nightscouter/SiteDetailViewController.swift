@@ -49,12 +49,6 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     }
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        //        if UIDevice.currentDevice().orientation.isLandscape.boolValue {
-        //            print("isLandscape")
-        //        } else {
-        //            print("isPortrait")
-        //        }
-        
         self.webView.reload()
     }
     
@@ -66,7 +60,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
 
 extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
-        print("unwundToSiteDetail")
+        print(">>> Entering \(__FUNCTION__) <<<")
+        print("\(segue)")
         return
     }
 }
@@ -93,19 +88,12 @@ extension SiteDetailViewController {
 
 extension SiteDetailViewController {
     func updateSettings(){
-        nsAPI!.fetchServerConfigurationData({ (configuration: ServerConfiguration) -> Void in
+        nsAPI!.fetchServerConfigurationData({ (configuration: ServerConfiguration, errorCode) -> Void in
             
-
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 self.navigationItem.title = configuration.customTitle
                 
                 self.titleLabel.text = configuration.customTitle
-                self.compassControl.units = configuration.units.rawValue
-                
-                self.compassControl.bg_high = CGFloat(configuration.thresholds.bg_high) //CGFloat((settings.thresholds["bg_high"])!)
-                self.compassControl.bg_low = CGFloat(configuration.thresholds.bg_low) //CGFloat((settings.thresholds["bg_low"])!)
-                self.compassControl.bg_target_bottom = CGFloat(configuration.thresholds.bg_target_bottom) //CGFloat((settings.thresholds["bg_target_bottom"])!)
-                self.compassControl.bg_target_top = CGFloat(configuration.thresholds.bg_target_top)//CGFloat((settings.thresholds["bg_target_top"])!)
                 
                 self.updateData()
                 self.createWKWebView()
@@ -121,29 +109,30 @@ extension SiteDetailViewController {
         
         timer.invalidate()
         
-        nsAPI!.fetchDataForWatchEntry{ (watchEntry) -> Void in
+        nsAPI!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
             
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 
-                self.compassControl.sgv = CGFloat(watchEntry.sgv!.sgv)
-                self.compassControl.direction = watchEntry.sgv!.direction
-                self.uploaderBatteryLabel.text = "\(watchEntry.battery)"
-                let temp = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(watchEntry.date)
-                
-                let timeAgo = watchEntry.date.timeIntervalSinceNow
-                
-                self.lastReadingLabel.text = temp
+                self.compassControl.configureWithObject(self.site!)
+                self.uploaderBatteryLabel.text = watchEntry.batteryString
+                self.lastReadingLabel.text = watchEntry.dateTimeAgoString
+
                 if let rawValue = watchEntry.raw {
-                self.rawReadingLabel.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
+                    self.rawReadingLabel.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
                 }
                 let numberFormat = NSNumberFormatter.localizedStringFromNumber(watchEntry.bgdelta, numberStyle: .NoStyle)
                 
-                self.compassControl.delta = "\(numberFormat) \(self.compassControl.units!)"
+                self.compassControl.delta = "\(numberFormat) \(self.site!.configuration!.units.rawValue)"
                 self.timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
                 
+                let timeAgo = watchEntry.date.timeIntervalSinceNow
                 if timeAgo < -(60*10) {
                     self.compassControl.alpha = 0.5
                     self.compassControl.color = NSAssetKit.predefinedNeutralColor
+                    self.compassControl.sgvText = "---"
+                    self.compassControl.delta = "--"
+                    self.uploaderBatteryLabel.text = "---"
+                    self.rawReadingLabel.text = "--- : ---"
                 }
             })
         }
@@ -165,7 +154,7 @@ extension SiteDetailViewController {
         
         let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!)!)
         
-        nsAPI!.fetchDataForEntries(count: 100) { (entries) -> Void in
+        nsAPI!.fetchDataForEntries(count: 100) { (entries, errorCode) -> Void in
             for entry in entries {
                 if (entry.sgv?.sgv > 25) {
                     let jsonError: NSError?
@@ -178,7 +167,6 @@ extension SiteDetailViewController {
                 self.webView!.loadRequest(request)
             })
         }
-   
     }
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {

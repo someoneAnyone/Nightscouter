@@ -17,5 +17,6 @@ extension UIStoryboard {
     
     enum StoryboardViewControllerIdentifier: String {
         case SiteDetailViewController = "SiteDetailViewController"
+        case SiteFormViewController = "SiteFormViewController"
     }
 }

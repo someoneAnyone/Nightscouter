@@ -14,7 +14,8 @@
 		171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */; };
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
 		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
-		171140F11B31F96900AB4335 /* EntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* EntryLogTableViewCell.swift */; };
+		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
+		17336D551B42F81B0063FB70 /* Strings.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Strings.strings */; };
 		173454491B30740A00931278 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173454481B30740A00931278 /* Site.swift */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734544D1B308DF100931278 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544C1B308DF100931278 /* Entry.swift */; };
@@ -27,7 +28,9 @@
 		1739B1C61B31151800C22762 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C51B31151800C22762 /* NSAssetKit.swift */; };
 		1739B1C91B31152C00C22762 /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C71B31152C00C22762 /* CompassControl.swift */; };
 		1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */; };
+		173E950C1B42E5DA0024039E /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173E950B1B42E5DA0024039E /* CompassControl+Convience.swift */; };
 		174414691B41901100B1E70D /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */; };
+		176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
@@ -48,8 +51,9 @@
 		171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForLogTableViewController.swift; sourceTree = "<group>"; };
 		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
 		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
-		171140F01B31F96900AB4335 /* EntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryLogTableViewCell.swift; sourceTree = "<group>"; };
+		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
 		171FD6261B32685100E7C471 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Scratchpad.playground; path = Nightscouter/Scratchpad.playground; sourceTree = "<group>"; };
+		17336D541B42F81B0063FB70 /* Strings.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Strings.strings; sourceTree = "<group>"; };
 		173454481B30740A00931278 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		1734544C1B308DF100931278 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
@@ -62,7 +66,9 @@
 		1739B1C51B31151800C22762 /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKit.swift; sourceTree = "<group>"; };
 		1739B1C71B31152C00C22762 /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompassControl.swift; sourceTree = "<group>"; };
 		1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailViewController.swift; sourceTree = "<group>"; };
+		173E950B1B42E5DA0024039E /* CompassControl+Convience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompassControl+Convience.swift"; sourceTree = "<group>"; };
 		174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAssetKit+Helpers.swift"; sourceTree = "<group>"; };
+		176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessTableViewController.swift; sourceTree = "<group>"; };
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -119,10 +125,11 @@
 		171140E61B31F7DD00AB4335 /* Labs */ = {
 			isa = PBXGroup;
 			children = (
-				171140F01B31F96900AB4335 /* EntryLogTableViewCell.swift */,
+				171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */,
 				171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */,
 				171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */,
 				171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */,
+				176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */,
 			);
 			name = Labs;
 			sourceTree = "<group>";
@@ -131,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */,
+				173E950B1B42E5DA0024039E /* CompassControl+Convience.swift */,
 				173454601B30B81900931278 /* NSCalendar+Extension.swift */,
 				173454521B308EEC00931278 /* Double+Extension.swift */,
 				83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */,
@@ -185,6 +193,7 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				17336D541B42F81B0063FB70 /* Strings.strings */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
 				1739B1BD1B31141000C22762 /* html */,
 				17C95CAD1B40AD0B0035922A /* Assets.xcassets */,
@@ -279,6 +288,7 @@
 				1739B1BE1B31141000C22762 /* html in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
+				17336D551B42F81B0063FB70 /* Strings.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,14 +299,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */,
 				1734544D1B308DF100931278 /* Entry.swift in Sources */,
 				173454611B30B81900931278 /* NSCalendar+Extension.swift in Sources */,
+				173E950C1B42E5DA0024039E /* CompassControl+Convience.swift in Sources */,
 				170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */,
 				173454491B30740A00931278 /* Site.swift in Sources */,
 				1739B1C91B31152C00C22762 /* CompassControl.swift in Sources */,
 				171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */,
 				17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */,
-				171140F11B31F96900AB4335 /* EntryLogTableViewCell.swift in Sources */,
+				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
 				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,

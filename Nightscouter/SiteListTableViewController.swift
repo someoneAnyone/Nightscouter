@@ -14,29 +14,25 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Properties
     
-    //    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Here just in case I start moving data access to the delegate.
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Here just in case I start moving data access to the delegate.
     
-    var sites = [Site]() {
-        didSet{
-            showEmptyForm()
-        }
-    }
+    var sites = [Site]()
     var accessoryIndexPath: NSIndexPath?
     
     var lastUpdatedTime: NSDate? {
         didSet{
-
+            
             let dateFormatter = NSDateFormatter()
             dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
             dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
             dateFormatter.timeZone = NSTimeZone.localTimeZone()
             
             if let date = lastUpdatedTime {
-            
-            self.refreshControl!.attributedTitle = NSAttributedString(string:"Updated on: \(dateFormatter.stringFromDate(date))")
+                self.refreshControl!.attributedTitle = NSAttributedString(string:"Updated on: \(dateFormatter.stringFromDate(date))")
             }
         }
     }
+    
     var timer: NSTimer = NSTimer()
     
     override func viewDidLoad() {
@@ -44,38 +40,40 @@ class SiteListTableViewController: UITableViewController {
         
         // The following line displys an Edit button in the navigation bar for this view controller.
         navigationItem.leftBarButtonItem = self.editButtonItem()
-        tableView.rowHeight = 100
+        tableView.rowHeight = 200
         
         // Load any saved meals, otherwise load sample data.
         if let savedSites = loadSites() {
             sites += savedSites
         } else {
             // Load the sample data.
-            loadSampleSites()
+            //            loadSampleSites()
         }
         
-        showEmptyForm()
+        //        shouldIShowNewSiteForm()
         
         self.timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
         
         // Initialize the refresh control.
         self.refreshControl = UIRefreshControl()
-    
+        
         var updated = "Last updated on: \(lastUpdatedTime)"
         self.refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
         self.refreshControl!.addTarget(self, action: "updateData", forControlEvents: UIControlEvents.ValueChanged)
         self.tableView.addSubview(refreshControl!)
+        
+    }
+    
+    
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
+        shouldIShowNewSiteForm()
+        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        navigationController?.hidesBarsOnTap = false
-        
     }
     
     // MARK: - Table view data source
@@ -94,59 +92,8 @@ class SiteListTableViewController: UITableViewController {
         let cellIdentifier = "siteCell"
         
         // Configure the cell...
-        
-        //TODO:// Clean this up.
-        //TODO:// Get better assets for battery and directions.
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SiteTableViewCell
-        let site = sites[indexPath.row]
-        
-        cell.siteURL.text = site.url.host
-        
-        if !(site.configuration != nil) {
-            loadUpData(site, index: indexPath.row)
-        }
-        
-        if (site.configuration == nil) { return cell }
-        
-        cell.siteName.text = site.configuration?.customTitle
-        
-        if let batteryLevel = site.watchEntry?.battery {
-            let percentage = Float(batteryLevel)/100
-            cell.siteBatteryLevel.text = "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
-        }
-        
-        if (site.watchEntry == nil) { return cell }
-        
-        if let watchFace = site.watchEntry {
-            let numberFormat = NSNumberFormatter.localizedStringFromNumber(watchFace.bgdelta, numberStyle: .NoStyle)
-            // I hand rolled this... probably could find a better class to this.
-            let timeAgo = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(watchFace.date)
-            
-            cell.siteLastDirection.text = watchFace.sgv?.direction.emojiForDirection()
-            
-            if let sgvalue = watchFace.sgv {
-                if sgvalue.sgv > 30 {
-                    
-                    let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvalue.sgv))
-                    
-                    cell.siteColorBlock.backgroundColor = color
-                    cell.siteLastSGV.text = sgvalue.sgvText//String(stringInterpolationSegment: sgvalue.sgv)
-                    cell.siteLastDelta.text = "\(numberFormat) \(site.configuration!.units.rawValue)"
-                    if let rawValue = watchFace.raw {
-                        cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) :  \(sgvalue.noise)"
-                    }
-                }
-                cell.siteLastSGV.text = sgvalue.sgvText//String(stringInterpolationSegment: sgvalue.sgv)
-
-            } else {
-                
-                cell.siteLastSGV.text = watchFace.sgv?.direction.description
-                cell.siteLastDelta.text = "\(site.configuration!.units.rawValue)"
-            }
-            
-            
-            cell.siteTimeAgo.text = timeAgo
-        }
+        configureCell(cell, indexPath: indexPath)
         
         return cell
     }
@@ -199,6 +146,7 @@ class SiteListTableViewController: UITableViewController {
                 
             case .EditSite:
                 print("Editing existing site")
+                self.setEditing(false, animated: true)
                 
                 let siteDetailViewController = segue.destinationViewController as! SiteFormViewController
                 // Get the cell that generated this segue.
@@ -224,7 +172,6 @@ class SiteListTableViewController: UITableViewController {
                     let indexPath = tableView.indexPathForCell(selectedSiteCell)!
                     let selectedSite = sites[indexPath.row]
                     siteDetailViewController.site = selectedSite
-                    
                 }
                 
             case .ShowPageView:
@@ -270,8 +217,6 @@ class SiteListTableViewController: UITableViewController {
             
             sites[pageViewController.currentIndex] = site
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: pageViewController.currentIndex, inSection: 0)], withRowAnimation: .None)
-            
-            
         }
         
         // Save the sites.
@@ -280,11 +225,66 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Private Methods
     
-    func showEmptyForm() {
+    func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
+        
+        let site = sites[indexPath.row]
+        
+        cell.siteURL.text = site.url.host
+        
+        if let configuration = site.configuration {
+            
+            cell.siteName.text = configuration.customTitle
+            
+            if let watch = site.watchEntry {
+                
+                cell.siteBatteryLevel.text = watch.batteryString
+                cell.siteTimeAgo.text = watch.dateTimeAgoString
+                cell.compassControl.configureWithObject(site)
+                
+                if let sgvValue = watch.sgv {
+                    
+                    let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
+                    cell.siteColorBlock.backgroundColor = color
+                    
+                    if let rawValue = watch.raw {
+                        cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
+                    }
+                    
+                    let timeAgo = watch.date.timeIntervalSinceNow
+                    if timeAgo < -(60*10) {
+                        cell.compassControl.alpha = 0.5
+                        cell.compassControl.color = NSAssetKit.predefinedNeutralColor
+                        cell.compassControl.sgvText = "---"
+                        cell.compassControl.delta = "--"
+                        cell.siteBatteryLevel.text = "---"
+                        cell.siteRaw.text = "--- : ---"
+                        cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
+                        
+                    }
+                }
+                
+            } else {
+                // No watch was there...
+                return
+            }
+        } else {
+            // No configuration was there... go get some.
+            loadUpData(site, index: indexPath.row)
+            return
+        }
+    }
+    
+    func shouldIShowNewSiteForm() {
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
-            let identifier = UIStoryboardSegue.SegueIdentifier.AddNewWhenEmpty.rawValue
-            performSegueWithIdentifier(identifier, sender: self)
+            //            let identifier = UIStoryboardSegue.SegueIdentifier.AddNewWhenEmpty.rawValue
+            //            self.performSegueWithIdentifier(identifier, sender: self)
+            let vc = storyboard?.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
+            
+            self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
+                
+            })
+            
         }
     }
     
@@ -306,8 +306,8 @@ class SiteListTableViewController: UITableViewController {
         //TODO:// 3. Probably need to move this code to the application delegate?
         
         // Get settings for a given site.
-        nsApi.fetchServerConfigurationData({ (configuration) -> Void in
-            nsApi.fetchDataForWatchEntry({ (watchEntry) -> Void in
+        nsApi.fetchServerConfigurationData({ (configuration, errorCode) -> Void in
+            nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     site.configuration = configuration
@@ -331,21 +331,11 @@ class SiteListTableViewController: UITableViewController {
         if !isSuccessfulSave {
             print("Failed to save sites...")
         }
+        shouldIShowNewSiteForm()
+        
     }
     
     func loadSites() -> [Site]? {
-        let sites = NSKeyedUnarchiver.unarchiveObjectWithFile(Site.ArchiveURL.path!) as? [Site]
-        return sites
+        return appDelegate.sites
     }
-    
-    func loadSampleSites() -> Void {
-        // Create a site URL.
-        let site1URL = NSURL(string: "https://benscgm.herokuapp.com")!
-        // Create a site.
-        let site1 = Site(url: site1URL, apiSecret: " ")!
-        
-        // Add it to the site Array
-        sites = [site1]
-    }
-    
 }

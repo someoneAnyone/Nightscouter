@@ -112,8 +112,7 @@ struct SensorGlucoseValue {
     let unfiltered: Int
     let rssi: Int
     let noise: Noise
-    
-    var sgvText: String {
+    var sgvString: String {
         get {
             if sgv < 39 {
                 let special:SpecialSensorGlucoseValues = SpecialSensorGlucoseValues(rawValue: sgv)!
@@ -158,7 +157,6 @@ struct MeterBloodGlucose {
 
 
 struct EntryPropertyKey {
-    
     static let typeKey = "type"
     static let sgvKey = "sgv"
     static let calKey = "cal"
@@ -181,6 +179,11 @@ class Entry: NSObject {
     var idString: String
     var device: String
     var date: NSDate
+    var dateTimeAgoString: String {
+        get{
+            return NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(date)
+        }
+    }
     var dateString: String?
     var sgv: SensorGlucoseValue?
     var cal: Calibration?

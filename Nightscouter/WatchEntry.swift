@@ -35,6 +35,13 @@ class WatchEntry: Entry {
     var now: NSDate
     var bgdelta: Int
     let battery: Int
+    var batteryString: String {
+        get{
+            let percentage = Float(battery)/100
+            return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
+        }
+    }
+
     
     init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Int, battery: Int) {
         self.now = now
@@ -128,7 +135,9 @@ extension WatchEntry {
         self.cal = calItem
         
         
-        self.raw = rawIsigToRawBg(sgvItem!, calValue: calItem!)
+        if (sgvItem != nil) && (calItem != nil){
+            self.raw = rawIsigToRawBg(sgvItem!, calValue: calItem!)
+        }
 
     }
     

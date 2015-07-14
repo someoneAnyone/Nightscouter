@@ -26,7 +26,7 @@ class TestHarnessForLogTableViewController: UITableViewController {
         let url: NSURL = NSUserDefaults.standardUserDefaults().URLForKey("url")!// NSURL(string:  ")!
         let nsAPI = NightscoutAPIClient(url:url)
         
-        nsAPI.fetchDataForEntries(count: 100) { (entries) -> Void in
+        nsAPI.fetchDataForEntries(count: 100) { (entries, errorCode) -> Void in
             self.dataForTable = entries
             
             self.navigationItem.title = "\(self.dataForTable.count) : Entries Listed"
@@ -56,9 +56,10 @@ class TestHarnessForLogTableViewController: UITableViewController {
     
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("nsLogCell", forIndexPath: indexPath) as! EntryLogTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("nsLogCell", forIndexPath: indexPath) as! TestHarnessEntryLogTableViewCell
         
         let entry: Entry = self.dataForTable[indexPath.row] as Entry
+        
         cell.sgv.text =  "\(entry.sgv!.sgv)"
         cell.direction.text = entry.sgv!.direction.rawValue
         cell.type.text = "type: \(entry.type!.rawValue)"

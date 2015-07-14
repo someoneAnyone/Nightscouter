@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import SystemConfiguration 
 /*:
 Create protocol for setting base URL, API Token, etc...
 TODO:// Create methods for getting settings.
@@ -63,36 +63,36 @@ class NightscoutAPIClient {
 // MARK: - Meat and Potatoes of the API
 extension NightscoutAPIClient {
     
-    func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray) -> Void) {
+    func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray, errorCode: NightscoutAPIError) -> Void) {
         let entriesWithCountURL = NSURL(string:self.stringForEntriesWithCount(count))
-        self.fetchJSONWithURL(entriesWithCountURL!, completetion: { (result) -> Void in
+        self.fetchJSONWithURL(entriesWithCountURL!, completetion: { (result, errorCode) -> Void in
             if let entries = result as? JSONArray {
                 var finalArray = Array<Entry>()
                 for jsonDictionary: JSONDictionary in entries {
                     let entry: Entry = Entry(jsonDictionary: jsonDictionary)
                     finalArray.append(entry)
                 }
-                completetion(entries: finalArray)
+                completetion(entries: finalArray, errorCode: errorCode)
             }
         })
     }
     
-    func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry) -> Void) {
+    func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry, errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
-        self.fetchJSONWithURL(watchEntryUrl, completetion: { (result) -> Void in
+        self.fetchJSONWithURL(watchEntryUrl, completetion: { (result, errorCode) -> Void in
             if let jsonDictionary = result as? JSONDictionary {
                 let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
-                completetion(watchEntry: watchEntry)
+                completetion(watchEntry: watchEntry, errorCode: errorCode)
             }
         })
     }
     
-    func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration) -> Void) {
+    func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration, errorCode: NightscoutAPIError) -> Void) {
         let settingsUrl = self.urlForStatus
-        self.fetchJSONWithURL(settingsUrl, completetion: { (result) -> Void in
+        self.fetchJSONWithURL(settingsUrl, completetion: { (result, errorCode) -> Void in
             if let settingsDictionary = result as? JSONDictionary {
                 let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
-                completetion(configuration: settingObject)
+                completetion(configuration: settingObject, errorCode: errorCode)
             }
         })
     }
@@ -126,17 +126,19 @@ extension NightscoutAPIClient {
 
 // MARK: - Private Methods
 private extension NightscoutAPIClient {
-    func fetchJSONWithURL(url: NSURL, completetion:(result: AnyObject) -> Void) {
-        
+    func fetchJSONWithURL(url: NSURL, completetion:(result: AnyObject, errorCode: NightscoutAPIError) -> Void) {
         // Logging and debugging.
-        //        print(">>> Entering %s <<< \(__FUNCTION__)")
-        print("Fetching: \(url)\n")
+
+        print("Fetching: \(url.absoluteString)")
         // Start timer for how long this took.
         let fetchStart = NSDate()
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
             
+            var nsAPIError: NightscoutAPIError = NightscoutAPIError.DownloadErorr("None")
+            
             if (downloadError != nil) {
                 print("failed to download")
+                nsAPIError = NightscoutAPIError.DownloadErorr("There was a problem downloading data. Error code: \(downloadError)")
             } else {
                 if let dataObject: NSData = NSData(contentsOfURL: location) {
                     var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
@@ -146,18 +148,19 @@ private extension NightscoutAPIClient {
                     if let responseObject: AnyObject = NSJSONSerialization.JSONObjectWithData(dataObject, options: .AllowFragments, error:&jsonError){
                         if (jsonError != nil) {
                             println("jsonError")
+                            nsAPIError = NightscoutAPIError.DownloadErorr("There was a problem processing the JSON data. Error code: \(jsonError)")
                         } else {
-                            completetion(result: responseObject)
+                            completetion(result: responseObject, errorCode: nsAPIError)
                         }
                     }
                 }
-            }
-            
+            }            
             // Logging and debugging.
             let fetchEnd = NSDate()
             let fetchTimeElapsed = fetchEnd .timeIntervalSinceDate(fetchStart)
-            print("Finished request for \(url) in \(fetchTimeElapsed) seconds.")
+            println("Finished request for \(url) in \(fetchTimeElapsed) seconds.")
         })
+    
         
         downloadTask.resume()
         
