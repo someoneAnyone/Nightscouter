@@ -133,6 +133,8 @@ struct SensorGlucoseValue {
                     return "?AD"
                 case .PowerDeviation:
                     return "?PD"
+                case .RF:
+                    return "?RF✖"
                 case .HupHolland:
                     return "MH"
                 default:
@@ -146,7 +148,7 @@ struct SensorGlucoseValue {
 }
 
 enum SpecialSensorGlucoseValues: Int {
-    case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, HupHolland=17
+    case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, RF=12, HupHolland=17
 }
 
 
@@ -234,7 +236,7 @@ class Entry: NSObject {
 }
 
 extension Entry {
-    convenience init(jsonDictionary: [String:AnyObject]) {
+    convenience init(jsonDictionary: [String: AnyObject]) {
         
         let dict = jsonDictionary
         
@@ -276,7 +278,6 @@ extension Entry {
                                 }
                             }
                         }
-                        
                         
                     case .mbg:
                         if let mbg = dict[EntryPropertyKey.mgbKey] as? Int {
