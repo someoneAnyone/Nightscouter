@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import SystemConfiguration 
+
 /*:
 Create protocol for setting base URL, API Token, etc...
 TODO:// Create methods for getting settings.
@@ -27,13 +27,16 @@ struct URLPart {
 }
 
 enum NightscoutAPIError {
+    case NoErorr
     case DownloadErorr(String)
     case JSONParseError(String)
 }
 
 class NightscoutAPIClient {
     
-    let sharedSession = NSURLSession.sharedSession()
+    lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
+    lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
+    
     var url: NSURL!
     
     class var sharedClient: NightscoutAPIClient {
@@ -62,8 +65,7 @@ class NightscoutAPIClient {
 
 // MARK: - Meat and Potatoes of the API
 extension NightscoutAPIClient {
-    
-    func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray, errorCode: NightscoutAPIError) -> Void) {
+    func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
         let entriesWithCountURL = NSURL(string:self.stringForEntriesWithCount(count))
         self.fetchJSONWithURL(entriesWithCountURL!, completetion: { (result, errorCode) -> Void in
             if let entries = result as? JSONArray {
@@ -73,26 +75,33 @@ extension NightscoutAPIClient {
                     finalArray.append(entry)
                 }
                 completetion(entries: finalArray, errorCode: errorCode)
+            } else {
+                completetion(entries: nil, errorCode: errorCode)
             }
         })
     }
     
-    func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry, errorCode: NightscoutAPIError) -> Void) {
+    func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
         self.fetchJSONWithURL(watchEntryUrl, completetion: { (result, errorCode) -> Void in
             if let jsonDictionary = result as? JSONDictionary {
                 let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
                 completetion(watchEntry: watchEntry, errorCode: errorCode)
+            } else {
+                completetion(watchEntry: nil, errorCode: errorCode)
             }
         })
     }
     
-    func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration, errorCode: NightscoutAPIError) -> Void) {
+    func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration?, errorCode: NightscoutAPIError) -> Void) {
         let settingsUrl = self.urlForStatus
         self.fetchJSONWithURL(settingsUrl, completetion: { (result, errorCode) -> Void in
             if let settingsDictionary = result as? JSONDictionary {
                 let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
                 completetion(configuration: settingObject, errorCode: errorCode)
+            } else {
+                completetion(configuration: nil, errorCode: errorCode)
+
             }
         })
     }
@@ -126,43 +135,39 @@ extension NightscoutAPIClient {
 
 // MARK: - Private Methods
 private extension NightscoutAPIClient {
-    func fetchJSONWithURL(url: NSURL, completetion:(result: AnyObject, errorCode: NightscoutAPIError) -> Void) {
-        // Logging and debugging.
+    func fetchJSONWithURL(url: NSURL!, completetion:(result: AnyObject?, errorCode: NightscoutAPIError) -> Void) {
 
-        print("Fetching: \(url.absoluteString)")
-        // Start timer for how long this took.
-        let fetchStart = NSDate()
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
-            
-            var nsAPIError: NightscoutAPIError = NightscoutAPIError.DownloadErorr("None")
-            
-            if (downloadError != nil) {
-                print("failed to download")
-                nsAPIError = NightscoutAPIError.DownloadErorr("There was a problem downloading data. Error code: \(downloadError)")
-            } else {
-                if let dataObject: NSData = NSData(contentsOfURL: location) {
-                    var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
-                    stringVersion = stringVersion?.stringByReplacingOccurrencesOfString("+", withString: "")
-                    
-                    var jsonError: NSError?
-                    if let responseObject: AnyObject = NSJSONSerialization.JSONObjectWithData(dataObject, options: .AllowFragments, error:&jsonError){
-                        if (jsonError != nil) {
-                            println("jsonError")
-                            nsAPIError = NightscoutAPIError.DownloadErorr("There was a problem processing the JSON data. Error code: \(jsonError)")
-                        } else {
-                            completetion(result: responseObject, errorCode: nsAPIError)
+            if let httpResponse = response as? NSHTTPURLResponse {
+                switch httpResponse.statusCode {
+                case 200:
+                    if let dataObject: NSData = NSData(contentsOfURL: location) {
+                        var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
+                        stringVersion = stringVersion?.stringByReplacingOccurrencesOfString("+", withString: "")
+                        
+                        var jsonError: NSError?
+                        if let responseObject: AnyObject = NSJSONSerialization.JSONObjectWithData(dataObject, options: .AllowFragments, error:&jsonError){
+                            if (jsonError != nil) {
+                                println("jsonError")
+                                completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
+
+                            } else {
+                                completetion(result: responseObject, errorCode: .NoErorr)
+                            }
                         }
                     }
+
+                default:
+                    println("GET request not successful. HTTP status code: \(httpResponse.statusCode)")
+                    completetion(result: nil, errorCode: .DownloadErorr("GET request not successful. HTTP status code: \(httpResponse.statusCode), fullError: \(downloadError)"))
+
                 }
-            }            
-            // Logging and debugging.
-            let fetchEnd = NSDate()
-            let fetchTimeElapsed = fetchEnd .timeIntervalSinceDate(fetchStart)
-            println("Finished request for \(url) in \(fetchTimeElapsed) seconds.")
+            } else {
+                println("Error: Not a valid HTTP response")
+                completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
+            }
         })
     
-        
         downloadTask.resume()
-        
     }
 }
