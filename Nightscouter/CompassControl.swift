@@ -21,7 +21,7 @@ public class CompassControl: UIView {
     var isDoubleUp = false
     var isArrowVisible = false
     
-    @IBInspectable public var color: UIColor = UIColor.blackColor() {
+    @IBInspectable public var color: UIColor = NSAssetKit.predefinedNeutralColor {
         didSet {
             setNeedsDisplay()
         }
