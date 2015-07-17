@@ -16,6 +16,7 @@ extension EntryPropertyKey {
     static let trendKey = "trend"
     static let datetimeKey = "datetime"
     static let batteryKey = "battery"
+    static let iob = "iob" // Not implmented yet.
 }
 
 let WatchFaceDeviceValue = "watchFace"
@@ -27,7 +28,7 @@ class WatchEntry: Entry {
     var batteryString: String {
         get{
             // Convert int from JSON into a proper precentge.
-            let percentage = Float(battery)/100
+            var percentage = Float(battery)/100
             return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
         }
     }
@@ -67,23 +68,28 @@ extension WatchEntry {
         if let bgs: NSDictionary = newDict[EntryPropertyKey.bgsKey] as? NSDictionary {
             if let directionString = bgs[EntryPropertyKey.directionKey] as? String {
                 if let direction = Direction(rawValue: directionString) {
-                    if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
-                        if let unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int {
-                            if let noiseInt = bgs[EntryPropertyKey.noiseKey] as? Int {
-                                if let noise = Noise(rawValue: noiseInt) {
-                                    if let datetime = bgs[EntryPropertyKey.datetimeKey] as? Double {
-                                        date = datetime.toDateUsingSeconds()
-                                        if let batteryString = bgs[EntryPropertyKey.batteryKey] as? String {
-                                            let batteryInt = batteryString.toInt()
-                                            battery = batteryInt!
-                                            if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
-                                                bgdelta = bgdeltaInt
-                                                if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
+                    if let datetime = bgs[EntryPropertyKey.datetimeKey] as? Double {
+                        date = datetime.toDateUsingSeconds()
+                        if let batteryString = bgs[EntryPropertyKey.batteryKey] as? String {
+                            let batteryInt = batteryString.toInt()
+                            battery = batteryInt!
+                            if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
+                                bgdelta = bgdeltaInt
+                                // BUG:// Optinal chaining is failing when raw data isn't there...
+                                if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
+                                    if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
+                                        if let unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int {
+                                            if let noiseInt = bgs[EntryPropertyKey.noiseKey] as? Int {
+                                                if let noise = Noise(rawValue: noiseInt) {
                                                     let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
                                                     sgvItem = sgvValue
                                                 }
                                             }
                                         }
+                                    } else {
+                                        let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: Noise.None)
+                                        sgvItem = sgvValue
+
                                     }
                                 }
                             }
