@@ -111,7 +111,7 @@ class SiteListTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
-        return NSLocalizedString(Constants.LocalizedString.tableViewCellRemove, value:"Remove", comment: "Remove item in table")
+        return NSLocalizedString(Constants.LocalizedString.tableViewCellRemove, value:"Remove", comment: "Remove item in table.")
     }
     
     override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
@@ -250,7 +250,11 @@ class SiteListTableViewController: UITableViewController {
         
         if let configuration = site.configuration {
             
-            cell.siteName.text = configuration.defaults?.customTitle
+            if let defaults = configuration.defaults {
+                cell.siteName.text = defaults.customTitle
+            } else {
+                cell.siteName.text = configuration.name
+            }
             
             if let watch = site.watchEntry {
                 
