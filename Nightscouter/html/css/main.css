@@ -1,5 +1,5 @@
 body {
-    font-family: 'Open Sans', Helvetica, Arial, sans-serif;
+    font-family: 'HelveticaNeue-Thin', Helvetica, Arial, sans-serif;
     fill: #fff;
 /*    background: #000;*/
 
@@ -32,6 +32,8 @@ body {
 svg { width: 100%; height: 100%; }
 
 .grid path, .axis line {
-  stroke: #808080;
+/*  stroke: #808080;*/
+  stroke: white;
   stroke-opacity: 1;
+  shape-rendering: crispEdges;
 }

@@ -27,8 +27,10 @@ class TestHarnessForLogTableViewController: UITableViewController {
         let nsAPI = NightscoutAPIClient(url:url)
         
         nsAPI.fetchDataForEntries(count: 100) { (entries, errorCode) -> Void in
-            self.dataForTable = entries
             
+            if let entriesForTable = entries {
+                self.dataForTable = entriesForTable
+            }
             self.navigationItem.title = "\(self.dataForTable.count) : Entries Listed"
             self.tableView.reloadData()
         }
@@ -60,17 +62,21 @@ class TestHarnessForLogTableViewController: UITableViewController {
         
         let entry: Entry = self.dataForTable[indexPath.row] as Entry
         
-        cell.sgv.text =  "\(entry.sgv!.sgv)"
-        cell.direction.text = entry.sgv!.direction.rawValue
+        
+        if let sgValue: SensorGlucoseValue = entry.sgv {
+            cell.sgv.text =  "\(sgValue.sgv)"
+            cell.direction.text = sgValue.direction.rawValue
+            cell.rssi.text = "rssi: \(sgValue.rssi)"
+            cell.unfiltered.text = "unfiltered: \(sgValue.unfiltered)"
+            cell.filtered.text = "filtered: \(sgValue.filtered)"
+            cell.noise.text = "noise: \(sgValue.noise)"
+        }
+
         cell.type.text = "type: \(entry.type!.rawValue)"
-        cell.unfiltered.text = "unfiltered: \(entry.sgv!.unfiltered)"
-        cell.filtered.text = "filtered: \(entry.sgv!.filtered)"
-        cell.noise.text = "noise: \(entry.sgv!.noise)"
-        cell.device.text = entry.device
+            cell.device.text = entry.device
         cell.idString.text = entry.idString
         cell.dateString.text = entry.dateString
         
-        cell.rssi.text = "rssi: \(entry.sgv!.rssi)"
         
         let dateFormatter = NSDateFormatter()
         //To prevent displaying either date or time, set the desired style to NoStyle.

@@ -14,5 +14,6 @@ extension UIStoryboardSegue {
         case AddNewWhenEmpty = "AddNewWhenEmpty"
         case LaunchLabs = "LaunchLabs"
         case ShowPageView = "ShowPageView"
+        case UnwindToSiteList = "unwindToSiteList"
     }
 }

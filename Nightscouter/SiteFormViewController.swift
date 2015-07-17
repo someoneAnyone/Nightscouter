@@ -67,6 +67,11 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         // Hide the keyboard
         textField.resignFirstResponder()
         
+        
+        if nextButton.enabled{
+            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
+        }
+        
         return true // validateUrl(textField.text!)
     }
     

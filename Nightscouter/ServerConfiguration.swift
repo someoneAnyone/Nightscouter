@@ -43,6 +43,19 @@ struct Alarm {
     let alarmUrgentLow: Bool
 }
 
+struct Defaults {
+    // Start of "defaults" dictionary
+    let units: Units
+    let timeFormat: Int
+    let nightMode: Bool
+    let showRawbg: RawBGMode
+    let customTitle: String
+    let theme: String
+    let alarms: Alarm
+    let language: String
+    // End of "defaults" dictionary
+}
+
 struct ConfigurationPropertyKey {
     static let alarm_typesKey = "alarm_types"
     static let apiEnabledKey = "apiEnabled"
@@ -75,30 +88,31 @@ struct ConfigurationPropertyKey {
     static let versionKey = "version"
 }
 
-struct ServerConfiguration {
-    let alarm_types: String
-    let apiEnabled: Bool
-    let careportalEnabled: Bool
+struct ServerConfiguration: Printable {
+    let status: String?
+    let apiEnabled: Bool?
+    let careportalEnabled: Bool?
+    let enabledOptions: [String:EnabledOptions]?
     
-    let enabledOptions: Dictionary<String, EnabledOptions>
-    let head:String
-    let name: String
-    let status: String
+    let defaults: Defaults?
     
-    let units: Units
-    let version: String
-    let customTitle: String
-    let language: String
-    let nightMode: Bool
-    let showRawbg: RawBGMode
-    let theme: String
-    let timeFormat: Int
-    let unitsRoot: Units
+    let unitsRoot: Units?
+    let head:String?
+    let version: String?
+    let thresholds: Threshold?
+    let alarm_types: String?
+    let name: String?
     
-    let thresholds: Threshold
-    let alrams: Alarm
+    var description: String {
+    
+        let dict = ["status" : status,"apiEnabled" : apiEnabled?.description]
+        
+        return dict.description
+//        return "
+    }
 }
 
+/*
 extension ServerConfiguration {
     
     init(jsonDictionary: [String:AnyObject]) {
@@ -106,7 +120,7 @@ extension ServerConfiguration {
         var alarm_types: String!
         var apiEnabled: Bool!
         var careportalEnabled: Bool!
-        var enabledOptions: Dictionary<String, EnabledOptions>!
+        var enabledOptions: [String: EnabledOptions]!
         var head:String!
         var name: String!
         var status: String!
@@ -222,6 +236,96 @@ extension ServerConfiguration {
     }
     
 }
+*/
+
+extension ServerConfiguration {
+    
+    init(jsonDictionary: [String:AnyObject]) {
+        
+        var serverConfig: ServerConfiguration = ServerConfiguration(status: nil, apiEnabled: nil, careportalEnabled: nil, enabledOptions: nil, defaults: nil, unitsRoot: nil, head: nil, version: nil, thresholds: nil, alarm_types: nil, name: nil)
+        
+        var root = jsonDictionary
+        if let statusString = root[ConfigurationPropertyKey.statusKey] as? String {
+            if let apiEnabledBool = root[ConfigurationPropertyKey.apiEnabledKey] as? Bool {
+                if let careportalEnabledBool = root[ConfigurationPropertyKey.careportalEnabledKey] as? Bool {
+                    if let unitsRootString = root[ConfigurationPropertyKey.unitsKey] as? String {
+                        let unitsRootUnit = Units(rawValue: unitsRootString)!
+                        if let headString = root[ConfigurationPropertyKey.headKey] as? String {
+                            if let versionString = root[ConfigurationPropertyKey.versionKey] as? String {
+                                if let alarmTypesString = root[ConfigurationPropertyKey.alarm_typesKey] as? String {
+                                    if let nameString = root[ConfigurationPropertyKey.nameKey] as? String {
+                                        
+                                        var options = [String: EnabledOptions]()
+                                        if let enabledOptionsString = root[ConfigurationPropertyKey.enabledOptionsKey] as? String {
+                                            for stringItem in enabledOptionsString.componentsSeparatedByString(" "){
+                                                options[stringItem] = EnabledOptions(rawValue: stringItem)
+                                            }
+                                        }
+                                        
+                                        
+                                        var defaultsDefaults: Defaults?
+                                        if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
+                                            let units = Units(rawValue: defaultsDictionary[ConfigurationPropertyKey.unitsKey] as! String)!
+                                            let timeFormat = (defaultsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
+                                            let nightMode = defaultsDictionary[ConfigurationPropertyKey.nightModeKey] as! Bool
+                                            let showRawbg = RawBGMode(rawValue: defaultsDictionary[ConfigurationPropertyKey.showRawbgKey] as! String)!
+                                            let customTitle = defaultsDictionary[ConfigurationPropertyKey.customTitleKey] as! String
+                                            
+                                            let theme = defaultsDictionary[ConfigurationPropertyKey.themeKey] as! String
+                                            
+                                            let aHigh = defaultsDictionary[ConfigurationPropertyKey.alarmHighKey] as! Bool
+                                            let aLow = defaultsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
+                                            let aTAU = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentKey] as! Bool
+                                            let aTAUMin = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentMinsKey] as! Int
+                                            let aTAW = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnKey] as! Bool
+                                            let aTAWMin = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnMinsKey] as! Int
+                                            let aTUH = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
+                                            let aTUL = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
+                                            
+                                            let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
+                                            
+                                            let language = defaultsDictionary[ConfigurationPropertyKey.languageKey] as! String
+                                            
+                                            defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language)
+                                        }
+                                        
+                                        var threasholdsThreshold: Threshold?
+                                        if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
+                                            let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Int
+                                            let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Int
+                                            let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Int
+                                            let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Int
+                                            threasholdsThreshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
+                                        }
+                                        
+                                        
+                                        serverConfig = ServerConfiguration(status: statusString, apiEnabled: apiEnabledBool, careportalEnabled: careportalEnabledBool, enabledOptions: options, defaults: defaultsDefaults, unitsRoot: unitsRootUnit, head: headString, version: versionString, thresholds: threasholdsThreshold, alarm_types: alarmTypesString, name: nameString)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        status = serverConfig.status
+        apiEnabled = serverConfig.apiEnabled
+        careportalEnabled = serverConfig.careportalEnabled
+        enabledOptions = serverConfig.enabledOptions
+        
+        defaults = serverConfig.defaults
+        
+        unitsRoot = serverConfig.unitsRoot
+        head = serverConfig.head
+        version = serverConfig.version
+        thresholds = serverConfig.thresholds
+        alarm_types = serverConfig.alarm_types
+        name = serverConfig.name
+    }
+}
+
+
 
 enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
@@ -231,15 +335,15 @@ extension ServerConfiguration {
     
     func boundedColorForGlucoseValue(value: Int) -> DesiredColorState {
         var color = DesiredColorState.Neutral
-        if (value > self.thresholds.bg_high) {
+        if (value > self.thresholds!.bg_high) {
             color = .Alert
-        } else if (value > self.thresholds.bg_target_top) {
+        } else if (value > self.thresholds!.bg_target_top) {
             color =  .Warning
-        } else if (value >= self.thresholds.bg_target_bottom && value <= self.thresholds.bg_target_top) {
+        } else if (value >= self.thresholds!.bg_target_bottom && value <= self.thresholds!.bg_target_top) {
             color = .Positive
-        } else if (value < self.thresholds.bg_low) {
+        } else if (value < self.thresholds!.bg_low) {
             color = .Alert
-        } else if (value < self.thresholds.bg_target_bottom) {
+        } else if (value < self.thresholds!.bg_target_bottom) {
             color = .Warning
         }
         return color

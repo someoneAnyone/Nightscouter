@@ -15,21 +15,20 @@ class Site: NSObject, NSCoding {
         static let apiSecretKey = "apiSecret"
         static let siteKey = "site"
         static let allowNotificationsKey = "notifications"
+        static let uuidKey = "uuid"
+
     }
     
-    var url: NSURL
+    var url: NSURL!
     var apiSecret: String?
     var configuration: ServerConfiguration?
     var watchEntry: WatchEntry?
     var entries: [Entry]?
     
-    var allowNotifications: Bool = false
+    var allowNotifications: Bool = true
     
-    var uuid: Int! {
-        get {
-            return self.hash
-        }
-    }
+    private(set) var uuid: NSUUID
+    
     // MARK: Archiving Paths
     static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.siteKey)
@@ -39,6 +38,8 @@ class Site: NSObject, NSCoding {
         // Initialize stored properties.
         self.url = url
         self.apiSecret = apiSecret
+    
+        self.uuid = NSUUID()
         
         super.init()
         
@@ -53,6 +54,7 @@ class Site: NSObject, NSCoding {
         aCoder.encodeObject(url, forKey: PropertyKey.urlKey)
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
+        aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
     }
     
     /*
@@ -68,9 +70,15 @@ class Site: NSObject, NSCoding {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
+       
+        if let uuid = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? NSUUID {
+            self.uuid = uuid
+        } else {
+            self.uuid = NSUUID()
+        }
+        
         self.url = url
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
     }
-    
 }

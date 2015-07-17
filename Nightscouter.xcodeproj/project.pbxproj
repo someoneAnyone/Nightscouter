@@ -33,11 +33,14 @@
 		176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
+		177C20541B56E6460092753B /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C20531B56E6460092753B /* Int+Extensions.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
+		17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */; };
 		17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */; };
+		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
 		83F4E8991B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */; };
 /* End PBXBuildFile section */
 
@@ -71,11 +74,14 @@
 		176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessTableViewController.swift; sourceTree = "<group>"; };
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
+		177C20531B56E6460092753B /* Int+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
 		17C95CAF1B40AD0B0035922A /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewBackgroundView.swift; sourceTree = "<group>"; };
 		17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Identifiers.swift"; sourceTree = "<group>"; };
+		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
 		83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboardSegue+Identifiers.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +136,7 @@
 				171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */,
 				171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */,
 				176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */,
+				839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */,
 			);
 			name = Labs;
 			sourceTree = "<group>";
@@ -138,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */,
+				177C20531B56E6460092753B /* Int+Extensions.swift */,
 				173E950B1B42E5DA0024039E /* CompassControl+Convience.swift */,
 				173454601B30B81900931278 /* NSCalendar+Extension.swift */,
 				173454521B308EEC00931278 /* Double+Extension.swift */,
@@ -214,6 +222,7 @@
 			children = (
 				1739B1C71B31152C00C22762 /* CompassControl.swift */,
 				1734545E1B30A8A200931278 /* SiteTableViewCell.swift */,
+				17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */,
 				1739B1BB1B3113AA00C22762 /* Storyboards */,
 			);
 			name = Views;
@@ -309,6 +318,7 @@
 				171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */,
 				17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */,
 				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
+				17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */,
 				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
@@ -322,7 +332,9 @@
 				174414691B41901100B1E70D /* NSAssetKit+Helpers.swift in Sources */,
 				83F4E8991B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift in Sources */,
 				171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */,
+				839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */,
 				170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */,
+				177C20541B56E6460092753B /* Int+Extensions.swift in Sources */,
 				1739B1C61B31151800C22762 /* NSAssetKit.swift in Sources */,
 				1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */,
 			);

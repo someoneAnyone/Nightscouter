@@ -13,7 +13,10 @@ Create protocol for setting base URL, API Token, etc...
 TODO:// Create methods for getting settings.
 */
 
-typealias JSONDictionary = Dictionary<String, AnyObject> //([String: AnyObject]?) -> ()
+let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
+
+typealias JSON = AnyObject
+typealias JSONDictionary = Dictionary<String, JSON> //([String: AnyObject]?) -> ()
 typealias JSONArray = Array<JSONDictionary>
 typealias EntryArray = Array<Entry>
 
@@ -25,6 +28,7 @@ struct URLPart {
     static let Status = "status"
     static let FileExtension = "json"
 }
+
 
 enum NightscoutAPIError {
     case NoErorr
@@ -92,7 +96,7 @@ extension NightscoutAPIClient {
             }
         })
     }
-    
+    /*
     func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration?, errorCode: NightscoutAPIError) -> Void) {
         let settingsUrl = self.urlForStatus
         self.fetchJSONWithURL(settingsUrl, completetion: { (result, errorCode) -> Void in
@@ -101,10 +105,14 @@ extension NightscoutAPIClient {
                 completetion(configuration: settingObject, errorCode: errorCode)
             } else {
                 completetion(configuration: nil, errorCode: errorCode)
-
+                
             }
         })
     }
+
+    */
+    
+  
 }
 
 // MARK: - Convenience Methods
@@ -135,8 +143,8 @@ extension NightscoutAPIClient {
 
 // MARK: - Private Methods
 private extension NightscoutAPIClient {
-    func fetchJSONWithURL(url: NSURL!, completetion:(result: AnyObject?, errorCode: NightscoutAPIError) -> Void) {
-
+    func fetchJSONWithURL(url: NSURL!, completetion:(result: JSON?, errorCode: NightscoutAPIError) -> Void) {
+        
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
             if let httpResponse = response as? NSHTTPURLResponse {
                 switch httpResponse.statusCode {
@@ -150,24 +158,122 @@ private extension NightscoutAPIClient {
                             if (jsonError != nil) {
                                 println("jsonError")
                                 completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
-
+                                
                             } else {
                                 completetion(result: responseObject, errorCode: .NoErorr)
                             }
                         }
                     }
-
+                    
                 default:
                     println("GET request not successful. HTTP status code: \(httpResponse.statusCode)")
                     completetion(result: nil, errorCode: .DownloadErorr("GET request not successful. HTTP status code: \(httpResponse.statusCode), fullError: \(downloadError)"))
-
+                    
                 }
             } else {
                 println("Error: Not a valid HTTP response")
                 completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
             }
         })
-    
+        
         downloadTask.resume()
+    }
+}
+
+
+// MARK - New Fetch Methods
+
+final class Box<A> {
+    let value: A
+    
+    init(_ value: A) {
+        self.value = value
+    }
+}
+
+enum Result<A> {
+    case Error(NSError)
+    case Value(Box<A>)
+}
+
+
+extension NightscoutAPIClient {
+    func fetchServerConfiguration(callback: (Result<ServerConfiguration>) -> Void) {
+        let settingsUrl = self.urlForStatus
+        
+        self.fetchJSONWithURL(settingsUrl, callback: { (result) -> Void in
+            switch result {
+            case let .Error(error):
+                // display error message
+                println("Recieved an error fetching Configuration: \(error)")
+                callback(.Error(error))
+
+            case let .Value(boxedConfiguration):
+                let result: JSON = boxedConfiguration.value
+                if let settingsDictionary = result as? JSONDictionary {
+                    let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
+                    callback(.Value(Box(settingObject)))
+                } else {
+                    
+                    
+                }
+            }
+        })
+        
+    }
+}
+
+private extension NightscoutAPIClient {
+
+    func fetchJSONWithURL(url: NSURL!, callback: (Result<JSON>) -> Void) {
+        
+        let task: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
+            
+            // if the response returned an error send it to the callback
+            if let err = downloadError {
+                println("Recieved an error DOWNLOADING: \(downloadError)")
+                callback(.Error(err))
+                return
+            }
+            
+            if let httpResponse = urlResponse as? NSHTTPURLResponse {
+                switch httpResponse.statusCode {
+                case 200:
+                    
+                    if let dataObject: NSData = NSData(contentsOfURL: location) {
+                        // Converting data to a string, then removing bad characters found in the Nightscout JSON
+                        var dataConvertedToString = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
+                        // Apple's JSON Serializer has a problem with + notation for large numbers. I've observed this happening in intercepts.
+                        dataConvertedToString = dataConvertedToString?.stringByReplacingOccurrencesOfString("+", withString: "")
+                        
+                        // Converting string back into data so it can be processed into JSON.
+                        if let newData: NSData = dataConvertedToString?.dataUsingEncoding(NSUTF8StringEncoding) {
+                            var jsonErrorOptional: NSError?
+                            let jsonOptional: JSON! = NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions(0), error: &jsonErrorOptional)
+                            
+                            // if there was an error parsing the JSON send it back
+                            if let err = jsonErrorOptional {
+                                callback(.Error(err))
+                                return
+                            }
+                            
+                            callback(.Value(Box(jsonOptional)))
+                            return
+                        }
+                    }
+                    
+                default:
+                    // hhtpResonse other than 200
+                    callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -220, userInfo: nil)))
+
+                }
+            }
+            
+            // if we couldn't parse all the properties then send back an error
+            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))
+            
+        })
+        
+        task.resume()
     }
 }

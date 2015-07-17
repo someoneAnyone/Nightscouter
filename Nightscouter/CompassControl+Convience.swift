@@ -15,18 +15,14 @@ extension CompassControl {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
-        let numberFormat = NSNumberFormatter.localizedStringFromNumber(bgdelta, numberStyle: .NoStyle)
-        self.delta = "\(numberFormat) \(units)"
+        
+        self.delta = "\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    func configureWithObject(site: Site){
-        
-        let configuration: ServerConfiguration! = site.configuration
-        let watch: WatchEntry! = site.watchEntry
-        let sgv: SensorGlucoseValue! = watch!.sgv
-        
-        let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgv!.sgv))
-
-        configure(sgv.sgvString, color: color, sgvValue: sgv.sgv, direction: sgv.direction, date: watch.date, bgdelta: watch.bgdelta, units: configuration.units.rawValue)
+    func configureWith(site: Site){
+        if let configuration: ServerConfiguration = site.configuration,  watch: WatchEntry = site.watchEntry,  sgv: SensorGlucoseValue = watch.sgv {
+            let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgv.sgv))
+            configure(sgv.sgvString, color: color, sgvValue: sgv.sgv, direction: sgv.direction, date: watch.date, bgdelta: watch.bgdelta, units: configuration.unitsRoot!.rawValue)
+        }
     }
 }

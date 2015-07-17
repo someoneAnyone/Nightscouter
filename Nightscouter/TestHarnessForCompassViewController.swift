@@ -76,7 +76,8 @@ class TestHarnessForCompassViewController: UIViewController {
         let currentIndex = sender.selectedSegmentIndex
         
         
-//        compassControlView.direction = Direction(rawValue: currentIndex)!
+        compassControlView.direction = Direction.allValues[currentIndex]
+        
         modeLabel.text = placeholderModeString + ": " + sender.titleForSegmentAtIndex(currentIndex)!
         updateSgv()
 
@@ -86,39 +87,25 @@ class TestHarnessForCompassViewController: UIViewController {
 
 extension TestHarnessForCompassViewController {
     func setModeSwitch (){
-        // TODO:// Get the available states from component.
-        let direction: Array = ["None", "⇈", "↑", "➚", "→", "➘", "↓", "⇊", "!?", "✕"]
         self.modeSwitch.removeAllSegments()
-//        for (index, value) in direction.enumerate() {
-        
-        for (index, value) in enumerate(direction) {
-            self.modeSwitch.insertSegmentWithTitle("\(value)", atIndex: index, animated: true)
+        for (index, value) in enumerate(Direction.allValues) {
+            self.modeSwitch.insertSegmentWithTitle("\(value.emojiForDirection())", atIndex: index, animated: true)
         }
         self.modeSwitch.selectedSegmentIndex = 0
         self.modeLabel.text = placeholderModeString + ": " + self.modeSwitch.titleForSegmentAtIndex(self.modeSwitch.selectedSegmentIndex)!
-
     }
     
     func updateDelta(){
         print("newValue: \(newValue); oldValue: \(oldValue); delta: \(newValue - oldValue)")
-        
         let deltaValue = newValue - oldValue
-        var prependString: String = ""
-        
-        if deltaValue > 0
-        {
-            prependString = "+"
-        }
-        
-        compassControlView.delta = prependString + "\(deltaValue) " + bgUnits
-        
+        compassControlView.delta = "\(deltaValue.formattedForBGDelta) " + bgUnits
     }
     
     func updateSgv(){
         sgvLabel.text = placeholderSgvString + ": " + NSNumberFormatter.localizedStringFromNumber(self.sgvSlider.value, numberStyle: .NoStyle)
-        compassControlView.sgvText = String(stringInterpolationSegment: self.sgvSlider.value)
-        self.view.tintColor = compassControlView.color
+        compassControlView.sgvText = String(stringInterpolationSegment:NSNumberFormatter.localizedStringFromNumber(self.sgvSlider.value, numberStyle: .NoStyle))
 
-//        self.imageRep.image = compassControlView.pb_takeSnapshot()
+        compassControlView.color = NSAssetKit.predefinedNeutralColor
+        self.view.tintColor = compassControlView.color
     }
 }

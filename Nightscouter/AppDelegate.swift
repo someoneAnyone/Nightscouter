@@ -14,6 +14,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var sites: [Site] = [Site]()
     
+    var timer: NSTimer?
+
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
@@ -22,13 +25,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Load any saved meals, otherwise load sample data.
         if let savedSites = loadSites() {
             sites += savedSites
+            self.timer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         } else {
             // Load the sample data.
             loadSampleSites()
         }
         setupNotificationSettings()
+        
+        window?.tintColor = NSAssetKit.predefinedNeutralColor
+        
+        
+        // Change the font and size of nav bar text
+        if let navBarFont = UIFont(name: "HelveticaNeue-Thin", size: 20.0) {
+            
+            let navBarColor: UIColor = NSAssetKit.darkNavColor
+            UINavigationBar.appearance().barTintColor = navBarColor
+            
+            let navBarAttributesDictionary: [NSObject: AnyObject]? = [
+                NSForegroundColorAttributeName: UIColor.whiteColor(),
+                NSFontAttributeName: navBarFont
+            ]
+            UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
+        }
+        
 
         return true
+    }
+    
+    func updateDataNotification(timer: NSTimer) -> Void {
+        println("update data notification fired")
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataIsStaleUpdateNow, object: self))
+
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -39,6 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidEnterBackground(application: UIApplication) {
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        
+        saveSites()
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
@@ -54,50 +83,66 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        
         println("Handling background fetch")
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
+            nsApi.fetchServerConfiguration { (result) -> Void in
+                switch (result) {
+                case let .Error(error):
+                    // display error message
+                    println("error: \(error)")
+                    completionHandler(.Failed)
+                    return
+                case let .Value(boxedConfiguration):
+                    let configuration:ServerConfiguration = boxedConfiguration.value
+                    nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
+                            site.configuration = configuration
+                            site.watchEntry = watchEntry
+                        
+                        // don't push a notification if the data is stale. Probably needs to be refactored.
+                        let timeFrame = site.watchEntry?.date.timeIntervalSinceNow
+                        let timeLimit =  -Constants.StandardTimeFrame.TenMinutesInSeconds
+                        
+                            if ( timeFrame < timeLimit) {
+                                completionHandler(.NoData)
+                                return
+                            } else {
+                                // TODO:// Add some bg threshold checks here.
+                                if site.watchEntry?.bgdelta != 0 {
+                                    self.scheduleLocalNotification(site)
+                                }
+                                completionHandler(.NewData)
+                                return
+                            }
+                        })
+                }
+            }
             
-            nsApi.fetchServerConfigurationData({ (configuration, errorCode) -> Void in
-                nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
-                    // Get back on the main queue to update the user interface
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        site.configuration = configuration
-                        site.watchEntry = watchEntry
-                        // TODO:// Add some bg threshold checks here.
-                        if site.watchEntry?.bgdelta != 0 {
-                            self.scheduleLocalNotification(site)
-                        }
-                        if (site.watchEntry?.date.timeIntervalSinceNow < -(60 * 5)) {
-                            completionHandler(.NoData)
-                        } else {
-                            completionHandler(.NewData)
-                        }
-//                        completionHandler(.Failed)
-                    })
-                })
-            })
+            
+            println("For some reason no one else comleted the request for a background fetch, so I am")
         }
     }
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         println("Received a local notification payload: \(notification)")
-
-        let dict = notification.userInfo
         
-//        let site = find(sites, dict["site"])
-
-//        println(dict)
-//        application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
+        if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
+            if let uuidString = userInfoDict["uuid"] as? String {
+                let uuid = NSUUID(UUIDString: uuidString)
+                let site = sites.filter{ $0.uuid == uuid }.first
+                println("User tapped on notification for site: \(site)")
+            }
+        }
+        //        application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
     }
     
     func scheduleLocalNotification(site: Site) {
-        
         println("scheduleLocalNotification")
         
-        let watch: WatchEntry! = site.watchEntry!
+        if (site.allowNotifications == false) { return }
+        
+
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
         dateFor.dateStyle = .ShortStyle
@@ -107,13 +152,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         localNotification.fireDate = NSDate()
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.category = "Nightscout_Category"
-//        localNotification.applicationIconBadgeNumber = 1;
+        //        localNotification.applicationIconBadgeNumber = 1;
         
-        localNotification.userInfo = NSDictionary(object: site.uuid!, forKey: "site") as [NSObject : AnyObject]
-        
-        localNotification.alertBody = "As of \(dateFor.stringFromDate(watch.date)), nighscout saw a bg of \(watch.sgv!.sgvString) with the delta of \(watch.bgdelta) \(watch.sgv!.direction.rawValue)"
+        localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: "uuid") as [NSObject : AnyObject]
         localNotification.alertAction = "View Site"
         
+        if let config = site.configuration {
+            if let defaults = config.defaults {
+                localNotification.alertTitle = "Update for \(defaults.customTitle)"
+                if let watch: WatchEntry = site.watchEntry {
+                localNotification.alertBody = "As of \(dateFor.stringFromDate(watch.date)), \(defaults.customTitle) saw a BG of \(watch.sgv!.sgvString) with a delta of \(watch.bgdelta.formattedForBGDelta) \(watch.sgv!.direction.description). Uploader battery: \(watch.batteryString)"
+                }
+            }
+        
+        }
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
     }
     
@@ -155,4 +207,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 }
-

@@ -42,6 +42,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
 //            pageViewRect = CGRectInset(pageViewRect, 40.0, 40.0)
 //        }
 //        self.pageViewController!.view.frame = pageViewRect
+    
 
         self.pageViewController!.didMoveToParentViewController(self)
 

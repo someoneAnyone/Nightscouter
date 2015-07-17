@@ -14,66 +14,43 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Properties
     
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate // Here just in case I start moving data access to the delegate.
+    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     var sites = [Site]()
     var accessoryIndexPath: NSIndexPath?
     
     var lastUpdatedTime: NSDate? {
         didSet{
-            
             let dateFormatter = NSDateFormatter()
             dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
             dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
             dateFormatter.timeZone = NSTimeZone.localTimeZone()
             
             if let date = lastUpdatedTime {
-                self.refreshControl!.attributedTitle = NSAttributedString(string:"Updated on: \(dateFormatter.stringFromDate(date))")
+                self.refreshControl!.attributedTitle = NSAttributedString(string:NSLocalizedString(Constants.LocalizedString.lastUpdatedDateLabel, value: "Updated on: \(dateFormatter.stringFromDate(date))", comment: "String shown for last update."), attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
             }
         }
     }
     
-    var timer: NSTimer = NSTimer()
+    // MARK: View controller lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // The following line displys an Edit button in the navigation bar for this view controller.
-        navigationItem.leftBarButtonItem = self.editButtonItem()
-        tableView.rowHeight = 200
-        
-        // Load any saved meals, otherwise load sample data.
-        if let savedSites = loadSites() {
-            sites += savedSites
-        } else {
-            // Load the sample data.
-            //            loadSampleSites()
-        }
-        
-        //        shouldIShowNewSiteForm()
-        
-        self.timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
-        
-        // Initialize the refresh control.
-        self.refreshControl = UIRefreshControl()
-        
-        var updated = "Last updated on: \(lastUpdatedTime)"
-        self.refreshControl!.attributedTitle = NSAttributedString(string: "Pull to refresh")
-        self.refreshControl!.addTarget(self, action: "updateData", forControlEvents: UIControlEvents.ValueChanged)
-        self.tableView.addSubview(refreshControl!)
-        
+        configureView()
     }
-    
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         shouldIShowNewSiteForm()
-        
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    deinit {
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     // MARK: - Table view data source
@@ -131,6 +108,22 @@ class SiteListTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
         accessoryIndexPath = indexPath
+    }
+    
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+        return NSLocalizedString(Constants.LocalizedString.tableViewCellRemove, value:"Remove", comment: "Remove item in table")
+    }
+    
+    override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
+        var cell = tableView.cellForRowAtIndexPath(indexPath)
+        cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
+        let highlightView = UIView()
+        highlightView.backgroundColor = NSAssetKit.darkNavColor
+        cell?.selectedBackgroundView = highlightView
+    }
+    
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return .LightContent
     }
     
     // MARK: - Navigation
@@ -191,6 +184,9 @@ class SiteListTableViewController: UITableViewController {
     }
     
     // MARK: Actions
+    @IBAction func refreshTable() {
+        updateData()
+    }
     
     @IBAction func unwindToSiteList(sender: UIStoryboardSegue) {
         
@@ -202,7 +198,7 @@ class SiteListTableViewController: UITableViewController {
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
-                // Add a new meal.
+                // Add a new site.
                 let newIndexPath = NSIndexPath(forRow: sites.count, inSection: 0)
                 
                 sites.append(site)
@@ -224,7 +220,28 @@ class SiteListTableViewController: UITableViewController {
     }
     
     // MARK: Private Methods
-    
+    func configureView() -> Void {
+        
+        // The following line displys an Edit button in the navigation bar for this view controller.
+        navigationItem.leftBarButtonItem = self.editButtonItem()
+        
+        // Set table view's background view property
+        tableView.backgroundView = TableViewBackgroundView()
+        tableView.separatorColor = NSAssetKit.darkNavColor
+        tableView.rowHeight = 200
+        
+        // Position refresh control above background view
+        refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
+        refreshControl?.tintColor = UIColor.whiteColor()
+        
+        // Load any saved meals, otherwise load sample data.
+        if let savedSites = loadSites() {
+            sites += savedSites
+        }
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+    }
+
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
         
         let site = sites[indexPath.row]
@@ -233,13 +250,13 @@ class SiteListTableViewController: UITableViewController {
         
         if let configuration = site.configuration {
             
-            cell.siteName.text = configuration.customTitle
+            cell.siteName.text = configuration.defaults?.customTitle
             
             if let watch = site.watchEntry {
                 
                 cell.siteBatteryLevel.text = watch.batteryString
                 cell.siteTimeAgo.text = watch.dateTimeAgoString
-                cell.compassControl.configureWithObject(site)
+                cell.compassControl.configureWith(site)
                 
                 if let sgvValue = watch.sgv {
                     
@@ -251,7 +268,7 @@ class SiteListTableViewController: UITableViewController {
                     }
                     
                     let timeAgo = watch.date.timeIntervalSinceNow
-                    if timeAgo < -(60*10) {
+                    if timeAgo < -Constants.NotableTime.StaleDataTimeFrame {
                         cell.compassControl.alpha = 0.5
                         cell.compassControl.color = NSAssetKit.predefinedNeutralColor
                         cell.compassControl.sgvText = "---"
@@ -259,17 +276,25 @@ class SiteListTableViewController: UITableViewController {
                         cell.siteBatteryLevel.text = "---"
                         cell.siteRaw.text = "--- : ---"
                         cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
-                        
+                        cell.compassControl.direction = .None
                     }
                 }
                 
             } else {
                 // No watch was there...
+                println("No watch data was found...")
                 return
             }
         } else {
-            // No configuration was there... go get some.
-            loadUpData(site, index: indexPath.row)
+            
+            println("No site configuration was found...")
+            // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
+            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil) {
+                // No configuration was there... go get some.
+                println("Attempting to get configuration data from site...")
+                
+                loadUpData(site, index: indexPath.row)
+            }
             return
         }
     }
@@ -277,12 +302,9 @@ class SiteListTableViewController: UITableViewController {
     func shouldIShowNewSiteForm() {
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
-            //            let identifier = UIStoryboardSegue.SegueIdentifier.AddNewWhenEmpty.rawValue
-            //            self.performSegueWithIdentifier(identifier, sender: self)
             let vc = storyboard?.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
-            
             self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
-                
+                println("Finished presenting SiteFormViewController.")
             })
             
         }
@@ -291,7 +313,7 @@ class SiteListTableViewController: UITableViewController {
     // MARK: Fetch data via REST API
     
     func updateData(){
-        print("Refresing all data")
+        println("Refreshing all data in Site Array")
         for site in sites {
             loadUpData(site, index: find(sites, site)!)
         }
@@ -306,22 +328,31 @@ class SiteListTableViewController: UITableViewController {
         //TODO:// 3. Probably need to move this code to the application delegate?
         
         // Get settings for a given site.
-        nsApi.fetchServerConfigurationData({ (configuration, errorCode) -> Void in
-            nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
-                // Get back on the main queue to update the user interface
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    site.configuration = configuration
-                    site.watchEntry = watchEntry
-                    //                    self.sites[index] = site
-                    self.lastUpdatedTime = NSDate()
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    
-                    if (self.refreshControl?.refreshing != nil) {
-                        self.refreshControl?.endRefreshing()
-                    }
+        
+        nsApi.fetchServerConfiguration { (result) -> Void in
+            switch (result) {
+            case let .Error(error):
+                // display error message
+                println("test")
+            case let .Value(boxedConfiguration):
+                let configuration:ServerConfiguration = boxedConfiguration.value
+                // do something with user
+                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
+                    // Get back on the main queue to update the user interface
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        site.configuration = configuration
+                        site.watchEntry = watchEntry
+                        self.lastUpdatedTime = NSDate()
+                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                        
+                        if (self.refreshControl?.refreshing != nil) {
+                            self.refreshControl?.endRefreshing()
+                        }
+                    })
                 })
-            })
-        })
+                
+            }
+        }
     }
     
     // MARK: NSCoding
@@ -329,10 +360,9 @@ class SiteListTableViewController: UITableViewController {
     func saveSites() -> Void {
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sites, toFile: Site.ArchiveURL.path!)
         if !isSuccessfulSave {
-            print("Failed to save sites...")
+            println("Failed to save sites...")
         }
         shouldIShowNewSiteForm()
-        
     }
     
     func loadSites() -> [Site]? {

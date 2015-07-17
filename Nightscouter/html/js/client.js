@@ -1,4 +1,4 @@
-var padding = { top: 20, right: 0, bottom: 10, left: 0 },
+var padding = { top: 1, right: 10, bottom: 10, left: 1 },
     data = [],
     dateFn = function (d) { return new Date(d.date) },
     xScale, yScale,

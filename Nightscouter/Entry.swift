@@ -10,10 +10,12 @@ import UIKit
 
 // TODO:// Clean these up.
 
-public enum Direction : String {
+public enum Direction : String, Printable {
     case None = "None", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange"
+
+    static let allValues = [None, DoubleUp, SingleUp, FortyFiveUp, Flat, FortyFiveDown, SingleDown, DoubleDown, NotComputable, RateOutOfRange]
     
-    var description : String {
+    public var description : String {
         get {
             switch(self) {
                 // Use Internationalization, as appropriate.
@@ -66,7 +68,7 @@ public enum Direction : String {
 
 enum Noise : Int, Printable {
     
-    case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4, OtherHeavy = 5
+    case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
     
     var description: String {
         switch (self) {
@@ -75,7 +77,7 @@ enum Noise : Int, Printable {
         case .Light: return "Light"
         case .Medium: return "Medium"
         case .Heavy: return "Heavy"
-        case .OtherHeavy: return "~~~"
+        default: return "~~~"
         }
     }
 }
@@ -133,7 +135,7 @@ struct SensorGlucoseValue {
                     return "?AD"
                 case .PowerDeviation:
                     return "?PD"
-                case .RF:
+                case .BadRF:
                     return "?RF✖"
                 case .HupHolland:
                     return "MH"
@@ -148,7 +150,7 @@ struct SensorGlucoseValue {
 }
 
 enum SpecialSensorGlucoseValues: Int {
-    case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, RF=12, HupHolland=17
+    case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
 }
 
 
@@ -174,6 +176,8 @@ struct EntryPropertyKey {
     static let interceptKey = "intercept"
     static let scaleKey = "scale"
     static let rssiKey = "rssi"
+    static let identKey = "_id"
+    static let deviceKey = "device"
 }
 
 
@@ -251,6 +255,14 @@ extension Entry {
         
         var typed: TypedString?
         
+        if let identifier = dict[EntryPropertyKey.identKey] as? String {
+            idString = identifier
+        }
+       
+        if let deviceString = dict[EntryPropertyKey.deviceKey] as? String {
+            device = deviceString
+        }
+        
         if let rawEpoch = dict[EntryPropertyKey.dateKey] as? Double {
             date = rawEpoch.toDateUsingSeconds() // NSDate(timeIntervalSince1970: rawEpoch/1000)// TODO://Link up with other extension.
             
@@ -266,6 +278,7 @@ extension Entry {
                                         if let unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int {
                                             if let rssi = dict[EntryPropertyKey.rssiKey] as? Int {
                                                 if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int {
+                                                    
                                                     if let noise = Noise(rawValue: noiseInt) {
                                                         let sgvValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
                                                         //                                                        type = Type.sgv(sgvValue)
