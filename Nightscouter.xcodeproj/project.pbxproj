@@ -15,7 +15,7 @@
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
 		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
 		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
-		17336D551B42F81B0063FB70 /* Strings.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Strings.strings */; };
+		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		173454491B30740A00931278 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173454481B30740A00931278 /* Site.swift */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734544D1B308DF100931278 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544C1B308DF100931278 /* Entry.swift */; };
@@ -56,7 +56,7 @@
 		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
 		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
 		171FD6261B32685100E7C471 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Scratchpad.playground; path = Nightscouter/Scratchpad.playground; sourceTree = "<group>"; };
-		17336D541B42F81B0063FB70 /* Strings.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Strings.strings; sourceTree = "<group>"; };
+		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		173454481B30740A00931278 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		1734544C1B308DF100931278 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entry.swift; sourceTree = "<group>"; };
@@ -201,7 +201,7 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				17336D541B42F81B0063FB70 /* Strings.strings */,
+				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
 				1739B1BD1B31141000C22762 /* html */,
 				17C95CAD1B40AD0B0035922A /* Assets.xcassets */,
@@ -297,7 +297,7 @@
 				1739B1BE1B31141000C22762 /* html in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
-				17336D551B42F81B0063FB70 /* Strings.strings in Resources */,
+				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

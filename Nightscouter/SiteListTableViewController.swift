@@ -27,7 +27,9 @@ class SiteListTableViewController: UITableViewController {
             dateFormatter.timeZone = NSTimeZone.localTimeZone()
             
             if let date = lastUpdatedTime {
-                self.refreshControl!.attributedTitle = NSAttributedString(string:NSLocalizedString(Constants.LocalizedString.lastUpdatedDateLabel, value: "Updated on: \(dateFormatter.stringFromDate(date))", comment: "String shown for last update."), attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+                let str = String(stringInterpolation:Constants.LocalizedString.lastUpdatedDateLabel.localized, dateFormatter.stringFromDate(date))
+                
+                self.refreshControl!.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
             }
         }
     }
@@ -111,7 +113,7 @@ class SiteListTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
-        return NSLocalizedString(Constants.LocalizedString.tableViewCellRemove, value:"Remove", comment: "Remove item in table.")
+        return Constants.LocalizedString.tableViewCellRemove.localized
     }
     
     override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
@@ -281,6 +283,9 @@ class SiteListTableViewController: UITableViewController {
                         cell.siteRaw.text = "--- : ---"
                         cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
                         cell.compassControl.direction = .None
+                    } else {
+                        cell.compassControl.alpha = 1.0
+
                     }
                 }
                 

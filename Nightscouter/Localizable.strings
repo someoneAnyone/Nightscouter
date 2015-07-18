@@ -1,0 +1,12 @@
+/* 
+  Strings.strings
+  Nightscouter
+
+  Created by Peter Ina on 6/30/15.
+  Copyright (c) 2015 Peter Ina. All rights reserved.
+*/
+
+"tableViewCellRemove" = "Remove";
+"batteryLabel" = "battery"; // not implemented.
+"rawLabel" = "raw";
+"lastUpdatedDateLabel" = "Updated on: ";

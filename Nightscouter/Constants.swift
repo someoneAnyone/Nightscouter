@@ -36,7 +36,16 @@ struct Constants {
         static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
         static let batteryLabel = "batteryLabel" // not implemented.
         static let rawLabel = "rawLabel" // not implemented.
-        static let lastUpdatedDateLabel = "lastUpdatedDateLabel" // not implemented.
+        static let lastUpdatedDateLabel = "lastUpdatedDateLabel"
         static let lastReadingLabel = "lastReadingLabel" // not implemented.
+    }
+}
+
+extension String {
+    var localized: String {
+        return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: "")
+    }
+    func localizedWithComment(comment:String) -> String {
+        return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: comment)
     }
 }
