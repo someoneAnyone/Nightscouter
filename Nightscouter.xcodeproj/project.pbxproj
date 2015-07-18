@@ -34,6 +34,8 @@
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		177C20541B56E6460092753B /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C20531B56E6460092753B /* Int+Extensions.swift */; };
+		17B1E57D1B5A89EF0093BC72 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 17B1E57C1B5A89EF0093BC72 /* README.md */; };
+		17B1E57F1B5A89FD0093BC72 /* NightscouterAssets.pcvd in Resources */ = {isa = PBXBuildFile; fileRef = 17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
@@ -75,6 +77,8 @@
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		177C20531B56E6460092753B /* Int+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
+		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterAssets.pcvd; sourceTree = SOURCE_ROOT; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
 		17C95CAF1B40AD0B0035922A /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
@@ -99,8 +103,8 @@
 		170825DA1B2CBABA00304F8F = {
 			isa = PBXGroup;
 			children = (
+				17B1E57C1B5A89EF0093BC72 /* README.md */,
 				170825E51B2CBABB00304F8F /* Nightscouter */,
-				179CD46B1B326AD300957412 /* Playgrounds */,
 				170825E41B2CBABB00304F8F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -116,12 +120,13 @@
 		170825E51B2CBABB00304F8F /* Nightscouter */ = {
 			isa = PBXGroup;
 			children = (
-				170825F21B2CBABB00304F8F /* Info.plist */,
 				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
+				170825F21B2CBABB00304F8F /* Info.plist */,
+				179CD46B1B326AD300957412 /* Playgrounds */,
 				1734545B1B30A11000931278 /* API */,
-				1739B1BC1B3113B500C22762 /* Resources */,
 				173454541B308F0C00931278 /* Categories */,
 				173454561B308F2300931278 /* Models */,
+				1739B1BC1B3113B500C22762 /* Resources */,
 				173454551B308F1700931278 /* ViewControllers */,
 				17D5A69E1B30EBDB0043C0D1 /* Views */,
 			);
@@ -203,6 +208,7 @@
 			children = (
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
+				17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */,
 				1739B1BD1B31141000C22762 /* html */,
 				17C95CAD1B40AD0B0035922A /* Assets.xcassets */,
 			);
@@ -215,6 +221,7 @@
 				171FD6261B32685100E7C471 /* Scratchpad.playground */,
 			);
 			name = Playgrounds;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		17D5A69E1B30EBDB0043C0D1 /* Views */ = {
@@ -295,6 +302,7 @@
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
 				171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
+				17B1E57F1B5A89FD0093BC72 /* NightscouterAssets.pcvd in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
@@ -320,6 +328,7 @@
 				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
 				17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */,
 				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
+				17B1E57D1B5A89EF0093BC72 /* README.md in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
