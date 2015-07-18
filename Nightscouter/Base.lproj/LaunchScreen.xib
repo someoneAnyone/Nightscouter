@@ -21,7 +21,7 @@
                     <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="133" placeholderIntrinsicHeight="173" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
                     <rect key="frame" x="173" y="32" width="133" height="173"/>
                 </imageView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This application is not to be used for the treatment of diabetes. Please use this as an informational tool only." textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="K0i-0c-3AB">
