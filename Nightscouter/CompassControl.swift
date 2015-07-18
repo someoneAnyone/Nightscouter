@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 public class CompassControl: UIView {
     
-    @IBInspectable var sgvText:String = "" {
+    @IBInspectable var sgvText:String = "---" {
         didSet{
             setNeedsDisplay()
         }
@@ -28,7 +28,7 @@ public class CompassControl: UIView {
     }
     
     var animationValue: CGFloat = 0
-    @IBInspectable var delta: String = "" {
+    @IBInspectable var delta: String = "- --/--" {
         didSet{
             setNeedsDisplay()
         }
@@ -69,7 +69,8 @@ public extension CompassControl {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = UIColor.clearColor()
-
+  
+        resetView()
         setNeedsDisplay()
     }
     
@@ -88,13 +89,11 @@ public extension CompassControl {
 
 // MARK: - Methods
 public extension CompassControl {
-    
     func configireDrawRect( isDoubleUp:Bool = false, isArrowVisible:Bool = true, isUncomputable:Bool = false, angle:CGFloat?=0, sgvText:String?=nil ){
         self.isDoubleUp = isDoubleUp
         self.isArrowVisible = isArrowVisible
         self.isUncomputable = isUncomputable
         
-
         self.angle = angle!
         if (sgvText != nil) {
             self.sgvText = sgvText!
@@ -107,6 +106,13 @@ public extension CompassControl {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
+    }
+    
+    func resetView() {
+//        self.sgvText = "---"
+//        self.delta = "- --/--"
+        
+        setNeedsDisplay()
     }
 }
 
