@@ -34,8 +34,6 @@
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		177C20541B56E6460092753B /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C20531B56E6460092753B /* Int+Extensions.swift */; };
-		17B1E57D1B5A89EF0093BC72 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 17B1E57C1B5A89EF0093BC72 /* README.md */; };
-		17B1E57F1B5A89FD0093BC72 /* NightscouterAssets.pcvd in Resources */ = {isa = PBXBuildFile; fileRef = 17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
@@ -302,7 +300,6 @@
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
 				171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
-				17B1E57F1B5A89FD0093BC72 /* NightscouterAssets.pcvd in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
@@ -328,7 +325,6 @@
 				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
 				17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */,
 				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
-				17B1E57D1B5A89EF0093BC72 /* README.md in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
