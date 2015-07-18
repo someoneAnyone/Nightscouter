@@ -10,7 +10,6 @@ import UIKit
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
-    @IBOutlet weak var viewForWebContent: UIView?
     @IBOutlet weak var compassControl: CompassControl?
     @IBOutlet weak var lastReadingLabel: UILabel?
     @IBOutlet weak var rawReadingLabel: UILabel?
