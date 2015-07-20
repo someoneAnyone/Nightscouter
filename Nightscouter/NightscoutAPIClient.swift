@@ -10,7 +10,6 @@ import Foundation
 
 /*:
 Create protocol for setting base URL, API Token, etc...
-TODO:// Create methods for getting settings.
 */
 
 let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
@@ -96,23 +95,6 @@ extension NightscoutAPIClient {
             }
         })
     }
-    /*
-    func fetchServerConfigurationData(completetion:(configuration: ServerConfiguration?, errorCode: NightscoutAPIError) -> Void) {
-        let settingsUrl = self.urlForStatus
-        self.fetchJSONWithURL(settingsUrl, completetion: { (result, errorCode) -> Void in
-            if let settingsDictionary = result as? JSONDictionary {
-                let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
-                completetion(configuration: settingObject, errorCode: errorCode)
-            } else {
-                completetion(configuration: nil, errorCode: errorCode)
-                
-            }
-        })
-    }
-
-    */
-    
-  
 }
 
 // MARK: - Convenience Methods
