@@ -28,7 +28,6 @@ class SiteListTableViewController: UITableViewController {
             
             if let date = lastUpdatedTime {
                 let str = String(stringInterpolation:Constants.LocalizedString.lastUpdatedDateLabel.localized, dateFormatter.stringFromDate(date))
-                
                 self.refreshControl!.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
             }
         }
@@ -68,7 +67,7 @@ class SiteListTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellIdentifier = "siteCell"
+        let cellIdentifier = Constants.CellIdentifiers.SiteTableViewStyle
         
         // Configure the cell...
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SiteTableViewCell
@@ -243,7 +242,7 @@ class SiteListTableViewController: UITableViewController {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
     }
-
+    
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
         
         let site = sites[indexPath.row]
@@ -269,8 +268,18 @@ class SiteListTableViewController: UITableViewController {
                     let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
                     cell.siteColorBlock.backgroundColor = color
                     
-                    if let rawValue = watch.raw {
-                        cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
+                    
+                    if let enabledOptions = configuration.enabledOptions {
+                        
+                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                        if rawEnabled {
+                            if let rawValue = watch.raw {
+                                cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
+                            }
+                        } else {
+                            cell.rawHeader.removeFromSuperview()
+                            cell.siteRaw.removeFromSuperview()
+                        }
                     }
                     
                     let timeAgo = watch.date.timeIntervalSinceNow
@@ -285,7 +294,7 @@ class SiteListTableViewController: UITableViewController {
                         cell.compassControl.direction = .None
                     } else {
                         cell.compassControl.alpha = 1.0
-
+                        
                     }
                 }
                 

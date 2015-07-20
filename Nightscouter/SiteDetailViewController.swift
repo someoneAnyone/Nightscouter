@@ -10,6 +10,11 @@ import UIKit
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
+    
+    @IBOutlet weak var lastReadingHeader: UILabel?
+    @IBOutlet weak var batteryHeader: UILabel?
+    @IBOutlet weak var rawHeader: UILabel?
+
     @IBOutlet weak var compassControl: CompassControl?
     @IBOutlet weak var lastReadingLabel: UILabel?
     @IBOutlet weak var rawReadingLabel: UILabel?
@@ -39,9 +44,17 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         // navigationController?.hidesBarsOnTap = true
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+        println(parentViewController)
+
+        // remove any uneeded decorations from this view if contained within a UI page view controller
+        if let pageViewController = parentViewController as? UIPageViewController {
+            println("contained in UIPageViewController")
+            self.view.backgroundColor = UIColor.clearColor()
+        }
         
         lebeoufIt()
     }
+    
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -112,6 +125,14 @@ extension SiteDetailViewController {
                         self.navigationItem.title = defaults.customTitle
                         self.titleLabel?.text = defaults.customTitle
                         self.updateData()
+                        
+                        if let enabledOptions = configuration.enabledOptions {
+                            let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                            if !rawEnabled {
+                                self.rawHeader!.removeFromSuperview()
+                                self.rawReadingLabel!.removeFromSuperview()
+                            }
+                        }
                         self.view.setNeedsDisplay()
                     }
                     
