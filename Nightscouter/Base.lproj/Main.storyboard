@@ -537,8 +537,11 @@
                     <navigationItem key="navigationItem" title="Loading..." id="KxS-n8-bsf"/>
                     <connections>
                         <outlet property="activityView" destination="VCK-LB-chS" id="wqJ-Tb-UmT"/>
+                        <outlet property="batteryHeader" destination="0no-ma-76y" id="pVn-3R-NIa"/>
                         <outlet property="compassControl" destination="ebb-7r-y9k" id="JHe-M0-bDV"/>
+                        <outlet property="lastReadingHeader" destination="7oG-3b-u34" id="OBC-j2-mkv"/>
                         <outlet property="lastReadingLabel" destination="wGx-kU-ou7" id="NQU-PX-GX1"/>
+                        <outlet property="rawHeader" destination="Prp-ZU-51q" id="kHx-oW-z6a"/>
                         <outlet property="rawReadingLabel" destination="t35-qs-Wix" id="E0j-C3-wOc"/>
                         <outlet property="titleLabel" destination="6OL-z6-YTY" id="ABi-qh-XW2"/>
                         <outlet property="uploaderBatteryLabel" destination="pep-C1-XZA" id="tBQ-Z8-wJq"/>
