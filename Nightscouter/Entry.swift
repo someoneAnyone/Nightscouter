@@ -73,12 +73,11 @@ enum Noise : Int, Printable {
     case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
     var description: String {
         switch (self) {
-        case .None: return "~~~"
+        case .None: return "---"
         case .Clean: return "Clean"
         case .Light: return "Light"
         case .Medium: return "Medium"
         case .Heavy: return "Heavy"
-//        default: return .None
         }
     }
 }
