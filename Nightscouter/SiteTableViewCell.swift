@@ -10,6 +10,9 @@ import UIKit
 
 class SiteTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var lastReadingHeader: UILabel!
+    @IBOutlet weak var batteryHeader: UILabel!
+    @IBOutlet weak var rawHeader: UILabel!
     @IBOutlet weak var siteName: UILabel!
     @IBOutlet weak var siteBatteryLevel: UILabel!
     @IBOutlet weak var siteRaw: UILabel!
@@ -29,6 +32,13 @@ class SiteTableViewCell: UITableViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-//        compassControl.configireDrawRect(isDoubleUp: false, isArrowVisible: false, isUncomputable: false, angle: 0, sgvText: "---")
+        siteName.text = ""
+        siteBatteryLevel.text = ""
+        siteRaw.text = ""
+        siteTimeAgo.text = ""
+        siteColorBlock.backgroundColor = nil
+        compassControl.configireDrawRect(isDoubleUp: false, isArrowVisible: false, isUncomputable: false, angle: 0, sgvText: "---")
+        compassControl.delta = "-- --/--"
+        siteURL.text = ""
     }
 }
