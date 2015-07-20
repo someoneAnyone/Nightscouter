@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 
-import UIKit
+import Foundation
+
+let NightscoutModelErrorDomain: String = "com.nightscout.nightscouter.models.entry"
+
 
 // TODO:// Clean these up.
 
@@ -67,17 +70,15 @@ public enum Direction : String, Printable {
 }
 
 enum Noise : Int, Printable {
-    
     case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
-    
     var description: String {
         switch (self) {
-        case .None: return "---"
+        case .None: return "~~~"
         case .Clean: return "Clean"
         case .Light: return "Light"
         case .Medium: return "Medium"
         case .Heavy: return "Heavy"
-        default: return "~~~"
+//        default: return .None
         }
     }
 }
@@ -89,13 +90,14 @@ enum TypedString: String {
     case serverforecast = "server-forecast"
 }
 
+/*
 enum Type {
     case sgv(SensorGlucoseValue)
     case cal(Calibration)
     case mbg(MeterBloodGlucose)
     case unknown(String)
 }
-
+*/
 
 
 // type = cal
@@ -114,10 +116,15 @@ struct SensorGlucoseValue {
     let unfiltered: Int
     let rssi: Int
     let noise: Noise
-    var sgvString: String {
+    
+    enum ReservedValues: Int {
+        case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
+    }
+
+    var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
             if sgv < 39 {
-                let special:SpecialSensorGlucoseValues = SpecialSensorGlucoseValues(rawValue: sgv)!
+                let special:ReservedValues = ReservedValues(rawValue: sgv)!
                 switch (special) {
                 case .NoGlucose:
                     return "?NG"
@@ -149,16 +156,10 @@ struct SensorGlucoseValue {
     }
 }
 
-enum SpecialSensorGlucoseValues: Int {
-    case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
-}
-
-
 // type = mgb
 struct MeterBloodGlucose {
     let mbg: Int
 }
-
 
 struct EntryPropertyKey {
     static let typeKey = "type"
@@ -194,7 +195,7 @@ class Entry: NSObject {
     var sgv: SensorGlucoseValue?
     var cal: Calibration?
     var mbg: MeterBloodGlucose?
-    //    var type: Type
+    // var type: Type
     
     var raw: Double?
     var type: TypedString?
@@ -204,8 +205,8 @@ class Entry: NSObject {
             let entry: Entry = self
             
             var color: String = "white"
-            let type: TypedString = entry.type!
-            switch(type)
+            let typeString: TypedString = entry.type!
+            switch(typeString)
             {
             case .sgv:
                 color = "grey"
@@ -234,7 +235,7 @@ class Entry: NSObject {
         self.idString = identifier
         self.date = date
         self.device = device
-        //        self.type = type
+        // self.type = type
     }
     
 }
@@ -247,7 +248,7 @@ extension Entry {
         var idString: String = ""
         var date: NSDate = NSDate()
         var device: String = ""
-        //        var type: Type = Type.unknown("Not Set Yet")
+        // var type: Type = Type.unknown("Not Set Yet")
         
         var sgvItem: SensorGlucoseValue?
         var calItem: Calibration?
@@ -264,8 +265,7 @@ extension Entry {
         }
         
         if let rawEpoch = dict[EntryPropertyKey.dateKey] as? Double {
-            date = rawEpoch.toDateUsingSeconds() // NSDate(timeIntervalSince1970: rawEpoch/1000)// TODO://Link up with other extension.
-            
+            date = rawEpoch.toDateUsingSeconds()
             if let stringForType = dict[EntryPropertyKey.typeKey] as? String {
                 if let typedString: TypedString = TypedString(rawValue: stringForType) {
                     typed = typedString
@@ -278,10 +278,9 @@ extension Entry {
                                         if let unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int {
                                             if let rssi = dict[EntryPropertyKey.rssiKey] as? Int {
                                                 if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int {
-                                                    
                                                     if let noise = Noise(rawValue: noiseInt) {
                                                         let sgvValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
-                                                        //                                                        type = Type.sgv(sgvValue)
+                                                        // type = Type.sgv(sgvValue)
                                                         sgvItem = sgvValue
                                                     }
                                                 }
@@ -295,7 +294,7 @@ extension Entry {
                     case .mbg:
                         if let mbg = dict[EntryPropertyKey.mgbKey] as? Int {
                             let meter = MeterBloodGlucose(mbg: mbg)
-                            //                            type = Type.mbg(meter)
+                            // type = Type.mbg(meter)
                             meterItem = meter
                         }
                         
@@ -304,20 +303,19 @@ extension Entry {
                             if let intercept = dict[EntryPropertyKey.interceptKey] as? Double {
                                 if let scale = dict[EntryPropertyKey.scaleKey] as? Double {
                                     let calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
-                                    //                                    type = Type.cal(calValue)
+                                    // type = Type.cal(calValue)
                                     calItem = calValue
                                 }
                             }
                         }
-                        
+
                     default:
-                        println("something else")
+                        let errorString: String = "I have encountered a nightscout recorded type I don't know\ntype:\(typedString)"
+                        println(errorString)
+                        NSError(domain: NightscoutModelErrorDomain, code: -10, userInfo: ["description": errorString])
                     }
                 }
-                
-                
             }
-            
         }
         self.init(identifier: idString, date: date, device:device)//, type: type)
         
@@ -332,8 +330,8 @@ extension Entry {
         }
         
     }
-    
-    
+
+    // TODO:// Is tihs the best it can be? Should it be a cumputed property?
     func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
         
         var raw: Double = 0

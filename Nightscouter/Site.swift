@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 class Site: NSObject, NSCoding {
     

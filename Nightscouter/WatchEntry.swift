@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
 extension EntryPropertyKey {
     static let statusKey = "status"
@@ -46,7 +46,7 @@ extension WatchEntry {
         var now: NSDate = NSDate()
         var date: NSDate = NSDate()
         var device: String = WatchFaceDeviceValue
-        var type: Type = Type.unknown("Not Set Yet")
+//        var type: Type = Type.unknown("Not Set Yet")
         var bgdelta: Int = 0
         var battery: Int = 0
         var sgvItem: SensorGlucoseValue?
