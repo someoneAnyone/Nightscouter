@@ -92,8 +92,9 @@ struct ServerConfiguration: Printable {
     let status: String?
     let apiEnabled: Bool?
     let careportalEnabled: Bool?
-    let enabledOptions: [String:EnabledOptions]?
-    
+//    let enabledOptions: [String:EnabledOptions]?
+
+    let enabledOptions: [EnabledOptions]?
     let defaults: Defaults?
     
     let unitsRoot: Units?
@@ -108,135 +109,8 @@ struct ServerConfiguration: Printable {
         let dict = ["status" : status,"apiEnabled" : apiEnabled?.description]
         
         return dict.description
-//        return "
     }
 }
-
-/*
-extension ServerConfiguration {
-    
-    init(jsonDictionary: [String:AnyObject]) {
-        
-        var alarm_types: String!
-        var apiEnabled: Bool!
-        var careportalEnabled: Bool!
-        var enabledOptions: [String: EnabledOptions]!
-        var head:String!
-        var name: String!
-        var status: String!
-        var units: Units!
-        var version: String!
-        var customTitle: String!
-        var language: String!
-        var nightMode: Bool!
-        var showRawbg: RawBGMode!
-        var theme: String!
-        var timeFormat: Int!
-        var unitsRoot: Units!
-        var thresholds: Threshold!
-        var alrams: Alarm!
-        
-        var dict = jsonDictionary
-        
-        if let statusVar = dict[ConfigurationPropertyKey.statusKey] as? String {
-            status = statusVar
-            
-            if let apiEnabledVar = dict[ConfigurationPropertyKey.apiEnabledKey] as? Bool {
-                apiEnabled = apiEnabledVar
-                
-                if let careportalEnabledVar = dict[ConfigurationPropertyKey.careportalEnabledKey] as? Bool {
-                    careportalEnabled = careportalEnabledVar
-                    
-                    if let unitsRootString = dict[ConfigurationPropertyKey.unitsKey] as? String {
-                        // Convert to a standard unit.
-                        unitsRoot = Units(rawValue: unitsRootString)!
-                        
-                        if let headVar = dict[ConfigurationPropertyKey.headKey] as? String {
-                            head = headVar
-                            
-                            if let versionString = dict[ConfigurationPropertyKey.versionKey] as? String {
-                                version = versionString
-                                
-                                if let alarm_typesVar = dict[ConfigurationPropertyKey.alarm_typesKey] as? String {
-                                    alarm_types = alarm_typesVar
-                                    
-                                    if let nameVar = dict[ConfigurationPropertyKey.nameKey] as? String {
-                                        name = nameVar
-                                        
-                                        if let enabledOptionsVar = dict[ConfigurationPropertyKey.enabledOptionsKey] as? String {
-                                            
-                                            var options = [String: EnabledOptions]()
-                                            for stringItem in enabledOptionsVar.componentsSeparatedByString(" "){
-                                                options[stringItem] = EnabledOptions(rawValue: stringItem)
-                                            }
-                                            enabledOptions = options
-                                            // Defaults object is not always there make sure not to lump other things up with it.
-                                            if let dd = dict[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
-                                                units = Units(rawValue: dd[ConfigurationPropertyKey.unitsKey] as! String)!
-                                                
-                                                timeFormat = (dd[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
-                                                
-                                                nightMode = dd[ConfigurationPropertyKey.nightModeKey] as! Bool
-                                                
-                                                showRawbg = RawBGMode(rawValue: dd[ConfigurationPropertyKey.showRawbgKey] as! String)!
-                                                customTitle = dd[ConfigurationPropertyKey.customTitleKey] as! String
-                                                
-                                                theme = dd[ConfigurationPropertyKey.themeKey] as! String
-                                                
-                                                let aHigh = dd[ConfigurationPropertyKey.alarmHighKey] as! Bool
-                                                let aLow = dd[ConfigurationPropertyKey.alarmLowKey] as! Bool
-                                                let aTAU = dd[ConfigurationPropertyKey.alarmTimeAgoUrgentKey] as! Bool
-                                                let aTAUMin = dd[ConfigurationPropertyKey.alarmTimeAgoUrgentMinsKey] as! Int
-                                                let aTAW = dd[ConfigurationPropertyKey.alarmTimeAgoWarnKey] as! Bool
-                                                let aTAWMin = dd[ConfigurationPropertyKey.alarmTimeAgoWarnMinsKey] as! Int
-                                                let aTUH = dd[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
-                                                let aTUL = dd[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
-                                                
-                                                alrams = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
-                                                
-                                                language = dd[ConfigurationPropertyKey.languageKey] as! String
-                                                
-                                            }
-                                            if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
-                                                let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Int
-                                                let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Int
-                                                let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Int
-                                                let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Int
-                                                thresholds = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        
-        self.thresholds = thresholds
-        self.alrams = alrams
-        self.alarm_types = alarm_types
-        self.apiEnabled = apiEnabled
-        self.careportalEnabled = careportalEnabled
-        self.customTitle = customTitle
-        self.enabledOptions = enabledOptions
-        self.head = head
-        self.language = language
-        self.name = name
-        self.nightMode = nightMode
-        self.showRawbg = showRawbg
-        self.status = status
-        self.theme = theme
-        self.timeFormat = timeFormat
-        self.units = units
-        self.unitsRoot = unitsRoot
-        self.version = version
-    }
-    
-}
-*/
 
 extension ServerConfiguration {
     
@@ -255,13 +129,16 @@ extension ServerConfiguration {
                                 if let alarmTypesString = root[ConfigurationPropertyKey.alarm_typesKey] as? String {
                                     if let nameString = root[ConfigurationPropertyKey.nameKey] as? String {
                                         
-                                        var options = [String: EnabledOptions]()
+//                                        var options = [String: EnabledOptions]()
+                                        var options = [EnabledOptions]()
                                         if let enabledOptionsString = root[ConfigurationPropertyKey.enabledOptionsKey] as? String {
                                             for stringItem in enabledOptionsString.componentsSeparatedByString(" "){
-                                                options[stringItem] = EnabledOptions(rawValue: stringItem)
+//                                                options[stringItem] = EnabledOptions(rawValue: stringItem)
+                                                if let item = EnabledOptions(rawValue: stringItem){
+                                                    options.append(item)
+                                                }
                                             }
                                         }
-                                        
                                         
                                         var defaultsDefaults: Defaults?
                                         if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
