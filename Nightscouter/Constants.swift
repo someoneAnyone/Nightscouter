@@ -8,6 +8,10 @@
 import Foundation
 
 struct Constants {
+    struct CellIdentifiers {
+        static let SiteTableViewStyle = "siteCell"
+    }
+    
     struct StandardTimeFrame {
         static let OneMinuteInSeconds: NSTimeInterval = 60
         static let FiveMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 5
