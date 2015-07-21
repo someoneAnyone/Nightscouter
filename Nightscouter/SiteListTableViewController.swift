@@ -241,6 +241,7 @@ class SiteListTableViewController: UITableViewController {
         }
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+
     }
     
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
@@ -305,7 +306,7 @@ class SiteListTableViewController: UITableViewController {
             }
         } else {
             
-            println("No site configuration was found...")
+            println("No site current configuration was found for \(site.url.absoluteString))")
             // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil) {
                 // No configuration was there... go get some.
@@ -331,7 +332,12 @@ class SiteListTableViewController: UITableViewController {
     // MARK: Fetch data via REST API
     
     func updateData(){
-        println("Refreshing all data in Site Array")
+        if refreshControl?.refreshing == false {
+            refreshControl?.beginRefreshing()
+            tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
+        }
+
+        println("Refreshing all data in [Sites]")
         for site in sites {
             loadUpData(site, index: find(sites, site)!)
         }
