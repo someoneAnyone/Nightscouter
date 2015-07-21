@@ -138,11 +138,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func scheduleLocalNotification(site: Site) {
-        println("scheduleLocalNotification")
+        println("scheduleLocalNotification for site: \(site.url)")
         
         if (site.allowNotifications == false) { return }
         
-
+        // remove old notifications before posting new one.
+        for notification in site.notifications {
+            UIApplication.sharedApplication().cancelLocalNotification(notification)
+        }
+    
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
         dateFor.dateStyle = .ShortStyle
@@ -155,7 +159,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //        localNotification.applicationIconBadgeNumber = 1;
         
         localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: "uuid") as [NSObject : AnyObject]
-        localNotification.alertAction = "View Site"
+//        localNotification.alertAction = "View Site"
         
         if let config = site.configuration {
             if let defaults = config.defaults {
@@ -166,6 +170,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         
         }
+        site.notifications.append(localNotification)
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
     }
     
