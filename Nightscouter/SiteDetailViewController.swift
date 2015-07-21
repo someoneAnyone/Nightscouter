@@ -159,6 +159,8 @@ extension SiteDetailViewController {
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
+
+                        // TODO:// Deprecate this StaleDataTimeFram check and use the alarms when available. Fll back to this whne no alarm for stale data available.
                         if timeAgo < -Constants.NotableTime.StaleDataTimeFrame {
                             self.compassControl?.alpha = 0.5
                             self.compassControl?.color = NSAssetKit.predefinedNeutralColor
