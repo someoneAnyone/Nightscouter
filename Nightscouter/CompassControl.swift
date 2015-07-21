@@ -69,8 +69,9 @@ public extension CompassControl {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = UIColor.clearColor()
-  
-        resetView()
+
+        isAccessibilityElement = true
+
         setNeedsDisplay()
     }
     
@@ -83,6 +84,8 @@ public extension CompassControl {
         } else {
             NSAssetKit.drawWatchFaceOnly(frame: rect, arrowTintColor: self.color, angle: self.angle, isArrowVisible: self.isArrowVisible, doubleUp: self.isDoubleUp)
         }
+        
+        accessibilityHint = "Glucose Value of \(sgvText) with a delta of \(delta), with the following direction \(direction)"
     }
 
 }
@@ -98,6 +101,7 @@ public extension CompassControl {
         if (sgvText != nil) {
             self.sgvText = sgvText!
         }
+        
     }
     
     func takeSnapshot() -> UIImage {
@@ -106,13 +110,6 @@ public extension CompassControl {
         let image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return image
-    }
-    
-    func resetView() {
-//        self.sgvText = "---"
-//        self.delta = "- --/--"
-        
-        setNeedsDisplay()
     }
 }
 
