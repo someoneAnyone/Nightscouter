@@ -248,14 +248,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RAW" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Prp-ZU-51q">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RAW" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Prp-ZU-51q">
                                 <rect key="frame" x="291" y="265" width="19" height="10"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="--- : ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t35-qs-Wix">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="--- : ---" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t35-qs-Wix">
                                 <rect key="frame" x="281" y="279" width="39" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="58" id="isG-cy-gOm"/>
                                 </constraints>
@@ -271,6 +277,9 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ebb-7r-y9k" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
                                 <rect key="frame" x="222" y="62" width="156" height="195"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="160" id="c9I-4D-Iu6"/>
                                     <constraint firstAttribute="height" constant="195" id="cTP-HB-wQy"/>
@@ -296,31 +305,43 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pep-C1-XZA">
+                            <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pep-C1-XZA">
                                 <rect key="frame" x="386" y="166" width="58" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0no-ma-76y">
+                            <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0no-ma-76y">
                                 <rect key="frame" x="386" y="152" width="58" height="10"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7oG-3b-u34">
+                            <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7oG-3b-u34">
                                 <rect key="frame" x="156" y="152" width="58" height="10"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGx-kU-ou7">
+                            <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGx-kU-ou7">
                                 <rect key="frame" x="165" y="166" width="40" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <webView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" scalesPageToFit="YES" allowsInlineMediaPlayback="NO" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" keyboardDisplayRequiresUserAction="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hny-uc-L71">
+                            <webView opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="5" contentMode="scaleAspectFit" scalesPageToFit="YES" allowsInlineMediaPlayback="NO" mediaPlaybackRequiresUserAction="NO" mediaPlaybackAllowsAirPlay="NO" keyboardDisplayRequiresUserAction="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hny-uc-L71">
                                 <rect key="frame" x="5" y="303" width="590" height="297"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -344,8 +365,8 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="VCK-LB-chS">
-                                <rect key="frame" x="282" y="434" width="37" height="37"/>
+                            <activityIndicatorView opaque="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="VCK-LB-chS">
+                                <rect key="frame" x="282" y="433" width="37" height="37"/>
                             </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
@@ -443,23 +464,23 @@
                             <mask key="constraints">
                                 <exclude reference="Gpt-bC-ON3"/>
                                 <exclude reference="nff-bq-L6R"/>
-                                <exclude reference="O8h-2Q-vus"/>
-                                <exclude reference="yGb-Bs-6FP"/>
                                 <exclude reference="11d-e8-58n"/>
                                 <exclude reference="20i-K8-uz1"/>
                                 <exclude reference="4Wp-Gk-LoT"/>
                                 <exclude reference="Erz-6L-DDC"/>
                                 <exclude reference="Ndz-98-AAz"/>
                                 <exclude reference="Wnl-V3-7tB"/>
+                                <exclude reference="O8h-2Q-vus"/>
+                                <exclude reference="yGb-Bs-6FP"/>
+                                <exclude reference="8gn-Gq-e15"/>
+                                <exclude reference="RXO-yt-KXE"/>
+                                <exclude reference="ljG-Zy-A7J"/>
+                                <exclude reference="tCS-P2-jaP"/>
                                 <exclude reference="ao3-1g-rRZ"/>
                                 <exclude reference="bGr-rc-pTk"/>
                                 <exclude reference="jGX-VS-NPg"/>
                                 <exclude reference="kab-me-n4Z"/>
                                 <exclude reference="tjz-HD-TL1"/>
-                                <exclude reference="8gn-Gq-e15"/>
-                                <exclude reference="RXO-yt-KXE"/>
-                                <exclude reference="ljG-Zy-A7J"/>
-                                <exclude reference="tCS-P2-jaP"/>
                                 <exclude reference="9EZ-Ma-JrW"/>
                                 <exclude reference="A3j-D0-SP3"/>
                                 <exclude reference="3Tr-IA-ryY"/>
@@ -478,11 +499,6 @@
                             <mask key="constraints">
                                 <include reference="Gpt-bC-ON3"/>
                                 <include reference="nff-bq-L6R"/>
-                                <exclude reference="Idu-Ky-abf"/>
-                                <include reference="O8h-2Q-vus"/>
-                                <exclude reference="bKM-f8-5YY"/>
-                                <exclude reference="j9B-zi-bcz"/>
-                                <include reference="yGb-Bs-6FP"/>
                                 <include reference="11d-e8-58n"/>
                                 <include reference="20i-K8-uz1"/>
                                 <exclude reference="4Wp-Gk-LoT"/>
@@ -495,6 +511,15 @@
                                 <exclude reference="ctq-WT-yOp"/>
                                 <exclude reference="dKL-tW-Xxz"/>
                                 <exclude reference="q1E-rE-PvP"/>
+                                <exclude reference="Idu-Ky-abf"/>
+                                <include reference="O8h-2Q-vus"/>
+                                <exclude reference="bKM-f8-5YY"/>
+                                <exclude reference="j9B-zi-bcz"/>
+                                <include reference="yGb-Bs-6FP"/>
+                                <exclude reference="RXO-yt-KXE"/>
+                                <include reference="ljG-Zy-A7J"/>
+                                <exclude reference="tCS-P2-jaP"/>
+                                <exclude reference="y3h-JT-Rxu"/>
                                 <exclude reference="1UR-Ze-sTt"/>
                                 <exclude reference="H7i-UB-mpg"/>
                                 <exclude reference="YJF-cm-9rS"/>
@@ -503,10 +528,6 @@
                                 <include reference="jGX-VS-NPg"/>
                                 <exclude reference="kab-me-n4Z"/>
                                 <include reference="tjz-HD-TL1"/>
-                                <exclude reference="RXO-yt-KXE"/>
-                                <include reference="ljG-Zy-A7J"/>
-                                <exclude reference="tCS-P2-jaP"/>
-                                <exclude reference="y3h-JT-Rxu"/>
                                 <include reference="9EZ-Ma-JrW"/>
                                 <include reference="A3j-D0-SP3"/>
                                 <exclude reference="wyv-en-gNb"/>
