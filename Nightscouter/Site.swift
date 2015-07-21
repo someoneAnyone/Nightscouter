@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 class Site: NSObject, NSCoding {
     
@@ -16,7 +16,7 @@ class Site: NSObject, NSCoding {
         static let siteKey = "site"
         static let allowNotificationsKey = "notifications"
         static let uuidKey = "uuid"
-
+        static let notificationKey = "notification"
     }
     
     var url: NSURL!
@@ -24,8 +24,9 @@ class Site: NSObject, NSCoding {
     var configuration: ServerConfiguration?
     var watchEntry: WatchEntry?
     var entries: [Entry]?
-    
+
     var allowNotifications: Bool = true
+    var notifications = [UILocalNotification]()
     
     private(set) var uuid: NSUUID
     
@@ -55,6 +56,8 @@ class Site: NSObject, NSCoding {
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
+        
+        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
     }
     
     /*
@@ -80,5 +83,9 @@ class Site: NSObject, NSCoding {
         self.url = url
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
+        
+        if let notificcationsArray = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
+            self.notifications = notificcationsArray
+        }
     }
 }
