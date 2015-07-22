@@ -5,7 +5,7 @@
 //  Created by Peter Ina on 6/25/15.
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
-
+import Foundation
 import UIKit
 
 class Site: NSObject, NSCoding {
@@ -28,13 +28,13 @@ class Site: NSObject, NSCoding {
     var entries: [Entry]?
     
     var allowNotifications: Bool = true
-    var notifications: [UILocalNotification] = [UILocalNotification]()
+//    var notifications = [UILocalNotification]()
     
     private(set) var uuid: NSUUID
     
     // MARK: Archiving Paths
     static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.siteKey)
+    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("sites")
     
     // MARK: Initialization
     init?(url: NSURL, apiSecret: String?) {

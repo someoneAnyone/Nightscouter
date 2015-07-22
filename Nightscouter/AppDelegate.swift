@@ -143,9 +143,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if (site.allowNotifications == false) { return }
         
         // remove old notifications before posting new one.
-        for notification in site.notifications {
-            UIApplication.sharedApplication().cancelLocalNotification(notification)
-        }
+//        for notification in site.notifications {
+//            UIApplication.sharedApplication().cancelLocalNotification(notification)
+//        }
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
     
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
@@ -170,7 +171,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         
         }
-        site.notifications.append(localNotification)
+//        site.notifications.append(localNotification)
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
     }
     
