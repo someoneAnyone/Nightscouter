@@ -31,7 +31,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="siteCell" editingAccessoryType="detailButton" rowHeight="200" id="fmw-B0-bF1" customClass="SiteTableViewCell" customModule="Nightscouter" customModuleProvider="target">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="siteCell" editingAccessoryType="detailButton" rowHeight="240" id="fmw-B0-bF1" customClass="SiteTableViewCell" customModule="Nightscouter" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="86" width="600" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
@@ -50,14 +50,14 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jIQ-rb-KeY">
-                                            <rect key="frame" x="23" y="59" width="42" height="15"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jIQ-rb-KeY">
+                                            <rect key="frame" x="23" y="59" width="405" height="15"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view clipsSubviews="YES" alpha="0.79999999999999982" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KWx-hb-Jfz">
-                                            <rect key="frame" x="0.0" y="0.0" width="15" height="199"/>
+                                        <view clipsSubviews="YES" alpha="0.79999999999999982" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KWx-hb-Jfz" customClass="ColorBlockView" customModule="Nightscouter" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="15" height="239"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="15" id="Cmu-VW-PjB"/>
@@ -70,10 +70,10 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hvW-MN-sK9" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
-                                            <rect key="frame" x="436" y="35" width="156" height="156"/>
+                                            <rect key="frame" x="436" y="36" width="156" height="195"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="156" id="0Z5-ni-jUz"/>
+                                                <constraint firstAttribute="height" constant="195" id="0Z5-ni-jUz"/>
                                                 <constraint firstAttribute="width" constant="156" id="8jY-in-yun"/>
                                             </constraints>
                                             <userDefinedRuntimeAttributes>
@@ -106,6 +106,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstItem="40m-vl-Yyi" firstAttribute="leading" secondItem="KWx-hb-Jfz" secondAttribute="trailing" constant="8" id="0tB-i2-xKu"/>
                                         <constraint firstItem="FeD-lw-ya8" firstAttribute="top" secondItem="ZPz-cT-pRh" secondAttribute="bottom" constant="8" id="3V5-A9-Foq"/>
@@ -120,15 +121,18 @@
                                         <constraint firstItem="iAe-Lu-fpS" firstAttribute="top" secondItem="8o2-u1-ejJ" secondAttribute="bottom" constant="8" id="NKZ-ve-dDI"/>
                                         <constraint firstItem="FeD-lw-ya8" firstAttribute="leading" secondItem="ZPz-cT-pRh" secondAttribute="leading" id="O87-GZ-qd1"/>
                                         <constraint firstItem="jIQ-rb-KeY" firstAttribute="leading" secondItem="ZPz-cT-pRh" secondAttribute="leading" id="UTi-NB-gX2"/>
+                                        <constraint firstItem="jIQ-rb-KeY" firstAttribute="trailing" secondItem="GfW-8p-Oeh" secondAttribute="trailingMargin" constant="8" id="VaP-Fw-vmP"/>
                                         <constraint firstItem="oOp-dm-VNu" firstAttribute="top" secondItem="ZZR-zg-DRJ" secondAttribute="bottom" constant="8" id="XKk-Ec-59r"/>
                                         <constraint firstItem="jIQ-rb-KeY" firstAttribute="top" secondItem="40m-vl-Yyi" secondAttribute="bottom" constant="3" id="ZLn-va-A6l"/>
                                         <constraint firstItem="40m-vl-Yyi" firstAttribute="leading" secondItem="GfW-8p-Oeh" secondAttribute="leadingMargin" constant="10" id="ZmY-ow-dH7"/>
                                         <constraint firstAttribute="centerY" secondItem="hvW-MN-sK9" secondAttribute="centerY" priority="750" id="cSa-oz-npg"/>
                                         <constraint firstItem="8o2-u1-ejJ" firstAttribute="top" secondItem="FeD-lw-ya8" secondAttribute="bottom" constant="8" id="dfN-Ys-0fM"/>
+                                        <constraint firstItem="hvW-MN-sK9" firstAttribute="leading" secondItem="jIQ-rb-KeY" secondAttribute="trailing" constant="8" id="fQZ-Ln-i2l"/>
                                         <constraint firstItem="ZZR-zg-DRJ" firstAttribute="top" secondItem="iAe-Lu-fpS" secondAttribute="bottom" constant="8" id="fm8-o3-oj1"/>
                                         <constraint firstItem="8o2-u1-ejJ" firstAttribute="leading" secondItem="FeD-lw-ya8" secondAttribute="leading" id="hBj-A3-aZ5"/>
                                         <constraint firstAttribute="trailingMargin" secondItem="hvW-MN-sK9" secondAttribute="trailing" id="hnZ-R5-nnw"/>
                                         <constraint firstAttribute="bottomMargin" secondItem="hvW-MN-sK9" secondAttribute="bottom" id="oOZ-HX-m1M"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="jIQ-rb-KeY" secondAttribute="trailing" constant="8" id="sEM-Ss-Q09"/>
                                         <constraint firstItem="ZPz-cT-pRh" firstAttribute="top" secondItem="jIQ-rb-KeY" secondAttribute="bottom" constant="8" id="uD6-k5-jKZ"/>
                                         <constraint firstItem="hvW-MN-sK9" firstAttribute="leading" secondItem="jIQ-rb-KeY" secondAttribute="trailing" priority="250" constant="10" id="uc9-Ng-ipm"/>
                                         <constraint firstItem="KWx-hb-Jfz" firstAttribute="top" secondItem="GfW-8p-Oeh" secondAttribute="top" id="wHL-t0-EZe"/>
@@ -136,7 +140,11 @@
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="ZmY-ow-dH7"/>
+                                            <exclude reference="VaP-Fw-vmP"/>
+                                            <exclude reference="sEM-Ss-Q09"/>
+                                            <exclude reference="LNv-LO-NKt"/>
                                             <exclude reference="cSa-oz-npg"/>
+                                            <exclude reference="uc9-Ng-ipm"/>
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>

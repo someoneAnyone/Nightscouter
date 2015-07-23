@@ -34,6 +34,7 @@
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		177C20541B56E6460092753B /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C20531B56E6460092753B /* Int+Extensions.swift */; };
+		178C332A1B6176D300E1C734 /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C33291B6176D300E1C734 /* ColorBlockView.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
@@ -76,6 +77,7 @@
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		177C20531B56E6460092753B /* Int+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Int+Extensions.swift"; sourceTree = "<group>"; };
+		178C33291B6176D300E1C734 /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorBlockView.swift; sourceTree = "<group>"; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterAssets.pcvd; sourceTree = SOURCE_ROOT; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -231,6 +233,7 @@
 				1739B1C71B31152C00C22762 /* CompassControl.swift */,
 				1734545E1B30A8A200931278 /* SiteTableViewCell.swift */,
 				17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */,
+				178C33291B6176D300E1C734 /* ColorBlockView.swift */,
 				1739B1BB1B3113AA00C22762 /* Storyboards */,
 			);
 			name = Views;
@@ -333,6 +336,7 @@
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
 				1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */,
+				178C332A1B6176D300E1C734 /* ColorBlockView.swift in Sources */,
 				1734545A1B3090E300931278 /* NightscoutAPIClient.swift in Sources */,
 				17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */,
 				173454511B308E5700931278 /* Constants.swift in Sources */,
