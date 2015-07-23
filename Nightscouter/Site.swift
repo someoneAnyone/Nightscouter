@@ -19,22 +19,23 @@ class Site: NSObject, NSCoding {
         static let notificationKey = "notification"
         static let notificationCountKey = "notificationCount"
         
+        static let sitesKey = "sites.plist"
+
     }
+    
+    // MARK: Archiving Paths
+    static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
     
     var url: NSURL!
     var apiSecret: String?
     var configuration: ServerConfiguration?
     var watchEntry: WatchEntry?
     var entries: [Entry]?
-    
-    var allowNotifications: Bool = true
+    var allowNotifications: Bool = true // Fix this at somepoint.
 //    var notifications = [UILocalNotification]()
     
     private(set) var uuid: NSUUID
-    
-    // MARK: Archiving Paths
-    static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent("sites")
     
     // MARK: Initialization
     init?(url: NSURL, apiSecret: String?) {
@@ -59,8 +60,7 @@ class Site: NSObject, NSCoding {
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
         
-        
-        //        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
+//        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
     }
     
     /*
@@ -86,9 +86,8 @@ class Site: NSObject, NSCoding {
         self.url = url
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
-        //
-        //        let notificcationsArray = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as! [UILocalNotification]
-        //            self.notifications = notificcationsArray
+        
+//        self.notifications = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as! [UILocalNotification]
         
     }
 }

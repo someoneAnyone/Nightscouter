@@ -16,7 +16,11 @@ class SiteListTableViewController: UITableViewController {
     
     let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
-    var sites = [Site]()
+    //    var sites = [Site]()
+    var sites: [Site] {
+        return AppDataManager.sharedInstance.sites
+    }
+    
     var accessoryIndexPath: NSIndexPath?
     
     var lastUpdatedTime: NSDate? {
@@ -80,9 +84,12 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            sites.removeAtIndex(indexPath.row)
-            // Save the meals.
-            saveSites()
+            //            sites.removeAtIndex(indexPath.row)
+            AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
+            
+            // Save the sites.
+            //            saveSites()
+            
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else if editingStyle == .Insert {
             self.editing = false
@@ -94,8 +101,11 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
         // update the item in my data source by first removing at the from index, then inserting at the to index.
         let site = sites[fromIndexPath.row]
-        sites.removeAtIndex(fromIndexPath.row)
-        sites.insert(site, atIndex: toIndexPath.row)
+        //        sites.removeAtIndex(fromIndexPath.row)
+        //        sites.insert(site, atIndex: toIndexPath.row)
+        
+        AppDataManager.sharedInstance.deleteSiteAtIndex(fromIndexPath.row)
+        AppDataManager.sharedInstance.addSite(site, index: toIndexPath.row)
     }
     
     // Override to support conditional rearranging of the table view.
@@ -195,14 +205,18 @@ class SiteListTableViewController: UITableViewController {
             // This segue is triggered when we "save" or "next" out of the url form.
             if let selectedIndexPath = accessoryIndexPath { //tableView.indexPathForSelectedRow {
                 // Update an existing meal.
-                sites[selectedIndexPath.row] = site
+                //                sites[selectedIndexPath.row] = site
+                AppDataManager.sharedInstance.sites[selectedIndexPath.row] = site
+                
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
                 let newIndexPath = NSIndexPath(forRow: sites.count, inSection: 0)
                 
-                sites.append(site)
+                //                sites.append(site)
+                AppDataManager.sharedInstance.addSite(site, index: newIndexPath.row)
+                
                 tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
             }
         }
@@ -212,12 +226,15 @@ class SiteListTableViewController: UITableViewController {
             let modelController = pageViewController.modelController
             let site = modelController.sites[pageViewController.currentIndex]
             
-            sites[pageViewController.currentIndex] = site
+            //            sites[pageViewController.currentIndex] = site
+            AppDataManager.sharedInstance.sites[pageViewController.currentIndex] = site
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: pageViewController.currentIndex, inSection: 0)], withRowAnimation: .None)
         }
         
-        // Save the sites.
-        saveSites()
+//         Save the sites.
+//        saveSites()
+        shouldIShowNewSiteForm()
+
     }
     
     // MARK: Private Methods
@@ -225,6 +242,7 @@ class SiteListTableViewController: UITableViewController {
         
         // The following line displys an Edit button in the navigation bar for this view controller.
         navigationItem.leftBarButtonItem = self.editButtonItem()
+        self.editButtonItem().enabled = !sites.isEmpty
         
         // Set table view's background view property
         tableView.backgroundView = TableViewBackgroundView()
@@ -236,12 +254,12 @@ class SiteListTableViewController: UITableViewController {
         refreshControl?.tintColor = UIColor.whiteColor()
         
         // Load any saved meals, otherwise load sample data.
-        if let savedSites = loadSites() {
-            sites += savedSites
-        }
+        //        if let savedSites = loadSites() {
+        //            sites += savedSites
+        //        }
+        
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
-
     }
     
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
@@ -295,7 +313,6 @@ class SiteListTableViewController: UITableViewController {
                         cell.compassControl.direction = .None
                     } else {
                         cell.compassControl.alpha = 1.0
-                        
                     }
                 }
                 
@@ -306,12 +323,11 @@ class SiteListTableViewController: UITableViewController {
             }
         } else {
             
-            println("No site current configuration was found for \(site.url.absoluteString))")
+            println("No site current configuration was found for \(site.url)")
             // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil) {
+            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
-                println("Attempting to get configuration data from site...")
-                
+                // println("Attempting to get configuration data from site...")
                 loadUpData(site, index: indexPath.row)
             }
             return
@@ -323,23 +339,26 @@ class SiteListTableViewController: UITableViewController {
         if sites.isEmpty{
             let vc = storyboard?.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
             self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
-                println("Finished presenting SiteFormViewController.")
+                // println("Finished presenting SiteFormViewController.")
             })
-            
         }
     }
     
     // MARK: Fetch data via REST API
     
     func updateData(){
-        if refreshControl?.refreshing == false {
-            refreshControl?.beginRefreshing()
-            tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
-        }
-
-        println("Refreshing all data in [Sites]")
-        for site in sites {
-            loadUpData(site, index: find(sites, site)!)
+        // Do not allow refreshing to happen if there is no data in the sites array.
+        if sites.isEmpty == false {
+            if refreshControl?.refreshing == false {
+                refreshControl?.beginRefreshing()
+                tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
+            }
+            for site in sites {
+                loadUpData(site, index: find(sites, site)!)
+            }
+        } else {
+            // No data in the sites array. Cancel the refreshing!
+            refreshControl?.endRefreshing()
         }
     }
     
@@ -352,12 +371,14 @@ class SiteListTableViewController: UITableViewController {
         //TODO:// 3. Probably need to move this code to the application delegate?
         
         // Get settings for a given site.
-        
+        println("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
             switch (result) {
             case let .Error(error):
                 // display error message
-                println("test")
+                #if DEBUG
+                    println("error recieved: \(error)")
+                #endif
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // do something with user
@@ -381,15 +402,18 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: NSCoding
     
-    func saveSites() -> Void {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sites, toFile: Site.ArchiveURL.path!)
-        if !isSuccessfulSave {
-            println("Failed to save sites...")
-        }
-        shouldIShowNewSiteForm()
-    }
+//    func saveSites() -> Void {
+        //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sites, toFile: Site.ArchiveURL.path!)
+        //        if !isSuccessfulSave {
+        //            println("Failed to save sites...")
+        //        }
+//        AppDataManager.sharedInstance.saveAppData()
+//
+//        shouldIShowNewSiteForm()
+//    }
     
-    func loadSites() -> [Site]? {
-        return appDelegate.sites
-    }
+    //    func loadSites() -> [Site]? {
+    //        let sites = NSKeyedUnarchiver.unarchiveObjectWithFile(Site.ArchiveURL.path!) as? [Site]
+    //        return sites
+    //    }
 }

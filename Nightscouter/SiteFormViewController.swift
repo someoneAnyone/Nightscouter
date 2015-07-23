@@ -43,8 +43,9 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             // Do something
             self.urlTextField.becomeFirstResponder()
         })
-        checkValidSiteName()
         
+        nextButton.tintColor = NSAssetKit.darkNavColor
+        checkValidSiteName()
         observeKeyboard()
     }
 
@@ -96,10 +97,6 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         let valid = validateUrl(text)
         
         nextButton.enabled = valid
-        //        print("Evaluating text \(text), which is currently \(valid).")
-        if valid {
-//            navigationItem.title = NSURL(string: text)?.host
-        }
     }
     
     // MARK: Navigation
@@ -109,7 +106,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             let urlString = urlTextField.text ?? ""
             
             if let url = NSURL(string: urlString) {
-                site = Site(url: url, apiSecret: "")
+                site = Site(url: url, apiSecret: nil)
                 
                 // Hide the keyboard
                 urlTextField.resignFirstResponder()
@@ -153,8 +150,6 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         let orientation = UIDevice.currentDevice().orientation
         let isPortrait = UIDeviceOrientationIsPortrait(orientation)
         let height = isPortrait ? keyboardFrame.size.height : keyboardFrame.size.width
-
-        print("The keyboard height is: \(height)")
         
         self.middleLayoutContraint.constant = -(height * 0.1)
         
