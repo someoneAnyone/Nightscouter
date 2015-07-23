@@ -36,6 +36,7 @@ struct Constants {
     
     struct LocalizedString {
         static let tableViewCellRemove = "tableViewCellRemove"
+        static let tableViewCellLoading = "tableViewCellLoading"
         static let localNotificationMessage = "localNotificationMessage" // not implemented.
         static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
         static let batteryLabel = "batteryLabel" // not implemented.

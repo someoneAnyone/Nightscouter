@@ -30,15 +30,17 @@ class SiteTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
     }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
-        siteName.text = ""
-        siteBatteryLevel.text = ""
-        siteRaw.text = ""
-        siteTimeAgo.text = ""
+        siteName.text = nil
+        siteBatteryLevel.text = nil
+        siteRaw.text = nil
+        siteTimeAgo.text = nil
         siteColorBlock.backgroundColor = nil
+        compassControl.color = NSAssetKit.predefinedNeutralColor
         compassControl.configireDrawRect(isDoubleUp: false, isArrowVisible: false, isUncomputable: false, angle: 0, sgvText: "---")
         compassControl.delta = "-- --/--"
-        siteURL.text = ""
+        siteURL.text = Constants.LocalizedString.tableViewCellLoading.localized
     }
 }
