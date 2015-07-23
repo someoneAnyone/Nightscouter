@@ -41,7 +41,9 @@ class NightscoutAPIClient {
     lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
     
     var url: NSURL!
-    
+//    static let sharedInstance = NightscoutAPIClient(url: NSURL())
+
+    /*
     class var sharedClient: NightscoutAPIClient {
         struct Static {
             static var onceToken: dispatch_once_t = 0
@@ -52,7 +54,7 @@ class NightscoutAPIClient {
         }
         return Static.instance!
     }
-    
+    */
     
     /*! Initializes the calss with a Nightscout site URL.
     * \param url This class only needs the base URL to the site. For example, https://nightscout.hostingcompany.com, the class will discover the API. Currently uses veriion 1.
