@@ -14,7 +14,7 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Properties
     
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+//    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     //    var sites = [Site]()
     var sites: [Site] {
@@ -183,8 +183,9 @@ class SiteListTableViewController: UITableViewController {
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPathForCell(selectedSiteCell)!
-                    siteListPageViewController.sites = sites
-                    siteListPageViewController.currentIndex = indexPath.row
+//                    siteListPageViewController.sites = sites
+//                    siteListPageViewController.currentIndex = indexPath.row
+                    AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
                 }
                 
             default:
@@ -247,7 +248,7 @@ class SiteListTableViewController: UITableViewController {
         // Set table view's background view property
         tableView.backgroundView = TableViewBackgroundView()
         tableView.separatorColor = NSAssetKit.darkNavColor
-        tableView.rowHeight = 200
+        tableView.rowHeight = 240
         
         // Position refresh control above background view
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1

@@ -11,8 +11,18 @@ import UIKit
 class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate {
 
     var pageViewController: UIPageViewController?
-    var sites: [Site]?
-    var currentIndex: Int = 0
+    var sites: [Site] {
+        return AppDataManager.sharedInstance.sites
+    }
+
+    var currentIndex: Int {
+        set {
+            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+        }
+        get {
+            return AppDataManager.sharedInstance.currentSiteIndex
+        }
+    }
 
     @IBOutlet weak var goToListButton: UIButton!
     @IBOutlet weak var pageControl: UIPageControl!
@@ -63,7 +73,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         // Return the model controller object, creating it if necessary.
         // In more complex implementations, the model controller may be passed to the view controller.
         if _modelController == nil {
-            _modelController = ModelController(sites: sites!,currentIndex: currentIndex)
+            _modelController = ModelController(sites: sites,currentIndex: currentIndex)
         }
         return _modelController!
     }

@@ -17,8 +17,19 @@ class AppDataManager {
     }
     
     let sitesArrayObjectsKey = "userSites"
+    let currentSiteIndexKey = "currentSiteIndex"
     let defaults = NSUserDefaults.standardUserDefaults()
 
+    var currentSiteIndex: Int {
+        set {
+            defaults.setInteger(newValue, forKey: currentSiteIndexKey)
+            defaults.synchronize()
+        }
+        get {
+            return defaults.integerForKey(currentSiteIndexKey)
+        }
+    }
+    
     class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0

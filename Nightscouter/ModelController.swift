@@ -21,7 +21,11 @@ import UIKit
 class ModelController: NSObject, UIPageViewControllerDataSource {
 
     var sites: [Site]
-    var currentIndex: Int
+    var currentIndex: Int {
+        didSet{
+            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+        }
+    }
     
     init(sites: [Site], currentIndex: Int) {
         self.sites = sites
