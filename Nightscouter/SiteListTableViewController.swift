@@ -14,17 +14,16 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Properties
     
-//    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
-    
-    //    var sites = [Site]()
+    // Computed Property: Grabs the common set of sites from the data manager.
     var sites: [Site] {
         return AppDataManager.sharedInstance.sites
     }
     
-    var accessoryIndexPath: NSIndexPath?
-    
+    // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate? {
         didSet{
+            
+            // Create and use a formatter.
             let dateFormatter = NSDateFormatter()
             dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
             dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
@@ -37,15 +36,22 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
+    // Holds the indexPath of an accessory that was tapped. Used for getting the right Site from the sites array before passing over to the next view.
+    var accessoryIndexPath: NSIndexPath?
+    
     // MARK: View controller lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Common setup.
         configureView()
     }
     
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
+        
+        // Check if we should display a form.
         shouldIShowNewSiteForm()
     }
     
@@ -55,6 +61,7 @@ class SiteListTableViewController: UITableViewController {
     }
     
     deinit {
+        // Remove this class from the observer list. Was listening for a global update timer.
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -84,12 +91,7 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            //            sites.removeAtIndex(indexPath.row)
             AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
-            
-            // Save the sites.
-            //            saveSites()
-            
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else if editingStyle == .Insert {
             self.editing = false
@@ -101,9 +103,6 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
         // update the item in my data source by first removing at the from index, then inserting at the to index.
         let site = sites[fromIndexPath.row]
-        //        sites.removeAtIndex(fromIndexPath.row)
-        //        sites.insert(site, atIndex: toIndexPath.row)
-        
         AppDataManager.sharedInstance.deleteSiteAtIndex(fromIndexPath.row)
         AppDataManager.sharedInstance.addSite(site, index: toIndexPath.row)
     }
@@ -149,7 +148,9 @@ class SiteListTableViewController: UITableViewController {
             switch identifier {
                 
             case .EditSite:
-                print("Editing existing site")
+                #if DEBUG
+                    print("Editing existing site")
+                #endif
                 self.setEditing(false, animated: true)
                 
                 let siteDetailViewController = segue.destinationViewController as! SiteFormViewController
@@ -161,11 +162,15 @@ class SiteListTableViewController: UITableViewController {
                 }
                 
             case .AddNew:
-                print("Adding new site")
+                #if DEBUG
+                    print("Adding new site")
+                #endif
                 self.setEditing(false, animated: true)
                 
             case .AddNewWhenEmpty:
-                print("Adding new site when empty")
+                #if DEBUG
+                    print("Adding new site when empty")
+                #endif
                 self.setEditing(false, animated: true)
                 return
                 
@@ -183,13 +188,13 @@ class SiteListTableViewController: UITableViewController {
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPathForCell(selectedSiteCell)!
-//                    siteListPageViewController.sites = sites
-//                    siteListPageViewController.currentIndex = indexPath.row
                     AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
                 }
                 
             default:
-                print("Unhandled segue idendifier: \(segue.identifier)")
+                #if DEBUG
+                    print("Unhandled segue idendifier: \(segue.identifier)")
+                #endif
             }
         }
         
@@ -204,20 +209,15 @@ class SiteListTableViewController: UITableViewController {
         
         if let sourceViewController = sender.sourceViewController as? SiteFormViewController, site = sourceViewController.site {
             // This segue is triggered when we "save" or "next" out of the url form.
-            if let selectedIndexPath = accessoryIndexPath { //tableView.indexPathForSelectedRow {
-                // Update an existing meal.
-                //                sites[selectedIndexPath.row] = site
+            if let selectedIndexPath = accessoryIndexPath {
+                // Update an existing site.
                 AppDataManager.sharedInstance.sites[selectedIndexPath.row] = site
-                
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
                 let newIndexPath = NSIndexPath(forRow: sites.count, inSection: 0)
-                
-                //                sites.append(site)
                 AppDataManager.sharedInstance.addSite(site, index: newIndexPath.row)
-                
                 tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
             }
         }
@@ -227,15 +227,10 @@ class SiteListTableViewController: UITableViewController {
             let modelController = pageViewController.modelController
             let site = modelController.sites[pageViewController.currentIndex]
             
-            //            sites[pageViewController.currentIndex] = site
             AppDataManager.sharedInstance.sites[pageViewController.currentIndex] = site
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: pageViewController.currentIndex, inSection: 0)], withRowAnimation: .None)
         }
-        
-//         Save the sites.
-//        saveSites()
         shouldIShowNewSiteForm()
-
     }
     
     // MARK: Private Methods
@@ -243,26 +238,25 @@ class SiteListTableViewController: UITableViewController {
         
         // The following line displys an Edit button in the navigation bar for this view controller.
         navigationItem.leftBarButtonItem = self.editButtonItem()
+        // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
         
+        // Configure table view properties.
+        tableView.rowHeight = 240
+        // Position refresh control above background view
+        
         // Set table view's background view property
+        // TODO: Move this out to a theme manager.
         tableView.backgroundView = TableViewBackgroundView()
         tableView.separatorColor = NSAssetKit.darkNavColor
-        tableView.rowHeight = 240
-        
-        // Position refresh control above background view
-        refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         refreshControl?.tintColor = UIColor.whiteColor()
+        refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-        // Load any saved meals, otherwise load sample data.
-        //        if let savedSites = loadSites() {
-        //            sites += savedSites
-        //        }
-        
-        
+        // Listen for global update timer.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
     }
     
+    // For a given cell and index path get the appropriate site object and assign various properties.
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
         
         let site = sites[indexPath.row]
@@ -319,12 +313,16 @@ class SiteListTableViewController: UITableViewController {
                 
             } else {
                 // No watch was there...
-                println("No watch data was found...")
+                #if DEBUG
+                    println("No watch data was found...")
+                #endif
                 return
             }
         } else {
+            #if DEBUG
+                println("No site current configuration was found for \(site.url)")
+            #endif
             
-            println("No site current configuration was found for \(site.url)")
             // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
@@ -377,9 +375,12 @@ class SiteListTableViewController: UITableViewController {
             switch (result) {
             case let .Error(error):
                 // display error message
-                #if DEBUG
-                    println("error recieved: \(error)")
-                #endif
+                
+                println("loadUpData ERROR recieved: \(error)")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.presentAlertDialog(site.url, index: index, error: error)
+                })
+                
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // do something with user
@@ -401,20 +402,34 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
-    // MARK: NSCoding
     
-//    func saveSites() -> Void {
-        //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sites, toFile: Site.ArchiveURL.path!)
-        //        if !isSuccessfulSave {
-        //            println("Failed to save sites...")
-        //        }
-//        AppDataManager.sharedInstance.saveAppData()
-//
-//        shouldIShowNewSiteForm()
-//    }
-    
-    //    func loadSites() -> [Site]? {
-    //        let sites = NSKeyedUnarchiver.unarchiveObjectWithFile(Site.ArchiveURL.path!) as? [Site]
-    //        return sites
-    //    }
+    // Attempt to handle an error.
+    func presentAlertDialog(siteURL:NSURL, index: Int, error: NSError) {
+        
+        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: Constants.LocalizedString.uiAlertBadSiteMessage.localized, siteURL, error.localizedDescription), preferredStyle: .Alert)
+        alertController.view.tintColor = NSAssetKit.darkNavColor
+        
+        let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
+            // ...
+        }
+        alertController.addAction(cancelAction)
+        
+        let editAction = UIAlertAction(title: Constants.LocalizedString.generalEditLabel.localized, style: .Default) { (action) in
+            let tableViewCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0))
+            self.performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
+        }
+        alertController.addAction(editAction)
+        
+        let removeAction = UIAlertAction(title: Constants.LocalizedString.tableViewCellRemove.localized, style: .Destructive) { (action) in
+            self.tableView.beginUpdates()
+            AppDataManager.sharedInstance.deleteSiteAtIndex(index)
+            self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+            self.tableView.endUpdates()
+        }
+        alertController.addAction(removeAction)
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
+        }
+    }
 }
