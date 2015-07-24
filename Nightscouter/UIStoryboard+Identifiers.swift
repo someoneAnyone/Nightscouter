@@ -16,7 +16,11 @@ extension UIStoryboard {
     }
     
     enum StoryboardViewControllerIdentifier: String {
+        case SiteListTableNavigationController = "SiteListTableNavigationController"
+        case SiteListTableViewController = "SiteListTableViewController"
+        case SiteListPageViewController = "SiteListPageViewController"
         case SiteDetailViewController = "SiteDetailViewController"
+        case SiteFormViewNavigationController = "SiteFormViewNavigationController"
         case SiteFormViewController = "SiteFormViewController"
     }
 }

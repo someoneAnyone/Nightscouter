@@ -195,7 +195,7 @@
         <!--Navigation Controller-->
         <scene sceneID="9zm-PE-Z8z">
             <objects>
-                <navigationController storyboardIdentifier="SiteTableViewNavigationController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nAT-HQ-Vfb" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="SiteListTableNavigationController" automaticallyAdjustsScrollViewInsets="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" id="nAT-HQ-Vfb" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="qcT-iw-W9T">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -682,6 +682,6 @@
         <image name="listIcon" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ahu-F9-TDu"/>
+        <segue reference="G7S-TT-kXe"/>
     </inferredMetricsTieBreakers>
 </document>
