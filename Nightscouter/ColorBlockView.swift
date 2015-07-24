@@ -16,8 +16,9 @@ class ColorBlockView: UIView {
     // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect) {
         // Drawing code
-    
-        NSAssetKit.drawColorBlockBackgroundView(arrowTintColor: self.backgroundColor!, backgroundFrame: rect)
+        if let color = self.backgroundColor {
+            NSAssetKit.drawColorBlockBackgroundView(arrowTintColor: color, backgroundFrame: rect)
+        }
     }
 
 
