@@ -17,7 +17,7 @@ class ColorBlockView: UIView {
     override func drawRect(rect: CGRect) {
         // Drawing code
         if let color = self.backgroundColor {
-            NSAssetKit.drawColorBlockBackgroundView(arrowTintColor: color, backgroundFrame: rect)
+//            NSAssetKit.drawColorBlockBackgroundView(arrowTintColor: color, backgroundFrame: rect)
         }
     }
 
