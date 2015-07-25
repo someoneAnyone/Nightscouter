@@ -19,20 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var timer: NSTimer?
     
+    // MARK: AppDelegate Lifecycle
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         println(">>> Entering \(__FUNCTION__) <<<")
         // Override point for customization after application launch.
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        
-        // Load any saved meals, otherwise load sample data.
-        //        if let savedSites = loadSites() {
-        //            sites += savedSites
-        //        } else {
-        //            // Load the sample data.
-        //            loadSampleSites()
-        //        }
-        //
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
         
         themeApp()
@@ -66,7 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidBecomeActive(application: UIApplication) {
         println(">>> Entering \(__FUNCTION__) <<<")
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        
+        application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
+
         updateDataNotification(nil)
     }
     
@@ -77,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         saveSites()
     }
     
+    // MARK: Background Fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println(">>> Entering \(__FUNCTION__) <<<")
         for site in sites {
@@ -103,7 +97,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             completionHandler(.NoData)
                             return
                         } else {
-                            // TODO:// Add some bg threshold checks here.
+                            // TODO: Add some bg threshold checks here.
                             if site.watchEntry?.bgdelta != 0 {
                                 self.scheduleLocalNotification(site)
                             }
@@ -113,8 +107,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     })
                 }
             }
-            
-            
         }
         println("For some reason no one else comleted the request for a background fetch, so I am")
         completionHandler(.Failed)
@@ -128,12 +120,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let uuid = NSUUID(UUIDString: uuidString)
                 let site = sites.filter{ $0.uuid == uuid }.first
                 println("User tapped on notification for site: \(site)")
+                
+                // Need to add code that would launch the approprate view.
             }
         }
-        //        application.applicationIconBadgeNumber = notification.applicationIconBadgeNumber - 1;
     }
     
-    // MARK:// Custom Methods
+    // MARK: Custom Methods
     
     func createUpdateTimer() -> NSTimer {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
@@ -200,7 +193,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     localNotification.alertBody = "As of \(dateFor.stringFromDate(watch.date)), \(defaults.customTitle) saw a BG of \(watch.sgv!.sgvString) with a delta of \(watch.bgdelta.formattedForBGDelta) \(watch.sgv!.direction.description). Uploader battery: \(watch.batteryString)"
                 }
             }
-            
         }
         //        site.notifications.append(localNotification)
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
@@ -218,32 +210,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     // MARK: NSCoding
-    
     func saveSites() -> Void {
-        //        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(sites, toFile: Site.ArchiveURL.path!)
-        //        if !isSuccessfulSave {
-        //            println("Failed to save sites...")
-        //        }
         AppDataManager.sharedInstance.saveAppData()
     }
-    
-    //    func loadSites() -> [Site]? {
-    ////        let sites = NSKeyedUnarchiver.unarchiveObjectWithFile(Site.ArchiveURL.path!) as? [Site]
-    ////        return sites
-    //
-    //        return AppDataManager.sharedInstance.sites
-    //    }
-    //
-    //    func loadSampleSites() -> Void {
-    //        // Create a site URL.
-    //        /*
-    //        let site1URL = NSURL(string: "https://nscgm.herokuapp.com")!
-    //        // Create a site.
-    //        let site1 = Site(url: site1URL, apiSecret: " ")!
-    //        
-    //        // Add it to the site Array
-    //        sites = [site1]
-    //        */
-    //    }
-    
 }
