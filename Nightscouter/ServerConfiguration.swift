@@ -11,6 +11,7 @@ import Foundation
 enum EnabledOptions: String {
     case careportal = "careportal"
     case rawbg = "rawbg"
+//    case rawOn = "rawbg-on"
     case iob = "iob"
 }
 
@@ -25,6 +26,13 @@ enum RawBGMode: String {
     case Noise = "noise"
 }
 
+/*
+enum Device: String {
+    case dexcom = "dexcom"
+    case share2 = "share2"
+}
+*/
+
 struct Threshold {
     let bg_high: Int
     let bg_low: Int
@@ -36,9 +44,9 @@ struct Alarm {
     let alarmHigh: Bool
     let alarmLow: Bool
     let alarmTimeAgoUrgent: Bool
-    let alarmTimeAgoUrgentMins: Int
+    let alarmTimeAgoUrgentMins: NSTimeInterval
     let alarmTimeAgoWarn: Bool
-    let alarmTimeAgoWarnMins: Int
+    let alarmTimeAgoWarnMins: NSTimeInterval
     let alarmUrgentHigh: Bool
     let alarmUrgentLow: Bool
 }
@@ -92,8 +100,6 @@ struct ServerConfiguration: Printable {
     let status: String?
     let apiEnabled: Bool?
     let careportalEnabled: Bool?
-//    let enabledOptions: [String:EnabledOptions]?
-
     let enabledOptions: [EnabledOptions]?
     let defaults: Defaults?
     
@@ -153,9 +159,12 @@ extension ServerConfiguration {
                                             let aHigh = defaultsDictionary[ConfigurationPropertyKey.alarmHighKey] as! Bool
                                             let aLow = defaultsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
                                             let aTAU = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentKey] as! Bool
-                                            let aTAUMin = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentMinsKey] as! Int
+                                            let aTAUMDouble = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentMinsKey] as! Double
+                                            let aTAUMin: NSTimeInterval = aTAUMDouble
+                                            
                                             let aTAW = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnKey] as! Bool
-                                            let aTAWMin = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnMinsKey] as! Int
+                                            let aTAWMDouble = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnMinsKey] as! Double
+                                            let aTAWMin: NSTimeInterval = aTAWMDouble
                                             let aTUH = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
                                             let aTUL = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
                                             
