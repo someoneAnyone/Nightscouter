@@ -205,6 +205,11 @@ class SiteListTableViewController: UITableViewController {
         updateData()
     }
     
+    @IBAction func goToSettings(sender: AnyObject?) {
+        let settingsUrl = NSURL(string: UIApplicationOpenSettingsURLString)
+        UIApplication.sharedApplication().openURL(settingsUrl!)
+    }
+    
     @IBAction func unwindToSiteList(sender: UIStoryboardSegue) {
         
         if let sourceViewController = sender.sourceViewController as? SiteFormViewController, site = sourceViewController.site {
@@ -241,6 +246,8 @@ class SiteListTableViewController: UITableViewController {
         // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
         
+        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(title: "Settings", style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
+        
         // Configure table view properties.
         tableView.rowHeight = 240
         // Position refresh control above background view
@@ -265,10 +272,14 @@ class SiteListTableViewController: UITableViewController {
         
         if let configuration = site.configuration {
             
+            let maxValue: NSTimeInterval
             if let defaults = configuration.defaults {
                 cell.siteName.text = defaults.customTitle
+                maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
             } else {
                 cell.siteName.text = configuration.name
+                maxValue = Constants.NotableTime.StaleDataTimeFrame
+
             }
             
             if let watch = site.watchEntry {
@@ -297,7 +308,9 @@ class SiteListTableViewController: UITableViewController {
                     }
                     
                     let timeAgo = watch.date.timeIntervalSinceNow
-                    if timeAgo < -Constants.NotableTime.StaleDataTimeFrame {
+                    
+//                    let maxValue = max(Constants.NotableTime.StaleDataTimeFrame, 0)//configuration.defaults!.alarms.alarmTimeAgoWarnMins)
+                    if timeAgo < -maxValue {
                         cell.compassControl.alpha = 0.5
                         cell.compassControl.color = NSAssetKit.predefinedNeutralColor
                         cell.compassControl.sgvText = "---"
@@ -309,6 +322,8 @@ class SiteListTableViewController: UITableViewController {
                     } else {
                         cell.compassControl.alpha = 1.0
                     }
+                } else {
+                    println("No SGV was found in the watch")
                 }
                 
             } else {

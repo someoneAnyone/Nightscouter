@@ -84,6 +84,11 @@ extension WatchEntry {
                                                     let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
                                                     sgvItem = sgvValue
                                                 }
+                                            } else {
+
+                                                    let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: .None)
+                                                    sgvItem = sgvValue
+                                                
                                             }
                                         }
                                     } else {

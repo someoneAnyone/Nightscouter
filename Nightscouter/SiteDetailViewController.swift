@@ -14,7 +14,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var lastReadingHeader: UILabel?
     @IBOutlet weak var batteryHeader: UILabel?
     @IBOutlet weak var rawHeader: UILabel?
-
+    
     @IBOutlet weak var compassControl: CompassControl?
     @IBOutlet weak var lastReadingLabel: UILabel?
     @IBOutlet weak var rawReadingLabel: UILabel?
@@ -45,7 +45,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
         println(parentViewController)
-
+        
         // remove any uneeded decorations from this view if contained within a UI page view controller
         if let pageViewController = parentViewController as? UIPageViewController {
             println("contained in UIPageViewController")
@@ -87,7 +87,7 @@ extension SiteDetailViewController {
     func webViewDidFinishLoad(webView: UIWebView) {
         print(">>> Entering \(__FUNCTION__) <<<")
         let updateData = "updateData(\(self.data))"
-    
+        
         if let units = self.site?.configuration?.unitsRoot {
             let updateUnits = "updateUnits(\(units.rawValue))"
             webView.stringByEvaluatingJavaScriptFromString(updateUnits)
@@ -102,13 +102,13 @@ extension SiteDetailViewController {
     func lebeoufIt () { // Just do it!
         self.compassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
-
+        
         if let siteOptional = site {
             nsApi = NightscoutAPIClient(url:siteOptional.url)
             updateSite(nil)
         }
     }
-
+    
     func updateSite(notification: NSNotification?) {
         nsApi!.fetchServerConfiguration { (result) -> Void in
             switch (result) {
@@ -120,22 +120,19 @@ extension SiteDetailViewController {
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
                     if let defaults = configuration.defaults {
                         self.navigationItem.title = defaults.customTitle
                         self.titleLabel?.text = defaults.customTitle
-                        self.updateData()
-                        
-                        if let enabledOptions = configuration.enabledOptions {
-                            let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
-                            if !rawEnabled {
-                                self.rawHeader!.removeFromSuperview()
-                                self.rawReadingLabel!.removeFromSuperview()
-                            }
-                        }
-                        self.view.setNeedsDisplay()
                     }
-                    
+                    if let enabledOptions = configuration.enabledOptions {
+                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                        if !rawEnabled {
+                            self.rawHeader!.removeFromSuperview()
+                            self.rawReadingLabel!.removeFromSuperview()
+                        }
+                    }
+                    self.updateData()
+                    self.view.setNeedsDisplay()
                 })
             }
         }
@@ -144,7 +141,7 @@ extension SiteDetailViewController {
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
         self.activityView?.startAnimating()
-
+        
         if let site = self.site {
             nsApi!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
                 if let watchEntry = watchEntry {
@@ -159,9 +156,16 @@ extension SiteDetailViewController {
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
-
+                        
                         // TODO:// Deprecate this StaleDataTimeFram check and use the alarms when available. Fll back to this whne no alarm for stale data available.
-                        if timeAgo < -Constants.NotableTime.StaleDataTimeFrame {
+                        let maxValue: NSTimeInterval
+                        if let defaults = site.configuration?.defaults {
+                            maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+                        } else {
+                            maxValue = Constants.NotableTime.StaleDataTimeFrame
+                        }
+                        
+                        if timeAgo < -maxValue {
                             self.compassControl?.alpha = 0.5
                             self.compassControl?.color = NSAssetKit.predefinedNeutralColor
                             self.compassControl?.sgvText = "---"
