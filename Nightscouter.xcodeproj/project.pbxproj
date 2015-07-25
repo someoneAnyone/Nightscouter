@@ -40,6 +40,7 @@
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
 		17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */; };
+		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
 		17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */; };
 		835785661B607B8F00B74C85 /* AppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835785651B607B8F00B74C85 /* AppDataManager.swift */; };
 		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
@@ -85,6 +86,7 @@
 		17C95CAF1B40AD0B0035922A /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewBackgroundView.swift; sourceTree = "<group>"; };
+		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Identifiers.swift"; sourceTree = "<group>"; };
 		835785651B607B8F00B74C85 /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDataManager.swift; sourceTree = "<group>"; };
 		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				17E1B47A1B62DB3E0047D594 /* Settings.bundle */,
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
 				17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */,
@@ -309,6 +312,7 @@
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
+				17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
