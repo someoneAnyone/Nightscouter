@@ -27,12 +27,14 @@ class TestHarnessForLogTableViewController: UITableViewController {
         let nsAPI = NightscoutAPIClient(url:url)
         
         nsAPI.fetchDataForEntries(count: 100) { (entries, errorCode) -> Void in
-            
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+
             if let entriesForTable = entries {
                 self.dataForTable = entriesForTable
             }
             self.navigationItem.title = "\(self.dataForTable.count) : Entries Listed"
             self.tableView.reloadData()
+            })
         }
               
     }
@@ -72,7 +74,12 @@ class TestHarnessForLogTableViewController: UITableViewController {
             cell.noise.text = "noise: \(sgValue.noise)"
         }
 
-        cell.type.text = "type: \(entry.type!.rawValue)"
+        if let type = entry.type {
+            cell.type.text = "type: \(type.rawValue)"
+        } else {
+            cell.type.text = "type: \(Type().rawValue)"
+        }
+
             cell.device.text = entry.device
         cell.idString.text = entry.idString
         cell.dateString.text = entry.dateString
