@@ -90,7 +90,7 @@ extension SiteDetailViewController {
         
         if let units = self.site?.configuration?.unitsRoot {
             let updateUnits = "updateUnits(\(units.rawValue))"
-            webView.stringByEvaluatingJavaScriptFromString(updateUnits)
+//            webView.stringByEvaluatingJavaScriptFromString(updateUnits)
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
         webView.hidden = false
@@ -127,8 +127,10 @@ extension SiteDetailViewController {
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if !rawEnabled {
-                            self.rawHeader!.removeFromSuperview()
-                            self.rawReadingLabel!.removeFromSuperview()
+                            // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
+                            // self.rawReadingLabel!.removeFromSuperview()
+                            self.rawHeader!.hidden = true
+                            self.rawReadingLabel!.hidden = true
                         }
                     }
                     self.updateData()
