@@ -15,7 +15,7 @@ let NightscoutModelErrorDomain: String = "com.nightscout.nightscouter.models.ent
 
 public enum Direction : String, Printable {
     case None = "None", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange"
-
+    
     static let allValues = [None, DoubleUp, SingleUp, FortyFiveUp, Flat, FortyFiveDown, SingleDown, DoubleDown, NotComputable, RateOutOfRange]
     
     public var description : String {
@@ -82,22 +82,27 @@ enum Noise : Int, Printable {
     }
 }
 
-enum TypedString: String {
+enum Type: String {
     case sgv = "sgv"
     case cal = "cal"
     case mbg = "mbg"
     case serverforecast = "server-forecast"
+    case none = "None"
+    
+    init(){
+        self = .none
+    }
 }
 
+// TODO: Add known devices and convert over to enum for future feature checking.
 /*
-enum Type {
-    case sgv(SensorGlucoseValue)
-    case cal(Calibration)
-    case mbg(MeterBloodGlucose)
-    case unknown(String)
+enum Device: String {
+    case Dexcom = "dexcom"
+    case xDripDexcomShare = "xDrip-DexcomShare"
+    case WatchFace = "watchFace"
+    case Share2 = "share2"
 }
 */
-
 
 // type = cal
 struct Calibration {
@@ -105,7 +110,6 @@ struct Calibration {
     let scale: Double
     let intercept: Double
 }
-
 
 // type = sgv
 struct SensorGlucoseValue {
@@ -119,7 +123,7 @@ struct SensorGlucoseValue {
     enum ReservedValues: Int {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
-
+    
     var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
             if sgv < 39 {
@@ -194,17 +198,15 @@ class Entry: NSObject {
     var sgv: SensorGlucoseValue?
     var cal: Calibration?
     var mbg: MeterBloodGlucose?
-    // var type: Type
-    
     var raw: Double?
-    var type: TypedString?
+    var type: Type?
     
     var dictionaryRep: NSDictionary {
         get{
             let entry: Entry = self
             
             var color: String = "white"
-            let typeString: TypedString = entry.type!
+            let typeString: Type = entry.type!
             switch(typeString)
             {
             case .sgv:
@@ -215,6 +217,8 @@ class Entry: NSObject {
                 color = "yellow"
             case .serverforecast:
                 color = "blue"
+            default:
+                color = "grey"
             }
             //Mon Jun 15 2015 21:17:35 GMT-0400 (EDT)
             let nsDateFormatter = NSDateFormatter()
@@ -253,12 +257,12 @@ extension Entry {
         var calItem: Calibration?
         var meterItem: MeterBloodGlucose?
         
-        var typed: TypedString?
+        var typed: Type = Type()
         
         if let identifier = dict[EntryPropertyKey.identKey] as? String {
             idString = identifier
         }
-       
+        
         if let deviceString = dict[EntryPropertyKey.deviceKey] as? String {
             device = deviceString
         }
@@ -266,7 +270,7 @@ extension Entry {
         if let rawEpoch = dict[EntryPropertyKey.dateKey] as? Double {
             date = rawEpoch.toDateUsingSeconds()
             if let stringForType = dict[EntryPropertyKey.typeKey] as? String {
-                if let typedString: TypedString = TypedString(rawValue: stringForType) {
+                if let typedString: Type = Type(rawValue: stringForType) {
                     typed = typedString
                     switch typedString {
                     case .sgv:
@@ -293,7 +297,6 @@ extension Entry {
                     case .mbg:
                         if let mbg = dict[EntryPropertyKey.mgbKey] as? Int {
                             let meter = MeterBloodGlucose(mbg: mbg)
-                            // type = Type.mbg(meter)
                             meterItem = meter
                         }
                         
@@ -302,16 +305,29 @@ extension Entry {
                             if let intercept = dict[EntryPropertyKey.interceptKey] as? Double {
                                 if let scale = dict[EntryPropertyKey.scaleKey] as? Double {
                                     let calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
-                                    // type = Type.cal(calValue)
                                     calItem = calValue
                                 }
                             }
                         }
-
+                        
                     default:
                         let errorString: String = "I have encountered a nightscout recorded type I don't know\ntype:\(typedString)"
                         println(errorString)
                         NSError(domain: NightscoutModelErrorDomain, code: -10, userInfo: ["description": errorString])
+                    }
+                }
+            } else {
+                let errorString: String = "Type feild is missing for \(dict)"
+                println(errorString)
+                NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
+
+                if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
+                    if let directionString = dict[EntryPropertyKey.directionKey] as? String {
+                        if let direction = Direction(rawValue: directionString) {
+                            let sgvInt: Int = Int(sgv.toInt()!)
+                            let sgvValue = SensorGlucoseValue(sgv: sgvInt, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
+                            sgvItem = sgvValue
+                        }
                     }
                 }
             }
@@ -329,7 +345,7 @@ extension Entry {
         }
         
     }
-
+    
     // TODO:// Is tihs the best it can be? Should it be a cumputed property?
     func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
         

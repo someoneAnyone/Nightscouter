@@ -46,7 +46,7 @@ extension WatchEntry {
         var now: NSDate = NSDate()
         var date: NSDate = NSDate()
         var device: String = WatchFaceDeviceValue
-//        var type: Type = Type.unknown("Not Set Yet")
+        //        var type: Type = Type.unknown("Not Set Yet")
         var bgdelta: Int = 0
         var battery: Int = 0
         var sgvItem: SensorGlucoseValue?
@@ -57,9 +57,9 @@ extension WatchEntry {
         for (key, obj) in watchEntryDictionary {
             
             if let array = obj as? [AnyObject] {
-            if let objDict: NSDictionary = array.first as? NSDictionary {
-                newDict["\(key)"] = objDict
-            }
+                if let objDict: NSDictionary = array.first as? NSDictionary {
+                    newDict["\(key)"] = objDict
+                }
             }
         }
         
@@ -68,7 +68,7 @@ extension WatchEntry {
                 now = nowDouble.toDateUsingSeconds()
             }
         }
-        
+        // Blood glucose object
         if let bgs: NSDictionary = newDict[EntryPropertyKey.bgsKey] as? NSDictionary {
             if let directionString = bgs[EntryPropertyKey.directionKey] as? String {
                 if let direction = Direction(rawValue: directionString) {
@@ -79,7 +79,6 @@ extension WatchEntry {
                             battery = batteryInt!
                             if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
                                 bgdelta = bgdeltaInt
-                                // BUG:// Optinal chaining is failing when raw data isn't there...
                                 if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
                                     if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
                                         if let unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int {
@@ -89,16 +88,14 @@ extension WatchEntry {
                                                     sgvItem = sgvValue
                                                 }
                                             } else {
-
-                                                    let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: .None)
-                                                    sgvItem = sgvValue
-                                                
+                                                let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: .None)
+                                                sgvItem = sgvValue                                                
                                             }
                                         }
                                     } else {
                                         let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: Noise.None)
                                         sgvItem = sgvValue
-
+                                        
                                     }
                                 }
                             }
@@ -107,7 +104,7 @@ extension WatchEntry {
                 }
             }
         }
-        
+        // cals object
         if let cals: NSDictionary = newDict[EntryPropertyKey.calsKey]as? NSDictionary {
             if let slope = cals[EntryPropertyKey.slopeKey] as? Double {
                 if let intercept = cals[EntryPropertyKey.interceptKey] as? Double {

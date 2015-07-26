@@ -26,13 +26,6 @@ enum RawBGMode: String {
     case Noise = "noise"
 }
 
-/*
-enum Device: String {
-    case dexcom = "dexcom"
-    case share2 = "share2"
-}
-*/
-
 struct Threshold {
     let bg_high: Int
     let bg_low: Int
