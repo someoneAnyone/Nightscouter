@@ -55,8 +55,12 @@ extension WatchEntry {
         let newDict: NSMutableDictionary = NSMutableDictionary()
         
         for (key, obj) in watchEntryDictionary {
-            let objDict: NSDictionary = obj[0] as! NSDictionary
-            newDict["\(key)"] = objDict
+            
+            if let array = obj as? [AnyObject] {
+            if let objDict: NSDictionary = array.first as? NSDictionary {
+                newDict["\(key)"] = objDict
+            }
+            }
         }
         
         if let status: NSDictionary = newDict[EntryPropertyKey.statusKey] as? NSDictionary {
