@@ -126,6 +126,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        println(">>> Entering \(__FUNCTION__) <<<")
+        println("userInfo: \(userInfo)")
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+        println(">>> Entering \(__FUNCTION__) <<<")
+        println("userInfo: \(userInfo)")
+        completionHandler(.NewData)
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        println(">>> Entering \(__FUNCTION__) <<<")
+        println("deviceToken: \(deviceToken)")
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        println(">>> Entering \(__FUNCTION__) <<<")
+        println("\(error), \(error.localizedDescription)")
+    }
+    
     // MARK: Custom Methods
     
     func createUpdateTimer() -> NSTimer {
