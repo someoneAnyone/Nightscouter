@@ -90,7 +90,7 @@ extension SiteDetailViewController {
         
         if let units = self.site?.configuration?.unitsRoot {
             let updateUnits = "updateUnits(\(units.rawValue))"
-//            webView.stringByEvaluatingJavaScriptFromString(updateUnits)
+            webView.stringByEvaluatingJavaScriptFromString(updateUnits)
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
         webView.hidden = false
@@ -123,7 +123,10 @@ extension SiteDetailViewController {
                     if let defaults = configuration.defaults {
                         self.navigationItem.title = defaults.customTitle
                         self.titleLabel?.text = defaults.customTitle
+                    } else {
+                        self.titleLabel?.text = configuration.name
                     }
+                    
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if !rawEnabled {
@@ -208,7 +211,10 @@ extension SiteDetailViewController {
         let filePath = NSBundle.mainBundle().pathForResource("index", ofType: "html", inDirectory: "html")
         let defaultDBPath =  NSBundle.mainBundle().resourcePath?.stringByAppendingPathComponent("html")
         
-        NSFileManager.defaultManager().copyItemAtPath(defaultDBPath!, toPath: filePath!, error: nil)
+        let fileExists = NSFileManager.defaultManager().fileExistsAtPath(filePath!)
+        if !fileExists {
+            NSFileManager.defaultManager().copyItemAtPath(defaultDBPath!, toPath: filePath!, error: nil)
+        }
         let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!)!)
         self.webView?.loadRequest(request)
     }

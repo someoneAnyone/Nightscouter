@@ -37,7 +37,7 @@ class SiteTableViewCell: UITableViewCell {
         siteBatteryLevel.text = nil
         siteRaw.text = nil
         siteTimeAgo.text = nil
-        siteColorBlock.backgroundColor = nil
+        siteColorBlock.backgroundColor = NSAssetKit.predefinedNeutralColor
         compassControl.color = NSAssetKit.predefinedNeutralColor
         compassControl.configireDrawRect(isDoubleUp: false, isArrowVisible: false, isUncomputable: false, angle: 0, sgvText: "---")
         compassControl.delta = "-- --/--"
