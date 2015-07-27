@@ -246,7 +246,7 @@ class SiteListTableViewController: UITableViewController {
         // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
         
-        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(title: "Settings", style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
+        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(image: UIImage(named: "settingsIcon"), style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
         
         // Configure table view properties.
         tableView.rowHeight = 240
