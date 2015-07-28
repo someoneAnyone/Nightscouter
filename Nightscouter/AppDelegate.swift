@@ -25,8 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
-        
+       
         themeApp()
         
         return true
@@ -81,46 +82,59 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 case let .Error(error):
                     // display error message
                     println("error: \(error)")
-                    completionHandler(.Failed)
-                    return
+//                    completionHandler(.Failed)
+                    break
                 case let .Value(boxedConfiguration):
                     let configuration:ServerConfiguration = boxedConfiguration.value
                     nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                         site.configuration = configuration
                         site.watchEntry = watchEntry
                         
-                        // don't push a notification if the data is stale. Probably needs to be refactored.
-                        let timeFrame = site.watchEntry?.date.timeIntervalSinceNow
-                        let timeLimit =  -Constants.StandardTimeFrame.TenMinutesInSeconds
-                        
-                        if ( timeFrame < timeLimit) {
-                            completionHandler(.NoData)
-                            return
-                        } else {
-                            // TODO: Add some bg threshold checks here.
-                            if site.watchEntry?.bgdelta != 0 {
-                                self.scheduleLocalNotification(site)
+                        if let defaults = configuration.defaults {
+                            // don't push a notification if the data is stale. Probably needs to be refactored.
+                            let timeFrame = site.watchEntry?.date.timeIntervalSinceNow
+                            let timeLimit = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+                            
+                            if ( timeFrame < -timeLimit) {
+//                                completionHandler(.NoData)
+                            } else {
+                                // TODO: Add some bg threshold checks here.
+//                                if site.watchEntry?.bgdelta != 0 {
+                                    self.scheduleLocalNotification(site)
+//                                }
+//                                completionHandler(.NewData)
                             }
-                            completionHandler(.NewData)
-                            return
                         }
                     })
                 }
             }
         }
+        
         println("For some reason no one else comleted the request for a background fetch, so I am")
-        completionHandler(.Failed)
+        completionHandler(.NewData)
     }
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         println("Received a local notification payload: \(notification)")
         
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
-            if let uuidString = userInfoDict["uuid"] as? String {
+            if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString)
                 let site = sites.filter{ $0.uuid == uuid }.first
+                
+//                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
                 println("User tapped on notification for site: \(site)")
                 
+                let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Main.rawValue, bundle: nil)
+                if let viewNC = storyboard.instantiateInitialViewController() as? UINavigationController {
+                    if let viewC = viewNC.viewControllers.first as? SiteListTableViewController {
+                        viewC.siteToDisplay = site
+//                        window?.addSubview(viewNC.view)
+//                        window?.makeKeyAndVisible()
+                    }
+
+                    
+                }
                 // Need to add code that would launch the approprate view.
             }
         }
@@ -187,11 +201,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         println("Scheduling a notification for site: \(site.url)")
         
-        // remove old notifications before posting new one.
-        //        for notification in site.notifications {
-        //            UIApplication.sharedApplication().cancelLocalNotification(notification)
-        //        }
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
+  //       remove old notifications before posting new one.
+                for notification in site.notifications {
+                    UIApplication.sharedApplication().cancelLocalNotification(notification)
+                }
+//        UIApplication.sharedApplication().cancelAllLocalNotifications()
         
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
@@ -199,12 +213,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         dateFor.doesRelativeDateFormatting = true
         
         var localNotification = UILocalNotification()
-        localNotification.fireDate = NSDate()
+        localNotification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(arc4random_uniform(UInt32(sites.count))))
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.category = "Nightscout_Category"
         //        localNotification.applicationIconBadgeNumber = 1;
         
-        localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: "uuid") as [NSObject : AnyObject]
+        localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: Site.PropertyKey.uuidKey) as [NSObject : AnyObject]
         //        localNotification.alertAction = "View Site"
         
         if let config = site.configuration {
@@ -215,7 +229,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        //        site.notifications.append(localNotification)
+        site.notifications.append(localNotification)
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
     }
     
@@ -227,6 +241,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register the notification settings.
         let newNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(newNotificationSettings)
+//        UIApplication.sharedApplication().registerForRemoteNotifications()
     }
     
     

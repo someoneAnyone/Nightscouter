@@ -36,6 +36,8 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
+    var siteToDisplay: Site?
+    
     // Holds the indexPath of an accessory that was tapped. Used for getting the right Site from the sites array before passing over to the next view.
     var accessoryIndexPath: NSIndexPath?
     
@@ -43,7 +45,11 @@ class SiteListTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+      
+        if let site = siteToDisplay {
+            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.ShowPageView.rawValue, sender: site)
+        }
+
         // Common setup.
         configureView()
     }
@@ -53,7 +59,8 @@ class SiteListTableViewController: UITableViewController {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-    }
+        
+          }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -191,6 +198,12 @@ class SiteListTableViewController: UITableViewController {
                     AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
                 }
                 
+                if let incomingSite = sender as? Site{
+                    if let indexOfSite = find(sites, incomingSite) {
+                        AppDataManager.sharedInstance.currentSiteIndex = indexOfSite
+                    }
+                }
+                
             default:
                 #if DEBUG
                     print("Unhandled segue idendifier: \(segue.identifier)")
@@ -308,8 +321,6 @@ class SiteListTableViewController: UITableViewController {
                     }
                     
                     let timeAgo = watch.date.timeIntervalSinceNow
-                    
-//                    let maxValue = max(Constants.NotableTime.StaleDataTimeFrame, 0)//configuration.defaults!.alarms.alarmTimeAgoWarnMins)
                     if timeAgo < -maxValue {
                         cell.compassControl.alpha = 0.5
                         cell.compassControl.color = NSAssetKit.predefinedNeutralColor
@@ -323,7 +334,9 @@ class SiteListTableViewController: UITableViewController {
                         cell.compassControl.alpha = 1.0
                     }
                 } else {
-                    println("No SGV was found in the watch")
+                    #if DEBUG
+                        println("No SGV was found in the watch")
+                    #endif
                 }
                 
             } else {

@@ -33,7 +33,7 @@ class Site: NSObject, NSCoding {
     var watchEntry: WatchEntry?
     var entries: [Entry]?
     var allowNotifications: Bool = true // Fix this at somepoint.
-//    var notifications = [UILocalNotification]()
+    var notifications: [UILocalNotification]
     
     private(set) var uuid: NSUUID
     
@@ -44,6 +44,7 @@ class Site: NSObject, NSCoding {
         self.apiSecret = apiSecret
         
         self.uuid = NSUUID()
+        self.notifications = [UILocalNotification]()
         
         super.init()
         
@@ -59,8 +60,7 @@ class Site: NSObject, NSCoding {
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
-        
-//        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
+        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
     }
     
     /*
@@ -87,7 +87,11 @@ class Site: NSObject, NSCoding {
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
         
-//        self.notifications = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as! [UILocalNotification]
+        if let notification = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
+            self.notifications = notification
+        } else {
+            self.notifications = [UILocalNotification]()
+        }
         
     }
 }

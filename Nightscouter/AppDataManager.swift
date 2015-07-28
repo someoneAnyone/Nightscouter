@@ -119,8 +119,22 @@ class AppDataManager: NSObject, UIStateRestoring {
     }
     
     func deleteSiteAtIndex(index: Int) {
-        sites.removeAtIndex(index)
+             let site = sites[index]
+                
+        for notifications in site.notifications {
+            UIApplication.sharedApplication().cancelLocalNotification(notifications)
+        }
         
+//        
+//        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+//            if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+//                UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+//                break
+//            }
+//        }
+        
+        sites.removeAtIndex(index)
+
         saveAppData()
     }
     
