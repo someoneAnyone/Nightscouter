@@ -220,9 +220,8 @@ class Entry: NSObject {
             default:
                 color = "grey"
             }
-            //Mon Jun 15 2015 21:17:35 GMT-0400 (EDT)
             let nsDateFormatter = NSDateFormatter()
-            //            nsDateFormatter.dateFormat = "EEE MMM d yyy HH:mm:ss OOOO (zzz)"
+            // nsDateFormatter.dateFormat = "EEE MMM d yyy HH:mm:ss OOOO (zzz)"
             nsDateFormatter.dateFormat = "EEE MMM d HH:mm:ss zzz yyy"
             
             nsDateFormatter.timeZone = NSTimeZone.localTimeZone()
@@ -251,7 +250,6 @@ extension Entry {
         var idString: String = ""
         var date: NSDate = NSDate()
         var device: String = ""
-        // var type: Type = Type.unknown("Not Set Yet")
         
         var sgvItem: SensorGlucoseValue?
         var calItem: Calibration?
@@ -283,7 +281,6 @@ extension Entry {
                                                 if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int {
                                                     if let noise = Noise(rawValue: noiseInt) {
                                                         let sgvValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
-                                                        // type = Type.sgv(sgvValue)
                                                         sgvItem = sgvValue
                                                     }
                                                 }
@@ -318,7 +315,7 @@ extension Entry {
                 }
             } else {
                 let errorString: String = "Type feild is missing for \(dict)"
-                println(errorString)
+                // println(errorString)
                 NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
 
                 if let sgv = dict[EntryPropertyKey.sgvKey] as? String {

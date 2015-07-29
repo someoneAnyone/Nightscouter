@@ -35,6 +35,7 @@
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		177C20541B56E6460092753B /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177C20531B56E6460092753B /* Int+Extensions.swift */; };
 		178C332A1B6176D300E1C734 /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C33291B6176D300E1C734 /* ColorBlockView.swift */; };
+		17B377F21B685D0300F10665 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B377F11B685D0300F10665 /* String+Extensions.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB11B40AD0B0035922A /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */; };
 		17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C95CAF1B40AD0B0035922A /* WatchEntry.swift */; };
@@ -81,6 +82,7 @@
 		178C33291B6176D300E1C734 /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorBlockView.swift; sourceTree = "<group>"; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterAssets.pcvd; sourceTree = SOURCE_ROOT; };
+		17B377F11B685D0300F10665 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ServerConfiguration.swift; sourceTree = "<group>"; };
 		17C95CAF1B40AD0B0035922A /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchEntry.swift; sourceTree = "<group>"; };
@@ -160,6 +162,7 @@
 				173454521B308EEC00931278 /* Double+Extension.swift */,
 				83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */,
 				17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */,
+				17B377F11B685D0300F10665 /* String+Extensions.swift */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 				1734544D1B308DF100931278 /* Entry.swift in Sources */,
 				173454611B30B81900931278 /* NSCalendar+Extension.swift in Sources */,
 				173E950C1B42E5DA0024039E /* CompassControl+Convience.swift in Sources */,
+				17B377F21B685D0300F10665 /* String+Extensions.swift in Sources */,
 				170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */,
 				835785661B607B8F00B74C85 /* AppDataManager.swift in Sources */,
 				173454491B30740A00931278 /* Site.swift in Sources */,

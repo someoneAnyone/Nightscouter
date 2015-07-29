@@ -22,5 +22,7 @@ extension UIStoryboard {
         case SiteDetailViewController = "SiteDetailViewController"
         case SiteFormViewNavigationController = "SiteFormViewNavigationController"
         case SiteFormViewController = "SiteFormViewController"
+        
+        static let deepLinkableStoryboards = [SiteListTableViewController, SiteListPageViewController, SiteFormViewController]
     }
 }

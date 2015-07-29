@@ -74,6 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Background Fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         println(">>> Entering \(__FUNCTION__) <<<")
+        
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
@@ -82,7 +83,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 case let .Error(error):
                     // display error message
                     println("error: \(error)")
-//                    completionHandler(.Failed)
                     break
                 case let .Value(boxedConfiguration):
                     let configuration:ServerConfiguration = boxedConfiguration.value
@@ -96,13 +96,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             let timeLimit = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
                             
                             if ( timeFrame < -timeLimit) {
-//                                completionHandler(.NoData)
                             } else {
                                 // TODO: Add some bg threshold checks here.
-//                                if site.watchEntry?.bgdelta != 0 {
+                                if site.watchEntry?.bgdelta != 0 {
                                     self.scheduleLocalNotification(site)
-//                                }
-//                                completionHandler(.NewData)
+                                }
                             }
                         }
                     })
@@ -110,8 +108,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         
-        println("For some reason no one else comleted the request for a background fetch, so I am")
+        // Always return NewData.
+        // TODO:// Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
+
         completionHandler(.NewData)
+    }
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        println(">>> Entering \(__FUNCTION__) <<<")
+        println("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
+        
+        let  infoDictionary = NSBundle.mainBundle().infoDictionary as! [NSString : AnyObject] // Grab the info.plist dictionary from the main bundle.
+        var schemes = [String]() // Create an empty array we can later set append available schemes.
+        if let bundleURLTypes = infoDictionary["CFBundleURLTypes"] as? [AnyObject] {
+            for (index, object) in enumerate(bundleURLTypes) {
+                if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
+                    if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
+                        schemes += urlScheme // We've found the supported schemes appending to the array.
+                    }
+                }
+            }
+        }
+        
+        if (!contains(schemes, url.scheme!)) { // If the incoming scheme is not contained within the array of supported schemes return false.
+            return false
+        }
+    
+        // We now have an acceptable scheme. Pass the URL to the deep linking handler.
+         deepLinkToURL(url)
+        
+        return true
     }
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
@@ -119,23 +145,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
-                let uuid = NSUUID(UUIDString: uuidString)
-                let site = sites.filter{ $0.uuid == uuid }.first
+                let uuid = NSUUID(UUIDString: uuidString) // Get teh uuid from the notification.
+                let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
+                let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
                 
-//                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
-                println("User tapped on notification for site: \(site)")
+                AppDataManager.sharedInstance.currentSiteIndex = siteIndex!
+                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
                 
-                let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Main.rawValue, bundle: nil)
-                if let viewNC = storyboard.instantiateInitialViewController() as? UINavigationController {
-                    if let viewC = viewNC.viewControllers.first as? SiteListTableViewController {
-                        viewC.siteToDisplay = site
-//                        window?.addSubview(viewNC.view)
-//                        window?.makeKeyAndVisible()
-                    }
-
-                    
-                }
-                // Need to add code that would launch the approprate view.
+                println("User tapped on notification for site: \(site) at index \(siteIndex)")
+                let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                
+                deepLinkToURL(url!)
             }
         }
     }
@@ -162,6 +182,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: Custom Methods
+    func deepLinkToURL(url: NSURL) {
+        // Maybe this can be expanded to handle icomming messages from remote or local notifications.
+        let pathComponents = url.pathComponents!
+        let q = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
+        
+        println(q?.queryItems) // Not handling queries at that moment, but might want to.
+    
+        if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
+            navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
+            let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
+            var viewControllers = navController.viewControllers as! [UIViewController] // Grab all the current view controllers in the stack.
+            for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
+                if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
+                    if let stor = UIStoryboard.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
+                        let allowed = contains(UIStoryboard.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
+                            if allowed {
+                                
+                                switch (stor) {
+                                case .SiteListPageViewController:
+                                    navController.presentViewController(storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController, animated: false, completion: { () -> Void in
+                                        
+                                    })
+                                    
+                                default:
+                                    viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController) // Create the view controller and append it to the navigation view controller stack
+                                }
+                        }
+                    }
+                }
+            }
+            navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
+        }
+    }
     
     func createUpdateTimer() -> NSTimer {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
@@ -201,11 +254,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         println("Scheduling a notification for site: \(site.url)")
         
-  //       remove old notifications before posting new one.
-                for notification in site.notifications {
-                    UIApplication.sharedApplication().cancelLocalNotification(notification)
-                }
-//        UIApplication.sharedApplication().cancelAllLocalNotifications()
+        // remove old notifications before posting new one.
+        for notification in site.notifications {
+            UIApplication.sharedApplication().cancelLocalNotification(notification)
+        }
         
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
@@ -216,10 +268,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         localNotification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(arc4random_uniform(UInt32(sites.count))))
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.category = "Nightscout_Category"
-        //        localNotification.applicationIconBadgeNumber = 1;
-        
         localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: Site.PropertyKey.uuidKey) as [NSObject : AnyObject]
-        //        localNotification.alertAction = "View Site"
+        localNotification.alertAction = "View Site"
         
         if let config = site.configuration {
             if let defaults = config.defaults {
