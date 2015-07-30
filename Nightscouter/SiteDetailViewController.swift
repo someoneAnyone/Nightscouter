@@ -50,6 +50,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         if let pageViewController = parentViewController as? UIPageViewController {
             println("contained in UIPageViewController")
             self.view.backgroundColor = UIColor.clearColor()
+            self.titleLabel?.removeFromSuperview()
         }
         
         lebeoufIt()
@@ -132,8 +133,10 @@ extension SiteDetailViewController {
                         if !rawEnabled {
                             // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
                             // self.rawReadingLabel!.removeFromSuperview()
-                            self.rawHeader!.hidden = true
-                            self.rawReadingLabel!.hidden = true
+                            if let rawHeader = self.rawHeader {
+                                self.rawHeader!.hidden = true
+                                self.rawReadingLabel!.hidden = true
+                            }
                         }
                     }
                     self.updateData()
