@@ -32,6 +32,7 @@ struct URLPart {
 enum NightscoutAPIError {
     case NoErorr
     case DownloadErorr(String)
+    case DataError(String)
     case JSONParseError(String)
 }
 
@@ -137,15 +138,24 @@ private extension NightscoutAPIClient {
                         var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
                         stringVersion = stringVersion?.stringByReplacingOccurrencesOfString("+", withString: "")
                         
-                        var jsonError: NSError?
-                        if let responseObject: AnyObject = NSJSONSerialization.JSONObjectWithData(dataObject, options: .AllowFragments, error:&jsonError){
-                            if (jsonError != nil) {
-                                println("jsonError")
-                                completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
-                                
+                        if let newData = stringVersion?.dataUsingEncoding(NSUTF8StringEncoding) {
+                            var jsonError: NSError?
+                            if let responseObject: AnyObject = NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments, error:&jsonError){
+                                if (jsonError != nil) {
+                                    println("jsonError")
+                                    completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
+                                    
+                                } else {
+                                    completetion(result: responseObject, errorCode: .NoErorr)
+                                }
                             } else {
-                                completetion(result: responseObject, errorCode: .NoErorr)
+                                println("Could not create a response object")
+                                completetion(result: nil, errorCode: .DataError("Could not create a response object from given data."))
+
                             }
+                        } else {
+                            println("Could not create clean data for json processor")
+                            completetion(result: nil, errorCode: .DataError("Failed to create data for json."))
                         }
                     }
                     
