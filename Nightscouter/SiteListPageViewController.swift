@@ -120,6 +120,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
         if finished && completed {
             self.navigationItem.title = pageViewController.viewControllers.first?.navigationItem.title
+            self.navigationItem.rightBarButtonItems = pageViewController.viewControllers.first?.navigationItem.rightBarButtonItems
         }
     }
 }
