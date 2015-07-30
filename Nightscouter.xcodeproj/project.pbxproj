@@ -482,6 +482,8 @@
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -495,6 +497,7 @@
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
