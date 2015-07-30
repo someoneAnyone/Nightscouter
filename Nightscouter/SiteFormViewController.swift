@@ -108,8 +108,14 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             let urlString = urlTextField.text ?? ""
             
             if let url = NSURL(string: urlString) {
-                site = Site(url: url, apiSecret: nil)
                 
+                if let siteOptional = site {
+                    siteOptional.url = url
+                    
+                    site = siteOptional
+                } else {
+                    site = Site(url: url, apiSecret: nil)
+                }
                 // Hide the keyboard
                 urlTextField.resignFirstResponder()
             }
