@@ -16,7 +16,9 @@ struct Constants {
         static let OneMinuteInSeconds: NSTimeInterval = 60
         static let FiveMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 5
         static let TenMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 10
+        static let ThirtyMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 30
         static let OneHourInSeconds: NSTimeInterval = OneMinuteInSeconds * 60
+        static let TwoHoursInSeconds: NSTimeInterval = OneMinuteInSeconds * 120
     }
     
     struct NotableTime {
@@ -37,12 +39,12 @@ struct Constants {
     struct LocalizedString {
         static let tableViewCellRemove = "tableViewCellRemove"
         static let tableViewCellLoading = "tableViewCellLoading"
-        static let localNotificationMessage = "localNotificationMessage" // not implemented.
-        static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
-        static let batteryLabel = "batteryLabel" // not implemented.
-        static let rawLabel = "rawLabel" // not implemented.
+//        static let localNotificationMessage = "localNotificationMessage" // not implemented.
+//        static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
+//        static let batteryLabel = "batteryLabel" // not implemented.
+//        static let rawLabel = "rawLabel" // not implemented.
         static let lastUpdatedDateLabel = "lastUpdatedDateLabel"
-        static let lastReadingLabel = "lastReadingLabel" // not implemented.
+//        static let lastReadingLabel = "lastReadingLabel" // not implemented.
         static let generalEditLabel = "generalEditLabel"
         static let generalCancelLabel = "generalCancelLabel"
         static let generalRetryLabel = "generalRetryLabel"
