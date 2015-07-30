@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.timer?.invalidate()
         
-        saveSites()
+//        saveSites()
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
@@ -140,6 +140,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
+    // MARK: Local Notifications
+    
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         println("Received a local notification payload: \(notification)")
         
@@ -159,6 +161,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    #if DEBUG
+    // MARK: Remote Notifications
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         println(">>> Entering \(__FUNCTION__) <<<")
@@ -180,6 +185,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         println(">>> Entering \(__FUNCTION__) <<<")
         println("\(error), \(error.localizedDescription)")
     }
+    #endif
     
     // MARK: Custom Methods
     func deepLinkToURL(url: NSURL) {
@@ -238,8 +244,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func updateDataNotification(timer: NSTimer?) -> Void {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
+//        println(">>> Entering \(__FUNCTION__) <<<")
+//        println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
         NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataIsStaleUpdateNow, object: self))
         
         if (self.timer == nil) {
@@ -248,11 +254,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func scheduleLocalNotification(site: Site) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+//        println(">>> Entering \(__FUNCTION__) <<<")
         
         if (site.allowNotifications == false) { return }
         
-        println("Scheduling a notification for site: \(site.url)")
+//        println("Scheduling a notification for site: \(site.url)")
         
         // remove old notifications before posting new one.
         for notification in site.notifications {
@@ -291,7 +297,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register the notification settings.
         let newNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(newNotificationSettings)
+        
+        #if DEBUG
 //        UIApplication.sharedApplication().registerForRemoteNotifications()
+        #endif
     }
     
     
