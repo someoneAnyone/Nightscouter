@@ -259,7 +259,7 @@ class SiteListTableViewController: UITableViewController {
         // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
         
-        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(image: UIImage(named: "settingsIcon"), style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
+//        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(image: UIImage(named: "settingsIcon"), style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
         
         // Configure table view properties.
         tableView.rowHeight = 240
@@ -442,8 +442,15 @@ class SiteListTableViewController: UITableViewController {
         }
         alertController.addAction(cancelAction)
         
+        let retryAction = UIAlertAction(title: Constants.LocalizedString.generalRetryLabel.localized, style: .Default) { (action) in
+            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+        }
+        alertController.addAction(retryAction)
+        
         let editAction = UIAlertAction(title: Constants.LocalizedString.generalEditLabel.localized, style: .Default) { (action) in
-            let tableViewCell = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0))
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            let tableViewCell = self.tableView.cellForRowAtIndexPath(indexPath)
+            self.accessoryIndexPath = indexPath
             self.performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
         }
         alertController.addAction(editAction)

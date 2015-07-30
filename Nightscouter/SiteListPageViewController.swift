@@ -65,6 +65,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
         self.navigationItem.title = pageViewController?.viewControllers.first?.navigationItem.title
+        self.navigationItem.rightBarButtonItems = pageViewController?.viewControllers.first?.navigationItem.rightBarButtonItems
     }
     
     override func didReceiveMemoryWarning() {
