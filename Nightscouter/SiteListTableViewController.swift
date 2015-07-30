@@ -229,7 +229,8 @@ class SiteListTableViewController: UITableViewController {
             // This segue is triggered when we "save" or "next" out of the url form.
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
-                AppDataManager.sharedInstance.sites[selectedIndexPath.row] = site
+//                AppDataManager.sharedInstance.sites[selectedIndexPath.row] = site
+                AppDataManager.sharedInstance.updateSite(site)
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
@@ -237,6 +238,7 @@ class SiteListTableViewController: UITableViewController {
                 let newIndexPath = NSIndexPath(forRow: sites.count, inSection: 0)
                 AppDataManager.sharedInstance.addSite(site, index: newIndexPath.row)
                 tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
+                accessoryIndexPath = nil
             }
         }
         
