@@ -28,7 +28,17 @@ class Site: NSObject, NSCoding {
     static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
     
-    var url: NSURL!
+    var url: NSURL! {
+        didSet {
+            #if DEBUG
+                println("Changed site URL to \(url) from \(oldValue)")
+            #endif
+            
+            configuration = nil
+            watchEntry = nil
+            entries = nil
+        }
+    }
     var apiSecret: String?
     var configuration: ServerConfiguration?
     var watchEntry: WatchEntry?
