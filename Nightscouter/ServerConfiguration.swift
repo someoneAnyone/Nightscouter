@@ -28,7 +28,6 @@ enum Units:String, Printable {
     case Mgdl = "mg/dl"
     case Mmoll = "mmol/L"
     
-    
     var description: String {
         return self.rawValue
     }
@@ -56,7 +55,7 @@ struct Threshold: Printable {
     }
 }
 
-struct Alarm {
+struct Alarm: Printable {
     let alarmHigh: Bool
     let alarmLow: Bool
     let alarmTimeAgoUrgent: Bool
@@ -65,6 +64,15 @@ struct Alarm {
     let alarmTimeAgoWarnMins: NSTimeInterval
     let alarmUrgentHigh: Bool
     let alarmUrgentLow: Bool
+    
+    var description: String {
+        let dict = ["alarmHigh": alarmHigh, "alarmLow:": alarmLow, "alarmTimeAgoUrgent": alarmTimeAgoUrgentMins, "alarmTimeAgoWarn": alarmTimeAgoWarn, "alarmTimeAgoWarnMins": alarmTimeAgoWarnMins, "alarmUrgentHigh": alarmUrgentHigh, "alarmUrgentLow": alarmUrgentLow]
+        return dict.description
+    }
+}
+
+enum AlarmTypes: String {
+    case predict = "predict"
 }
 
 struct Defaults: Printable {
@@ -81,14 +89,9 @@ struct Defaults: Printable {
     // End of "defaults" dictionary
     
     var description: String {
-        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue]
-        
+        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language]
         return dict.description
     }
-}
-
-enum AlarmTypes: String {
-    case predict = "predict"
 }
 
 struct ConfigurationPropertyKey {
@@ -130,7 +133,6 @@ struct ServerConfiguration: Printable {
     let careportalEnabled: Bool?
     let enabledOptions: [EnabledOptions]?
     let defaults: Defaults?
-    
     let unitsRoot: Units?
     let head:String?
     let version: String?
@@ -233,6 +235,7 @@ extension ServerConfiguration {
         name = serverConfig.name
     }
 }
+
 
 enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
