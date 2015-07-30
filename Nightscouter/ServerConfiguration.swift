@@ -73,6 +73,7 @@ struct Alarm: Printable {
 
 enum AlarmTypes: String {
     case predict = "predict"
+    case simple = "simple"
 }
 
 struct Defaults: Printable {
@@ -237,10 +238,13 @@ extension ServerConfiguration {
 }
 
 
+
+// TODO: Should this be here?
 enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
 }
 
+// TODO: Should this be here? Maybe it shuld be a threshold extension.
 extension ServerConfiguration {
     
     func boundedColorForGlucoseValue(value: Int) -> DesiredColorState {
@@ -248,7 +252,7 @@ extension ServerConfiguration {
         if let thresholds = self.thresholds {
             if (value > thresholds.bg_high) {
                 color = .Alert
-            } else if (value > thresholds.bg_target_top) {
+            } else if (value > thresholds.bg_target_top && value < thresholds.bg_high) {
                 color =  .Warning
             } else if (value >= thresholds.bg_target_bottom && value <= thresholds.bg_target_top) {
                 color = .Positive
