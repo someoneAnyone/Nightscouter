@@ -30,19 +30,12 @@ class TestHarnessServerConfigurationViewController: UIViewController {
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.configurationLabel.text = "\(configuration)"
+                    self.configurationLabel.text = "\(configuration.description)"
                     
                 })
                 
             }
         }
-        
-        
-        //        nsAPI.fetchServerConfigurationData { (configuration, errorCode) -> Void in
-        //            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-        //            self.configurationLabel.text = "\(configuration)"
-        //            })
-        //        }
     }
     
     override func didReceiveMemoryWarning() {
