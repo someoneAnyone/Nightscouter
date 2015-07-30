@@ -37,6 +37,10 @@ class AppDataManager: NSObject, UIStateRestoring {
     
     var shouldDisableIdleTimer: Bool {
         set {
+            #if DEBUG
+                println("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
+            #endif
+            
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
             UIApplication.sharedApplication().idleTimerDisabled = newValue
             defaults.synchronize()
