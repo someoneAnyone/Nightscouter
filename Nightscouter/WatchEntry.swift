@@ -32,6 +32,14 @@ class WatchEntry: Entry {
             return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
         }
     }
+    var batteryColorState: DesiredColorState {
+        if battery < 50 && battery > 20 {
+            return DesiredColorState.Warning
+        } else if battery < 20 {
+            return DesiredColorState.Alert
+        }
+        return DesiredColorState.Neutral
+    }
     
     init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Int, battery: Int) {
         self.now = now
