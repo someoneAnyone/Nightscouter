@@ -27,7 +27,6 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     @IBOutlet weak var goToListButton: UIButton!
     @IBOutlet weak var pageControl: UIPageControl!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -47,7 +46,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         
         self.view.bringSubviewToFront(self.goToListButton)
         
-        //         Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
+        // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
         var pageViewRect = self.view.bounds
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             pageViewRect = CGRectInset(pageViewRect, 40.0, 40.0)

@@ -259,8 +259,6 @@ class SiteListTableViewController: UITableViewController {
         // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
         
-//        navigationItem.leftBarButtonItems?.append(UIBarButtonItem(image: UIImage(named: "settingsIcon"), style: UIBarButtonItemStyle.Plain, target: self, action: "goToSettings:"))
-        
         // Configure table view properties.
         tableView.rowHeight = 240
         // Position refresh control above background view
@@ -274,6 +272,9 @@ class SiteListTableViewController: UITableViewController {
         
         // Listen for global update timer.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+        
+        // Make sure the idle screen timer is turned back to normal. Screen will time out.
+        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.

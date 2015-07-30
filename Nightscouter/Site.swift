@@ -18,6 +18,7 @@ class Site: NSObject, NSCoding {
         static let uuidKey = "uuid"
         static let notificationKey = "notification"
         static let notificationCountKey = "notificationCount"
+        static let overrideScreenLockKey = "overrideScreenLock"
         
         static let sitesKey = "sites.plist"
 
@@ -33,6 +34,8 @@ class Site: NSObject, NSCoding {
     var watchEntry: WatchEntry?
     var entries: [Entry]?
     var allowNotifications: Bool = true // Fix this at somepoint.
+    var overrideScreenLock: Bool
+
     var notifications: [UILocalNotification]
     
     private(set) var uuid: NSUUID
@@ -45,6 +48,7 @@ class Site: NSObject, NSCoding {
         
         self.uuid = NSUUID()
         self.notifications = [UILocalNotification]()
+        self.overrideScreenLock = false
         
         super.init()
         
@@ -61,6 +65,7 @@ class Site: NSObject, NSCoding {
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
         aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
+        aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
     }
     
     /*
@@ -76,6 +81,7 @@ class Site: NSObject, NSCoding {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
+        let overrideScreen = aDecoder.decodeBoolForKey(PropertyKey.overrideScreenLockKey)
         
         if let uuid = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? NSUUID {
             self.uuid = uuid
@@ -86,6 +92,7 @@ class Site: NSObject, NSCoding {
         self.url = url
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
+        self.overrideScreenLock = overrideScreen
         
         if let notification = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
             self.notifications = notification

@@ -107,6 +107,8 @@ extension SiteDetailViewController {
         if let siteOptional = site {
             nsApi = NightscoutAPIClient(url:siteOptional.url)
             updateSite(nil)
+            
+            AppDataManager.sharedInstance.shouldDisableIdleTimer = siteOptional.overrideScreenLock
         }
     }
     
@@ -206,7 +208,6 @@ extension SiteDetailViewController {
     }
     
     func loadWebView () {
-        
         self.webView?.delegate = self
         self.webView?.scrollView.bounces = false
         self.webView?.scrollView.scrollEnabled = false
@@ -220,6 +221,49 @@ extension SiteDetailViewController {
         }
         let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!)!)
         self.webView?.loadRequest(request)
+    }
+    
+    @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {
+        
+        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        alertController.view.tintColor = NSAssetKit.darkNavColor
+        
+        let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
+            // ...
+        }
+        alertController.addAction(cancelAction)
+        
+        var yesString = "   "
+        if site!.overrideScreenLock == true {
+            yesString = "✓ "
+        }
+        let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
+            self.updateScreenOverride(true)
+        }
+        alertController.addAction(yesAction)
+       
+        var noString = "   "
+        if (site!.overrideScreenLock == false) {
+            noString = "✓ "
+        }
+        let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
+            self.updateScreenOverride(false)
+        }
+        alertController.addAction(noAction)
+        
+        self.presentViewController(alertController, animated: true) {
+            // ...
+        }
+    }
+
+    func updateScreenOverride(shouldOverride: Bool) {
+        let index = AppDataManager.sharedInstance.currentSiteIndex
+        self.site!.overrideScreenLock = shouldOverride
+        AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
+        AppDataManager.sharedInstance.sites[index] = self.site!
+        
+        println("This site shouldOverrideScrenLock: \(site?.overrideScreenLock) and the app is: \(AppDataManager.sharedInstance.shouldDisableIdleTimer)")
+
     }
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {

@@ -47,6 +47,8 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         nextButton.tintColor = NSAssetKit.darkNavColor
         checkValidSiteName()
         observeKeyboard()
+        
+        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
     }
 
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
