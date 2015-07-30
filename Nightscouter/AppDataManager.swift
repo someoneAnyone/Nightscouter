@@ -46,11 +46,6 @@ class AppDataManager: NSObject, UIStateRestoring {
             defaults.synchronize()
         }
         get {
-            
-            #if DEBUG
-                println("shouldDisableIdleTimer: \(shouldDisableIdleTimer)")
-            #endif
-
             return defaults.boolForKey(SavedPropertyKey.shouldDisableIdleTimerKey)
         }
     }
@@ -120,6 +115,14 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
         
         saveAppData()
+    }
+    
+    func updateSite(site: Site)  ->  Bool {
+        if let index = find(AppDataManager.sharedInstance.sites, site) {
+            self.sites[index] = site
+            return true
+        }
+        return false
     }
     
     func deleteSiteAtIndex(index: Int) {
