@@ -36,19 +36,12 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     var data = [AnyObject]()
     
     override func viewDidLoad() {
-        
-        println("viewDidLoad")
-        
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         // navigationController?.hidesBarsOnTap = true
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
-        println(parentViewController)
-        
         // remove any uneeded decorations from this view if contained within a UI page view controller
         if let pageViewController = parentViewController as? UIPageViewController {
-            println("contained in UIPageViewController")
+            // println("contained in UIPageViewController")
             self.view.backgroundColor = UIColor.clearColor()
             self.titleLabel?.removeFromSuperview()
         }
@@ -78,15 +71,15 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
 
 extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        print("\(segue)")
+        // print(">>> Entering \(__FUNCTION__) <<<")
+        // print("\(segue)")
     }
 }
 
 // Mark: WebKit WebView Delegates
 extension SiteDetailViewController {
     func webViewDidFinishLoad(webView: UIWebView) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        //        print(">>> Entering \(__FUNCTION__) <<<")
         let updateData = "updateData(\(self.data))"
         
         if let units = self.site?.configuration?.unitsRoot {
@@ -106,9 +99,10 @@ extension SiteDetailViewController {
         
         if let siteOptional = site {
             nsApi = NightscoutAPIClient(url:siteOptional.url)
-            updateSite(nil)
-            
             AppDataManager.sharedInstance.shouldDisableIdleTimer = siteOptional.overrideScreenLock
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+            
+            updateSite(nil)
         }
     }
     
@@ -142,14 +136,13 @@ extension SiteDetailViewController {
                         }
                     }
                     self.updateData()
-                    self.view.setNeedsDisplay()
                 })
             }
         }
     }
     
     func updateData() {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(__FUNCTION__) <<<")
         self.activityView?.startAnimating()
         
         if let site = self.site {
@@ -159,23 +152,31 @@ extension SiteDetailViewController {
                         
                         self.compassControl?.configureWith(site)
                         self.uploaderBatteryLabel?.text = watchEntry.batteryString
+                        
+                        self.uploaderBatteryLabel?.textColor = colorForDesiredColorState(watchEntry.batteryColorState)
+                                                
                         self.lastReadingLabel?.text = watchEntry.dateTimeAgoString
                         
                         if let rawValue = watchEntry.raw {
+                            let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(Int(rawValue)))
+                            self.rawReadingLabel?.textColor = color
                             self.rawReadingLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
                         
                         // TODO:// Deprecate this StaleDataTimeFram check and use the alarms when available. Fll back to this whne no alarm for stale data available.
-                        let maxValue: NSTimeInterval
+                        let timeAgoWarnValue: NSTimeInterval
+                        let timeAgoUrgentValue: NSTimeInterval
                         if let defaults = site.configuration?.defaults {
-                            maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+                            timeAgoWarnValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+                            timeAgoUrgentValue = defaults.alarms.alarmTimeAgoUrgentMins
                         } else {
-                            maxValue = Constants.NotableTime.StaleDataTimeFrame
+                            timeAgoWarnValue = Constants.NotableTime.StaleDataTimeFrame
+                            timeAgoUrgentValue = Constants.NotableTime.StaleDataTimeFrame * 10
                         }
                         
-                        if timeAgo < -maxValue {
+                        if timeAgo < -timeAgoWarnValue {
                             self.compassControl?.alpha = 0.5
                             self.compassControl?.color = NSAssetKit.predefinedNeutralColor
                             self.compassControl?.sgvText = "---"
@@ -183,6 +184,10 @@ extension SiteDetailViewController {
                             self.uploaderBatteryLabel?.text = "---"
                             self.rawReadingLabel?.text = "--- : ---"
                             self.compassControl?.direction = .None
+                            self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
+                        }
+                        if timeAgo < -timeAgoUrgentValue {
+                            self.lastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
                         }
                         
                         self.nsApi!.fetchDataForEntries(count: Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
@@ -226,51 +231,68 @@ extension SiteDetailViewController {
     @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {
         
         let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        
         alertController.view.tintColor = NSAssetKit.darkNavColor
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
-            // ...
+            #if DEBUG
+                println("Canceled action: \(action)")
+            #endif
         }
         alertController.addAction(cancelAction)
         
+        let checkEmoji = "✓ "
+        
         var yesString = "   "
         if site!.overrideScreenLock == true {
-            yesString = "✓ "
+            yesString = checkEmoji
         }
         let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.updateScreenOverride(true)
+            #if DEBUG
+                println("Yes action: \(action)")
+            #endif
         }
         alertController.addAction(yesAction)
-       
+        
         var noString = "   "
         if (site!.overrideScreenLock == false) {
-            noString = "✓ "
+            noString = checkEmoji
         }
         let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.updateScreenOverride(false)
+            #if DEBUG
+                println("No action: \(action)")
+            #endif
         }
         alertController.addAction(noAction)
         
         self.presentViewController(alertController, animated: true) {
-            // ...
+            #if DEBUG
+                println("presentViewController: \(alertController.debugDescription)")
+            #endif
         }
     }
-
+    
     func updateScreenOverride(shouldOverride: Bool) {
-        let index = AppDataManager.sharedInstance.currentSiteIndex
         self.site!.overrideScreenLock = shouldOverride
+   
         AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
-        AppDataManager.sharedInstance.sites[index] = self.site!
+        AppDataManager.sharedInstance.updateSite(site!)
         
-        println("This site shouldOverrideScrenLock: \(site?.overrideScreenLock) and the app is: \(AppDataManager.sharedInstance.shouldDisableIdleTimer)")
-
+        #if DEBUG
+            println("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+        #endif
     }
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
+        // #if DEBUG
         let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
         NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
+        
         presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
-            println("labs!")
+            println("Present Labs as a modal controller!")
         }
+        // #endif
     }
 }
