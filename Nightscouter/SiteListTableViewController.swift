@@ -245,7 +245,7 @@ class SiteListTableViewController: UITableViewController {
             let modelController = pageViewController.modelController
             let site = modelController.sites[pageViewController.currentIndex]
             
-            AppDataManager.sharedInstance.sites[pageViewController.currentIndex] = site
+//            AppDataManager.sharedInstance.sites[pageViewController.currentIndex] = site
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: pageViewController.currentIndex, inSection: 0)], withRowAnimation: .None)
         }
         shouldIShowNewSiteForm()
