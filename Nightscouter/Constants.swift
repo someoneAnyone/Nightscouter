@@ -45,7 +45,12 @@ struct Constants {
         static let lastReadingLabel = "lastReadingLabel" // not implemented.
         static let generalEditLabel = "generalEditLabel"
         static let generalCancelLabel = "generalCancelLabel"
+        static let generalRetryLabel = "generalRetryLabel"
+        static let generalYesLabel = "generalYesLabel"
+        static let generalNoLabel = "generalNoLabel"
         static let uiAlertBadSiteMessage = "uiAlertBadSiteMessage"
         static let uiAlertBadSiteTitle = "uiAlertBadSiteTitle"
+        static let uiAlertScreenOverrideTitle = "uiAlertScreenOverrideTitle"
+        static let uiAlertScreenOverrideMessage = "uiAlertScreenOverrideMessage"
     }
 }
