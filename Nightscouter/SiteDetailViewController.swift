@@ -295,4 +295,24 @@ extension SiteDetailViewController {
         }
         // #endif
     }
+    
+    // MARK: Handoff
+    
+    override func updateUserActivityState(activity: NSUserActivity) {
+        activity.webpageURL = site?.url
+//        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySiteKey: site])
+        super.updateUserActivityState(activity)
+    }
+    /*
+    override func restoreUserActivityState(activity: NSUserActivity) {
+        if let userInfo = activity.userInfo {
+            var activityItem: AnyObject? = userInfo[Constants.ActivityKey.ActivitySiteKey]
+            if let itemToRestore = activityItem as? String {
+//                item = itemToRestore
+//                textField?.text = item
+            }
+        }
+        super.restoreUserActivityState(activity)
+    }
+    */
 }

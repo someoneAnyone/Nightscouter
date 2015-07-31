@@ -277,6 +277,7 @@ class SiteListTableViewController: UITableViewController {
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+        startUserActivity()
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
@@ -470,4 +471,39 @@ class SiteListTableViewController: UITableViewController {
             // ...
         }
     }
+    
+    // MARK: Handoff
+    
+    func startUserActivity() {
+        let activity = NSUserActivity(activityType: Constants.ActivityType.sites!)
+        activity.title = "Viewing Nightscout List of Sites"
+        activity.userInfo = [Constants.ActivityKey.ActivitySitesKey: sites]
+        userActivity = activity
+        userActivity?.becomeCurrent()
+    }
+    override func updateUserActivityState(activity: NSUserActivity) {
+        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySitesKey: sites])
+        super.updateUserActivityState(activity)
+    }
+    
+    func stopUserActivity() {
+        userActivity?.invalidate()
+    }
+    
+    override func restoreUserActivityState(activity: NSUserActivity) {
+        // Get the list of items.
+        if let userInfo = activity.userInfo {
+            if let importedItems = userInfo[Constants.ActivityKey.ActivitySitesKey] as? NSArray {
+                // Merge it with what we have locally and update UI.
+                for anItem in importedItems {
+//                    addItemToItemsIfUnique(anItem as! String)
+                }
+//                PersistentStore.defaultStore().updateStoreWithItems(items)
+//                PersistentStore.defaultStore().commit()
+                tableView.reloadData()
+            }
+        }
+        super.restoreUserActivityState(activity)
+    }
+
 }

@@ -36,6 +36,20 @@ struct Constants {
         static let DataIsStaleUpdateNow = "com.nothingonline.nightscouter.data.stale.update"
     }
     
+    struct ActivityType {
+        static let sites = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("sites")
+        static let site = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("site")
+        static let new = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("new")
+    }
+
+    struct ActivityKey {
+        static let ActivitySitesKey = "nightscouter.sites.key"
+        static let ActivitySiteKey  = "nightscouter.site.key"
+    }
+//    let ActivityVersionKey = "shopsnap.version.key"
+//    let ActivityVersionValue = "1.0"
+
+    
     struct LocalizedString {
         static let tableViewCellRemove = "tableViewCellRemove"
         static let tableViewCellLoading = "tableViewCellLoading"
