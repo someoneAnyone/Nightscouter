@@ -59,8 +59,10 @@ class SiteListTableViewController: UITableViewController {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-        
-          }
+
+        // Make sure the idle screen timer is turned back to normal. Screen will time out.
+        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -255,25 +257,24 @@ class SiteListTableViewController: UITableViewController {
     
     // MARK: Private Methods
     func configureView() -> Void {
-        
         // The following line displys an Edit button in the navigation bar for this view controller.
         navigationItem.leftBarButtonItem = self.editButtonItem()
         // Only allow the edit button to be enabled if there are items in the sites array.
         self.editButtonItem().enabled = !sites.isEmpty
-        
+        clearsSelectionOnViewWillAppear = true
         // Configure table view properties.
         tableView.rowHeight = 240
-        // Position refresh control above background view
-        
         // Set table view's background view property
         // TODO: Move this out to a theme manager.
         tableView.backgroundView = TableViewBackgroundView()
         tableView.separatorColor = NSAssetKit.darkNavColor
+        // Position refresh control above background view
         refreshControl?.tintColor = UIColor.whiteColor()
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
         // Listen for global update timer.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
