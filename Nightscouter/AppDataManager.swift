@@ -50,6 +50,35 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
     }
     
+    var infoDictionary: [String: AnyObject]? {
+        return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
+    }
+    
+    var bundleIdentifier: String? {
+        if let dictionary = infoDictionary {
+            return dictionary["CFBundleIdentifier"] as? String
+        }
+        return nil
+    }
+    
+    var supportedSchemes: [String]? {
+        if let info = infoDictionary {
+            var schemes = [String]() // Create an empty array we can later set append available schemes.
+            if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
+                for (index, object) in enumerate(bundleURLTypes) {
+                    if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
+                        if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
+                            schemes += urlScheme // We've found the supported schemes appending to the array.
+                            
+                            return schemes
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+    
     class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
@@ -86,9 +115,10 @@ class AppDataManager: NSObject, UIStateRestoring {
     }
     
     func saveAppData() {
-        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
+
         // write to disk
-        let data =  NSKeyedArchiver.archivedDataWithRootObject(sites)
+        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
         let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
         
         #if DEBUG
@@ -101,8 +131,9 @@ class AppDataManager: NSObject, UIStateRestoring {
         
         // write to defaults
         var arrayOfObjects = [Site]()
-        var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(sites)
-        defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+        var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+        self.defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+        })
     }
     
     func addSite(site: Site, index: Int?) {

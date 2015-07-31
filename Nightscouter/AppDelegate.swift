@@ -117,19 +117,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
         println(">>> Entering \(__FUNCTION__) <<<")
         println("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
-        
-        let  infoDictionary = NSBundle.mainBundle().infoDictionary as! [NSString : AnyObject] // Grab the info.plist dictionary from the main bundle.
-        var schemes = [String]() // Create an empty array we can later set append available schemes.
-        if let bundleURLTypes = infoDictionary["CFBundleURLTypes"] as? [AnyObject] {
-            for (index, object) in enumerate(bundleURLTypes) {
-                if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
-                    if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
-                        schemes += urlScheme // We've found the supported schemes appending to the array.
-                    }
-                }
-            }
-        }
-        
+
+        var schemes = AppDataManager.sharedInstance.supportedSchemes!
         if (!contains(schemes, url.scheme!)) { // If the incoming scheme is not contained within the array of supported schemes return false.
             return false
         }
@@ -153,6 +142,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 AppDataManager.sharedInstance.currentSiteIndex = siteIndex!
                 site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
+                AppDataManager.sharedInstance.updateSite(site!)
                 
                 println("User tapped on notification for site: \(site) at index \(siteIndex)")
                 let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
@@ -190,6 +180,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Custom Methods
     func deepLinkToURL(url: NSURL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
+
+        // FIXME: This needs to be an optional.
         let pathComponents = url.pathComponents!
         let q = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
         
