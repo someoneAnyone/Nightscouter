@@ -13,6 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
+    
     var sites: [Site] {
         return AppDataManager.sharedInstance.sites
     }
@@ -29,6 +30,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
        
         themeApp()
+        
+        application.applicationIconBadgeNumber = 0
+        application.cancelAllLocalNotifications()
         
         return true
     }
@@ -133,10 +137,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         println("Received a local notification payload: \(notification)")
-        
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
-                let uuid = NSUUID(UUIDString: uuidString) // Get teh uuid from the notification.
+                let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
                 let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
                 let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
                 
@@ -145,36 +148,50 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 AppDataManager.sharedInstance.updateSite(site!)
                 
                 println("User tapped on notification for site: \(site) at index \(siteIndex)")
+
                 let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
-                
+                if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
+                    if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
+                        AppDataManager.sharedInstance.currentSiteIndex = siteIndex
+                        if let notificationIndex  = find(site.notifications, notification) {
+                            site.notifications.removeAtIndex(notificationIndex)
+                            println("User tapped on notification for site: \(site) at index \(siteIndex)")
+                            
+                            let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                            deepLinkToURL(url!)
+                        }
+                    }
+                }
+            } else {
+                let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue)")
                 deepLinkToURL(url!)
             }
         }
     }
-    
+
     #if DEBUG
     // MARK: Remote Notifications
     
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("userInfo: \(userInfo)")
-    }
-    
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("userInfo: \(userInfo)")
-        completionHandler(.NewData)
-    }
-    
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("deviceToken: \(deviceToken)")
-    }
-    
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("\(error), \(error.localizedDescription)")
-    }
+//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+//        println(">>> Entering \(__FUNCTION__) <<<")
+//        println("userInfo: \(userInfo)")
+//    }
+//    
+//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+//        println(">>> Entering \(__FUNCTION__) <<<")
+//        println("userInfo: \(userInfo)")
+//        completionHandler(.NewData)
+//    }
+//    
+//    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+//        println(">>> Entering \(__FUNCTION__) <<<")
+//        println("deviceToken: \(deviceToken)")
+//    }
+//    
+//    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+//        println(">>> Entering \(__FUNCTION__) <<<")
+//        println("\(error), \(error.localizedDescription)")
+//    }
     #endif
     
     // MARK: Custom Methods
@@ -185,7 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let pathComponents = url.pathComponents!
         let q = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
         
-        println(q?.queryItems) // Not handling queries at that moment, but might want to.
+        println("queryItems: \(q?.queryItems)") // Not handling queries at that moment, but might want to.
     
         if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
             navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
@@ -196,15 +213,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if let stor = UIStoryboard.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
                         let allowed = contains(UIStoryboard.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
                             if allowed {
+
+                                let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController
                                 
                                 switch (stor) {
                                 case .SiteListPageViewController:
-                                    navController.presentViewController(storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController, animated: false, completion: { () -> Void in
-                                        
+                                    viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
+                                case .SiteFormViewController:
+                                    navController.presentViewController(newViewController, animated: false, completion: { () -> Void in
+                                        // ...
                                     })
-                                    
                                 default:
-                                    viewControllers.append(storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController) // Create the view controller and append it to the navigation view controller stack
+                                    viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                                 }
                         }
                     }

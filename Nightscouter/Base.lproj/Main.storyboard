@@ -16,9 +16,6 @@
         </mutableArray>
         <mutableArray key="HelveticaNeueLights.ttc">
             <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
             <string>HelveticaNeue-UltraLight</string>
         </mutableArray>
     </customFonts>
@@ -272,14 +269,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="--- : ---" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t35-qs-Wix">
-                                <rect key="frame" x="281" y="259" width="39" height="16"/>
+                                <rect key="frame" x="280" y="259" width="42" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
                                 </accessibility>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="58" id="isG-cy-gOm"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                                 <variation key="default">
@@ -328,7 +325,7 @@
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
                                 </accessibility>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -351,11 +348,11 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wGx-kU-ou7">
-                                <rect key="frame" x="165" y="146" width="40" height="16"/>
+                                <rect key="frame" x="164" y="146" width="43" height="16"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
                                 </accessibility>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -483,14 +480,14 @@
                             <mask key="constraints">
                                 <exclude reference="Gpt-bC-ON3"/>
                                 <exclude reference="nff-bq-L6R"/>
+                                <exclude reference="O8h-2Q-vus"/>
+                                <exclude reference="yGb-Bs-6FP"/>
                                 <exclude reference="11d-e8-58n"/>
                                 <exclude reference="20i-K8-uz1"/>
                                 <exclude reference="4Wp-Gk-LoT"/>
                                 <exclude reference="Erz-6L-DDC"/>
                                 <exclude reference="Ndz-98-AAz"/>
                                 <exclude reference="Wnl-V3-7tB"/>
-                                <exclude reference="O8h-2Q-vus"/>
-                                <exclude reference="yGb-Bs-6FP"/>
                                 <exclude reference="8gn-Gq-e15"/>
                                 <exclude reference="RXO-yt-KXE"/>
                                 <exclude reference="ljG-Zy-A7J"/>
@@ -518,6 +515,11 @@
                             <mask key="constraints">
                                 <include reference="Gpt-bC-ON3"/>
                                 <include reference="nff-bq-L6R"/>
+                                <exclude reference="Idu-Ky-abf"/>
+                                <include reference="O8h-2Q-vus"/>
+                                <exclude reference="bKM-f8-5YY"/>
+                                <exclude reference="j9B-zi-bcz"/>
+                                <include reference="yGb-Bs-6FP"/>
                                 <include reference="11d-e8-58n"/>
                                 <include reference="20i-K8-uz1"/>
                                 <exclude reference="4Wp-Gk-LoT"/>
@@ -530,11 +532,6 @@
                                 <exclude reference="ctq-WT-yOp"/>
                                 <exclude reference="dKL-tW-Xxz"/>
                                 <exclude reference="q1E-rE-PvP"/>
-                                <exclude reference="Idu-Ky-abf"/>
-                                <include reference="O8h-2Q-vus"/>
-                                <exclude reference="bKM-f8-5YY"/>
-                                <exclude reference="j9B-zi-bcz"/>
-                                <include reference="yGb-Bs-6FP"/>
                                 <exclude reference="RXO-yt-KXE"/>
                                 <include reference="ljG-Zy-A7J"/>
                                 <exclude reference="tCS-P2-jaP"/>
@@ -701,6 +698,6 @@
         <image name="settingsIcon" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="ahu-F9-TDu"/>
+        <segue reference="G7S-TT-kXe"/>
     </inferredMetricsTieBreakers>
 </document>

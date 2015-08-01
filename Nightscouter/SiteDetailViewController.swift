@@ -119,8 +119,12 @@ extension SiteDetailViewController {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     if let defaults = configuration.defaults {
                         self.navigationItem.title = defaults.customTitle
+                        self.navigationController?.navigationItem.title = defaults.customTitle
                         self.titleLabel?.text = defaults.customTitle
                     } else {
+                        self.navigationItem.title = configuration.name
+                        self.navigationController?.navigationItem.title = configuration.name
+
                         self.titleLabel?.text = configuration.name
                     }
                     
@@ -149,6 +153,7 @@ extension SiteDetailViewController {
             nsApi!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
                 if let watchEntry = watchEntry {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        
                         
                         self.compassControl?.configureWith(site)
                         self.uploaderBatteryLabel?.text = watchEntry.batteryString
@@ -185,6 +190,7 @@ extension SiteDetailViewController {
                             self.rawReadingLabel?.text = "--- : ---"
                             self.compassControl?.direction = .None
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
+                            self.uploaderBatteryLabel?.textColor = nil
                         }
                         if timeAgo < -timeAgoUrgentValue {
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
