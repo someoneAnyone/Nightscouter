@@ -13,7 +13,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
     
-    
     var sites: [Site] {
         return AppDataManager.sharedInstance.sites
     }
@@ -21,34 +20,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var timer: NSTimer?
     
     // MARK: AppDelegate Lifecycle
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Override point for customization after application launch.
         
         application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-
-        setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
-       
-        themeApp()
-        
         application.applicationIconBadgeNumber = 0
         application.cancelAllLocalNotifications()
+        
+        setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
+        
+        themeApp()
         
         return true
     }
     
     func applicationWillResignActive(application: UIApplication) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
         
         self.timer?.invalidate()
-        
-//        saveSites()
     }
     
     func applicationDidEnterBackground(application: UIApplication) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
         
@@ -56,20 +53,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationWillEnterForeground(application: UIApplication) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-//        application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
-
+        // application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
+        
         updateDataNotification(nil)
     }
     
     func applicationWillTerminate(application: UIApplication) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         
         saveSites()
@@ -77,11 +74,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: Background Fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
+            
             nsApi.fetchServerConfiguration { (result) -> Void in
                 switch (result) {
                 case let .Error(error):
@@ -113,22 +111,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         
         // Always return NewData.
-        // TODO:// Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
-
+        // TODO: Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
+        
         completionHandler(.NewData)
     }
     
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
         println(">>> Entering \(__FUNCTION__) <<<")
         println("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
-
+        
         var schemes = AppDataManager.sharedInstance.supportedSchemes!
         if (!contains(schemes, url.scheme!)) { // If the incoming scheme is not contained within the array of supported schemes return false.
             return false
         }
-    
+        
         // We now have an acceptable scheme. Pass the URL to the deep linking handler.
-         deepLinkToURL(url)
+        deepLinkToURL(url)
         
         return true
     }
@@ -136,26 +134,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: Local Notifications
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        println("Received a local notification payload: \(notification)")
+        // println("Received a local notification payload: \(notification)")
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
                 let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
                 let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
                 
-                AppDataManager.sharedInstance.currentSiteIndex = siteIndex!
                 site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
                 AppDataManager.sharedInstance.updateSite(site!)
+                AppDataManager.sharedInstance.currentSiteIndex = siteIndex!
                 
-                println("User tapped on notification for site: \(site) at index \(siteIndex)")
-
+                // println("User tapped on notification for site: \(site) at index \(siteIndex)")
+                
                 let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
                         AppDataManager.sharedInstance.currentSiteIndex = siteIndex
                         if let notificationIndex  = find(site.notifications, notification) {
                             site.notifications.removeAtIndex(notificationIndex)
-                            println("User tapped on notification for site: \(site) at index \(siteIndex)")
+                            // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                             
                             let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                             deepLinkToURL(url!)
@@ -168,52 +166,52 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
-
-    #if DEBUG
-    // MARK: Remote Notifications
     
-//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-//        println(">>> Entering \(__FUNCTION__) <<<")
-//        println("userInfo: \(userInfo)")
-//    }
-//    
-//    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-//        println(">>> Entering \(__FUNCTION__) <<<")
-//        println("userInfo: \(userInfo)")
-//        completionHandler(.NewData)
-//    }
-//    
-//    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-//        println(">>> Entering \(__FUNCTION__) <<<")
-//        println("deviceToken: \(deviceToken)")
-//    }
-//    
-//    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-//        println(">>> Entering \(__FUNCTION__) <<<")
-//        println("\(error), \(error.localizedDescription)")
-//    }
-    #endif
+    // MARK: Remote Notifications
+    /*
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+    println(">>> Entering \(__FUNCTION__) <<<")
+    println("userInfo: \(userInfo)")
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    println(">>> Entering \(__FUNCTION__) <<<")
+    println("userInfo: \(userInfo)")
+    completionHandler(.NewData)
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+    println(">>> Entering \(__FUNCTION__) <<<")
+    println("deviceToken: \(deviceToken)")
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+    println(">>> Entering \(__FUNCTION__) <<<")
+    println("\(error), \(error.localizedDescription)")
+    }
+    */
     
     // MARK: Custom Methods
+    
     func deepLinkToURL(url: NSURL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
-
-        // FIXME: This needs to be an optional.
-        let pathComponents = url.pathComponents!
-        let q = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)
-        
-        println("queryItems: \(q?.queryItems)") // Not handling queries at that moment, but might want to.
-    
-        if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
-            navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
-            let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
-            var viewControllers = navController.viewControllers as! [UIViewController] // Grab all the current view controllers in the stack.
-            for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
-                if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
-                    if let stor = UIStoryboard.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
-                        let allowed = contains(UIStoryboard.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
-                            if allowed {
-
+        if let pathComponents = url.pathComponents {
+            
+            if let queryItems = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)?.queryItems {
+                #if DEBUG
+                    println("queryItems: \(queryItems)") // Not handling queries at that moment, but might want to.
+                #endif
+            }
+            
+            if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
+                navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
+                let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
+                var viewControllers = navController.viewControllers as! [UIViewController] // Grab all the current view controllers in the stack.
+                for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
+                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
+                        if let stor = UIStoryboard.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
+                            let linkIsAllowed = contains(UIStoryboard.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
+                            if linkIsAllowed {
                                 let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController
                                 
                                 switch (stor) {
@@ -226,11 +224,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                 default:
                                     viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                                 }
+                            }
                         }
                     }
                 }
+                navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
             }
-            navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
         }
     }
     
@@ -241,7 +240,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func themeApp() {
         window?.tintColor = NSAssetKit.predefinedNeutralColor
-        // Change the font and size of nav bar text
+        // Change the font and size of nav bar text.
         if let navBarFont = UIFont(name: "HelveticaNeue-Thin", size: 20.0) {
             
             let navBarColor: UIColor = NSAssetKit.darkNavColor
@@ -251,13 +250,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 NSForegroundColorAttributeName: UIColor.whiteColor(),
                 NSFontAttributeName: navBarFont
             ]
+            
             UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
         }
     }
     
     func updateDataNotification(timer: NSTimer?) -> Void {
-//        println(">>> Entering \(__FUNCTION__) <<<")
-//        println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
+        // println(">>> Entering \(__FUNCTION__) <<<")
+        // println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
         NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataIsStaleUpdateNow, object: self))
         
         if (self.timer == nil) {
@@ -266,11 +266,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func scheduleLocalNotification(site: Site) {
-//        println(">>> Entering \(__FUNCTION__) <<<")
+        // println(">>> Entering \(__FUNCTION__) <<<")
         
         if (site.allowNotifications == false) { return }
         
-//        println("Scheduling a notification for site: \(site.url)")
+        // println("Scheduling a notification for site: \(site.url)")
         
         // remove old notifications before posting new one.
         for notification in site.notifications {
@@ -298,6 +298,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         site.notifications.append(localNotification)
+        AppDataManager.sharedInstance.updateSite(site)
+        
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
     }
     
@@ -309,14 +311,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register the notification settings.
         let newNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
         UIApplication.sharedApplication().registerUserNotificationSettings(newNotificationSettings)
-        
-        #if DEBUG
-//        UIApplication.sharedApplication().registerForRemoteNotifications()
-        #endif
+        // TODO: Enabled remote notifications... need to get a server running.
+        // UIApplication.sharedApplication().registerForRemoteNotifications()
     }
     
-    
     // MARK: NSCoding
+    
     func saveSites() -> Void {
         AppDataManager.sharedInstance.saveAppData()
     }
