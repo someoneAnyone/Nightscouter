@@ -68,5 +68,7 @@ struct Constants {
         static let uiAlertBadSiteTitle = "uiAlertBadSiteTitle"
         static let uiAlertScreenOverrideTitle = "uiAlertScreenOverrideTitle"
         static let uiAlertScreenOverrideMessage = "uiAlertScreenOverrideMessage"
+        
+        static let sgvLowString = "sgvLowString"
     }
 }

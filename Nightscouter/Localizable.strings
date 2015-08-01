@@ -7,10 +7,13 @@
 */
 
 "tableViewCellRemove" = "Remove";
+
 "batteryLabel" = "BATTERY"; // not implemented.
 "rawLabel" = "RAW";
+
 "lastUpdatedDateLabel" = "Updated on: ";
 "tableViewCellLoading" = "Loading...";
+
 "generalEditLabel" = "Edit";
 "generalCancelLabel" = "Cancel";
 "generalRetryLabel" = "Retry";
@@ -19,7 +22,7 @@
 
 "uiAlertBadSiteTitle" = "Cannot Reach Nightscout Site";
 "uiAlertBadSiteMessage" = "A connection to %@ was not successfull.\n\nReason: %@\n\nPlease check the URL and try again.";
-
 "uiAlertScreenOverrideTitle" = "Prevent Screen from Locking?";
-
 "uiAlertScreenOverrideMessage" = "Selecting Yes will prevent the application from going to sleep and locking while viewing this site.";
+
+"sgvLowString" = "Low";

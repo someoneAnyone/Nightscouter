@@ -153,7 +153,7 @@ struct SensorGlucoseValue {
                     return "✖"
                 }
             } else if sgv > 30 && sgv < 40 {
-                    return "Low"
+                    return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
                 } else {
                     return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.NoStyle)
             }
