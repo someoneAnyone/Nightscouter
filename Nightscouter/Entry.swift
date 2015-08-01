@@ -126,7 +126,7 @@ struct SensorGlucoseValue {
     
     var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
-            if sgv < 39 {
+            if sgv <= 29 {
                 let special:ReservedValues = ReservedValues(rawValue: sgv)!
                 switch (special) {
                 case .NoGlucose:
@@ -152,8 +152,10 @@ struct SensorGlucoseValue {
                 default:
                     return "✖"
                 }
-            } else {
-                return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.NoStyle)
+            } else if sgv > 30 && sgv < 40 {
+                    return "Low"
+                } else {
+                    return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.NoStyle)
             }
         }
     }

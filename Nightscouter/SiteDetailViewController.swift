@@ -198,6 +198,7 @@ extension SiteDetailViewController {
                             self.compassControl?.delta = "--"
                             self.uploaderBatteryLabel?.text = "---"
                             self.rawReadingLabel?.text = "--- : ---"
+                            self.rawReadingLabel?.textColor = self.textColor
                             self.compassControl?.direction = .None
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
                             self.uploaderBatteryLabel?.textColor = self.textColor
