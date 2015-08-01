@@ -468,6 +468,8 @@ class SiteListTableViewController: UITableViewController {
         }
         alertController.addAction(removeAction)
         
+        self.navigationController?.popToRootViewControllerAnimated(true)
+        
         self.presentViewController(alertController, animated: true) {
             // ...
         }

@@ -35,8 +35,13 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     var nsApi: NightscoutAPIClient?
     var data = [AnyObject]()
     
+    var textColor: UIColor?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        textColor = self.titleLabel!.textColor
+
         // Do any additional setup after loading the view, typically from a nib.
         // navigationController?.hidesBarsOnTap = true
         // remove any uneeded decorations from this view if contained within a UI page view controller
@@ -111,7 +116,8 @@ extension SiteDetailViewController {
             switch (result) {
             case let .Error(error):
                 // display error message
-                println("error: \(error)")
+                // println("error: \(error)")
+                self.navigationController?.popViewControllerAnimated(true)
                 
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
@@ -181,6 +187,10 @@ extension SiteDetailViewController {
                             timeAgoUrgentValue = Constants.NotableTime.StaleDataTimeFrame * 10
                         }
                         
+                        self.compassControl?.alpha = 1.0
+                        self.lastReadingLabel?.textColor = self.textColor
+
+                        
                         if timeAgo < -timeAgoWarnValue {
                             self.compassControl?.alpha = 0.5
                             self.compassControl?.color = NSAssetKit.predefinedNeutralColor
@@ -190,7 +200,7 @@ extension SiteDetailViewController {
                             self.rawReadingLabel?.text = "--- : ---"
                             self.compassControl?.direction = .None
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
-                            self.uploaderBatteryLabel?.textColor = nil
+                            self.uploaderBatteryLabel?.textColor = self.textColor
                         }
                         if timeAgo < -timeAgoUrgentValue {
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
