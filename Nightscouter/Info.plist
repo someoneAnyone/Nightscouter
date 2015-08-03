@@ -65,5 +65,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).sites</string>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).site</string>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).new</string>
+	</array>
 </dict>
 </plist>
