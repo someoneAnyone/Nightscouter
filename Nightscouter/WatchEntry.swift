@@ -54,7 +54,6 @@ extension WatchEntry {
         var now: NSDate = NSDate()
         var date: NSDate = NSDate()
         var device: String = WatchFaceDeviceValue
-        //        var type: Type = Type.unknown("Not Set Yet")
         var bgdelta: Int = 0
         var battery: Int = 0
         var sgvItem: SensorGlucoseValue?
@@ -78,38 +77,43 @@ extension WatchEntry {
         }
         // Blood glucose object
         if let bgs: NSDictionary = newDict[EntryPropertyKey.bgsKey] as? NSDictionary {
+            
+            sgvItem = SensorGlucoseValue(sgv: 0, direction: .None, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
             if let directionString = bgs[EntryPropertyKey.directionKey] as? String {
                 if let direction = Direction(rawValue: directionString) {
-                    if let datetime = bgs[EntryPropertyKey.datetimeKey] as? Double {
-                        date = datetime.toDateUsingSeconds()
-                        if let batteryString = bgs[EntryPropertyKey.batteryKey] as? String {
-                            let batteryInt = batteryString.toInt()
-                            battery = batteryInt!
-                            if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
-                                bgdelta = bgdeltaInt
-                                if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
-                                    if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
-                                        if let unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int {
-                                            if let noiseInt = bgs[EntryPropertyKey.noiseKey] as? Int {
-                                                if let noise = Noise(rawValue: noiseInt) {
-                                                    let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
-                                                    sgvItem = sgvValue
-                                                }
-                                            } else {
-                                                let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: .None)
-                                                sgvItem = sgvValue                                                
-                                            }
-                                        }
-                                    } else {
-                                        let sgvValue = SensorGlucoseValue(sgv: sgvString.toInt()!, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: Noise.None)
-                                        sgvItem = sgvValue
-                                        
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    sgvItem?.direction = direction
                 }
+            }
+            
+            if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
+                sgvItem?.sgv = sgvString.toInt()!
+            }
+            
+            if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
+                sgvItem?.filtered = filtered
+            }
+            
+            if let unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int {
+                sgvItem?.unfiltered = unfiltlered
+            }
+            
+            if let noiseInt = bgs[EntryPropertyKey.noiseKey] as? Int {
+                if let noise = Noise(rawValue: noiseInt) {
+                    sgvItem?.noise = noise
+                }
+            }
+            
+            if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
+                bgdelta = bgdeltaInt
+            }
+            
+            if let batteryString = bgs[EntryPropertyKey.batteryKey] as? String {
+                let batteryInt = batteryString.toInt()
+                battery = batteryInt!
+            }
+            
+            if let datetime = bgs[EntryPropertyKey.datetimeKey] as? Double {
+                date = datetime.toDateUsingSeconds()
             }
         }
         // cals object
@@ -118,7 +122,6 @@ extension WatchEntry {
                 if let intercept = cals[EntryPropertyKey.interceptKey] as? Double {
                     if let scale = cals[EntryPropertyKey.scaleKey] as? Double {
                         let calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
-                        //                        type = Type.cal(calValue)
                         calItem = calValue
                     }
                 }
