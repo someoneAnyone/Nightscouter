@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import AVFoundation
+
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
@@ -160,7 +162,6 @@ extension SiteDetailViewController {
                 if let watchEntry = watchEntry {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
-                        
                         self.compassControl?.configureWith(site)
                         self.uploaderBatteryLabel?.text = watchEntry.batteryString
                         
@@ -173,6 +174,13 @@ extension SiteDetailViewController {
                             self.rawReadingLabel?.textColor = color
                             self.rawReadingLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
                         }
+                        
+                        
+                        let currentState = site.configuration!.boundedColorForGlucoseValue(watchEntry.sgv!.sgv)
+                        
+                        let item = AppDataManager.sharedInstance.setupAudioPlayerWithFile("alarm2", type: "mp3")
+                        item.volume = 0.5
+                        item.play()
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
                         
@@ -203,25 +211,32 @@ extension SiteDetailViewController {
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
                             self.uploaderBatteryLabel?.textColor = self.textColor
                         }
+                        
                         if timeAgo < -timeAgoUrgentValue {
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
                         }
                         
-                        self.nsApi!.fetchDataForEntries(count: Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
-                            if let entries = entries {
-                                for entry in entries {
-                                    if (entry.sgv?.sgv > Constants.EntryCount.LowerLimitForValidSGV) {
-                                        let jsonError: NSError?
-                                        let jsObj =  NSJSONSerialization.dataWithJSONObject(entry.dictionaryRep, options:nil, error:nil)
-                                        let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
-                                        self.data.append(str!)
+                        if timeAgo >= -Constants.StandardTimeFrame.TwoHoursInSeconds {
+                            self.nsApi!.fetchDataForEntries(count: Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
+                                if let entries = entries {
+                                    for entry in entries {
+                                        if (entry.sgv?.sgv > Constants.EntryCount.LowerLimitForValidSGV) {
+                                            let jsonError: NSError?
+                                            let jsObj =  NSJSONSerialization.dataWithJSONObject(entry.dictionaryRep, options:nil, error:nil)
+                                            let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
+                                            self.data.append(str!)
+                                        }
                                     }
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        self.activityView?.stopAnimating()
+                                        self.webView?.reload()
+                                    })
                                 }
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    self.activityView?.stopAnimating()
-                                    self.webView?.reload()
-                                })
                             }
+                        } else {
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                self.activityView?.stopAnimating()
+                            })
                         }
                     })
                 }
