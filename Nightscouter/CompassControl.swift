@@ -27,6 +27,10 @@ public class CompassControl: UIView {
         }
     }
     
+    public override func intrinsicContentSize() -> CGSize {
+        return CGSizeMake(156, 196)
+    }
+    
     var animationValue: CGFloat = 0
     @IBInspectable var delta: String = "- --/--" {
         didSet{

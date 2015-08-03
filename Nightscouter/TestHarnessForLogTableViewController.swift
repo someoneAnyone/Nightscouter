@@ -20,8 +20,8 @@ class TestHarnessForLogTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
         
-//        self.tableView.rowHeight = UITableViewAutomaticDimension;
-        self.tableView.rowHeight = 150; // set to whatever your "average" cell height is
+        self.tableView.rowHeight = UITableViewAutomaticDimension;
+        self.tableView.estimatedRowHeight = 100; // set to whatever your "average" cell height is
         
         let url: NSURL = NSUserDefaults.standardUserDefaults().URLForKey("url")!// NSURL(string:  ")!
         let nsAPI = NightscoutAPIClient(url:url)
@@ -64,7 +64,6 @@ class TestHarnessForLogTableViewController: UITableViewController {
         
         let entry: Entry = self.dataForTable[indexPath.row] as Entry
         
-        
         if let sgValue: SensorGlucoseValue = entry.sgv {
             cell.sgv.text =  "\(sgValue.sgv)"
             cell.direction.text = sgValue.direction.rawValue
@@ -80,10 +79,9 @@ class TestHarnessForLogTableViewController: UITableViewController {
             cell.type.text = "type: \(Type().rawValue)"
         }
 
-            cell.device.text = entry.device
-        cell.idString.text = entry.idString
+        cell.device.text = entry.device
+        cell.idString.text = "id:\(entry.idString)"
         cell.dateString.text = entry.dateString
-        
         
         let dateFormatter = NSDateFormatter()
         //To prevent displaying either date or time, set the desired style to NoStyle.

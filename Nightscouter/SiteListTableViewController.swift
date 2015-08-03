@@ -22,7 +22,6 @@ class SiteListTableViewController: UITableViewController {
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate? {
         didSet{
-            
             // Create and use a formatter.
             let dateFormatter = NSDateFormatter()
             dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
@@ -228,10 +227,10 @@ class SiteListTableViewController: UITableViewController {
     @IBAction func unwindToSiteList(sender: UIStoryboardSegue) {
         
         if let sourceViewController = sender.sourceViewController as? SiteFormViewController, site = sourceViewController.site {
+            site.disabled = false
             // This segue is triggered when we "save" or "next" out of the url form.
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
-//                AppDataManager.sharedInstance.sites[selectedIndexPath.row] = site
                 AppDataManager.sharedInstance.updateSite(site)
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
@@ -245,11 +244,8 @@ class SiteListTableViewController: UITableViewController {
         }
         
         if let pageViewController = sender.sourceViewController as? SiteListPageViewController {
-            
-            let modelController = pageViewController.modelController
-            let site = modelController.sites[pageViewController.currentIndex]
-            
-//            AppDataManager.sharedInstance.sites[pageViewController.currentIndex] = site
+            // let modelController = pageViewController.modelController
+            // let site = modelController.sites[pageViewController.currentIndex]
             tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: pageViewController.currentIndex, inSection: 0)], withRowAnimation: .None)
         }
         shouldIShowNewSiteForm()
@@ -259,26 +255,31 @@ class SiteListTableViewController: UITableViewController {
     func configureView() -> Void {
         // The following line displys an Edit button in the navigation bar for this view controller.
         navigationItem.leftBarButtonItem = self.editButtonItem()
+        
         // Only allow the edit button to be enabled if there are items in the sites array.
-        self.editButtonItem().enabled = !sites.isEmpty
+        editButtonItem().enabled = !sites.isEmpty
         clearsSelectionOnViewWillAppear = true
+        
         // Configure table view properties.
         tableView.rowHeight = 240
-        // Set table view's background view property
-        // TODO: Move this out to a theme manager.
-        tableView.backgroundView = TableViewBackgroundView()
+        tableView.backgroundView = TableViewBackgroundView() // TODO: Move this out to a theme manager.
         tableView.separatorColor = NSAssetKit.darkNavColor
+        
         // Position refresh control above background view
         refreshControl?.tintColor = UIColor.whiteColor()
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-        // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+       setupNotifications()
 
-        
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+        
         startUserActivity()
+    }
+    
+    func setupNotifications() {
+        // Listen for global update timer.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
@@ -297,7 +298,6 @@ class SiteListTableViewController: UITableViewController {
             } else {
                 cell.siteName.text = configuration.name
                 maxValue = Constants.NotableTime.StaleDataTimeFrame
-
             }
             
             if let watch = site.watchEntry {
@@ -310,7 +310,6 @@ class SiteListTableViewController: UITableViewController {
                     
                     let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
                     cell.siteColorBlock.backgroundColor = color
-                    
                     
                     if let enabledOptions = configuration.enabledOptions {
                         
@@ -397,11 +396,11 @@ class SiteListTableViewController: UITableViewController {
     func loadUpData(site: Site, index: Int){
         // Start up the API
         let nsApi = NightscoutAPIClient(url: site.url)
-        
-        //TODO:// 1. There should be reachabiltiy checks before doing anything.
-        //TODO:// 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
-        //TODO:// 3. Probably need to move this code to the application delegate?
-        
+       
+        //TODO: 1. There should be reachabiltiy checks before doing anything.
+        //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
+        //TODO: 3. Probably need to move this code to the application delegate?
+      
         // Get settings for a given site.
         println("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
@@ -409,8 +408,9 @@ class SiteListTableViewController: UITableViewController {
             case let .Error(error):
                 // display error message
                 
-                println("loadUpData ERROR recieved: \(error)")
+                // println("loadUpData ERROR recieved: \(error)")
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    site.disabled = true
                     self.presentAlertDialog(site.url, index: index, error: error)
                 })
                 
@@ -430,7 +430,6 @@ class SiteListTableViewController: UITableViewController {
                         }
                     })
                 })
-                
             }
         }
     }
@@ -448,7 +447,12 @@ class SiteListTableViewController: UITableViewController {
         alertController.addAction(cancelAction)
         
         let retryAction = UIAlertAction(title: Constants.LocalizedString.generalRetryLabel.localized, style: .Default) { (action) in
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            let site = AppDataManager.sharedInstance.sites[indexPath.row]
+            site.disabled = false
+            AppDataManager.sharedInstance.updateSite(site)
+            
+            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         alertController.addAction(retryAction)
         
@@ -471,6 +475,7 @@ class SiteListTableViewController: UITableViewController {
         self.navigationController?.popToRootViewControllerAnimated(true)
         
         self.presentViewController(alertController, animated: true) {
+            // remove nsnotification observer?
             // ...
         }
     }

@@ -19,6 +19,7 @@ class Site: NSObject, NSCoding {
         static let notificationKey = "notification"
         static let notificationCountKey = "notificationCount"
         static let overrideScreenLockKey = "overrideScreenLock"
+        static let disabledKey = "disabled"
         
         static let sitesKey = "sites.plist"
 
@@ -37,6 +38,7 @@ class Site: NSObject, NSCoding {
             configuration = nil
             watchEntry = nil
             entries = nil
+            disabled = false
         }
     }
     var apiSecret: String?
@@ -47,6 +49,7 @@ class Site: NSObject, NSCoding {
     var overrideScreenLock: Bool
 
     var notifications: [UILocalNotification]
+    var disabled: Bool
     
     private(set) var uuid: NSUUID
     
@@ -59,6 +62,7 @@ class Site: NSObject, NSCoding {
         self.uuid = NSUUID()
         self.notifications = [UILocalNotification]()
         self.overrideScreenLock = false
+        self.disabled = false
         
         super.init()
         
@@ -76,22 +80,15 @@ class Site: NSObject, NSCoding {
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
         aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
         aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
+        aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
     }
-    
-    /*
-    convenience required init(coder aDecoder: NSCoder) {
-    let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
-    let apiSecretKey = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
-    
-    self.init(url: url, apiSecret: apiSecret)
-    }
-    */
-    
+
     required init(coder aDecoder: NSCoder) {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
         let overrideScreen = aDecoder.decodeBoolForKey(PropertyKey.overrideScreenLockKey)
+        let disabledSite = aDecoder.decodeBoolForKey(PropertyKey.disabledKey)
         
         if let uuid = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? NSUUID {
             self.uuid = uuid
@@ -109,6 +106,8 @@ class Site: NSObject, NSCoding {
         } else {
             self.notifications = [UILocalNotification]()
         }
+        
+        self.disabled = disabledSite
         
     }
 }

@@ -184,6 +184,7 @@ struct EntryPropertyKey {
     static let rssiKey = "rssi"
     static let identKey = "_id"
     static let deviceKey = "device"
+    static let dateStringKey = "dateString"
 }
 
 
@@ -267,6 +268,12 @@ extension Entry {
             device = deviceString
         }
         
+        
+        var dateString: String = ""
+        if let dateStringOptional = dict[EntryPropertyKey.dateStringKey] as? String {
+            dateString = dateStringOptional
+        }
+        
         if let rawEpoch = dict[EntryPropertyKey.dateKey] as? Double {
             date = rawEpoch.toDateUsingSeconds()
             if let stringForType = dict[EntryPropertyKey.typeKey] as? String {
@@ -311,15 +318,19 @@ extension Entry {
                         
                     default:
                         let errorString: String = "I have encountered a nightscout recorded type I don't know\ntype:\(typedString)"
+                        #if DEBUG
                         println(errorString)
+                        #endif
                         NSError(domain: NightscoutModelErrorDomain, code: -10, userInfo: ["description": errorString])
                     }
                 }
             } else {
                 let errorString: String = "Type feild is missing for \(dict)"
-                // println(errorString)
+                #if DEBUG
+                    println(errorString)
+                #endif
                 NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
-
+                
                 if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
                     if let directionString = dict[EntryPropertyKey.directionKey] as? String {
                         if let direction = Direction(rawValue: directionString) {
@@ -333,6 +344,7 @@ extension Entry {
         }
         self.init(identifier: idString, date: date, device:device)//, type: type)
         
+        self.dateString = dateString
         self.sgv = sgvItem
         self.mbg = meterItem
         self.cal = calItem
