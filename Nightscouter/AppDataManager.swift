@@ -8,7 +8,7 @@
 
 import Foundation
 import UIKit
-
+import AVFoundation
 class AppDataManager: NSObject, UIStateRestoring {
     
     var sites: [Site] = [Site]() {
@@ -184,6 +184,28 @@ class AppDataManager: NSObject, UIStateRestoring {
         
         // Add it to the site Array
         sites = [demoSite]
+    }
+    
+    func setupAudioPlayerWithFile(file: String, type: String) -> AVAudioPlayer  {
+        //1
+        
+//        let filePath = NSBundle.mainBundle().pathForResource(file, ofType: "mp3", inDirectory: "audio")
+//        let defaultDBPath =  NSBundle.mainBundle().resourcePath?.stringByAppendingPathComponent("audio")
+
+        
+        let path = NSBundle.mainBundle().pathForResource(file, ofType: type, inDirectory:"audio")
+//        var path = NSBundle.mainBundle().pathForResource(file, ofType:type)
+        var url = NSURL.fileURLWithPath(path!)
+        
+        //2
+        var error: NSError?
+        
+        //3
+        var audioPlayer: AVAudioPlayer?
+        audioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
+        
+        //4
+        return audioPlayer!
     }
     
 }

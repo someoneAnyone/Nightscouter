@@ -15,6 +15,7 @@
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
 		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
 		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
+		1716B6A91B6FF2B5005F9B02 /* audio in Resources */ = {isa = PBXBuildFile; fileRef = 1716B6A71B6FE1EC005F9B02 /* audio */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		173454491B30740A00931278 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173454481B30740A00931278 /* Site.swift */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
@@ -59,6 +60,7 @@
 		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
 		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
 		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
+		1716B6A71B6FE1EC005F9B02 /* audio */ = {isa = PBXFileReference; lastKnownFileType = folder; path = audio; sourceTree = "<group>"; };
 		171FD6261B32685100E7C471 /* Scratchpad.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Scratchpad.playground; path = Nightscouter/Scratchpad.playground; sourceTree = "<group>"; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		173454481B30740A00931278 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Site.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1C51B31151800C22762 /* NSAssetKit.swift */,
 				17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */,
+				1716B6A71B6FE1EC005F9B02 /* audio */,
 				1739B1BD1B31141000C22762 /* html */,
 				17C95CAD1B40AD0B0035922A /* Assets.xcassets */,
 			);
@@ -316,6 +319,7 @@
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
 				17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */,
+				1716B6A91B6FF2B5005F9B02 /* audio in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
