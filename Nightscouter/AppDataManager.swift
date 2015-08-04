@@ -5,10 +5,8 @@
 //  Created by Peter Ina on 7/22/15.
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
-
-import Foundation
 import UIKit
-import AVFoundation
+
 class AppDataManager: NSObject, UIStateRestoring {
     
     var sites: [Site] = [Site]() {
@@ -50,35 +48,6 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
     }
     
-    var infoDictionary: [String: AnyObject]? {
-        return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
-    }
-    
-    var bundleIdentifier: String? {
-        if let dictionary = infoDictionary {
-            return dictionary["CFBundleIdentifier"] as? String
-        }
-        return nil
-    }
-    
-    var supportedSchemes: [String]? {
-        if let info = infoDictionary {
-            var schemes = [String]() // Create an empty array we can later set append available schemes.
-            if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
-                for (index, object) in enumerate(bundleURLTypes) {
-                    if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
-                        if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
-                            schemes += urlScheme // We've found the supported schemes appending to the array.
-                            
-                            return schemes
-                        }
-                    }
-                }
-            }
-        }
-        return nil
-    }
-    
     class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
@@ -108,10 +77,6 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
         }
         */
-    }
-    
-    deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func saveAppData() {
@@ -163,13 +128,13 @@ class AppDataManager: NSObject, UIStateRestoring {
             UIApplication.sharedApplication().cancelLocalNotification(notifications)
         }
         
-//        
-//        for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
-//            if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-//                UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-//                break
-//            }
-//        }
+        //
+        // for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+        // if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+        // UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+        // break
+        // }
+        // }
         
         sites.removeAtIndex(index)
 
@@ -186,26 +151,32 @@ class AppDataManager: NSObject, UIStateRestoring {
         sites = [demoSite]
     }
     
-    func setupAudioPlayerWithFile(file: String, type: String) -> AVAudioPlayer  {
-        //1
-        
-//        let filePath = NSBundle.mainBundle().pathForResource(file, ofType: "mp3", inDirectory: "audio")
-//        let defaultDBPath =  NSBundle.mainBundle().resourcePath?.stringByAppendingPathComponent("audio")
-
-        
-        let path = NSBundle.mainBundle().pathForResource(file, ofType: type, inDirectory:"audio")
-//        var path = NSBundle.mainBundle().pathForResource(file, ofType:type)
-        var url = NSURL.fileURLWithPath(path!)
-        
-        //2
-        var error: NSError?
-        
-        //3
-        var audioPlayer: AVAudioPlayer?
-        audioPlayer = AVAudioPlayer(contentsOfURL: url, error: &error)
-        
-        //4
-        return audioPlayer!
+    var infoDictionary: [String: AnyObject]? {
+        return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
     }
     
+    var bundleIdentifier: String? {
+        if let dictionary = infoDictionary {
+            return dictionary["CFBundleIdentifier"] as? String
+        }
+        return nil
+    }
+    
+    var supportedSchemes: [String]? {
+        if let info = infoDictionary {
+            var schemes = [String]() // Create an empty array we can later set append available schemes.
+            if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
+                for (index, object) in enumerate(bundleURLTypes) {
+                    if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
+                        if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
+                            schemes += urlScheme // We've found the supported schemes appending to the array.
+                            return schemes
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
 }

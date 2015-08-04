@@ -32,9 +32,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>118</string>
+	<string>119</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).sites</string>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).site</string>
+		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).new</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -49,7 +55,7 @@
 		<string>armv7</string>
 	</array>
 	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
+	<string>UIStatusBarStyleDefault</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -65,11 +71,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSUserActivityTypes</key>
-	<array>
-		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).sites</string>
-		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).site</string>
-		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).new</string>
-	</array>
 </dict>
 </plist>

@@ -7,8 +7,6 @@
 //
 
 import UIKit
-import AVFoundation
-
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
@@ -75,7 +73,6 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     }
 }
 
-
 extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
         // print(">>> Entering \(__FUNCTION__) <<<")
@@ -86,7 +83,7 @@ extension SiteDetailViewController{
 // Mark: WebKit WebView Delegates
 extension SiteDetailViewController {
     func webViewDidFinishLoad(webView: UIWebView) {
-        //        print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(__FUNCTION__) <<<")
         let updateData = "updateData(\(self.data))"
         
         if let units = self.site?.configuration?.unitsRoot {
@@ -132,7 +129,6 @@ extension SiteDetailViewController {
                     } else {
                         self.navigationItem.title = configuration.name
                         self.navigationController?.navigationItem.title = configuration.name
-
                         self.titleLabel?.text = configuration.name
                     }
                     
@@ -142,8 +138,8 @@ extension SiteDetailViewController {
                             // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
                             // self.rawReadingLabel!.removeFromSuperview()
                             if let rawHeader = self.rawHeader {
-                                self.rawHeader!.hidden = true
-                                self.rawReadingLabel!.hidden = true
+                                self.rawHeader?.hidden = true
+                                self.rawReadingLabel?.hidden = true
                             }
                         }
                     }
@@ -175,16 +171,9 @@ extension SiteDetailViewController {
                             self.rawReadingLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
                         }
                         
-                        
-                        let currentState = site.configuration!.boundedColorForGlucoseValue(watchEntry.sgv!.sgv)
-                        
-                        let item = AppDataManager.sharedInstance.setupAudioPlayerWithFile("alarm2", type: "mp3")
-                        item.volume = 0.5
-                        item.play()
-                        
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
                         
-                        // TODO:// Deprecate this StaleDataTimeFram check and use the alarms when available. Fll back to this whne no alarm for stale data available.
+                        // TODO: Candidate for refactoring... alot of this code is reused across the sites list and this site view.
                         let timeAgoWarnValue: NSTimeInterval
                         let timeAgoUrgentValue: NSTimeInterval
                         if let defaults = site.configuration?.defaults {
@@ -197,7 +186,6 @@ extension SiteDetailViewController {
                         
                         self.compassControl?.alpha = 1.0
                         self.lastReadingLabel?.textColor = self.textColor
-
                         
                         if timeAgo < -timeAgoWarnValue {
                             self.compassControl?.alpha = 0.5

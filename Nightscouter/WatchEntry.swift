@@ -62,7 +62,6 @@ extension WatchEntry {
         let newDict: NSMutableDictionary = NSMutableDictionary()
         
         for (key, obj) in watchEntryDictionary {
-            
             if let array = obj as? [AnyObject] {
                 if let objDict: NSDictionary = array.first as? NSDictionary {
                     newDict["\(key)"] = objDict
@@ -75,6 +74,7 @@ extension WatchEntry {
                 now = nowDouble.toDateUsingSeconds()
             }
         }
+        
         // Blood glucose object
         if let bgs: NSDictionary = newDict[EntryPropertyKey.bgsKey] as? NSDictionary {
             
@@ -137,5 +137,4 @@ extension WatchEntry {
         }
         
     }
-    
 }

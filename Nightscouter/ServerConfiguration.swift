@@ -237,8 +237,6 @@ extension ServerConfiguration {
     }
 }
 
-
-
 // TODO: Should this be here?
 enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
@@ -256,10 +254,10 @@ extension ServerConfiguration {
                 color =  .Warning
             } else if (value >= thresholds.bg_target_bottom && value <= thresholds.bg_target_top) {
                 color = .Positive
-            } else if (value < thresholds.bg_low) {
-                color = .Alert
-            } else if (value < thresholds.bg_target_bottom) {
+            } else if (value < thresholds.bg_target_bottom && value > thresholds.bg_low) {
                 color = .Warning
+            } else if (value < thresholds.bg_low && value != 0) {
+                color = .Alert
             }
         }
         return color
