@@ -10,38 +10,36 @@ import UIKit
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
-    
-    @IBOutlet weak var lastReadingHeader: UILabel?
-    @IBOutlet weak var batteryHeader: UILabel?
-    @IBOutlet weak var rawHeader: UILabel?
-    
+    // MARK: IBOutlets
     @IBOutlet weak var compassControl: CompassControl?
+    @IBOutlet weak var lastReadingHeader: UILabel?
     @IBOutlet weak var lastReadingLabel: UILabel?
-    @IBOutlet weak var rawReadingLabel: UILabel?
+    @IBOutlet weak var batteryHeader: UILabel?
     @IBOutlet weak var uploaderBatteryLabel: UILabel?
-    
+    @IBOutlet weak var rawHeader: UILabel?
+    @IBOutlet weak var rawReadingLabel: UILabel?
     @IBOutlet weak var titleLabel: UILabel?
     @IBOutlet weak var webView: UIWebView?
     @IBOutlet weak var activityView: UIActivityIndicatorView?
     
+    // MARK: Properties
     var site: Site? {
         didSet {
             if (site != nil){
-                lebeoufIt()
+                configureView()
             }
         }
     }
-    
     var nsApi: NightscoutAPIClient?
     var data = [AnyObject]()
+    var defaultTextColor: UIColor?
     
-    var textColor: UIColor?
-    
+    // MARK: View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textColor = self.titleLabel!.textColor
-
+        defaultTextColor = self.titleLabel!.textColor
+        
         // Do any additional setup after loading the view, typically from a nib.
         // navigationController?.hidesBarsOnTap = true
         // remove any uneeded decorations from this view if contained within a UI page view controller
@@ -51,7 +49,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
             self.titleLabel?.removeFromSuperview()
         }
         
-        lebeoufIt()
+        configureView()
     }
     
     deinit {
@@ -97,7 +95,7 @@ extension SiteDetailViewController {
 
 extension SiteDetailViewController {
     
-    func lebeoufIt () { // Just do it!
+    func configureView() { // Just do it!
         self.compassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
         
@@ -153,66 +151,55 @@ extension SiteDetailViewController {
         // print(">>> Entering \(__FUNCTION__) <<<")
         self.activityView?.startAnimating()
         
-        if let site = self.site {
+        if let site = self.site, configuration = site.configuration, defaults = configuration.defaults {
+            
             nsApi!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
-                if let watchEntry = watchEntry {
+                if let watchEntry = watchEntry, sgv = watchEntry.sgv {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         
                         self.compassControl?.configureWith(site)
+                        
+                        // Battery label
                         self.uploaderBatteryLabel?.text = watchEntry.batteryString
-                        
                         self.uploaderBatteryLabel?.textColor = colorForDesiredColorState(watchEntry.batteryColorState)
-                                                
-                        self.lastReadingLabel?.text = watchEntry.dateTimeAgoString
                         
+                        // Last reading label
+                        self.lastReadingLabel?.text = watchEntry.dateTimeAgoString
+                        self.lastReadingLabel?.textColor = self.defaultTextColor
+                        
+                        // Raw label
                         if let rawValue = watchEntry.raw {
-                            let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(Int(rawValue)))
+                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(Int(rawValue)))
                             self.rawReadingLabel?.textColor = color
-                            self.rawReadingLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(watchEntry.sgv!.noise)"
+                            self.rawReadingLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(sgv.noise)"
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
+                        let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
+                        self.compassControl?.shouldLookStale(look: isStaleData.warn)
                         
-                        // TODO: Candidate for refactoring... alot of this code is reused across the sites list and this site view.
-                        let timeAgoWarnValue: NSTimeInterval
-                        let timeAgoUrgentValue: NSTimeInterval
-                        if let defaults = site.configuration?.defaults {
-                            timeAgoWarnValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
-                            timeAgoUrgentValue = defaults.alarms.alarmTimeAgoUrgentMins
-                        } else {
-                            timeAgoWarnValue = Constants.NotableTime.StaleDataTimeFrame
-                            timeAgoUrgentValue = Constants.NotableTime.StaleDataTimeFrame * 10
-                        }
-                        
-                        self.compassControl?.alpha = 1.0
-                        self.lastReadingLabel?.textColor = self.textColor
-                        
-                        if timeAgo < -timeAgoWarnValue {
-                            self.compassControl?.alpha = 0.5
-                            self.compassControl?.color = NSAssetKit.predefinedNeutralColor
-                            self.compassControl?.sgvText = "---"
-                            self.compassControl?.delta = "--"
+                        if isStaleData.warn {
                             self.uploaderBatteryLabel?.text = "---"
+                            self.uploaderBatteryLabel?.textColor = self.defaultTextColor
+                            
                             self.rawReadingLabel?.text = "--- : ---"
-                            self.rawReadingLabel?.textColor = self.textColor
-                            self.compassControl?.direction = .None
+                            self.rawReadingLabel?.textColor = self.defaultTextColor
+                            
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
-                            self.uploaderBatteryLabel?.textColor = self.textColor
                         }
                         
-                        if timeAgo < -timeAgoUrgentValue {
+                        if isStaleData.urgent{
                             self.lastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
                         }
                         
-                        if timeAgo >= -Constants.StandardTimeFrame.TwoHoursInSeconds {
+                        if timeAgo >= Constants.StandardTimeFrame.TwoHoursInSeconds.inThePast {
                             self.nsApi!.fetchDataForEntries(count: Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
                                 if let entries = entries {
                                     for entry in entries {
-                                        if (entry.sgv?.sgv > Constants.EntryCount.LowerLimitForValidSGV) {
-                                            let jsonError: NSError?
-                                            let jsObj =  NSJSONSerialization.dataWithJSONObject(entry.dictionaryRep, options:nil, error:nil)
-                                            let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
-                                            self.data.append(str!)
+                                        if let sgv = entry.sgv {
+                                            if (sgv.sgv > Constants.EntryCount.LowerLimitForValidSGV) {
+                                                self.data.append(entry.jsonForChart)
+                                            }
                                         }
                                     }
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -296,7 +283,7 @@ extension SiteDetailViewController {
     
     func updateScreenOverride(shouldOverride: Bool) {
         self.site!.overrideScreenLock = shouldOverride
-   
+        
         AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
         AppDataManager.sharedInstance.updateSite(site!)
         
@@ -316,23 +303,26 @@ extension SiteDetailViewController {
         // #endif
     }
     
+    
+    
+    
     // MARK: Handoff
     
     override func updateUserActivityState(activity: NSUserActivity) {
         activity.webpageURL = site?.url
-//        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySiteKey: site])
+        //        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySiteKey: site])
         super.updateUserActivityState(activity)
     }
     /*
     override func restoreUserActivityState(activity: NSUserActivity) {
-        if let userInfo = activity.userInfo {
-            var activityItem: AnyObject? = userInfo[Constants.ActivityKey.ActivitySiteKey]
-            if let itemToRestore = activityItem as? String {
-//                item = itemToRestore
-//                textField?.text = item
-            }
-        }
-        super.restoreUserActivityState(activity)
+    if let userInfo = activity.userInfo {
+    var activityItem: AnyObject? = userInfo[Constants.ActivityKey.ActivitySiteKey]
+    if let itemToRestore = activityItem as? String {
+    //                item = itemToRestore
+    //                textField?.text = item
+    }
+    }
+    super.restoreUserActivityState(activity)
     }
     */
 }

@@ -289,6 +289,8 @@ class SiteListTableViewController: UITableViewController {
         
         cell.siteURL.text = site.url.host
         
+        let defaultTextColor = cell.siteBatteryLevel.textColor
+        
         if let configuration = site.configuration {
             
             let maxValue: NSTimeInterval
@@ -300,13 +302,13 @@ class SiteListTableViewController: UITableViewController {
                 maxValue = Constants.NotableTime.StaleDataTimeFrame
             }
             
-            if let watch = site.watchEntry {
+            if let watchEntry = site.watchEntry {
                 
-                cell.siteBatteryLevel.text = watch.batteryString
-                cell.siteTimeAgo.text = watch.dateTimeAgoString
+                cell.siteBatteryLevel.text = watchEntry.batteryString
+                cell.siteTimeAgo.text = watchEntry.dateTimeAgoString
                 cell.compassControl.configureWith(site)
                 
-                if let sgvValue = watch.sgv {
+                if let sgvValue = watchEntry.sgv {
                     
                     let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
                     cell.siteColorBlock.backgroundColor = color
@@ -315,7 +317,7 @@ class SiteListTableViewController: UITableViewController {
                         
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if rawEnabled {
-                            if let rawValue = watch.raw {
+                            if let rawValue = watchEntry.raw {
                                 cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
                             }
                         } else {
@@ -324,19 +326,24 @@ class SiteListTableViewController: UITableViewController {
                         }
                     }
                     
-                    let timeAgo = watch.date.timeIntervalSinceNow
-                    if timeAgo < -maxValue {
-                        cell.compassControl.alpha = 0.5
-                        cell.compassControl.color = NSAssetKit.predefinedNeutralColor
-                        cell.compassControl.sgvText = "---"
-                        cell.compassControl.delta = "--"
-                        cell.siteBatteryLevel.text = "---"
-                        cell.siteRaw.text = "--- : ---"
-                        cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
-                        cell.compassControl.direction = .None
-                    } else {
-                        cell.compassControl.alpha = 1.0
+                    let timeAgo = watchEntry.date.timeIntervalSinceNow
+                    let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
+                    cell.compassControl.shouldLookStale(look: isStaleData.warn)
+
+                    if isStaleData.warn {
+                        cell.siteBatteryLevel?.text = "---"
+                        cell.siteBatteryLevel?.textColor = defaultTextColor
+                        cell.siteRaw?.text = "--- : ---"
+                        cell.siteRaw?.textColor = defaultTextColor
+                        
+                        cell.siteTimeAgo?.textColor = NSAssetKit.predefinedWarningColor
                     }
+                    
+                    if isStaleData.urgent{
+                        cell.siteTimeAgo?.textColor = NSAssetKit.predefinedAlertColor
+                    }
+                    
+                    
                 } else {
                     #if DEBUG
                         println("No SGV was found in the watch")
