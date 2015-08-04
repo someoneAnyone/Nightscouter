@@ -262,4 +262,26 @@ extension ServerConfiguration {
         }
         return color
     }
+    
+    func isDataStaleWith(interval sinceNow: NSTimeInterval) -> (warn: Bool, urgent: Bool) {
+        if let alarms = self.defaults?.alarms {
+            return isDataStaleWith(interval: sinceNow, warn: alarms.alarmTimeAgoWarnMins, urgent: alarms.alarmTimeAgoUrgentMins)
+        } else {
+            return isDataStaleWith(interval: sinceNow, warn: 900, urgent: 1800)
+        }
+    }
+    
+    func isDataStaleWith(interval sinceNow: NSTimeInterval, warn: NSTimeInterval, urgent: NSTimeInterval, fallback: NSTimeInterval = NSTimeInterval(600)) -> (warn: Bool, urgent: Bool) {
+        
+        let warnValue: NSTimeInterval = -max(fallback, warn)
+        let urgentValue: NSTimeInterval = -max(fallback, urgent)
+        var returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
+
+        #if DEBUG
+            println("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
+        #endif
+        
+        return returnValue
+    }
+
 }
