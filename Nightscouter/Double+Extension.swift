@@ -13,6 +13,10 @@ extension Double {
         return round(self/1000)
     }
     
+    var inThePast: NSTimeInterval {
+        return -self
+    }
+    
     func toDateUsingSeconds() -> NSDate {
         let date = NSDate(timeIntervalSince1970:millisecondsToSecondsTimeInterval())
         
