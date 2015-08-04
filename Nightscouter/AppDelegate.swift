@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
         
-        themeApp()
+        AppThemeManager.themeApp
         
         return true
     }
@@ -237,24 +237,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         return localTimer
     }
-    
-    func themeApp() {
-        window?.tintColor = NSAssetKit.predefinedNeutralColor
-        // Change the font and size of nav bar text.
-        if let navBarFont = UIFont(name: "HelveticaNeue-Thin", size: 20.0) {
-            
-            let navBarColor: UIColor = NSAssetKit.darkNavColor
-            UINavigationBar.appearance().barTintColor = navBarColor
-            
-            let navBarAttributesDictionary: [NSObject: AnyObject]? = [
-                NSForegroundColorAttributeName: UIColor.whiteColor(),
-                NSFontAttributeName: navBarFont
-            ]
-            
-            UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
-        }
-    }
-    
+
     func updateDataNotification(timer: NSTimer?) -> Void {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")

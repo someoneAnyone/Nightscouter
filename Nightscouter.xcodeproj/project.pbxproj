@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17020E831B716BB300FAC100 /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17020E821B716BB300FAC100 /* AppTheme.swift */; };
 		170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E61B2CBABB00304F8F /* AppDelegate.swift */; };
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
@@ -49,6 +50,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		17020E821B716BB300FAC100 /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		170825E31B2CBABB00304F8F /* Nightscouter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Nightscouter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		170825E61B2CBABB00304F8F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		170825E81B2CBABB00304F8F /* SiteFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteFormViewController.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 				83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */,
 				17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */,
 				17B377F11B685D0300F10665 /* String+Extensions.swift */,
+				17020E821B716BB300FAC100 /* AppTheme.swift */,
 			);
 			name = Categories;
 			sourceTree = "<group>";
@@ -182,11 +185,11 @@
 		173454561B308F2300931278 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				173454481B30740A00931278 /* Site.swift */,
 				1734544C1B308DF100931278 /* Entry.swift */,
+				17C95CAF1B40AD0B0035922A /* WatchEntry.swift */,
 				176CF74B1B385C6A009B7E92 /* ModelController.swift */,
 				17C95CAE1B40AD0B0035922A /* ServerConfiguration.swift */,
-				173454481B30740A00931278 /* Site.swift */,
-				17C95CAF1B40AD0B0035922A /* WatchEntry.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -338,6 +341,7 @@
 				171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */,
 				17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */,
 				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
+				17020E831B716BB300FAC100 /* AppTheme.swift in Sources */,
 				17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */,
 				17C95CB21B40AD0B0035922A /* WatchEntry.swift in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
