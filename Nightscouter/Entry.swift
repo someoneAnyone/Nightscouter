@@ -236,6 +236,13 @@ class Entry: NSObject {
         }
     }
     
+    var jsonForChart: String {
+        let jsonError: NSError?
+        let jsObj =  NSJSONSerialization.dataWithJSONObject(self.dictionaryRep, options:nil, error:nil)
+        let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
+        return String(str!)
+    }
+    
     init(identifier: String, date: NSDate, device: String) {//, type: Type) {
         self.idString = identifier
         self.date = date

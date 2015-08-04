@@ -45,6 +45,7 @@ class WatchEntry: Entry {
         self.now = now
         self.bgdelta = bgdelta
         self.battery = battery
+        
         super.init(identifier: identifier, date: date, device: device)
     }
 }
