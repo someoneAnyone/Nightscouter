@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+import UIKit
 /*:
 Create protocol for setting base URL, API Token, etc...
 */
@@ -130,6 +130,8 @@ extension NightscoutAPIClient {
 private extension NightscoutAPIClient {
     func fetchJSONWithURL(url: NSURL!, completetion:(result: JSON?, errorCode: NightscoutAPIError) -> Void) {
         
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
             if let httpResponse = response as? NSHTTPURLResponse {
                 switch httpResponse.statusCode {
@@ -168,6 +170,7 @@ private extension NightscoutAPIClient {
                 println("Error: Not a valid HTTP response")
                 completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
             }
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         })
         
         downloadTask.resume()
