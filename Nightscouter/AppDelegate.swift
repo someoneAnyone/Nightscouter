@@ -32,6 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
         
         AppThemeManager.themeApp
+        window?.tintColor = Theme.Color.windowTintColor
         
         return true
     }
@@ -79,6 +80,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
+            
+            for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
+                if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+                    break
+                }
+            }
+
             
             nsApi.fetchServerConfiguration { (result) -> Void in
                 switch (result) {
@@ -138,12 +147,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
-                let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
-                let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
+//                let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
+//                let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
                 
-                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
-                AppDataManager.sharedInstance.updateSite(site!)
-                AppDataManager.sharedInstance.currentSiteIndex = siteIndex!
+//                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
+       
                 
                 // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                 
@@ -152,7 +160,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
                         AppDataManager.sharedInstance.currentSiteIndex = siteIndex
                         if let notificationIndex  = find(site.notifications, notification) {
+           
                             site.notifications.removeAtIndex(notificationIndex)
+                            AppDataManager.sharedInstance.updateSite(site)
+                            AppDataManager.sharedInstance.currentSiteIndex = siteIndex
                             // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                             
                             let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
