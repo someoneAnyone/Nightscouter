@@ -149,10 +149,8 @@ extension SiteDetailViewController {
     
     func updateData() {
         // print(">>> Entering \(__FUNCTION__) <<<")
-        self.activityView?.startAnimating()
-        
-        if let site = self.site, configuration = site.configuration, defaults = configuration.defaults {
-            
+        if let site = self.site, configuration = site.configuration {
+            self.activityView?.startAnimating()
             nsApi!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
                 if let watchEntry = watchEntry, sgv = watchEntry.sgv {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
