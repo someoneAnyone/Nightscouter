@@ -95,7 +95,7 @@ extension SiteDetailViewController {
 
 extension SiteDetailViewController {
     
-    func configureView() { // Just do it!
+    func configureView() {
         self.compassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
         
@@ -249,7 +249,6 @@ extension SiteDetailViewController {
         alertController.addAction(cancelAction)
         
         let checkEmoji = "✓ "
-        
         var yesString = "   "
         if site!.overrideScreenLock == true {
             yesString = checkEmoji
@@ -293,36 +292,20 @@ extension SiteDetailViewController {
     }
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
-        // #if DEBUG
-        let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
-        NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
-        
-        presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
-            println("Present Labs as a modal controller!")
-        }
-        // #endif
+        #if DEBUG
+            let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
+            NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
+            
+            presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
+                println("Present Labs as a modal controller!")
+            }
+        #endif
     }
-    
-    
-    
     
     // MARK: Handoff
     
     override func updateUserActivityState(activity: NSUserActivity) {
         activity.webpageURL = site?.url
-        //        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySiteKey: site])
         super.updateUserActivityState(activity)
     }
-    /*
-    override func restoreUserActivityState(activity: NSUserActivity) {
-    if let userInfo = activity.userInfo {
-    var activityItem: AnyObject? = userInfo[Constants.ActivityKey.ActivitySiteKey]
-    if let itemToRestore = activityItem as? String {
-    //                item = itemToRestore
-    //                textField?.text = item
-    }
-    }
-    super.restoreUserActivityState(activity)
-    }
-    */
 }

@@ -289,7 +289,7 @@ class SiteListTableViewController: UITableViewController {
         
         cell.siteURL.text = site.url.host
         
-        let defaultTextColor = cell.siteBatteryLevel.textColor
+        let defaultTextColor = Theme.Color.labelTextColor
         
         if let configuration = site.configuration {
             
@@ -314,7 +314,6 @@ class SiteListTableViewController: UITableViewController {
                     cell.siteColorBlock.backgroundColor = color
                     
                     if let enabledOptions = configuration.enabledOptions {
-                        
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
@@ -335,8 +334,8 @@ class SiteListTableViewController: UITableViewController {
                         cell.siteBatteryLevel?.textColor = defaultTextColor
                         cell.siteRaw?.text = "--- : ---"
                         cell.siteRaw?.textColor = defaultTextColor
-                        
                         cell.siteTimeAgo?.textColor = NSAssetKit.predefinedWarningColor
+                        cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
                     }
                     
                     if isStaleData.urgent{
@@ -504,21 +503,4 @@ class SiteListTableViewController: UITableViewController {
     func stopUserActivity() {
         userActivity?.invalidate()
     }
-    
-    override func restoreUserActivityState(activity: NSUserActivity) {
-        // Get the list of items.
-        if let userInfo = activity.userInfo {
-            if let importedItems = userInfo[Constants.ActivityKey.ActivitySitesKey] as? NSArray {
-                // Merge it with what we have locally and update UI.
-                for anItem in importedItems {
-//                    addItemToItemsIfUnique(anItem as! String)
-                }
-//                PersistentStore.defaultStore().updateStoreWithItems(items)
-//                PersistentStore.defaultStore().commit()
-                tableView.reloadData()
-            }
-        }
-        super.restoreUserActivityState(activity)
-    }
-
 }
