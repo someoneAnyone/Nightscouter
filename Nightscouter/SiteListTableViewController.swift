@@ -237,9 +237,10 @@ class SiteListTableViewController: UITableViewController {
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
-                let newIndexPath = NSIndexPath(forRow: sites.count, inSection: 0)
+                editing = false
+                let newIndexPath = NSIndexPath(forRow: 0, inSection: 0)
                 AppDataManager.sharedInstance.addSite(site, index: newIndexPath.row)
-                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Bottom)
+                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Automatic)
                 accessoryIndexPath = nil
             }
         }

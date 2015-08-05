@@ -69,11 +69,13 @@ class SiteTableViewCell: UITableViewCell {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
+                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(Int(rawValue)))
+                                siteRawLabel?.textColor = color
                                 siteRawLabel.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
                             }
                         } else {
-                            siteRawHeader.removeFromSuperview()
-                            siteRawLabel.removeFromSuperview()
+                            siteRawHeader.hidden = true
+                            siteRawLabel.hidden = true
                         }
                     }
                     
@@ -119,9 +121,10 @@ class SiteTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
+        self.awakeFromNib()
+
         super.prepareForReuse()
         
-        self.awakeFromNib()
 //        siteNameLabel.text = nil
 //        siteBatteryLabel.text = nil
 //        siteRawLabel.text = nil
@@ -129,5 +132,7 @@ class SiteTableViewCell: UITableViewCell {
 //        siteCompassControl.shouldLookStale(look: true)
 //        siteColorBlockView.backgroundColor = siteCompassControl.color
 //        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
+        siteRawHeader.hidden = false
+        siteRawLabel.hidden = false
     }
 }
