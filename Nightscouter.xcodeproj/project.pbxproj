@@ -44,6 +44,7 @@
 		17CC02071B59384400F7DA96 /* TableViewBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
 		17E454841B38844B00C6DD43 /* UIStoryboard+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */; };
+		17FD86671B72862C00418F04 /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FD86661B72862C00418F04 /* NSURL-Extensions.swift */; };
 		835785661B607B8F00B74C85 /* AppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835785651B607B8F00B74C85 /* AppDataManager.swift */; };
 		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
 		83F4E8991B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */; };
@@ -92,6 +93,7 @@
 		17CC02061B59384400F7DA96 /* TableViewBackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewBackgroundView.swift; sourceTree = "<group>"; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		17E454831B38844B00C6DD43 /* UIStoryboard+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Identifiers.swift"; sourceTree = "<group>"; };
+		17FD86661B72862C00418F04 /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		835785651B607B8F00B74C85 /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDataManager.swift; sourceTree = "<group>"; };
 		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
 		83F4E8981B33A6F400335CEF /* UIStoryboardSegue+Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIStoryboardSegue+Identifiers.swift"; sourceTree = "<group>"; };
@@ -157,6 +159,7 @@
 		173454541B308F0C00931278 /* Categories */ = {
 			isa = PBXGroup;
 			children = (
+				17FD86661B72862C00418F04 /* NSURL-Extensions.swift */,
 				174414681B41901100B1E70D /* NSAssetKit+Helpers.swift */,
 				177C20531B56E6460092753B /* Int+Extensions.swift */,
 				173E950B1B42E5DA0024039E /* CompassControl+Convience.swift */,
@@ -347,6 +350,7 @@
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
+				17FD86671B72862C00418F04 /* NSURL-Extensions.swift in Sources */,
 				1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */,
 				178C332A1B6176D300E1C734 /* ColorBlockView.swift in Sources */,
 				1734545A1B3090E300931278 /* NightscoutAPIClient.swift in Sources */,

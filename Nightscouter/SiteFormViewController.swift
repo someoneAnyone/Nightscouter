@@ -16,7 +16,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var middleLayoutContraint: NSLayoutConstraint!
-
+    
     /*
     This value is either passed by `SiteListTableViewController` in `prepareForSegue(_:sender:)`
     or constructed as part of adding a new site.
@@ -24,10 +24,14 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     var site = Site?()
     
     var currentOrientation: UIDeviceOrientation?
+    var validatedUrlString: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        // Add notification observer for text field updates
+        urlTextField.addTarget(self, action: "textFieldDidUpdate:", forControlEvents: UIControlEvents.EditingChanged)
         
         urlTextField.delegate = self
         
@@ -45,16 +49,18 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         })
         
         nextButton.tintColor = NSAssetKit.darkNavColor
-        checkValidSiteName()
+        
+        // checkValidSiteName()
+        
         observeKeyboard()
         
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
     }
-
+    
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
         currentOrientation = UIDevice.currentDevice().orientation
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -64,14 +70,44 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         NSNotificationCenter.defaultCenter().removeObserver(self);
     }
     
+    // Text Field Delegate
+    func textFieldDidUpdate(textField: UITextField)
+    {
+        // Remove Spaces
+        textField.text = textField.text.stringByReplacingOccurrencesOfString(" ", withString: "", options: nil, range: nil)
+        
+        // Or you can do it the old way
+        let offset = 0.5
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(offset * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+            // Validate URL
+            NSURL.validateUrl(textField.text, completion: { (success, urlString, error) -> Void in
+                println("validateURL Error: \(error)")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    if (success)
+                    {
+                        NSURL.ValidationQueue.queue.cancelAllOperations()
+                        self.validatedUrlString = urlString!
+                    }
+                    else
+                    {
+                        self.validatedUrlString = nil
+                    }
+                    self.nextButton.enabled = success
+                })
+            })
+        })
+    }
+    
+    
     // MARK: UITextFieldDelegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-
+        
         // Hide the keyboard
         textField.resignFirstResponder()
         
-        
         if nextButton.enabled{
+            self.view.endEditing(true)
             performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
         }
         
@@ -80,38 +116,38 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     
     func textFieldDidBeginEditing(textField: UITextField) {
         // Disable the Save button while editing.
-        checkValidSiteName()
+        //        checkValidSiteName()
     }
     
     func textFieldDidEndEditing(textField: UITextField) {
-        checkValidSiteName()
+        //        checkValidSiteName()
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        
-        checkValidSiteName()
-        return true
-    }
+    // func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+    // checkValidSiteName()
+    // return true
+    // }
     
+    /*
     func checkValidSiteName() {
         // Disable the Save button if the text field is empty.
         let text = urlTextField.text ?? ""
         let valid = validateUrl(text)
-        
         nextButton.enabled = valid
     }
+*/
     
     // MARK: Navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if nextButton === sender {
             // Set the site to be passed to SiteListTableViewController after the unwind segue.
-            let urlString = urlTextField.text ?? ""
+            //            let urlString = urlTextField.text ?? ""
+            let urlString = validatedUrlString ?? ""
             
             if let url = NSURL(string: urlString) {
                 
                 if let siteOptional = site {
                     siteOptional.url = url
-                    
                     site = siteOptional
                 } else {
                     site = Site(url: url, apiSecret: nil)
@@ -136,18 +172,21 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         }
     }
     
+    /*
     func validateUrl (stringURL : NSString) -> Bool {
         let urlRegEx = "(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
         let predicate = NSPredicate(format:"SELF MATCHES %@", argumentArray:[urlRegEx])
         //        var urlTest = NSPredicate.predicateWithSubstitutionVariables(predicate)
         return predicate.evaluateWithObject(stringURL)
     }
+    */
     
     // MARK: Keyboard Notifications
     
     func observeKeyboard() {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
+        // NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("textFieldDidUpdate:"), name: UITextFieldTextDidChangeNotification, object: nil)
     }
     
     func keyboardWillShow(notification: NSNotification) {
@@ -171,19 +210,19 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     }
     
     func keyboardWillHide(notification: NSNotification) {
-    
+        
         let info = notification.userInfo!
-//        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
+        // let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
         let animationDuration: NSTimeInterval = (info[UIKeyboardAnimationDurationUserInfoKey])!.doubleValue
         
         self.middleLayoutContraint.constant = 0
         UIView.animateWithDuration(animationDuration, animations: { () -> Void in
             self.view.layoutIfNeeded()
         })
-
-    
+        
+        
     }
     
-
+    
 }
 
