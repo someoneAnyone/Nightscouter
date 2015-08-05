@@ -151,18 +151,18 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="batteryHeader" destination="ZPz-cT-pRh" id="ebZ-Oa-PTR"/>
-                                    <outlet property="compassControl" destination="hvW-MN-sK9" id="PZ1-6w-NbN"/>
-                                    <outlet property="lastReadingHeader" destination="8o2-u1-ejJ" id="RA4-Rd-ffm"/>
-                                    <outlet property="rawHeader" destination="ZZR-zg-DRJ" id="pR2-dv-rqU"/>
-                                    <outlet property="siteBatteryLevel" destination="FeD-lw-ya8" id="TKn-hv-rx9"/>
-                                    <outlet property="siteColorBlock" destination="KWx-hb-Jfz" id="Yle-2h-LEA"/>
-                                    <outlet property="siteName" destination="40m-vl-Yyi" id="ruV-UO-T55"/>
-                                    <outlet property="siteRaw" destination="oOp-dm-VNu" id="emV-XX-c4R"/>
-                                    <outlet property="siteTimeAgo" destination="iAe-Lu-fpS" id="E7q-8R-eoI"/>
-                                    <outlet property="siteURL" destination="jIQ-rb-KeY" id="SQa-QC-7Nb"/>
+                                    <outlet property="siteBatteryHeader" destination="ZPz-cT-pRh" id="6t6-rd-aWe"/>
+                                    <outlet property="siteBatteryLabel" destination="FeD-lw-ya8" id="gHj-n7-xC4"/>
+                                    <outlet property="siteColorBlockView" destination="KWx-hb-Jfz" id="PH9-de-xks"/>
+                                    <outlet property="siteCompassControl" destination="hvW-MN-sK9" id="VSZ-n4-xYE"/>
+                                    <outlet property="siteLastReadingHeader" destination="8o2-u1-ejJ" id="Amb-9u-PGj"/>
+                                    <outlet property="siteLastReadingLabel" destination="iAe-Lu-fpS" id="GFh-8p-o8y"/>
+                                    <outlet property="siteNameLabel" destination="40m-vl-Yyi" id="47k-iA-gIg"/>
+                                    <outlet property="siteRawHeader" destination="ZZR-zg-DRJ" id="1qD-F0-gqC"/>
+                                    <outlet property="siteRawLabel" destination="oOp-dm-VNu" id="hQl-wk-tOj"/>
+                                    <outlet property="siteUrlLabel" destination="jIQ-rb-KeY" id="AYj-Va-KrA"/>
                                     <segue destination="fHT-Ej-lO1" kind="show" identifier="ShowPageView" id="fup-S8-v45"/>
                                     <segue destination="p8y-7x-GHH" kind="show" identifier="EditSite" trigger="accessoryAction" id="ahu-F9-TDu"/>
                                 </connections>
@@ -320,15 +320,6 @@
                                     </mask>
                                 </variation>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pep-C1-XZA">
-                                <rect key="frame" x="386" y="146" width="58" height="16"/>
-                                <accessibility key="accessibilityConfiguration">
-                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
-                                </accessibility>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0no-ma-76y">
                                 <rect key="frame" x="386" y="132" width="58" height="10"/>
                                 <accessibility key="accessibilityConfiguration">
@@ -336,6 +327,15 @@
                                 </accessibility>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pep-C1-XZA">
+                                <rect key="frame" x="386" y="146" width="58" height="16"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7oG-3b-u34">
@@ -580,16 +580,16 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <connections>
-                        <outlet property="activityView" destination="VCK-LB-chS" id="wqJ-Tb-UmT"/>
-                        <outlet property="batteryHeader" destination="0no-ma-76y" id="pVn-3R-NIa"/>
-                        <outlet property="compassControl" destination="ebb-7r-y9k" id="JHe-M0-bDV"/>
-                        <outlet property="lastReadingHeader" destination="7oG-3b-u34" id="OBC-j2-mkv"/>
-                        <outlet property="lastReadingLabel" destination="wGx-kU-ou7" id="NQU-PX-GX1"/>
-                        <outlet property="rawHeader" destination="Prp-ZU-51q" id="kHx-oW-z6a"/>
-                        <outlet property="rawReadingLabel" destination="t35-qs-Wix" id="E0j-C3-wOc"/>
-                        <outlet property="titleLabel" destination="6OL-z6-YTY" id="ABi-qh-XW2"/>
-                        <outlet property="uploaderBatteryLabel" destination="pep-C1-XZA" id="tBQ-Z8-wJq"/>
-                        <outlet property="webView" destination="Hny-uc-L71" id="qQB-Nr-6Sq"/>
+                        <outlet property="siteActivityView" destination="VCK-LB-chS" id="oVa-eB-qFC"/>
+                        <outlet property="siteBatteryHeader" destination="0no-ma-76y" id="rbm-bJ-3vl"/>
+                        <outlet property="siteBatteryLabel" destination="pep-C1-XZA" id="OSv-2Q-u9g"/>
+                        <outlet property="siteCompassControl" destination="ebb-7r-y9k" id="4vS-J2-vxN"/>
+                        <outlet property="siteLastReadingHeader" destination="7oG-3b-u34" id="WEF-ao-QBA"/>
+                        <outlet property="siteLastReadingLabel" destination="wGx-kU-ou7" id="Tlh-w2-Sup"/>
+                        <outlet property="siteNameLabel" destination="6OL-z6-YTY" id="6HK-Mz-DRb"/>
+                        <outlet property="siteRawHeader" destination="Prp-ZU-51q" id="62M-Se-k1J"/>
+                        <outlet property="siteRawLabel" destination="t35-qs-Wix" id="yph-Zx-VE3"/>
+                        <outlet property="siteWebView" destination="Hny-uc-L71" id="nSj-De-ieP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="45H-R3-BhD" sceneMemberID="firstResponder"/>

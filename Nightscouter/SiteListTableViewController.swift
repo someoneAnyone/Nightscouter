@@ -44,11 +44,11 @@ class SiteListTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         if let site = siteToDisplay {
             performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.ShowPageView.rawValue, sender: site)
         }
-
+        
         // Common setup.
         configureView()
     }
@@ -58,7 +58,7 @@ class SiteListTableViewController: UITableViewController {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-
+        
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
     }
@@ -90,6 +90,7 @@ class SiteListTableViewController: UITableViewController {
         
         // Configure the cell...
         let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! SiteTableViewCell
+        
         configureCell(cell, indexPath: indexPath)
         
         return cell
@@ -134,7 +135,7 @@ class SiteListTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
         var cell = tableView.cellForRowAtIndexPath(indexPath)
-//        cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
+        //        cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
         let highlightView = UIView()
         highlightView.backgroundColor = NSAssetKit.darkNavColor
         cell?.selectedBackgroundView = highlightView
@@ -269,8 +270,8 @@ class SiteListTableViewController: UITableViewController {
         refreshControl?.tintColor = UIColor.whiteColor()
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-       setupNotifications()
-
+        setupNotifications()
+        
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         AppDataManager.sharedInstance.shouldDisableIdleTimer = false
         
@@ -284,90 +285,13 @@ class SiteListTableViewController: UITableViewController {
     
     // For a given cell and index path get the appropriate site object and assign various properties.
     func configureCell(cell: SiteTableViewCell, indexPath: NSIndexPath) -> Void {
-        
         let site = sites[indexPath.row]
-        
-        cell.siteURL.text = site.url.host
-        
-        let defaultTextColor = Theme.Color.labelTextColor
-        
-        if let configuration = site.configuration {
-            
-            let maxValue: NSTimeInterval
-            if let defaults = configuration.defaults {
-                cell.siteName.text = defaults.customTitle
-                maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
-            } else {
-                cell.siteName.text = configuration.name
-                maxValue = Constants.NotableTime.StaleDataTimeFrame
-            }
-            
-            if let watchEntry = site.watchEntry {
-                
-                cell.siteBatteryLevel.text = watchEntry.batteryString
-                cell.siteTimeAgo.text = watchEntry.dateTimeAgoString
-                cell.compassControl.configureWith(site)
-                
-                if let sgvValue = watchEntry.sgv {
-                    
-                    let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
-                    cell.siteColorBlock.backgroundColor = color
-                    
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
-                        if rawEnabled {
-                            if let rawValue = watchEntry.raw {
-                                cell.siteRaw.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
-                            }
-                        } else {
-                            cell.rawHeader.removeFromSuperview()
-                            cell.siteRaw.removeFromSuperview()
-                        }
-                    }
-                    
-                    let timeAgo = watchEntry.date.timeIntervalSinceNow
-                    let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
-                    cell.compassControl.shouldLookStale(look: isStaleData.warn)
-
-                    if isStaleData.warn {
-                        cell.siteBatteryLevel?.text = "---"
-                        cell.siteBatteryLevel?.textColor = defaultTextColor
-                        cell.siteRaw?.text = "--- : ---"
-                        cell.siteRaw?.textColor = defaultTextColor
-                        cell.siteTimeAgo?.textColor = NSAssetKit.predefinedWarningColor
-                        cell.siteColorBlock.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
-                    }
-                    
-                    if isStaleData.urgent{
-                        cell.siteTimeAgo?.textColor = NSAssetKit.predefinedAlertColor
-                    }
-                    
-                    
-                } else {
-                    #if DEBUG
-                        println("No SGV was found in the watch")
-                    #endif
-                }
-                
-            } else {
-                // No watch was there...
-                #if DEBUG
-                    println("No watch data was found...")
-                #endif
-                return
-            }
-        } else {
-            #if DEBUG
-                println("No site current configuration was found for \(site.url)")
-            #endif
-            
-            // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
-                // No configuration was there... go get some.
-                // println("Attempting to get configuration data from site...")
-                loadUpData(site, index: indexPath.row)
-            }
-            return
+        cell.configureCell(site)
+        // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
+        if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
+            // No configuration was there... go get some.
+            // println("Attempting to get configuration data from site...")
+            loadDataFor(site, index: indexPath.row)
         }
     }
     
@@ -391,7 +315,7 @@ class SiteListTableViewController: UITableViewController {
                 tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
             for site in sites {
-                loadUpData(site, index: find(sites, site)!)
+                loadDataFor(site, index: find(sites, site)!)
             }
         } else {
             // No data in the sites array. Cancel the refreshing!
@@ -399,14 +323,14 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
-    func loadUpData(site: Site, index: Int){
+    func loadDataFor(site: Site, index: Int){
         // Start up the API
         let nsApi = NightscoutAPIClient(url: site.url)
-       
+        
         //TODO: 1. There should be reachabiltiy checks before doing anything.
         //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
         //TODO: 3. Probably need to move this code to the application delegate?
-      
+        
         // Get settings for a given site.
         println("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
@@ -428,6 +352,8 @@ class SiteListTableViewController: UITableViewController {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         site.configuration = configuration
                         site.watchEntry = watchEntry
+                        AppDataManager.sharedInstance.updateSite(site)
+                        
                         self.lastUpdatedTime = NSDate()
                         self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
                         
@@ -495,6 +421,7 @@ class SiteListTableViewController: UITableViewController {
         userActivity = activity
         userActivity?.becomeCurrent()
     }
+    
     override func updateUserActivityState(activity: NSUserActivity) {
         activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySitesKey: sites])
         super.updateUserActivityState(activity)
