@@ -121,18 +121,19 @@ class SiteTableViewCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-        self.awakeFromNib()
-
         super.prepareForReuse()
         
-//        siteNameLabel.text = nil
-//        siteBatteryLabel.text = nil
-//        siteRawLabel.text = nil
-//        siteLastReadingLabel.text = nil
-//        siteCompassControl.shouldLookStale(look: true)
-//        siteColorBlockView.backgroundColor = siteCompassControl.color
-//        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
+        siteNameLabel.text = nil
+        siteBatteryLabel.text = nil
+        siteRawLabel.text = nil
+        siteLastReadingLabel.text = nil
+        siteCompassControl.shouldLookStale(look: true)
+        siteColorBlockView.backgroundColor = siteCompassControl.color
+        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
+        siteLastReadingLabel.textColor = Theme.Color.labelTextColor
+    
         siteRawHeader.hidden = false
         siteRawLabel.hidden = false
+        siteRawLabel.textColor = Theme.Color.labelTextColor
     }
 }

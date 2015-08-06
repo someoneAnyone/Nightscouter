@@ -101,9 +101,10 @@ class SiteListTableViewController: UITableViewController {
         if editingStyle == .Delete {
             // Delete the row from the data source
             AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
+            shouldIShowNewSiteForm()
         } else if editingStyle == .Insert {
-            self.editing = false
+            // self.editing = false
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
     }
@@ -160,8 +161,7 @@ class SiteListTableViewController: UITableViewController {
                 #if DEBUG
                     print("Editing existing site")
                 #endif
-                self.setEditing(false, animated: true)
-                
+                editing = false
                 let siteDetailViewController = segue.destinationViewController as! SiteFormViewController
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
