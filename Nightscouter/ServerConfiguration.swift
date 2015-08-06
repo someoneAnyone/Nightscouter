@@ -18,13 +18,15 @@ enum EnabledOptions: String, Printable {
     case direction = "direction"
     case upbat = "upbat"
     case errorcodes = "errorcodes"
+    case simplealarms = "simplealarms"
+    case pushover = "pushover"
     
     var description: String {
         return self.rawValue
     }
 }
 
-enum Units:String, Printable {
+enum Units: String, Printable {
     case Mgdl = "mg/dl"
     case Mmoll = "mmol/L"
     
@@ -50,7 +52,7 @@ struct Threshold: Printable {
     let bg_target_top :Int
     
     var description: String {
-        let dict = ["bg_high": bg_high, "bg_low:": bg_low, "bg_target_bottom": bg_target_bottom, "bg_target_top": bg_target_top]
+        let dict = ["bg_high": bg_high, "bg_low": bg_low, "bg_target_bottom": bg_target_bottom, "bg_target_top": bg_target_top]
         return dict.description
     }
 }
@@ -71,9 +73,13 @@ struct Alarm: Printable {
     }
 }
 
-enum AlarmTypes: String {
+enum AlarmTypes: String, Printable {
     case predict = "predict"
     case simple = "simple"
+    
+    var description: String {
+        return self.rawValue
+    }
 }
 
 struct Defaults: Printable {
@@ -142,7 +148,43 @@ struct ServerConfiguration: Printable {
     let name: String?
     
     var description: String {
-        let dict = ["status" : status, "apiEnabled" : apiEnabled?.description, "carePortal": careportalEnabled?.description, "enabledOptions": enabledOptions?.description, "defaults": defaults?.description, "units": unitsRoot?.rawValue, "head": head, "version": version, "thresholds": thresholds?.description, "alarm_types": alarm_types, "name": name]
+        
+        var dict = Dictionary<String, AnyObject>()  //= NSMutableDictionary ()
+        if let status = status {
+            dict["status"] = status
+        }
+        if let apiEnabled = apiEnabled{
+            dict["apiEnabled"] = apiEnabled
+        }
+        if let capreporatlEnabled = careportalEnabled {
+            dict["capreporatlEnabled"] = capreporatlEnabled
+        }
+        if let enabledOptions = enabledOptions {
+            dict["enabledOptions"] = enabledOptions.description
+        }
+        if let defaults = defaults {
+            dict["defaults"] = defaults.description
+        }
+        if let unitsRoot = unitsRoot {
+            dict["unitsRoot"] = unitsRoot.description
+        }
+        if let head = head {
+            dict["head"] = head
+        }
+        if let version = version {
+            dict["version"] = version
+        }
+        if let thresholds = thresholds {
+            dict["thresholds"] = thresholds.description
+        }
+        if let alarm_types = alarm_types {
+            dict["alram_types"] = alarm_types
+        }
+        if let name = name {
+            dict["name"] = name
+        }
+
+        // let dict = ["status" : status, "apiEnabled" : apiEnabled?.description, "carePortal": careportalEnabled?.description, "enabledOptions": enabledOptions?.description, "defaults": defaults?.description, "units": unitsRoot?.rawValue, "head": head, "version": version, "thresholds": thresholds?.description, "alarm_types": alarm_types, "name": name]
         return dict.description
     }
 }
