@@ -418,13 +418,13 @@ class SiteListTableViewController: UITableViewController {
     func startUserActivity() {
         let activity = NSUserActivity(activityType: Constants.ActivityType.sites!)
         activity.title = "Viewing Nightscout List of Sites"
-        activity.userInfo = [Constants.ActivityKey.ActivitySitesKey: sites]
+        activity.userInfo = [Constants.ActivityKey.SitesKey: sites]
         userActivity = activity
         userActivity?.becomeCurrent()
     }
     
     override func updateUserActivityState(activity: NSUserActivity) {
-        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.ActivitySitesKey: sites])
+        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.SitesKey: sites])
         super.updateUserActivityState(activity)
     }
     

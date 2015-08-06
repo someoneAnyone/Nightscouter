@@ -149,6 +149,11 @@ private extension NightscoutAPIClient {
                                     
                                 } else {
                                     completetion(result: responseObject, errorCode: .NoErorr)
+                                    
+                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataUpdateSuccessful, object: self))
+                                    })
+                                    
                                 }
                             } else {
                                 println("Could not create a response object")

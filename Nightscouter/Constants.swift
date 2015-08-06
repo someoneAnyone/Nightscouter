@@ -33,32 +33,27 @@ struct Constants {
     }
     
     struct Notification {
-        static let DataIsStaleUpdateNow = "com.nothingonline.nightscouter.data.stale.update"
+        static let DataIsStaleUpdateNow: String =  AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.stale.update")
+        static let DataUpdateSuccessful = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.successful")
+        // static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
     }
     
     struct ActivityType {
-        static let sites = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("sites")
-        static let site = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("site")
-        static let new = AppDataManager.sharedInstance.bundleIdentifier?.stringByAppendingPathExtension("new")
+        static let sites = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("sites")
+        static let site = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("site")
+        static let new = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("new")
     }
 
     struct ActivityKey {
-        static let ActivitySitesKey = "nightscouter.sites.key"
-        static let ActivitySiteKey  = "nightscouter.site.key"
+        static let SitesKey = "nightscouter.sites.key"
+        static let SiteKey  = "nightscouter.site.key"
+        static let VesionValue = "1.0"
     }
-//    let ActivityVersionKey = "shopsnap.version.key"
-//    let ActivityVersionValue = "1.0"
 
-    
     struct LocalizedString {
         static let tableViewCellRemove = "tableViewCellRemove"
         static let tableViewCellLoading = "tableViewCellLoading"
-//        static let localNotificationMessage = "localNotificationMessage" // not implemented.
-//        static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
-//        static let batteryLabel = "batteryLabel" // not implemented.
-//        static let rawLabel = "rawLabel" // not implemented.
         static let lastUpdatedDateLabel = "lastUpdatedDateLabel"
-//        static let lastReadingLabel = "lastReadingLabel" // not implemented.
         static let generalEditLabel = "generalEditLabel"
         static let generalCancelLabel = "generalCancelLabel"
         static let generalRetryLabel = "generalRetryLabel"
@@ -68,7 +63,13 @@ struct Constants {
         static let uiAlertBadSiteTitle = "uiAlertBadSiteTitle"
         static let uiAlertScreenOverrideTitle = "uiAlertScreenOverrideTitle"
         static let uiAlertScreenOverrideMessage = "uiAlertScreenOverrideMessage"
-        
         static let sgvLowString = "sgvLowString"
+        
+        // static let localNotificationMessage = "localNotificationMessage" // not implemented.
+        // static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
+        // static let batteryLabel = "batteryLabel" // not implemented.
+        // static let rawLabel = "rawLabel" // not implemented.
+        
+        // static let lastReadingLabel = "lastReadingLabel" // not implemented.
     }
 }

@@ -11,6 +11,7 @@ import UIKit
 class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate {
     
     var pageViewController: UIPageViewController?
+    
     var sites: [Site] {
         return AppDataManager.sharedInstance.sites
     }
@@ -31,40 +32,33 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         // Configure the page view controller and add it as a child view controller.
-        self.pageViewController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
-        self.pageViewController!.delegate = self
+        pageViewController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        pageViewController!.delegate = self
         
         let startingViewController: SiteDetailViewController = self.modelController.viewControllerAtIndex(currentIndex, storyboard: self.storyboard!)!
         let viewControllers = [startingViewController]
-        self.pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: {done in })
+        pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: {done in })
+        pageViewController!.dataSource = self.modelController
         
-        self.pageViewController!.dataSource = self.modelController
-        
-        
-        self.addChildViewController(self.pageViewController!)
-        self.view.addSubview(self.pageViewController!.view)
-        
-        self.view.bringSubviewToFront(self.goToListButton)
+        addChildViewController(self.pageViewController!)
+        view.addSubview(self.pageViewController!.view)
         
         // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
         var pageViewRect = self.view.bounds
         if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
             pageViewRect = CGRectInset(pageViewRect, 40.0, 40.0)
         }
-        self.pageViewController!.view.frame = pageViewRect
         
-        self.pageViewController!.didMoveToParentViewController(self)
+        pageViewController!.view.frame = pageViewRect
+        pageViewController!.didMoveToParentViewController(self)
         
         // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
-        self.view.gestureRecognizers = self.pageViewController!.gestureRecognizers
+        view.gestureRecognizers = pageViewController!.gestureRecognizers
         
-        self.goToListButton.hidden = true
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-        self.navigationItem.title = pageViewController?.viewControllers.first?.navigationItem.title
-        self.navigationItem.rightBarButtonItems = pageViewController?.viewControllers.first?.navigationItem.rightBarButtonItems
+        view.bringSubviewToFront(self.goToListButton)
+        goToListButton.hidden = true
+        
+        setupNotifications()
     }
     
     override func didReceiveMemoryWarning() {
@@ -72,8 +66,13 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         // Dispose of any resources that can be recreated.
     }
     
+    deinit {
+        // Remove this class from the observer list. Was listening for a global update timer.
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+        return .LightContent
     }
     
     var modelController: ModelController {
@@ -95,7 +94,6 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
             let currentViewController: AnyObject = self.pageViewController!.viewControllers![0]
             let viewControllers = [currentViewController]
             self.pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: true, completion: {done in })
-            
             self.pageViewController!.doubleSided = false
             return .Min
         }
@@ -119,9 +117,17 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
         if finished && completed {
-            self.navigationItem.title = pageViewController.viewControllers.first?.navigationItem.title
-            self.navigationItem.rightBarButtonItems = pageViewController.viewControllers.first?.navigationItem.rightBarButtonItems
+            updateNavigationController()
         }
     }
+    
+    func setupNotifications() {
+        // Listen for global update timer.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateNavigationController", name: Constants.Notification.DataUpdateSuccessful, object: nil)
+    }
+    
+    func updateNavigationController() {
+        navigationItem.title = pageViewController?.viewControllers.first?.navigationItem.title
+        navigationItem.rightBarButtonItems = pageViewController?.viewControllers.first?.navigationItem.rightBarButtonItems
+    }
 }
-
