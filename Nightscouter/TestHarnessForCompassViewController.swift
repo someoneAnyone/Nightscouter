@@ -10,6 +10,7 @@
 // This is a test harness for a UI Control that simulates a compass dial and displays SGV value
 
 import UIKit
+import NightscouterKit
 
 class TestHarnessForCompassViewController: UIViewController {
     

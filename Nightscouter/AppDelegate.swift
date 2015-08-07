@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -155,7 +156,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                 
-                let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
                         AppDataManager.sharedInstance.currentSiteIndex = siteIndex
@@ -166,13 +167,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                             AppDataManager.sharedInstance.currentSiteIndex = siteIndex
                             // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                             
-                            let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                             deepLinkToURL(url!)
                         }
                     }
                 }
             } else {
-                let url = NSURL(string: "nightscouter://link/\(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue)")
+                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue)")
                 deepLinkToURL(url!)
             }
         }
@@ -220,8 +221,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 var viewControllers = navController.viewControllers as! [UIViewController] // Grab all the current view controllers in the stack.
                 for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
                     if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
-                        if let stor = UIStoryboard.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
-                            let linkIsAllowed = contains(UIStoryboard.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
+                        if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
+                            let linkIsAllowed = contains(Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
                             if linkIsAllowed {
                                 let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController
                                 

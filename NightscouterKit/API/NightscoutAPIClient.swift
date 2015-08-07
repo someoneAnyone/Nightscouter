@@ -7,19 +7,19 @@
 //
 
 import Foundation
-import UIKit
+//import UIKit
 /*:
 Create protocol for setting base URL, API Token, etc...
 */
 
-let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
+internal let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
 
-typealias JSON = AnyObject
-typealias JSONDictionary = Dictionary<String, JSON> //([String: AnyObject]?) -> ()
-typealias JSONArray = Array<JSONDictionary>
-typealias EntryArray = Array<Entry>
+public typealias JSON = AnyObject
+public typealias JSONDictionary = Dictionary<String, JSON>
+public typealias JSONArray = Array<JSONDictionary>
+public typealias EntryArray = Array<Entry>
 
-struct URLPart {
+internal struct URLPart {
     static let ApiVersion = "api/v1"
     static let Entries = "entries"
     static let Pebble = "pebble"
@@ -28,50 +28,35 @@ struct URLPart {
     static let FileExtension = "json"
 }
 
-
-enum NightscoutAPIError {
+public enum NightscoutAPIError {
     case NoErorr
     case DownloadErorr(String)
     case DataError(String)
     case JSONParseError(String)
 }
 
-class NightscoutAPIClient {
+public class NightscoutAPIClient {
     
     lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
     lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
     
-    var url: NSURL!
-//    static let sharedInstance = NightscoutAPIClient(url: NSURL())
+    public var url: NSURL!
 
-    /*
-    class var sharedClient: NightscoutAPIClient {
-        struct Static {
-            static var onceToken: dispatch_once_t = 0
-            static var instance: NightscoutAPIClient? = nil
-        }
-        dispatch_once(&Static.onceToken) {
-            Static.instance = NightscoutAPIClient()
-        }
-        return Static.instance!
-    }
-    */
-    
     /*! Initializes the calss with a Nightscout site URL.
     * \param url This class only needs the base URL to the site. For example, https://nightscout.hostingcompany.com, the class will discover the API. Currently uses veriion 1.
     *
     */
-    init(url: NSURL){
+    public init(url: NSURL){
         self.url = url
     }
-    convenience init() {
+    internal convenience init() {
         self.init(url: NSURL())
     }
 }
 
 // MARK: - Meat and Potatoes of the API
 extension NightscoutAPIClient {
-    func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
         let entriesWithCountURL = NSURL(string:self.stringForEntriesWithCount(count))
         self.fetchJSONWithURL(entriesWithCountURL!, completetion: { (result, errorCode) -> Void in
             if let entries = result as? JSONArray {
@@ -87,7 +72,7 @@ extension NightscoutAPIClient {
         })
     }
     
-    func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
         self.fetchJSONWithURL(watchEntryUrl, completetion: { (result, errorCode) -> Void in
             if let jsonDictionary = result as? JSONDictionary {
@@ -119,7 +104,7 @@ extension NightscoutAPIClient {
         return NSURL(string: temp!)!
     }
     
-    func  stringForEntriesWithCount(count: Int) -> String {
+    func stringForEntriesWithCount(count: Int) -> String {
         let numberOfEntries = "?\(URLPart.CountParameter)=\(count)"
         return entriesString.stringByAppendingString(numberOfEntries)
     }
@@ -130,7 +115,7 @@ extension NightscoutAPIClient {
 private extension NightscoutAPIClient {
     func fetchJSONWithURL(url: NSURL!, completetion:(result: JSON?, errorCode: NightscoutAPIError) -> Void) {
         
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+//        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
             if let httpResponse = response as? NSHTTPURLResponse {
@@ -175,7 +160,7 @@ private extension NightscoutAPIClient {
                 println("Error: Not a valid HTTP response")
                 completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
             }
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+//            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
         })
         
         downloadTask.resume()
@@ -185,22 +170,22 @@ private extension NightscoutAPIClient {
 
 // MARK - New Fetch Methods
 
-final class Box<A> {
-    let value: A
+public final class Box<A> {
+    public let value: A
     
     init(_ value: A) {
         self.value = value
     }
 }
 
-enum Result<A> {
+public enum Result<A> {
     case Error(NSError)
     case Value(Box<A>)
 }
 
 
 extension NightscoutAPIClient {
-    func fetchServerConfiguration(callback: (Result<ServerConfiguration>) -> Void) {
+    public func fetchServerConfiguration(callback: (Result<ServerConfiguration>) -> Void) {
         let settingsUrl = self.urlForStatus
         
         self.fetchJSONWithURL(settingsUrl, callback: { (result) -> Void in

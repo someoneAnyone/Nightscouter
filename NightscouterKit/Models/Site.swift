@@ -8,14 +8,14 @@
 import Foundation
 import UIKit
 
-class Site: NSObject, NSCoding {
+public class Site: NSObject, NSCoding {
     
-    struct PropertyKey {
+    public struct PropertyKey {
         static let urlKey = "url"
         static let apiSecretKey = "apiSecret"
         static let siteKey = "site"
         static let allowNotificationsKey = "notifications"
-        static let uuidKey = "uuid"
+        public static let uuidKey = "uuid"
         static let notificationKey = "notification"
         static let notificationCountKey = "notificationCount"
         static let overrideScreenLockKey = "overrideScreenLock"
@@ -29,7 +29,7 @@ class Site: NSObject, NSCoding {
     static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
     static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
     
-    var url: NSURL! {
+    public var url: NSURL! {
         didSet {
             #if DEBUG
                 println("Changed site URL to \(url) from \(oldValue)")
@@ -41,20 +41,20 @@ class Site: NSObject, NSCoding {
             disabled = false
         }
     }
-    var apiSecret: String?
-    var configuration: ServerConfiguration?
-    var watchEntry: WatchEntry?
-    var entries: [Entry]?
-    var allowNotifications: Bool = true // Fix this at somepoint.
-    var overrideScreenLock: Bool
+    public var apiSecret: String?
+    public var configuration: ServerConfiguration?
+    public var watchEntry: WatchEntry?
+    public var entries: [Entry]?
+    public var allowNotifications: Bool = true // Fix this at somepoint.
+    public var overrideScreenLock: Bool
 
-    var notifications: [UILocalNotification]
-    var disabled: Bool
+    public var notifications: [UILocalNotification]
+    public var disabled: Bool
     
-    private(set) var uuid: NSUUID
+    public private(set) var uuid: NSUUID
     
     // MARK: Initialization
-    init?(url: NSURL, apiSecret: String?) {
+    public init?(url: NSURL, apiSecret: String?) {
         // Initialize stored properties.
         self.url = url
         self.apiSecret = apiSecret
@@ -73,7 +73,7 @@ class Site: NSObject, NSCoding {
     }
     
     // MARK: NSCoding
-    func encodeWithCoder(aCoder: NSCoder) {
+    public func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(url, forKey: PropertyKey.urlKey)
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
@@ -83,7 +83,7 @@ class Site: NSObject, NSCoding {
         aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required public init(coder aDecoder: NSCoder) {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)

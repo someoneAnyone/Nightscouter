@@ -7,23 +7,23 @@
 //
 import UIKit
 
-class AppDataManager: NSObject, UIStateRestoring {
+public class AppDataManager: NSObject, UIStateRestoring {
     
-    var sites: [Site] = [Site]() {
+    public var sites: [Site] = [Site]() {
         didSet {
             saveAppData()
         }
     }
     
-    struct SavedPropertyKey {
+    internal struct SavedPropertyKey {
         static let sitesArrayObjectsKey = "userSites"
         static let currentSiteIndexKey = "currentSiteIndex"
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
     
-    let defaults: NSUserDefaults
+    internal let defaults: NSUserDefaults
     
-    var currentSiteIndex: Int {
+    public var currentSiteIndex: Int {
         set {
             defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
             defaults.synchronize()
@@ -33,7 +33,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
     }
     
-    var shouldDisableIdleTimer: Bool {
+    public var shouldDisableIdleTimer: Bool {
         set {
             #if DEBUG
                 println("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
@@ -48,7 +48,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         }
     }
     
-    class var sharedInstance: AppDataManager {
+    public class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
             static var instance: AppDataManager? = nil
@@ -59,7 +59,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         return Static.instance!
     }
     
-    override init() {
+    internal override init() {
         defaults  = NSUserDefaults.standardUserDefaults()
 
         super.init()
@@ -79,7 +79,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         */
     }
     
-    func saveAppData() {
+    public func saveAppData() {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
 
         // write to disk
@@ -101,7 +101,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         })
     }
     
-    func addSite(site: Site, index: Int?) {
+    public func addSite(site: Site, index: Int?) {
         if let indexOptional = index {
             if (sites.count >= indexOptional) {
                 sites.insert(site, atIndex: indexOptional )
@@ -113,7 +113,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         saveAppData()
     }
     
-    func updateSite(site: Site)  ->  Bool {
+    public func updateSite(site: Site)  ->  Bool {
         if let index = find(AppDataManager.sharedInstance.sites, site) {
             self.sites[index] = site
             return true
@@ -121,7 +121,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         return false
     }
     
-    func deleteSiteAtIndex(index: Int) {
+    public func deleteSiteAtIndex(index: Int) {
              let site = sites[index]
                 
         for notifications in site.notifications {
@@ -141,7 +141,7 @@ class AppDataManager: NSObject, UIStateRestoring {
         saveAppData()
     }
     
-    func loadSampleSites() -> Void {
+    public func loadSampleSites() -> Void {
         // Create a site URL.
         let demoSiteURL = NSURL(string: "https://nscgm.herokuapp.com")!
         // Create a site.
@@ -151,18 +151,18 @@ class AppDataManager: NSObject, UIStateRestoring {
         sites = [demoSite]
     }
     
-    var infoDictionary: [String: AnyObject]? {
+    public var infoDictionary: [String: AnyObject]? {
         return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
     }
     
-    var bundleIdentifier: String? {
+    public var bundleIdentifier: String? {
         if let dictionary = infoDictionary {
             return dictionary["CFBundleIdentifier"] as? String
         }
         return nil
     }
     
-    var supportedSchemes: [String]? {
+    public var supportedSchemes: [String]? {
         if let info = infoDictionary {
             var schemes = [String]() // Create an empty array we can later set append available schemes.
             if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {

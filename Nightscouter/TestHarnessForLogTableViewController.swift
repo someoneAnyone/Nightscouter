@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class TestHarnessForLogTableViewController: UITableViewController {
     var dataForTable = Array<Entry>()

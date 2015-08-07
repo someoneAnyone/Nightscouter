@@ -31,7 +31,7 @@
                             <rect key="frame" x="0.0" y="44" width="600" height="195"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F6w-bv-rdP" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F6w-bv-rdP" customClass="CompassControl" customModule="NightscouterKit">
                                     <rect key="frame" x="436" y="0.0" width="156" height="195"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
@@ -286,7 +286,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jvo-b2-fEq">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="300"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7FA-EX-bG2" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7FA-EX-bG2" customClass="CompassControl" customModule="NightscouterKit">
                                         <rect key="frame" x="436" y="105" width="156" height="195"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <constraints>
@@ -377,8 +377,8 @@
                                 </constraints>
                                 <variation key="default">
                                     <mask key="constraints">
-                                        <exclude reference="hwp-ZA-ETk"/>
                                         <exclude reference="X5k-cw-lYC"/>
+                                        <exclude reference="hwp-ZA-ETk"/>
                                         <exclude reference="IpE-xB-heY"/>
                                     </mask>
                                 </variation>
@@ -551,7 +551,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="Wvb-D2-1fi" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
+                            <view contentMode="scaleToFill" placeholderIntrinsicWidth="150" placeholderIntrinsicHeight="170" translatesAutoresizingMaskIntoConstraints="NO" id="Wvb-D2-1fi" customClass="CompassControl" customModule="NightscouterKit">
                                 <rect key="frame" x="222" y="203" width="156" height="195"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>

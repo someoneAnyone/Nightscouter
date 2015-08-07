@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate {
     
@@ -111,7 +112,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         
         if nextButton.enabled{
             self.view.endEditing(true)
-            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
+            performSegueWithIdentifier(Constants.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
         }
         
         return true // validateUrl(textField.text!)

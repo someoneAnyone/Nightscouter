@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
@@ -46,7 +47,7 @@ class SiteListTableViewController: UITableViewController {
         super.viewDidLoad()
         
         if let site = siteToDisplay {
-            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.ShowPageView.rawValue, sender: site)
+            performSegueWithIdentifier(Constants.SegueIdentifier.ShowPageView.rawValue, sender: site)
         }
         
         // Common setup.
@@ -154,7 +155,7 @@ class SiteListTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let identifier = UIStoryboardSegue.SegueIdentifier(rawValue: segue.identifier!) {
+        if let identifier = Constants.SegueIdentifier(rawValue: segue.identifier!) {
             switch identifier {
                 
             case .EditSite:
@@ -264,7 +265,7 @@ class SiteListTableViewController: UITableViewController {
         
         // Configure table view properties.
         tableView.rowHeight = 240
-        tableView.backgroundView = TableViewBackgroundView() // TODO: Move this out to a theme manager.
+        tableView.backgroundView = BackgroundView() // TODO: Move this out to a theme manager.
         tableView.separatorColor = NSAssetKit.darkNavColor
         
         // Position refresh control above background view
@@ -299,7 +300,7 @@ class SiteListTableViewController: UITableViewController {
     func shouldIShowNewSiteForm() {
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
-            let vc = storyboard?.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
+            let vc = storyboard?.instantiateViewControllerWithIdentifier(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
             self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
                 // println("Finished presenting SiteFormViewController.")
             })
@@ -393,7 +394,7 @@ class SiteListTableViewController: UITableViewController {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             let tableViewCell = self.tableView.cellForRowAtIndexPath(indexPath)
             self.accessoryIndexPath = indexPath
-            self.performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
+            self.performSegueWithIdentifier(Constants.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
         }
         alertController.addAction(editAction)
         

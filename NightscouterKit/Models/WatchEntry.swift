@@ -21,27 +21,27 @@ extension EntryPropertyKey {
 
 let WatchFaceDeviceValue = "watchFace"
 
-class WatchEntry: Entry {
-    var now: NSDate
-    var bgdelta: Int
-    let battery: Int
-    var batteryString: String {
+public class WatchEntry: Entry {
+    public var now: NSDate
+    public var bgdelta: Int
+    public let battery: Int
+    public var batteryString: String {
         get{
             // Convert int from JSON into a proper precentge.
             var percentage = Float(battery)/100
             return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
         }
     }
-    var batteryColorState: DesiredColorState {
+    public var batteryColorState: DesiredColorState {
         if battery < 50 && battery > 20 {
             return DesiredColorState.Warning
-        } else if battery < 20 {
+        } else if battery <= 20 {
             return DesiredColorState.Alert
         }
         return DesiredColorState.Neutral
     }
     
-    init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Int, battery: Int) {
+    public init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Int, battery: Int) {
         self.now = now
         self.bgdelta = bgdelta
         self.battery = battery
@@ -50,8 +50,8 @@ class WatchEntry: Entry {
     }
 }
 
-extension WatchEntry {
-    convenience init(watchEntryDictionary: [String : AnyObject]) {
+public extension WatchEntry {
+    public convenience init(watchEntryDictionary: [String : AnyObject]) {
         var now: NSDate = NSDate()
         var date: NSDate = NSDate()
         var device: String = WatchFaceDeviceValue

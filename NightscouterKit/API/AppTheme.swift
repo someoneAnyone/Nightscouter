@@ -8,22 +8,22 @@
 
 import UIKit
 
-struct Theme {
-    struct Color {
-        static let windowTintColor =  NSAssetKit.predefinedNeutralColor
-        static let headerTextColor = UIColor(white: 1.0, alpha: 0.5)
-        static let labelTextColor = UIColor.whiteColor()
-        static let navBarColor: UIColor = NSAssetKit.darkNavColor
-        static let navBarTextColor: UIColor = UIColor.whiteColor()
+public struct Theme {
+    public struct Color {
+        public static let windowTintColor =  NSAssetKit.predefinedNeutralColor
+        public static let headerTextColor = UIColor(white: 1.0, alpha: 0.5)
+        public static let labelTextColor = UIColor.whiteColor()
+        public static let navBarColor: UIColor = NSAssetKit.darkNavColor
+        public static let navBarTextColor: UIColor = UIColor.whiteColor()
     }
     
-    struct Font {
+    public struct Font {
         static let navBarTitleFont = UIFont(name: "HelveticaNeue-Thin", size: 20.0)
     }
 }
 
-class AppThemeManager: NSObject {
-    class var themeApp: AppThemeManager {
+public class AppThemeManager: NSObject {
+    public class var themeApp: AppThemeManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
             static var instance: AppThemeManager? = nil

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum EnabledOptions: String, Printable {
+public enum EnabledOptions: String, Printable {
     case careportal = "careportal"
     case rawbg = "rawbg"
     case iob = "iob"
@@ -21,81 +21,81 @@ enum EnabledOptions: String, Printable {
     case simplealarms = "simplealarms"
     case pushover = "pushover"
     
-    var description: String {
+    public var description: String {
         return self.rawValue
     }
 }
 
-enum Units: String, Printable {
+public enum Units: String, Printable {
     case Mgdl = "mg/dl"
     case Mmoll = "mmol/L"
     
-    var description: String {
+    public var description: String {
         return self.rawValue
     }
 }
 
-enum RawBGMode: String, Printable {
+public enum RawBGMode: String, Printable {
     case Never = "never"
     case Always = "always"
     case Noise = "noise"
     
-    var description: String {
+    public var description: String {
         return self.rawValue
     }
 }
 
-struct Threshold: Printable {
-    let bg_high: Int
-    let bg_low: Int
-    let bg_target_bottom :Int
-    let bg_target_top :Int
+public struct Threshold: Printable {
+    public let bg_high: Int
+    public let bg_low: Int
+    public let bg_target_bottom :Int
+    public let bg_target_top :Int
     
-    var description: String {
+    public var description: String {
         let dict = ["bg_high": bg_high, "bg_low": bg_low, "bg_target_bottom": bg_target_bottom, "bg_target_top": bg_target_top]
         return dict.description
     }
 }
 
-struct Alarm: Printable {
-    let alarmHigh: Bool
-    let alarmLow: Bool
-    let alarmTimeAgoUrgent: Bool
-    let alarmTimeAgoUrgentMins: NSTimeInterval
-    let alarmTimeAgoWarn: Bool
-    let alarmTimeAgoWarnMins: NSTimeInterval
-    let alarmUrgentHigh: Bool
-    let alarmUrgentLow: Bool
+public struct Alarm: Printable {
+    public let alarmHigh: Bool
+    public let alarmLow: Bool
+    public let alarmTimeAgoUrgent: Bool
+    public let alarmTimeAgoUrgentMins: NSTimeInterval
+    public let alarmTimeAgoWarn: Bool
+    public let alarmTimeAgoWarnMins: NSTimeInterval
+    public let alarmUrgentHigh: Bool
+    public let alarmUrgentLow: Bool
     
-    var description: String {
+    public var description: String {
         let dict = ["alarmHigh": alarmHigh, "alarmLow:": alarmLow, "alarmTimeAgoUrgent": alarmTimeAgoUrgentMins, "alarmTimeAgoWarn": alarmTimeAgoWarn, "alarmTimeAgoWarnMins": alarmTimeAgoWarnMins, "alarmUrgentHigh": alarmUrgentHigh, "alarmUrgentLow": alarmUrgentLow]
         return dict.description
     }
 }
 
-enum AlarmTypes: String, Printable {
+public enum AlarmTypes: String, Printable {
     case predict = "predict"
     case simple = "simple"
     
-    var description: String {
+    public var description: String {
         return self.rawValue
     }
 }
 
-struct Defaults: Printable {
+public struct Defaults: Printable {
     // Start of "defaults" dictionary
-    let units: Units
-    let timeFormat: Int
-    let nightMode: Bool
-    let showRawbg: RawBGMode
-    let customTitle: String
-    let theme: String
-    let alarms: Alarm
-    let language: String
-    let showPlugins: String? = nil
+    public let units: Units
+    public let timeFormat: Int
+    public let nightMode: Bool
+    public let showRawbg: RawBGMode
+    public let customTitle: String
+    public let theme: String
+    public let alarms: Alarm
+    public let language: String
+    public let showPlugins: String? = nil
     // End of "defaults" dictionary
     
-    var description: String {
+    public var description: String {
         let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language]
         return dict.description
     }
@@ -134,20 +134,20 @@ struct ConfigurationPropertyKey {
     static let extendedSettingsKey = "extendedSettings"
 }
 
-struct ServerConfiguration: Printable {
-    let status: String?
-    let apiEnabled: Bool?
-    let careportalEnabled: Bool?
-    let enabledOptions: [EnabledOptions]?
-    let defaults: Defaults?
-    let unitsRoot: Units?
-    let head:String?
-    let version: String?
-    let thresholds: Threshold?
-    let alarm_types: String?
-    let name: String?
+public struct ServerConfiguration: Printable {
+    public let status: String?
+    public let apiEnabled: Bool?
+    public let careportalEnabled: Bool?
+    public let enabledOptions: [EnabledOptions]?
+    public let defaults: Defaults?
+    public let unitsRoot: Units?
+    public let head:String?
+    public let version: String?
+    public let thresholds: Threshold?
+    public let alarm_types: String?
+    public let name: String?
     
-    var description: String {
+    public var description: String {
         
         var dict = Dictionary<String, AnyObject>()  //= NSMutableDictionary ()
         if let status = status {
@@ -189,7 +189,7 @@ struct ServerConfiguration: Printable {
     }
 }
 
-extension ServerConfiguration {
+public extension ServerConfiguration {
     
     init(jsonDictionary: [String:AnyObject]) {
         
@@ -280,17 +280,17 @@ extension ServerConfiguration {
 }
 
 // TODO: Should this be here?
-enum DesiredColorState {
+public enum DesiredColorState {
     case Alert, Warning, Positive, Neutral
 }
 
 // TODO: Should this be here? Maybe it shuld be a threshold extension.
-extension ServerConfiguration {
+public extension ServerConfiguration {
     
-    func boundedColorForGlucoseValue(value: Int) -> DesiredColorState {
+    public func boundedColorForGlucoseValue(value: Int) -> DesiredColorState {
         var color = DesiredColorState.Neutral
         if let thresholds = self.thresholds {
-            if (value > thresholds.bg_high) {
+            if (value >= thresholds.bg_high) {
                 color = .Alert
             } else if (value > thresholds.bg_target_top && value < thresholds.bg_high) {
                 color =  .Warning
@@ -298,14 +298,14 @@ extension ServerConfiguration {
                 color = .Positive
             } else if (value < thresholds.bg_target_bottom && value > thresholds.bg_low) {
                 color = .Warning
-            } else if (value < thresholds.bg_low && value != 0) {
+            } else if (value <= thresholds.bg_low && value != 0) {
                 color = .Alert
             }
         }
         return color
     }
     
-    func isDataStaleWith(interval sinceNow: NSTimeInterval) -> (warn: Bool, urgent: Bool) {
+    public func isDataStaleWith(interval sinceNow: NSTimeInterval) -> (warn: Bool, urgent: Bool) {
         if let alarms = self.defaults?.alarms {
             return isDataStaleWith(interval: sinceNow, warn: alarms.alarmTimeAgoWarnMins, urgent: alarms.alarmTimeAgoUrgentMins)
         } else {
@@ -313,7 +313,7 @@ extension ServerConfiguration {
         }
     }
     
-    func isDataStaleWith(interval sinceNow: NSTimeInterval, warn: NSTimeInterval, urgent: NSTimeInterval, fallback: NSTimeInterval = NSTimeInterval(600)) -> (warn: Bool, urgent: Bool) {
+    public func isDataStaleWith(interval sinceNow: NSTimeInterval, warn: NSTimeInterval, urgent: NSTimeInterval, fallback: NSTimeInterval = NSTimeInterval(600)) -> (warn: Bool, urgent: Bool) {
         
         let warnValue: NSTimeInterval = -max(fallback, warn)
         let urgentValue: NSTimeInterval = -max(fallback, urgent)

@@ -8,23 +8,23 @@
 
 import UIKit
 
-extension CompassControl {
+public extension CompassControl {
     
-    internal func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Int, units: String) -> Void {
+ func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Int, units: String) -> Void {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
         self.delta = "\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    func configureWith(site: Site){
+    public func configureWith(site: Site){
         if let configuration: ServerConfiguration = site.configuration,  watch: WatchEntry = site.watchEntry,  sgv: SensorGlucoseValue = watch.sgv {
             let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgv.sgv))
             configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: configuration.unitsRoot!.rawValue)
         }
     }
     
-    func shouldLookStale(look stale: Bool) {
+    public func shouldLookStale(look stale: Bool) {
         if stale {
             let compass = CompassControl()
             self.alpha = 0.5

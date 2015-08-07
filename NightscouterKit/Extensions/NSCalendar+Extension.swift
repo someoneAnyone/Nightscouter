@@ -8,9 +8,9 @@
 
 import Foundation
 
-extension NSCalendar {
+public extension NSCalendar {
         
-    func stringRepresentationOfElapsedTimeFromDate(startDate: NSDate, endDate: NSDate) -> String {
+    public func stringRepresentationOfElapsedTimeFromDate(startDate: NSDate, endDate: NSDate) -> String {
         
         if (!startDate.timeIntervalSince1970.isSignMinus && !endDate.timeIntervalSince1970.isSignMinus){
 
@@ -102,7 +102,7 @@ extension NSCalendar {
         return "Nothing"
     }
     
-    func stringRepresentationOfElapsedTimeSinceNow(date:NSDate) -> String {
+    public func stringRepresentationOfElapsedTimeSinceNow(date:NSDate) -> String {
         return self.stringRepresentationOfElapsedTimeFromDate(date, endDate: NSDate())
     }
 }

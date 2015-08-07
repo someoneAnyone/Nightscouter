@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
@@ -293,7 +294,7 @@ extension SiteDetailViewController {
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
         #if DEBUG
-            let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
+            let storyboard = UIStoryboard(name: Constants.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
             NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
             
             presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
