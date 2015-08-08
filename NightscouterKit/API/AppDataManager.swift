@@ -21,7 +21,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
     
-    internal let defaults: NSUserDefaults
+    public let defaults: NSUserDefaults
     
     public var currentSiteIndex: Int {
         set {
