@@ -60,7 +60,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
     }
     
     internal override init() {
-        defaults  = NSUserDefaults.standardUserDefaults()
+        defaults  = NSUserDefaults(suiteName: "group.com.nighthingonline.nightscouter")!
 
         super.init()
 

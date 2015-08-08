@@ -141,6 +141,7 @@
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
+		83E0B40D1B756D920087CA9C /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +195,7 @@
 		170825E51B2CBABB00304F8F /* Nightscouter */ = {
 			isa = PBXGroup;
 			children = (
+				83E0B40D1B756D920087CA9C /* Nightscouter.entitlements */,
 				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
 				170825F21B2CBABB00304F8F /* Info.plist */,
 				1734545B1B30A11000931278 /* API */,
@@ -477,6 +479,9 @@
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = F754VXZDPA;
 						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
@@ -733,7 +738,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nightscouter/Nightscouter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -741,6 +748,7 @@
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -748,13 +756,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nightscouter/Nightscouter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -871,6 +882,7 @@
 				1771B05C1B75235C006C1F5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		1771B0611B75235C006C1F5E /* Build configuration list for PBXNativeTarget "NightscouterKitTests" */ = {
 			isa = XCConfigurationList;
@@ -879,6 +891,7 @@
 				1771B05E1B75235C006C1F5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
