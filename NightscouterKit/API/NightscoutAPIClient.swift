@@ -206,7 +206,6 @@ extension NightscoutAPIClient {
                 }
             }
         })
-        
     }
 }
 
