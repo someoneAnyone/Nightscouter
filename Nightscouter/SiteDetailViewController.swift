@@ -241,8 +241,7 @@ extension SiteDetailViewController {
         
         AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
         AppDataManager.sharedInstance.updateSite(site!)
-        UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
-
+        
         #if DEBUG
             println("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif

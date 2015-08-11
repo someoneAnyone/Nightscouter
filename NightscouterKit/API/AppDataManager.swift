@@ -21,7 +21,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
     
-    public let defaults: NSUserDefaults
+    internal let defaults: NSUserDefaults
     
     public var currentSiteIndex: Int {
         set {
@@ -40,7 +40,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
             #endif
             
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
-//            UIApplication.sharedApplication().idleTimerDisabled = newValue
+            UIApplication.sharedApplication().idleTimerDisabled = newValue
             defaults.synchronize()
         }
         get {
@@ -60,7 +60,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
     }
     
     internal override init() {
-        defaults  = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")!
+        defaults  = NSUserDefaults.standardUserDefaults()
 
         super.init()
 
@@ -125,7 +125,7 @@ public class AppDataManager: NSObject, UIStateRestoring {
              let site = sites[index]
                 
         for notifications in site.notifications {
-//            UIApplication.sharedApplication().cancelLocalNotification(notifications)
+            UIApplication.sharedApplication().cancelLocalNotification(notifications)
         }
         
         //

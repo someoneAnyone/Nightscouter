@@ -101,15 +101,7 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            
-            let site = sites[indexPath.row]
-            
-            for notification in site.notifications {
-                UIApplication.sharedApplication().cancelLocalNotification(notification)
-            }
-            
             AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
-        
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             shouldIShowNewSiteForm()
         } else if editingStyle == .Insert {
