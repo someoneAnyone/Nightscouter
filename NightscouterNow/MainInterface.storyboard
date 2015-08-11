@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="DPa-Nb-WCB">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Today View Controller-->
+        <scene sceneID="cwh-vc-ff4">
+            <objects>
+                <viewController id="M4Y-Lb-cyx" customClass="TodayViewController" customModule="NightscouterNow" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ft6-oW-KC0"/>
+                        <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="37"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello World" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
+                                <rect key="frame" x="20" y="8" width="280" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" secondItem="GcN-lo-r42" secondAttribute="bottom" constant="8" symbolic="YES" id="0Q0-KW-PJ6"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leading" constant="20" symbolic="YES" id="6Vq-gs-PHe"/>
+                            <constraint firstAttribute="trailing" secondItem="GcN-lo-r42" secondAttribute="trailing" constant="20" symbolic="YES" id="L8K-9R-egU"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="8" symbolic="YES" id="mYS-Cv-VNx"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="37"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="709" y="253.5"/>
+        </scene>
+        <!--Today View Controller-->
+        <scene sceneID="3sh-w1-ANi">
+            <objects>
+                <tableViewController id="DPa-Nb-WCB" customClass="TodayViewController" customModule="NightscouterNow" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="2Ik-lm-xiq">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="nsSiteNow" rowHeight="80" id="Uwf-AW-YC0" customClass="SiteNSNowTableViewCell" customModule="NightscouterNow" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Uwf-AW-YC0" id="O8L-L3-98L">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RAW" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RtP-Aw-VJq">
+                                            <rect key="frame" x="81" y="61" width="19" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OAH-dV-wKD">
+                                            <rect key="frame" x="8" y="43" width="60" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kcU-93-81b">
+                                            <rect key="frame" x="76" y="36" width="54" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" misplaced="YES" text="----" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OY0-Nw-3XW">
+                                            <rect key="frame" x="8" y="8" width="27" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="28"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="------" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BBr-WX-tjO">
+                                            <rect key="frame" x="256" y="23" width="56" height="34"/>
+                                            <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="28"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wy0-oe-uz5">
+                                            <rect key="frame" x="8" y="61" width="37" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iZW-IZ-lgO">
+                                            <rect key="frame" x="53" y="54" width="20" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="--- : ---" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9C4-YL-5rL">
+                                            <rect key="frame" x="108" y="54" width="52" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="----" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B0x-ja-csR">
+                                            <rect key="frame" x="274" y="8" width="38" height="34"/>
+                                            <fontDescription key="fontDescription" type="system" weight="ultraLight" pointSize="28"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="9C4-YL-5rL" firstAttribute="leading" secondItem="RtP-Aw-VJq" secondAttribute="trailing" constant="8" id="7Tp-Tq-K1T"/>
+                                        <constraint firstItem="RtP-Aw-VJq" firstAttribute="leading" secondItem="iZW-IZ-lgO" secondAttribute="trailing" constant="8" id="8g7-Cu-bwj"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="BBr-WX-tjO" secondAttribute="trailing" id="BCb-Fn-CT8"/>
+                                        <constraint firstItem="OY0-Nw-3XW" firstAttribute="top" secondItem="O8L-L3-98L" secondAttribute="topMargin" id="BR5-sg-Oj4"/>
+                                        <constraint firstAttribute="centerY" secondItem="B0x-ja-csR" secondAttribute="centerY" constant="14.5" id="BtZ-H4-3SI"/>
+                                        <constraint firstItem="kcU-93-81b" firstAttribute="baseline" secondItem="OAH-dV-wKD" secondAttribute="baseline" id="CqJ-zI-5MY"/>
+                                        <constraint firstItem="wy0-oe-uz5" firstAttribute="top" secondItem="OAH-dV-wKD" secondAttribute="bottom" constant="8" id="DDc-bw-qZa"/>
+                                        <constraint firstItem="OAH-dV-wKD" firstAttribute="top" secondItem="OY0-Nw-3XW" secondAttribute="bottom" priority="250" constant="8" symbolic="YES" id="Ilw-aB-o3e"/>
+                                        <constraint firstItem="B0x-ja-csR" firstAttribute="trailing" secondItem="O8L-L3-98L" secondAttribute="trailingMargin" id="Kyo-uL-MmY"/>
+                                        <constraint firstItem="OAH-dV-wKD" firstAttribute="leading" secondItem="wy0-oe-uz5" secondAttribute="leading" id="M62-OR-2Cn"/>
+                                        <constraint firstItem="9C4-YL-5rL" firstAttribute="baseline" secondItem="RtP-Aw-VJq" secondAttribute="baseline" id="UAk-yB-b7G"/>
+                                        <constraint firstAttribute="centerY" secondItem="BBr-WX-tjO" secondAttribute="centerY" id="WF7-75-ueL"/>
+                                        <constraint firstItem="RtP-Aw-VJq" firstAttribute="baseline" secondItem="wy0-oe-uz5" secondAttribute="baseline" id="WRw-Lg-ezz"/>
+                                        <constraint firstItem="iZW-IZ-lgO" firstAttribute="baseline" secondItem="wy0-oe-uz5" secondAttribute="baseline" id="bJY-vK-a6P"/>
+                                        <constraint firstItem="wy0-oe-uz5" firstAttribute="leading" secondItem="OY0-Nw-3XW" secondAttribute="leading" id="iDw-U6-mME"/>
+                                        <constraint firstItem="kcU-93-81b" firstAttribute="leading" secondItem="OAH-dV-wKD" secondAttribute="trailing" constant="8" id="lxA-Kp-Bed"/>
+                                        <constraint firstItem="wy0-oe-uz5" firstAttribute="bottom" secondItem="O8L-L3-98L" secondAttribute="bottomMargin" id="oMe-66-hcR"/>
+                                        <constraint firstItem="OY0-Nw-3XW" firstAttribute="leading" secondItem="O8L-L3-98L" secondAttribute="leadingMargin" id="q8R-TI-EQb"/>
+                                        <constraint firstItem="iZW-IZ-lgO" firstAttribute="leading" secondItem="wy0-oe-uz5" secondAttribute="trailing" constant="8" id="tMd-Or-0ym"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="siteBatteryHeader" destination="wy0-oe-uz5" id="Qfz-2u-XUY"/>
+                                    <outlet property="siteBatteryLabel" destination="iZW-IZ-lgO" id="41i-7C-jU8"/>
+                                    <outlet property="siteDirectionLabel" destination="BBr-WX-tjO" id="ylj-SA-BL1"/>
+                                    <outlet property="siteLastReadingHeader" destination="OAH-dV-wKD" id="3OY-rb-dO7"/>
+                                    <outlet property="siteLastReadingLabel" destination="kcU-93-81b" id="Zle-tI-o33"/>
+                                    <outlet property="siteNameLabel" destination="OY0-Nw-3XW" id="s7S-Am-fVC"/>
+                                    <outlet property="siteRawHeader" destination="RtP-Aw-VJq" id="FKU-Op-7ZY"/>
+                                    <outlet property="siteRawLabel" destination="9C4-YL-5rL" id="elr-K6-Yry"/>
+                                    <outlet property="siteSgvLabel" destination="B0x-ja-csR" id="7Cb-uY-3lj"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="DPa-Nb-WCB" id="4Z4-pp-1AT"/>
+                            <outlet property="delegate" destination="DPa-Nb-WCB" id="mTl-nn-tcN"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kCi-vi-G4e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="711" y="627"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>
