@@ -23,8 +23,6 @@
 		176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
-		1771B04D1B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
-		1771B0561B75235C006C1F5E /* NightscouterKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B05A1B75235C006C1F5E /* NightscouterKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0621B7524AA006C1F5E /* AppDataManager.swift */; };
@@ -49,43 +47,16 @@
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
 		17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* BackgroundView.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
-		830205951B75CEE00078E744 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1725511D1B75544700AC09E0 /* NotificationCenter.framework */; };
-		8302059A1B75CEE00078E744 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830205991B75CEE00078E744 /* TodayViewController.swift */; };
-		8302059C1B75CEE00078E744 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8302059B1B75CEE00078E744 /* MainInterface.storyboard */; };
-		8302059F1B75CEE00078E744 /* NightscouterNow.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 830205941B75CEE00078E744 /* NightscouterNow.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		838E64451B77916300BF8A95 /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
-		838E64481B779DB200BF8A95 /* SiteNSNowTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838E64471B779DB200BF8A95 /* SiteNSNowTableViewCell.swift */; };
 		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1771B04E1B75235C006C1F5E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1771B0411B75235B006C1F5E;
-			remoteInfo = NightscouterKit;
-		};
-		1771B0501B75235C006C1F5E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 170825E21B2CBABB00304F8F;
-			remoteInfo = Nightscouter;
-		};
 		1771B0571B75235C006C1F5E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 1771B0411B75235B006C1F5E;
 			remoteInfo = NightscouterKit;
-		};
-		8302059D1B75CEE00078E744 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 830205931B75CEE00078E744;
-			remoteInfo = NightscouterNow;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -96,7 +67,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				8302059F1B75CEE00078E744 /* NightscouterNow.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,7 +106,6 @@
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0451B75235B006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B04C1B75235C006C1F5E /* NightscouterKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscouterKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0541B75235C006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscouterKitTests.swift; sourceTree = "<group>"; };
 		1771B0621B7524AA006C1F5E /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManager.swift; path = API/AppDataManager.swift; sourceTree = "<group>"; };
@@ -163,14 +132,7 @@
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
-		830205941B75CEE00078E744 /* NightscouterNow.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NightscouterNow.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		830205981B75CEE00078E744 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		830205991B75CEE00078E744 /* TodayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
-		8302059B1B75CEE00078E744 /* MainInterface.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
-		838E64461B77916E00BF8A95 /* NightscouterNow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterNow.entitlements; sourceTree = "<group>"; };
-		838E64471B779DB200BF8A95 /* SiteNSNowTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteNSNowTableViewCell.swift; sourceTree = "<group>"; };
 		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
-		83E0B40D1B756D920087CA9C /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,23 +151,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1771B0491B75235C006C1F5E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1771B04D1B75235C006C1F5E /* NightscouterKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		830205911B75CEE00078E744 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				838E64451B77916300BF8A95 /* NightscouterKit.framework in Frameworks */,
-				830205951B75CEE00078E744 /* NotificationCenter.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -216,7 +161,6 @@
 				170825E51B2CBABB00304F8F /* Nightscouter */,
 				1771B0431B75235B006C1F5E /* NightscouterKit */,
 				1771B0521B75235C006C1F5E /* NightscouterKitTests */,
-				830205961B75CEE00078E744 /* NightscouterNow */,
 				1725511C1B75544700AC09E0 /* Frameworks */,
 				170825E41B2CBABB00304F8F /* Products */,
 			);
@@ -227,8 +171,6 @@
 			children = (
 				170825E31B2CBABB00304F8F /* Nightscouter.app */,
 				1771B0421B75235B006C1F5E /* NightscouterKit.framework */,
-				1771B04C1B75235C006C1F5E /* NightscouterKitTests.xctest */,
-				830205941B75CEE00078E744 /* NightscouterNow.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -236,7 +178,6 @@
 		170825E51B2CBABB00304F8F /* Nightscouter */ = {
 			isa = PBXGroup;
 			children = (
-				83E0B40D1B756D920087CA9C /* Nightscouter.entitlements */,
 				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
 				170825F21B2CBABB00304F8F /* Info.plist */,
 				1734545B1B30A11000931278 /* API */,
@@ -443,26 +384,6 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		830205961B75CEE00078E744 /* NightscouterNow */ = {
-			isa = PBXGroup;
-			children = (
-				838E64461B77916E00BF8A95 /* NightscouterNow.entitlements */,
-				830205991B75CEE00078E744 /* TodayViewController.swift */,
-				838E64471B779DB200BF8A95 /* SiteNSNowTableViewCell.swift */,
-				8302059B1B75CEE00078E744 /* MainInterface.storyboard */,
-				830205971B75CEE00078E744 /* Supporting Files */,
-			);
-			path = NightscouterNow;
-			sourceTree = "<group>";
-		};
-		830205971B75CEE00078E744 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				830205981B75CEE00078E744 /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -490,7 +411,6 @@
 			);
 			dependencies = (
 				1771B0581B75235C006C1F5E /* PBXTargetDependency */,
-				8302059E1B75CEE00078E744 /* PBXTargetDependency */,
 			);
 			name = Nightscouter;
 			productName = Nightscouter;
@@ -515,42 +435,6 @@
 			productReference = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		1771B04B1B75235C006C1F5E /* NightscouterKitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1771B0611B75235C006C1F5E /* Build configuration list for PBXNativeTarget "NightscouterKitTests" */;
-			buildPhases = (
-				1771B0481B75235C006C1F5E /* Sources */,
-				1771B0491B75235C006C1F5E /* Frameworks */,
-				1771B04A1B75235C006C1F5E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1771B04F1B75235C006C1F5E /* PBXTargetDependency */,
-				1771B0511B75235C006C1F5E /* PBXTargetDependency */,
-			);
-			name = NightscouterKitTests;
-			productName = NightscouterKitTests;
-			productReference = 1771B04C1B75235C006C1F5E /* NightscouterKitTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		830205931B75CEE00078E744 /* NightscouterNow */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 830205A01B75CEE00078E744 /* Build configuration list for PBXNativeTarget "NightscouterNow" */;
-			buildPhases = (
-				830205901B75CEE00078E744 /* Sources */,
-				830205911B75CEE00078E744 /* Frameworks */,
-				830205921B75CEE00078E744 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = NightscouterNow;
-			productName = NightscouterNow;
-			productReference = 830205941B75CEE00078E744 /* NightscouterNow.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -563,10 +447,9 @@
 				TargetAttributes = {
 					170825E21B2CBABB00304F8F = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = F754VXZDPA;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -575,20 +458,6 @@
 					};
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = F754VXZDPA;
-					};
-					1771B04B1B75235C006C1F5E = {
-						CreatedOnToolsVersion = 6.4;
-						TestTargetID = 170825E21B2CBABB00304F8F;
-					};
-					830205931B75CEE00078E744 = {
-						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = F754VXZDPA;
-						SystemCapabilities = {
-							com.apple.ApplicationGroups.iOS = {
-								enabled = 1;
-							};
-						};
 					};
 				};
 			};
@@ -607,8 +476,6 @@
 			targets = (
 				170825E21B2CBABB00304F8F /* Nightscouter */,
 				1771B0411B75235B006C1F5E /* NightscouterKit */,
-				830205931B75CEE00078E744 /* NightscouterNow */,
-				1771B04B1B75235C006C1F5E /* NightscouterKitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -632,21 +499,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		1771B04A1B75235C006C1F5E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		830205921B75CEE00078E744 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8302059C1B75CEE00078E744 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,45 +551,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1771B0481B75235C006C1F5E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1771B0561B75235C006C1F5E /* NightscouterKitTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		830205901B75CEE00078E744 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				838E64481B779DB200BF8A95 /* SiteNSNowTableViewCell.swift in Sources */,
-				8302059A1B75CEE00078E744 /* TodayViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1771B04F1B75235C006C1F5E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1771B0411B75235B006C1F5E /* NightscouterKit */;
-			targetProxy = 1771B04E1B75235C006C1F5E /* PBXContainerItemProxy */;
-		};
-		1771B0511B75235C006C1F5E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 170825E21B2CBABB00304F8F /* Nightscouter */;
-			targetProxy = 1771B0501B75235C006C1F5E /* PBXContainerItemProxy */;
-		};
 		1771B0581B75235C006C1F5E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 1771B0411B75235B006C1F5E /* NightscouterKit */;
 			targetProxy = 1771B0571B75235C006C1F5E /* PBXContainerItemProxy */;
-		};
-		8302059E1B75CEE00078E744 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 830205931B75CEE00078E744 /* NightscouterNow */;
-			targetProxy = 8302059D1B75CEE00078E744 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -805,7 +625,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -844,7 +664,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -860,7 +680,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nightscouter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-D DEBUG";
@@ -878,7 +697,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Nightscouter/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
@@ -906,7 +724,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				INFOPLIST_FILE = NightscouterKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -929,82 +746,11 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = NightscouterKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		1771B05D1B75235C006C1F5E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INFOPLIST_FILE = NightscouterKitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nightscouter.app/Nightscouter";
-			};
-			name = Debug;
-		};
-		1771B05E1B75235C006C1F5E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = NightscouterKitTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nightscouter.app/Nightscouter";
-			};
-			name = Release;
-		};
-		830205A11B75CEE00078E744 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NightscouterNow/NightscouterNow.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				INFOPLIST_FILE = NightscouterNow/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-			};
-			name = Debug;
-		};
-		830205A21B75CEE00078E744 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NightscouterNow/NightscouterNow.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				INFOPLIST_FILE = NightscouterNow/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -1034,24 +780,6 @@
 			buildConfigurations = (
 				1771B05B1B75235C006C1F5E /* Debug */,
 				1771B05C1B75235C006C1F5E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1771B0611B75235C006C1F5E /* Build configuration list for PBXNativeTarget "NightscouterKitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1771B05D1B75235C006C1F5E /* Debug */,
-				1771B05E1B75235C006C1F5E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		830205A01B75CEE00078E744 /* Build configuration list for PBXNativeTarget "NightscouterNow" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				830205A11B75CEE00078E744 /* Debug */,
-				830205A21B75CEE00078E744 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
