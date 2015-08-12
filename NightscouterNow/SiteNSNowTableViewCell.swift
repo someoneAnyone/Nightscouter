@@ -22,14 +22,14 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     @IBOutlet weak var siteNameLabel: UILabel!
     
-    // @IBOutlet weak var siteColorBlockView: UIView!
+     @IBOutlet weak var siteColorBlockView: UIView!
     // @IBOutlet weak var siteCompassControl: CompassControl!
     
     @IBOutlet weak var siteSgvLabel: UILabel!
     @IBOutlet weak var siteDirectionLabel: UILabel!
     
-//    @IBOutlet weak var siteDeltaHeader: UILabel!
-//    @IBOutlet weak var siteDeltaLabel: UILabel!
+    // @IBOutlet weak var siteDeltaHeader: UILabel!
+    // @IBOutlet weak var siteDeltaLabel: UILabel!
     
     // @IBOutlet weak var siteUrlLabel: UILabel!
     
@@ -47,13 +47,13 @@ class SiteNSNowTableViewCell: UITableViewCell {
         
         if let configuration = site.configuration {
             
-            let maxValue: NSTimeInterval
+            let unitsToUse: Units
             if let defaults = configuration.defaults {
                 siteNameLabel.text = defaults.customTitle
-                maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+                unitsToUse = defaults.units
             } else {
                 siteNameLabel.text = configuration.name
-                maxValue = Constants.NotableTime.StaleDataTimeFrame
+                unitsToUse = configuration.unitsRoot!
             }
             
             if let watchEntry = site.watchEntry {
@@ -68,13 +68,12 @@ class SiteNSNowTableViewCell: UITableViewCell {
                 siteLastReadingLabel.text = watchEntry.dateTimeAgoString
                 
                 if let sgvValue = watchEntry.sgv {
-                    
                     let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
-                    // siteColorBlockView.backgroundColor = color
-                    siteSgvLabel.text = sgvValue.sgvString
+                    siteColorBlockView.backgroundColor = color
+                    siteSgvLabel.text = "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
                     siteSgvLabel.textColor = color
                     
-                    siteDirectionLabel.text = sgvValue.direction.description
+                    siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(unitsToUse.description)"
                     siteDirectionLabel.textColor = color
                     
                     if let enabledOptions = configuration.enabledOptions {
@@ -101,7 +100,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                         siteRawLabel?.text = "--- : ---"
                         siteRawLabel?.textColor = defaultTextColor
                         siteLastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
-                        // siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
+                        siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
                         
                         siteSgvLabel.text = "---"
                         siteSgvLabel.textColor = colorForDesiredColorState(.Neutral)
@@ -146,7 +145,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
         // siteCompassControl.shouldLookStale(look: true)
-        // siteColorBlockView.backgroundColor = siteCompassControl.color
+         siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
         
         siteSgvLabel.text = nil
         siteSgvLabel.textColor = Theme.Color.labelTextColor

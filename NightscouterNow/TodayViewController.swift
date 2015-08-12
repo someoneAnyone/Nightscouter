@@ -17,24 +17,13 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     }
     
     // Whenever this changes, it updates the attributed title of the refresh control.
-    var lastUpdatedTime: NSDate? {
-        didSet{
-            // Create and use a formatter.
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.timeStyle = NSDateFormatterStyle.MediumStyle
-            dateFormatter.dateStyle = NSDateFormatterStyle.MediumStyle
-            dateFormatter.timeZone = NSTimeZone.localTimeZone()
-            
-            if let date = lastUpdatedTime {
-                let str = String(stringInterpolation:Constants.LocalizedString.lastUpdatedDateLabel.localized, dateFormatter.stringFromDate(date))
-            }
-        }
-    }
+    var lastUpdatedTime: NSDate?
 
-    let expandButton = UIButton()
+    //let expandButton = UIButton()
     
     let userDefaults = AppDataManager.sharedInstance.defaults
     
+    /*
     var expanded : Bool {
         get {
             return userDefaults.boolForKey("expanded")
@@ -44,23 +33,23 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             userDefaults.synchronize()
         }
     }
+    */
     
-    let defaultNumRows = 3
-    let maxNumberOfRows = 6
+//    let defaultNumRows = 3
+//    let maxNumberOfRows = 6
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view from its nib.
         
-        updateExpandButtonTitle()
-        expandButton.addTarget(self, action: "toggleExpand", forControlEvents: .TouchUpInside)
+//        updateExpandButtonTitle()
+        //expandButton.addTarget(self, action: "toggleExpand", forControlEvents: .TouchUpInside)
 
         tableView.estimatedRowHeight = 80
-        tableView.sectionFooterHeight = 44
+//        tableView.sectionFooterHeight = 44
         
         updatePreferredContentSize()
-
     }
     
     override func didReceiveMemoryWarning() {
@@ -74,7 +63,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // If an error is encountered, use NCUpdateResult.Failed
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
-        tableView.reloadData()
+        // tableView.reloadData()
         completionHandler(NCUpdateResult.NewData)
     }
     
@@ -96,7 +85,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if !sites.isEmpty {
-            return min(sites.count, expanded ? maxNumberOfRows : defaultNumRows)
+//            return min(sites.count, expanded ? maxNumberOfRows : defaultNumRows)
+            return sites.count
         }
         return 0
     }
@@ -116,9 +106,11 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         return cell
     }
     
+    /*
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return expandButton
     }
+    */
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let item = sites[indexPath.row]
@@ -134,7 +126,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
 
     
     // MARK: expand
-    
+    /*
     func updateExpandButtonTitle() {
         expandButton.setTitle(expanded ? "Show less" : "Show more", forState: .Normal)
     }
@@ -145,6 +137,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         updatePreferredContentSize()
         tableView.reloadData()
     }
+    */
     
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
@@ -182,13 +175,10 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                         site.watchEntry = watchEntry
                         AppDataManager.sharedInstance.updateSite(site)
                         self.lastUpdatedTime = NSDate()
-
-                        
                         self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
                     })
                 })
             }
         }
-
     }
 }
