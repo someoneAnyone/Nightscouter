@@ -90,7 +90,7 @@ extension TestHarnessForCompassViewController {
     func setModeSwitch (){
         self.modeSwitch.removeAllSegments()
         for (index, value) in enumerate(Direction.allValues) {
-            self.modeSwitch.insertSegmentWithTitle("\(value.emojiForDirection())", atIndex: index, animated: true)
+            self.modeSwitch.insertSegmentWithTitle("\(value.emojiForDirection)", atIndex: index, animated: true)
         }
         self.modeSwitch.selectedSegmentIndex = 0
         self.modeLabel.text = placeholderModeString + ": " + self.modeSwitch.titleForSegmentAtIndex(self.modeSwitch.selectedSegmentIndex)!

@@ -11,7 +11,7 @@ import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController {
+class SiteListTableViewController: UITableViewController, NightscoutAPIClientDelegate {
     
     // MARK: Properties
     
@@ -336,7 +336,7 @@ class SiteListTableViewController: UITableViewController {
     func loadDataFor(site: Site, index: Int){
         // Start up the API
         let nsApi = NightscoutAPIClient(url: site.url)
-        
+        nsApi.delegate = self
         //TODO: 1. There should be reachabiltiy checks before doing anything.
         //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
         //TODO: 3. Probably need to move this code to the application delegate?
@@ -439,5 +439,9 @@ class SiteListTableViewController: UITableViewController {
     
     func stopUserActivity() {
         userActivity?.invalidate()
+    }
+    
+    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = usingNetwork
     }
 }
