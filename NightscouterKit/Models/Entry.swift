@@ -34,18 +34,20 @@ public enum Direction : String, Printable {
         }
     }
     
-    public func emojiForDirection() -> String {
-        switch (self) {
-        case .None: return "None"
-        case .DoubleUp: return  "⇈"
-        case .SingleUp: return "↑"
-        case .FortyFiveUp: return  "➚"
-        case .Flat: return "→"
-        case .FortyFiveDown: return "➘"
-        case .SingleDown: return "↓"
-        case .DoubleDown: return  "⇊"
-        case .NotComputable: return "-"
-        case .RateOutOfRange: return "✕"
+    public var emojiForDirection : String {
+        get {
+            switch (self) {
+            case .None: return "None"
+            case .DoubleUp: return  "⇈"
+            case .SingleUp: return "↑"
+            case .FortyFiveUp: return  "➚"
+            case .Flat: return "→"
+            case .FortyFiveDown: return "➘"
+            case .SingleDown: return "↓"
+            case .DoubleDown: return  "⇊"
+            case .NotComputable: return "-"
+            case .RateOutOfRange: return "✕"
+            }
         }
     }
     

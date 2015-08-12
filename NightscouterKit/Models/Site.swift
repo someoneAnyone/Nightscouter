@@ -45,7 +45,7 @@ public class Site: NSObject, NSCoding {
     public var configuration: ServerConfiguration?
     public var watchEntry: WatchEntry?
     public var entries: [Entry]?
-    public var allowNotifications: Bool = true // Fix this at somepoint.
+    public var allowNotifications: Bool
     public var overrideScreenLock: Bool
 
     public var notifications: [UILocalNotification]
@@ -63,6 +63,7 @@ public class Site: NSObject, NSCoding {
         self.notifications = [UILocalNotification]()
         self.overrideScreenLock = false
         self.disabled = false
+        self.allowNotifications = true
         
         super.init()
         
@@ -108,6 +109,13 @@ public class Site: NSObject, NSCoding {
         }
         
         self.disabled = disabledSite
-        
+    }
+    
+    public override func isEqual(object: AnyObject?) -> Bool {
+        if let object = object as? Site {
+            return uuid == object.uuid
+        } else {
+            return false
+        }
     }
 }

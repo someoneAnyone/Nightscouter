@@ -23,7 +23,6 @@
 		176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
-		1771B0471B75235B006C1F5E /* NightscouterKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 1771B0461B75235B006C1F5E /* NightscouterKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1771B04D1B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B0561B75235C006C1F5E /* NightscouterKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
@@ -137,7 +136,6 @@
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0451B75235B006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B0461B75235B006C1F5E /* NightscouterKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterKit.h; sourceTree = "<group>"; };
 		1771B04C1B75235C006C1F5E /* NightscouterKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscouterKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0541B75235C006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscouterKitTests.swift; sourceTree = "<group>"; };
@@ -330,7 +328,6 @@
 		1771B0431B75235B006C1F5E /* NightscouterKit */ = {
 			isa = PBXGroup;
 			children = (
-				1771B0461B75235B006C1F5E /* NightscouterKit.h */,
 				1771B0621B7524AA006C1F5E /* AppDataManager.swift */,
 				1771B0631B7524AA006C1F5E /* AppTheme.swift */,
 				1771B0641B7524AA006C1F5E /* Constants.swift */,
@@ -473,7 +470,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1771B0471B75235B006C1F5E /* NightscouterKit.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

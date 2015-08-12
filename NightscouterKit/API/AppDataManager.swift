@@ -5,15 +5,9 @@
 //  Created by Peter Ina on 7/22/15.
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
-import UIKit
+import Foundation
 
-public class AppDataManager: NSObject, UIStateRestoring {
-    
-    public var sites: [Site] = [Site]() {
-        didSet {
-            saveAppData()
-        }
-    }
+public class AppDataManager: NSObject {
     
     internal struct SavedPropertyKey {
         static let sitesArrayObjectsKey = "userSites"
@@ -21,12 +15,20 @@ public class AppDataManager: NSObject, UIStateRestoring {
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
     
-    public let defaults: NSUserDefaults
+    public var sites: [Site] = [Site]() {
+        didSet{
+            // write to defaults
+            var arrayOfObjects = [Site]()
+            var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+            saveAppData()
+        }
+    }
     
     public var currentSiteIndex: Int {
         set {
             defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
-            defaults.synchronize()
+            saveAppData()
         }
         get {
             return defaults.integerForKey(SavedPropertyKey.currentSiteIndexKey)
@@ -40,14 +42,15 @@ public class AppDataManager: NSObject, UIStateRestoring {
             #endif
             
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
-//            UIApplication.sharedApplication().idleTimerDisabled = newValue
-            defaults.synchronize()
+            saveAppData()
         }
         get {
             return defaults.boolForKey(SavedPropertyKey.shouldDisableIdleTimerKey)
         }
     }
     
+    public let defaults: NSUserDefaults
+
     public class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
@@ -61,44 +64,25 @@ public class AppDataManager: NSObject, UIStateRestoring {
     
     internal override init() {
         defaults  = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")!
-
+        
         super.init()
-
+        
         if let arrayOfObjectsUnarchivedData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
             if let arrayOfObjectsUnarchived = NSKeyedUnarchiver.unarchiveObjectWithData(arrayOfObjectsUnarchivedData) as? [Site] {
                 sites = arrayOfObjectsUnarchived
             }
         }
-        
-        /*
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(Site.ArchiveURL.path!) as? NSData {
-        if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
-        sites = sitesArray
-        }
-        }
-        */
     }
     
     public func saveAppData() {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
-
-        // write to disk
-        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
-        
+        let isSuccessfulSave = defaults.synchronize()
         #if DEBUG
-        if !isSuccessfulSave {
+            if !isSuccessfulSave {
             println("Failed to save sites...")
-        }else{
+            }else{
             println("Successful save...")
-        }
+            }
         #endif
-        
-        // write to defaults
-        var arrayOfObjects = [Site]()
-        var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        self.defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
-        })
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -109,8 +93,6 @@ public class AppDataManager: NSObject, UIStateRestoring {
         }else {
             sites.append(site)
         }
-        
-        saveAppData()
     }
     
     public func updateSite(site: Site)  ->  Bool {
@@ -122,23 +104,8 @@ public class AppDataManager: NSObject, UIStateRestoring {
     }
     
     public func deleteSiteAtIndex(index: Int) {
-             let site = sites[index]
-                
-        for notifications in site.notifications {
-//            UIApplication.sharedApplication().cancelLocalNotification(notifications)
-        }
-        
-        //
-        // for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
-        // if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == item.UUID) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-        // UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-        // break
-        // }
-        // }
-        
+        let site = sites[index]
         sites.removeAtIndex(index)
-
-        saveAppData()
     }
     
     public func loadSampleSites() -> Void {
@@ -150,6 +117,8 @@ public class AppDataManager: NSObject, UIStateRestoring {
         // Add it to the site Array
         sites = [demoSite]
     }
+    
+    // MARK: Extras
     
     public var infoDictionary: [String: AnyObject]? {
         return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
@@ -178,5 +147,5 @@ public class AppDataManager: NSObject, UIStateRestoring {
         }
         return nil
     }
-
+    
 }

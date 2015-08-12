@@ -7,10 +7,15 @@
 //
 
 import Foundation
-//import UIKit
 /*:
 Create protocol for setting base URL, API Token, etc...
 */
+public protocol NightscoutAPIClientDelegate {
+    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool)
+}
+
+
+// TODO: Create a queue of requests... and make this a singleton.
 
 internal let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
 
@@ -41,6 +46,8 @@ public class NightscoutAPIClient {
     lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
     
     public var url: NSURL!
+
+    public var delegate: NightscoutAPIClientDelegate?
 
     /*! Initializes the calss with a Nightscout site URL.
     * \param url This class only needs the base URL to the site. For example, https://nightscout.hostingcompany.com, the class will discover the API. Currently uses veriion 1.
@@ -113,9 +120,16 @@ extension NightscoutAPIClient {
 
 // MARK: - Private Methods
 private extension NightscoutAPIClient {
+    
+    func useNetwork(showIndicator: Bool) {
+        if let delegate = self.delegate {
+            delegate.nightscoutAPIClient(self, usingNetwork: showIndicator)
+        }
+    }
+    
     func fetchJSONWithURL(url: NSURL!, completetion:(result: JSON?, errorCode: NightscoutAPIError) -> Void) {
         
-//        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        useNetwork(true)
         
         let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL!, response: NSURLResponse!, downloadError: NSError!) -> Void in
             if let httpResponse = response as? NSHTTPURLResponse {
@@ -160,7 +174,7 @@ private extension NightscoutAPIClient {
                 println("Error: Not a valid HTTP response")
                 completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
             }
-//            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            self.useNetwork(false)
         })
         
         downloadTask.resume()
@@ -183,7 +197,6 @@ public enum Result<A> {
     case Value(Box<A>)
 }
 
-
 extension NightscoutAPIClient {
     public func fetchServerConfiguration(callback: (Result<ServerConfiguration>) -> Void) {
         let settingsUrl = self.urlForStatus
@@ -200,9 +213,6 @@ extension NightscoutAPIClient {
                 if let settingsDictionary = result as? JSONDictionary {
                     let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
                     callback(.Value(Box(settingObject)))
-                } else {
-                    
-                    
                 }
             }
         })

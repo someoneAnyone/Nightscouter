@@ -88,7 +88,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     break
                 }
             }
-
             
             nsApi.fetchServerConfiguration { (result) -> Void in
                 switch (result) {
