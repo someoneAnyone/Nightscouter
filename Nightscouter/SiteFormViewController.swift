@@ -40,10 +40,9 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         if let site = site {
             navigationItem.title = site.url.host
             urlTextField.text   = site.url.absoluteString
-            
-            checkValidSiteName()
         }
-        
+        checkValidSiteName()
+
         // Or you can do it the old way
         let offset = 2.0
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(offset * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {

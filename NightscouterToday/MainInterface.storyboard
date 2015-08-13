@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="A9w-B6-n3e">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <scenes>
+        <!--Today View Controller-->
+        <scene sceneID="cwh-vc-ff4">
+            <objects>
+                <viewController storyboardIdentifier="test" id="M4Y-Lb-cyx" customClass="TodayViewController" customModule="NightscouterToday" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Ft6-oW-KC0"/>
+                        <viewControllerLayoutGuide type="bottom" id="FKl-LY-JtV"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="37"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello World" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="GcN-lo-r42">
+                                <rect key="frame" x="20" y="8" width="280" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="FKl-LY-JtV" firstAttribute="top" secondItem="GcN-lo-r42" secondAttribute="bottom" constant="20" symbolic="YES" id="0Q0-KW-PJ6"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="leading" secondItem="S3S-Oj-5AN" secondAttribute="leading" constant="20" symbolic="YES" id="6Vq-gs-PHe"/>
+                            <constraint firstAttribute="trailing" secondItem="GcN-lo-r42" secondAttribute="trailing" constant="20" symbolic="YES" id="L8K-9R-egU"/>
+                            <constraint firstItem="GcN-lo-r42" firstAttribute="top" secondItem="Ft6-oW-KC0" secondAttribute="bottom" constant="20" symbolic="YES" id="mYS-Cv-VNx"/>
+                        </constraints>
+                    </view>
+                    <extendedEdge key="edgesForExtendedLayout"/>
+                    <nil key="simulatedStatusBarMetrics"/>
+                    <nil key="simulatedTopBarMetrics"/>
+                    <nil key="simulatedBottomBarMetrics"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="37"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="285"/>
+        </scene>
+        <!--Today View Controller-->
+        <scene sceneID="351-Yr-8C2">
+            <objects>
+                <tableViewController id="A9w-B6-n3e" customClass="TodayViewController" customModule="NightscouterToday" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" showsSelectionImmediatelyOnTouchBegin="NO" rowHeight="80" sectionHeaderHeight="22" sectionFooterHeight="22" id="f5k-ei-56i">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="200"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationLevel="1" indentationWidth="0.0" shouldIndentWhileEditing="NO" reuseIdentifier="nsSiteNow" id="tr2-Fo-Fsc" customClass="SiteNSNowTableViewCell" customModule="NightscouterToday" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="tr2-Fo-Fsc" id="Pzg-2A-5lj">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="RAW" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RcT-ja-5DJ">
+                                            <rect key="frame" x="94" y="61" width="19" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fB5-CK-IKO">
+                                            <rect key="frame" x="21" y="43" width="60" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="1" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- --- ---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ksi-Zg-W2m">
+                                            <rect key="frame" x="89" y="36" width="54" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="----" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VP2-tf-Ig2">
+                                            <rect key="frame" x="21" y="8" width="26" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="488-o8-avZ">
+                                            <rect key="frame" x="21" y="61" width="37" height="10"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" staticText="YES" notEnabled="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="8"/>
+                                            <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="---" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jtw-53-VOt">
+                                            <rect key="frame" x="66" y="54" width="20" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="--- : ---" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gDU-LX-fbf">
+                                            <rect key="frame" x="121" y="54" width="52" height="20"/>
+                                            <accessibility key="accessibilityConfiguration">
+                                                <accessibilityTraits key="traits" none="YES" updatesFrequently="YES"/>
+                                            </accessibility>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <view clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.80000001192092896" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Tw-5a-ZpY" customClass="ColorBlockView" customModule="NightscouterKit">
+                                            <rect key="frame" x="8" y="8" width="5" height="63"/>
+                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="5" id="iWv-3J-kSR"/>
+                                            </constraints>
+                                        </view>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="----" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="x12-qV-nKs">
+                                            <rect key="frame" x="286" y="18" width="26" height="20"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="------" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P17-Gd-Bp9">
+                                            <rect key="frame" x="284" y="42" width="28" height="14"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleCaption1"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="8Tw-5a-ZpY" firstAttribute="leading" secondItem="Pzg-2A-5lj" secondAttribute="leadingMargin" id="1px-pE-Krm"/>
+                                        <constraint firstItem="488-o8-avZ" firstAttribute="bottom" secondItem="Pzg-2A-5lj" secondAttribute="bottomMargin" id="8xY-gv-41x"/>
+                                        <constraint firstItem="VP2-tf-Ig2" firstAttribute="top" secondItem="Pzg-2A-5lj" secondAttribute="topMargin" id="9k1-73-t4V"/>
+                                        <constraint firstItem="P17-Gd-Bp9" firstAttribute="trailing" secondItem="x12-qV-nKs" secondAttribute="trailing" id="An1-gp-Fq1"/>
+                                        <constraint firstItem="8Tw-5a-ZpY" firstAttribute="top" secondItem="Pzg-2A-5lj" secondAttribute="topMargin" id="CPY-22-KXX"/>
+                                        <constraint firstItem="488-o8-avZ" firstAttribute="top" secondItem="fB5-CK-IKO" secondAttribute="bottom" constant="8" id="F6k-WT-MlX"/>
+                                        <constraint firstItem="fB5-CK-IKO" firstAttribute="leading" secondItem="488-o8-avZ" secondAttribute="leading" id="JSj-mu-0Fz"/>
+                                        <constraint firstItem="VP2-tf-Ig2" firstAttribute="leading" secondItem="8Tw-5a-ZpY" secondAttribute="trailing" constant="8" id="Oj9-DL-rEe"/>
+                                        <constraint firstItem="gDU-LX-fbf" firstAttribute="baseline" secondItem="RcT-ja-5DJ" secondAttribute="baseline" id="P1H-nM-KbF"/>
+                                        <constraint firstItem="P17-Gd-Bp9" firstAttribute="top" secondItem="x12-qV-nKs" secondAttribute="bottom" constant="4" id="XoJ-jw-Y0l"/>
+                                        <constraint firstItem="RcT-ja-5DJ" firstAttribute="leading" secondItem="Jtw-53-VOt" secondAttribute="trailing" constant="8" id="Zsl-ON-8yC"/>
+                                        <constraint firstAttribute="centerY" secondItem="x12-qV-nKs" secondAttribute="centerY" constant="12" id="dCl-MT-lU2"/>
+                                        <constraint firstItem="488-o8-avZ" firstAttribute="leading" secondItem="VP2-tf-Ig2" secondAttribute="leading" id="diD-hb-BuV"/>
+                                        <constraint firstItem="fB5-CK-IKO" firstAttribute="top" secondItem="VP2-tf-Ig2" secondAttribute="bottom" priority="250" constant="4" id="hZl-8G-dT3"/>
+                                        <constraint firstItem="Jtw-53-VOt" firstAttribute="leading" secondItem="488-o8-avZ" secondAttribute="trailing" constant="8" id="htH-gD-GCK"/>
+                                        <constraint firstItem="RcT-ja-5DJ" firstAttribute="baseline" secondItem="488-o8-avZ" secondAttribute="baseline" id="lTc-7U-Rxz"/>
+                                        <constraint firstItem="Jtw-53-VOt" firstAttribute="baseline" secondItem="488-o8-avZ" secondAttribute="baseline" id="mQ4-Cn-Kqm"/>
+                                        <constraint firstItem="Ksi-Zg-W2m" firstAttribute="baseline" secondItem="fB5-CK-IKO" secondAttribute="baseline" id="phv-Rw-Jbv"/>
+                                        <constraint firstItem="x12-qV-nKs" firstAttribute="trailing" secondItem="Pzg-2A-5lj" secondAttribute="trailingMargin" id="pjv-ng-gsn"/>
+                                        <constraint firstItem="Ksi-Zg-W2m" firstAttribute="leading" secondItem="fB5-CK-IKO" secondAttribute="trailing" constant="8" id="umz-ji-sVx"/>
+                                        <constraint firstItem="gDU-LX-fbf" firstAttribute="leading" secondItem="RcT-ja-5DJ" secondAttribute="trailing" constant="8" id="whs-S0-3I1"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="8Tw-5a-ZpY" secondAttribute="bottom" id="xID-lg-wqu"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <outlet property="siteBatteryHeader" destination="488-o8-avZ" id="ujw-7H-IAN"/>
+                                    <outlet property="siteBatteryLabel" destination="Jtw-53-VOt" id="v1T-1o-daa"/>
+                                    <outlet property="siteColorBlockView" destination="8Tw-5a-ZpY" id="JZO-UD-PEh"/>
+                                    <outlet property="siteDirectionLabel" destination="P17-Gd-Bp9" id="JmT-f8-zuM"/>
+                                    <outlet property="siteLastReadingHeader" destination="fB5-CK-IKO" id="u70-9f-6SX"/>
+                                    <outlet property="siteLastReadingLabel" destination="Ksi-Zg-W2m" id="q8g-UK-pCS"/>
+                                    <outlet property="siteNameLabel" destination="VP2-tf-Ig2" id="9wd-ws-uDN"/>
+                                    <outlet property="siteRawHeader" destination="RcT-ja-5DJ" id="g1f-2U-FVQ"/>
+                                    <outlet property="siteRawLabel" destination="gDU-LX-fbf" id="RtE-Jt-HiC"/>
+                                    <outlet property="siteSgvLabel" destination="x12-qV-nKs" id="7Ca-Uh-9BB"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="messageCell" textLabel="5pW-LF-9dp" style="IBUITableViewCellStyleDefault" id="NKd-Tg-2K5">
+                                <rect key="frame" x="0.0" y="86" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="NKd-Tg-2K5" id="v3V-KE-aGw">
+                                    <rect key="frame" x="0.0" y="0.0" width="703" height="43.5"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="5pW-LF-9dp">
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                            <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="A9w-B6-n3e" id="M1W-ZN-ssM"/>
+                            <outlet property="delegate" destination="A9w-B6-n3e" id="e32-1U-NLw"/>
+                        </connections>
+                    </tableView>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="320" height="200"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ti2-H7-lV6" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="461"/>
+        </scene>
+    </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
+</document>

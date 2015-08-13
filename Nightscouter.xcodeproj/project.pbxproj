@@ -48,6 +48,12 @@
 		17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* BackgroundView.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
 		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
+		83F4C5791B7C201800C74285 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1725511D1B75544700AC09E0 /* NotificationCenter.framework */; };
+		83F4C5831B7C201800C74285 /* NightscouterToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83F4C5781B7C201700C74285 /* NightscouterToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		83F4C58C1B7C23F200C74285 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83F4C5891B7C23F200C74285 /* MainInterface.storyboard */; };
+		83F4C58D1B7C23F200C74285 /* SiteNSNowTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F4C58A1B7C23F200C74285 /* SiteNSNowTableViewCell.swift */; };
+		83F4C58E1B7C23F200C74285 /* TodayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F4C58B1B7C23F200C74285 /* TodayViewController.swift */; };
+		83F4C58F1B7C2C8C00C74285 /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +64,13 @@
 			remoteGlobalIDString = 1771B0411B75235B006C1F5E;
 			remoteInfo = NightscouterKit;
 		};
+		83F4C5811B7C201800C74285 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83F4C5771B7C201700C74285;
+			remoteInfo = NightscouterToday;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +80,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				83F4C5831B7C201800C74285 /* NightscouterToday.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,8 +120,6 @@
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0451B75235B006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B0541B75235C006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscouterKitTests.swift; sourceTree = "<group>"; };
 		1771B0621B7524AA006C1F5E /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManager.swift; path = API/AppDataManager.swift; sourceTree = "<group>"; };
 		1771B0631B7524AA006C1F5E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTheme.swift; path = API/AppTheme.swift; sourceTree = "<group>"; };
 		1771B0641B7524AA006C1F5E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = API/Constants.swift; sourceTree = "<group>"; };
@@ -133,6 +145,13 @@
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
+		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
+		83F4C5781B7C201700C74285 /* NightscouterToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NightscouterToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		83F4C57C1B7C201800C74285 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83F4C5871B7C202500C74285 /* NightscouterToday.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterToday.entitlements; sourceTree = "<group>"; };
+		83F4C5891B7C23F200C74285 /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
+		83F4C58A1B7C23F200C74285 /* SiteNSNowTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteNSNowTableViewCell.swift; sourceTree = "<group>"; };
+		83F4C58B1B7C23F200C74285 /* TodayViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodayViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,6 +170,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		83F4C5751B7C201700C74285 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83F4C58F1B7C2C8C00C74285 /* NightscouterKit.framework in Frameworks */,
+				83F4C5791B7C201800C74285 /* NotificationCenter.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -160,7 +188,7 @@
 				17B1E57C1B5A89EF0093BC72 /* README.md */,
 				170825E51B2CBABB00304F8F /* Nightscouter */,
 				1771B0431B75235B006C1F5E /* NightscouterKit */,
-				1771B0521B75235C006C1F5E /* NightscouterKitTests */,
+				83F4C57A1B7C201800C74285 /* NightscouterToday */,
 				1725511C1B75544700AC09E0 /* Frameworks */,
 				170825E41B2CBABB00304F8F /* Products */,
 			);
@@ -171,6 +199,7 @@
 			children = (
 				170825E31B2CBABB00304F8F /* Nightscouter.app */,
 				1771B0421B75235B006C1F5E /* NightscouterKit.framework */,
+				83F4C5781B7C201700C74285 /* NightscouterToday.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,6 +207,7 @@
 		170825E51B2CBABB00304F8F /* Nightscouter */ = {
 			isa = PBXGroup;
 			children = (
+				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
 				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
 				170825F21B2CBABB00304F8F /* Info.plist */,
 				1734545B1B30A11000931278 /* API */,
@@ -290,23 +320,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		1771B0521B75235C006C1F5E /* NightscouterKitTests */ = {
-			isa = PBXGroup;
-			children = (
-				1771B0551B75235C006C1F5E /* NightscouterKitTests.swift */,
-				1771B0531B75235C006C1F5E /* Supporting Files */,
-			);
-			path = NightscouterKitTests;
-			sourceTree = "<group>";
-		};
-		1771B0531B75235C006C1F5E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				1771B0541B75235C006C1F5E /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		1771B06A1B7524AF006C1F5E /* API */ = {
 			isa = PBXGroup;
 			children = (
@@ -384,6 +397,26 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
+		83F4C57A1B7C201800C74285 /* NightscouterToday */ = {
+			isa = PBXGroup;
+			children = (
+				83F4C5871B7C202500C74285 /* NightscouterToday.entitlements */,
+				83F4C5891B7C23F200C74285 /* MainInterface.storyboard */,
+				83F4C58A1B7C23F200C74285 /* SiteNSNowTableViewCell.swift */,
+				83F4C58B1B7C23F200C74285 /* TodayViewController.swift */,
+				83F4C57B1B7C201800C74285 /* Supporting Files */,
+			);
+			path = NightscouterToday;
+			sourceTree = "<group>";
+		};
+		83F4C57B1B7C201800C74285 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				83F4C57C1B7C201800C74285 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -411,6 +444,7 @@
 			);
 			dependencies = (
 				1771B0581B75235C006C1F5E /* PBXTargetDependency */,
+				83F4C5821B7C201800C74285 /* PBXTargetDependency */,
 			);
 			name = Nightscouter;
 			productName = Nightscouter;
@@ -435,6 +469,23 @@
 			productReference = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		83F4C5771B7C201700C74285 /* NightscouterToday */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83F4C5841B7C201800C74285 /* Build configuration list for PBXNativeTarget "NightscouterToday" */;
+			buildPhases = (
+				83F4C5741B7C201700C74285 /* Sources */,
+				83F4C5751B7C201700C74285 /* Frameworks */,
+				83F4C5761B7C201700C74285 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NightscouterToday;
+			productName = NightscouterToday;
+			productReference = 83F4C5781B7C201700C74285 /* NightscouterToday.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -447,9 +498,10 @@
 				TargetAttributes = {
 					170825E21B2CBABB00304F8F = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = F754VXZDPA;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
-								enabled = 0;
+								enabled = 1;
 							};
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -458,6 +510,16 @@
 					};
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = F754VXZDPA;
+					};
+					83F4C5771B7C201700C74285 = {
+						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = F754VXZDPA;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -476,6 +538,7 @@
 			targets = (
 				170825E21B2CBABB00304F8F /* Nightscouter */,
 				1771B0411B75235B006C1F5E /* NightscouterKit */,
+				83F4C5771B7C201700C74285 /* NightscouterToday */,
 			);
 		};
 /* End PBXProject section */
@@ -499,6 +562,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83F4C5761B7C201700C74285 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83F4C58C1B7C23F200C74285 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +622,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		83F4C5741B7C201700C74285 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83F4C58E1B7C23F200C74285 /* TodayViewController.swift in Sources */,
+				83F4C58D1B7C23F200C74285 /* SiteNSNowTableViewCell.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -558,6 +638,11 @@
 			isa = PBXTargetDependency;
 			target = 1771B0411B75235B006C1F5E /* NightscouterKit */;
 			targetProxy = 1771B0571B75235C006C1F5E /* PBXContainerItemProxy */;
+		};
+		83F4C5821B7C201800C74285 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83F4C5771B7C201700C74285 /* NightscouterToday */;
+			targetProxy = 83F4C5811B7C201800C74285 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -754,6 +839,43 @@
 			};
 			name = Release;
 		};
+		83F4C5851B7C201800C74285 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = NightscouterToday/NightscouterToday.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				INFOPLIST_FILE = NightscouterToday/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		83F4C5861B7C201800C74285 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = NightscouterToday/NightscouterToday.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = NightscouterToday/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -783,6 +905,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		83F4C5841B7C201800C74285 /* Build configuration list for PBXNativeTarget "NightscouterToday" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83F4C5851B7C201800C74285 /* Debug */,
+				83F4C5861B7C201800C74285 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

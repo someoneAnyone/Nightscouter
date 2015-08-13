@@ -17,6 +17,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     
     // Computed Property: Grabs the common set of sites from the data manager.
     var sites: [Site] {
+        editButtonItem().enabled = !AppDataManager.sharedInstance.sites.isEmpty
         return AppDataManager.sharedInstance.sites
     }
     
@@ -268,7 +269,6 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         navigationItem.leftBarButtonItem = self.editButtonItem()
         
         // Only allow the edit button to be enabled if there are items in the sites array.
-        editButtonItem().enabled = !sites.isEmpty
         clearsSelectionOnViewWillAppear = true
         
         // Configure table view properties.
