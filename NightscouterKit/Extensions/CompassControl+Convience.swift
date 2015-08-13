@@ -19,8 +19,16 @@ public extension CompassControl {
     
     public func configureWith(site: Site){
         if let configuration: ServerConfiguration = site.configuration,  watch: WatchEntry = site.watchEntry,  sgv: SensorGlucoseValue = watch.sgv {
-            let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgv.sgv))
-            configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: configuration.unitsRoot!.rawValue)
+            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(sgv.sgv))
+           
+            var unit = Units.Mgdl
+            if let defaults = configuration.defaults {
+                unit = defaults.units
+            } else if (configuration.unitsRoot != nil) {
+                unit = configuration.unitsRoot!
+            }
+            
+            configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: unit.rawValue)
         }
     }
     
