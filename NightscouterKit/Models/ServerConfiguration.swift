@@ -273,6 +273,7 @@ public extension ServerConfiguration {
             
             defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language)
         }
+        serverConfig.defaults = defaultsDefaults
         
         var threasholdsThreshold: Threshold?
         if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
