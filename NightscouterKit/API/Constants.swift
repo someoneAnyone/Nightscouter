@@ -54,6 +54,7 @@ public struct Constants {
     
     public struct StandardTimeFrame {
         public static let OneMinuteInSeconds: NSTimeInterval = 60
+        public static let TwoAndHalfMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 2.5
         public static let FiveMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 5
         public static let TenMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 10
         public static let ThirtyMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 30

@@ -26,10 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // Override point for customization after application launch.
         
-        application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        application.applicationIconBadgeNumber = 0
-        application.cancelAllLocalNotifications()
-        
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
         
         AppThemeManager.themeApp
@@ -42,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-        
+        saveSites()
         self.timer?.invalidate()
     }
     
@@ -85,7 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
                 if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
                     UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-                    break
                 }
             }
             
@@ -100,20 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                         site.configuration = configuration
                         site.watchEntry = watchEntry
+                        AppDataManager.sharedInstance.updateSite(site)
                         
-                        if let defaults = configuration.defaults {
-                            // don't push a notification if the data is stale. Probably needs to be refactored.
-                            let timeFrame = site.watchEntry?.date.timeIntervalSinceNow
-                            let timeLimit = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
-                            
-                            if ( timeFrame < -timeLimit) {
-                            } else {
-                                // TODO: Add some bg threshold checks here.
-                                if site.watchEntry?.bgdelta != 0 {
-                                    self.scheduleLocalNotification(site)
-                                }
-                            }
-                        }
+                        self.scheduleLocalNotification(site)
                     })
                 }
             }
@@ -147,24 +131,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
-//                let site = sites.filter{ $0.uuid == uuid }.first // Use the uuid value to get the site object from the array.
-//                let siteIndex = find(sites, site!) // Use the site object to get its index position in the array.
-                
-//                site?.notifications.removeAtIndex(find(site!.notifications, notification)!)
-       
-                
-                // println("User tapped on notification for site: \(site) at index \(siteIndex)")
                 
                 let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
-                        AppDataManager.sharedInstance.currentSiteIndex = siteIndex
                         if let notificationIndex  = find(site.notifications, notification) {
-           
+                            
                             site.notifications.removeAtIndex(notificationIndex)
                             AppDataManager.sharedInstance.updateSite(site)
                             AppDataManager.sharedInstance.currentSiteIndex = siteIndex
-                            // println("User tapped on notification for site: \(site) at index \(siteIndex)")
+                            
+                            #if DEDBUG
+                                println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
+                            #endif
                             
                             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
                             deepLinkToURL(url!)
@@ -248,7 +227,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         return localTimer
     }
-
+    
     func updateDataNotification(timer: NSTimer?) -> Void {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
@@ -307,6 +286,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().registerUserNotificationSettings(newNotificationSettings)
         // TODO: Enabled remote notifications... need to get a server running.
         // UIApplication.sharedApplication().registerForRemoteNotifications()
+        
+        UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
+        UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
     // MARK: NSCoding

@@ -298,7 +298,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
+        if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
             // No configuration was there... go get some.
             // println("Attempting to get configuration data from site...")
             loadDataFor(site, index: indexPath.row)

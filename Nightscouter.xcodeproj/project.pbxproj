@@ -510,7 +510,6 @@
 					};
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = F754VXZDPA;
 					};
 					83F4C5771B7C201700C74285 = {
 						CreatedOnToolsVersion = 6.4;
@@ -913,6 +912,7 @@
 				83F4C5861B7C201800C74285 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

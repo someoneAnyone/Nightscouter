@@ -21,13 +21,13 @@ public class Site: NSObject, NSCoding {
         static let overrideScreenLockKey = "overrideScreenLock"
         static let disabledKey = "disabled"
         
-        static let sitesKey = "sites.plist"
+        static let sitesPlistKey = "sites.plist"
 
     }
     
     // MARK: Archiving Paths
-    static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
+//    static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
+//    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
     
     public var url: NSURL! {
         didSet {

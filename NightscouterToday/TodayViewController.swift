@@ -22,9 +22,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         }
     }
     
-    var sites:[Site] {
-        return AppDataManager.sharedInstance.sites
-    }
+    var sites:[Site] = [Site]()
     
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate?
@@ -34,7 +32,23 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // Do any additional setup after loading the view from its nib.
         // tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.clearColor()
-                updatePreferredContentSize()
+        
+        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.demoNoteFileURL.path!) as? NSData {
+            if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
+                sites = sitesArray
+            }
+        }
+
+        
+        
+        
+        let itemCount = sites.isEmpty ? 1 : sites.count
+        
+        
+        
+        
+        preferredContentSize = CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -45,7 +59,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     // MARK: NCWidgetProviding
     
     func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
-        return UIEdgeInsets(top: defaultMarginInsets.top, left: 27.0, bottom: defaultMarginInsets.bottom, right: defaultMarginInsets.right)
+        return UIEdgeInsets(top: defaultMarginInsets.top, left: 0, bottom: defaultMarginInsets.bottom, right: defaultMarginInsets.right)
     }
     
     func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)!) {
@@ -58,30 +72,9 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         completionHandler(NCUpdateResult.NewData)
     }
     
-    var preferredViewHeight: CGFloat {
-        // Determine the total number of items available for presentation.
-        let itemCount = sites.isEmpty ? sites.count : 1
-        
-        /*
-        On first launch only display up to `TableViewConstants.baseRowCount + 1` rows. An additional row
-        is used to display the "Show All" row.
-        */
-//        let rowCount = showingAll ? itemCount : min(itemCount, TableViewConstants.baseRowCount + 1)
-        
-        return CGFloat((itemCount) * TableViewConstants.todayRowHeight)
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
     }
-
-    
-    func updatePreferredContentSize() {
-        preferredContentSize.width = tableView.frame.size.width
-        preferredContentSize.height = preferredViewHeight //min(tableView.frame.size.height, tableView.contentSize.height)
-    }
-    
-        override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-            coordinator.animateAlongsideTransition({ context in
-                self.tableView.frame = CGRectMake(0, 0, size.width, size.height)
-                }, completion: nil)
-        }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -94,8 +87,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        
         if sites.isEmpty {
             let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath) as! UITableViewCell
             
@@ -105,14 +96,15 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         } else {
             let contentCell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.content, forIndexPath: indexPath) as! SiteNSNowTableViewCell
             let site = sites[indexPath.row]
+            
             contentCell.configureCell(site)
+            
             
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
                 // println("Attempting to get configuration data from site...")
                 loadDataFor(site, index: indexPath.row)
             }
-            
             
             return contentCell
         }
@@ -124,8 +116,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
-        // let site = sites[indexPath.row]
         if let context = extensionContext {
             AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
@@ -140,6 +130,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             for site in sites {
                 loadDataFor(site, index: find(sites, site)!)
             }
+        } else {
+            // No data in the sites array. Cancel the refreshing!
         }
     }
     
@@ -152,7 +144,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         //TODO: 3. Probably need to move this code to the application delegate?
         
         // Get settings for a given site.
-        
         println("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
             switch (result) {
@@ -165,16 +156,15 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                 nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
                     // Get back on the main queue to update the user interface
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        println("back with data")
                         site.configuration = configuration
                         site.watchEntry = watchEntry
                         AppDataManager.sharedInstance.updateSite(site)
                         self.lastUpdatedTime = NSDate()
                         self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                        self.updatePreferredContentSize()
                     })
                 })
             }
         }
     }
+
 }

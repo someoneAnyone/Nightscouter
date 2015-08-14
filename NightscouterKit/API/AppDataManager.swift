@@ -15,12 +15,16 @@ public class AppDataManager: NSObject {
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
     
+    public struct SharedAppGroupKey {
+        static let NightscouterGroup = "group.com.nothingonline.nightscouter"
+    }
+    
     public var sites: [Site] = [Site]() {
         didSet{
             // write to defaults
-            var arrayOfObjects = [Site]()
-            var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+            //            var arrayOfObjects = [Site]()
+            //            var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            //            defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
             saveAppData()
         }
     }
@@ -50,7 +54,18 @@ public class AppDataManager: NSObject {
     }
     
     public let defaults: NSUserDefaults
-
+    
+    lazy var applicationDocumentsDirectory: NSURL? = {
+        return NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(SharedAppGroupKey.NightscouterGroup) ?? nil
+    }()
+    
+    public var demoNoteFileURL: NSURL {
+        let groupURL = applicationDocumentsDirectory
+        let fileURL = groupURL?.URLByAppendingPathComponent(Site.PropertyKey.sitesPlistKey)
+        
+        return fileURL!
+    }
+    
     public class var sharedInstance: AppDataManager {
         struct Static {
             static var onceToken: dispatch_once_t = 0
@@ -63,18 +78,42 @@ public class AppDataManager: NSObject {
     }
     
     internal override init() {
-        defaults  = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")!
+        defaults  = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
         
         super.init()
         
-        if let arrayOfObjectsUnarchivedData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
-            if let arrayOfObjectsUnarchived = NSKeyedUnarchiver.unarchiveObjectWithData(arrayOfObjectsUnarchivedData) as? [Site] {
-                sites = arrayOfObjectsUnarchived
+        //        if let arrayOfObjectsUnarchivedData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
+        //            if let arrayOfObjectsUnarchived = NSKeyedUnarchiver.unarchiveObjectWithData(arrayOfObjectsUnarchivedData) as? [Site] {
+        //                sites = arrayOfObjectsUnarchived
+        //            }
+        //        }
+        
+        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(demoNoteFileURL.path!) as? NSData {
+            if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
+                sites = sitesArray
             }
         }
+        
     }
     
     public func saveAppData() {
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
+            
+            // write to disk
+            let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            //            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
+            let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.demoNoteFileURL.path!)
+            
+            #if DEBUG
+                if !fileDiskSave {
+                println("Failed to save sites...")
+                }else{
+                println("Successful save...")
+                }
+            #endif
+        })
+        
         let isSuccessfulSave = defaults.synchronize()
         #if DEBUG
             if !isSuccessfulSave {
