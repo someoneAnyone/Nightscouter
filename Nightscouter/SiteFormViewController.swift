@@ -105,16 +105,16 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     
     // MARK: UITextFieldDelegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        
+        if self.nextButton.enabled {
         // Hide the keyboard
         textField.resignFirstResponder()
         
-        if nextButton.enabled{
+
             self.view.endEditing(true)
             performSegueWithIdentifier(Constants.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
         }
         
-        return true // validateUrl(textField.text!)
+        return self.nextButton.enabled // validateUrl(textField.text!)
     }
     
     // MARK: Navigation
