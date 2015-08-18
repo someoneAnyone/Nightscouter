@@ -19,16 +19,12 @@ public class AppDataManager: NSObject {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
     
-    public var sites: [Site] = [Site]() {
-        didSet{
-            saveAppData()
-        }
-    }
+    public var sites: [Site] = [Site]()
     
     public var currentSiteIndex: Int {
         set {
             defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
-            saveAppData()
+            defaults.synchronize()
         }
         get {
             return defaults.integerForKey(SavedPropertyKey.currentSiteIndexKey)
@@ -42,7 +38,7 @@ public class AppDataManager: NSObject {
             #endif
             
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
-            saveAppData()
+            defaults.synchronize()
         }
         get {
             return defaults.boolForKey(SavedPropertyKey.shouldDisableIdleTimerKey)
@@ -56,10 +52,12 @@ public class AppDataManager: NSObject {
         }()
     
     public var sitesFileURL: NSURL {
-        let groupURL = applicationDocumentsDirectory
-        let fileURL = groupURL?.URLByAppendingPathComponent(Site.PropertyKey.sitesPlistKey)
-        
-        return fileURL!
+        get {
+            let groupURL = applicationDocumentsDirectory
+            let fileURL = groupURL?.URLByAppendingPathComponent(Site.PropertyKey.sitesPlistKey)
+            
+            return fileURL!
+        }
     }
     
     public class var sharedInstance: AppDataManager {
@@ -81,37 +79,27 @@ public class AppDataManager: NSObject {
         if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(sitesFileURL.path!) as? NSData {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
+                
+                saveAppData()
             }
         }
         
     }
     
     public func saveAppData() {
-        if !self.sites.isEmpty {
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
-                // write to disk
-                let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-                //            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
-                let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
-                
-                #if DEBUG
-                    if !fileDiskSave {
+        // write to disk
+        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
+            let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
+            #if DEBUG
+                if !fileDiskSave {
                     println("Failed to save sites...")
-                    }else{
+                }else{
                     println("Successful save...")
-                    }
-                #endif
-            })
-            
-        }
-        let isSuccessfulSave = defaults.synchronize()
-        #if DEBUG
-            if !isSuccessfulSave {
-            println("Failed to save sites...")
-            }else{
-            println("Successful save...")
-            }
-        #endif
+                }
+            #endif
+        })
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -122,19 +110,23 @@ public class AppDataManager: NSObject {
         }else {
             sites.append(site)
         }
+        saveAppData()
     }
     
     public func updateSite(site: Site)  ->  Bool {
         if let index = find(AppDataManager.sharedInstance.sites, site) {
             self.sites[index] = site
+            saveAppData()
             return true
         }
+        
         return false
     }
     
     public func deleteSiteAtIndex(index: Int) {
         let site = sites[index]
         sites.removeAtIndex(index)
+        saveAppData()
     }
     
     public func loadSampleSites() -> Void {
