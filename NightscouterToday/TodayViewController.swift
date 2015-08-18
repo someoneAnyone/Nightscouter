@@ -14,7 +14,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     struct TableViewConstants {
         static let baseRowCount = 2
-        static let todayRowHeight = 80
+        static let todayRowHeight = 70
         
         struct CellIdentifiers {
             static let content = "nsSiteNow"
