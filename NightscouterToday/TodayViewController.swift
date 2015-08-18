@@ -33,22 +33,15 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.clearColor()
         
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.demoNoteFileURL.path!) as? NSData {
+        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.sitesFileURL.path!) as? NSData {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
             }
         }
 
-        
-        
-        
         let itemCount = sites.isEmpty ? 1 : sites.count
         
-        
-        
-        
         preferredContentSize = CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
-
     }
     
     override func didReceiveMemoryWarning() {
@@ -97,9 +90,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             let contentCell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.content, forIndexPath: indexPath) as! SiteNSNowTableViewCell
             let site = sites[indexPath.row]
             
-            contentCell.configureCell(site)
-            
-            
+            contentCell.configureCell(site)            
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
                 // println("Attempting to get configuration data from site...")
@@ -108,7 +99,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             return contentCell
         }
-        
     }
     
     override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
@@ -116,12 +106,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if let context = extensionContext {
-            AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
-            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
-            context.openURL(url!, completionHandler: nil)
-        }
-        
+        openApp(with: indexPath)
     }
     
     func updateData(){
@@ -139,17 +124,13 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // Start up the API
         let nsApi = NightscoutAPIClient(url: site.url)
         
-        //TODO: 1. There should be reachabiltiy checks before doing anything.
-        //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
-        //TODO: 3. Probably need to move this code to the application delegate?
-        
         // Get settings for a given site.
         println("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
             switch (result) {
             case let .Error(error):
                 // display error message
-                println("loadUpData ERROR recieved: \(error)")
+                println("\(__FUNCTION__) ERROR recieved: \(error)")
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // do something with user
@@ -166,5 +147,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             }
         }
     }
-
+    
+    func openApp(with indexPath: NSIndexPath) {
+        if let context = extensionContext {
+            
+            let site = sites[indexPath.row], uuidString = site.uuid.UUIDString
+            AppDataManager.sharedInstance.updateSite(site)
+            AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
+            
+            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
+            context.openURL(url!, completionHandler: nil)
+        }
+    }
 }

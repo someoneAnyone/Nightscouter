@@ -85,8 +85,8 @@ extension SiteDetailViewController {
         // print(">>> Entering \(__FUNCTION__) <<<")
         let updateData = "updateData(\(self.data))"
         
-        if let units = self.site?.configuration?.unitsRoot {
-            let updateUnits = "updateUnits(\(units.rawValue))"
+        if let configuration = site?.configuration {
+            let updateUnits = "updateUnits(\(configuration.displayUnits.rawValue))"
             webView.stringByEvaluatingJavaScriptFromString(updateUnits)
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
@@ -121,11 +121,8 @@ extension SiteDetailViewController {
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let defaults = configuration.defaults {
-                      self.updateTitles(defaults.customTitle)
-                    } else {
-                       self.updateTitles(configuration.name!)
-                    }
+
+                    self.updateTitles(configuration.displayName)
                     
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)

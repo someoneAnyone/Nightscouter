@@ -21,10 +21,6 @@ public class AppDataManager: NSObject {
     
     public var sites: [Site] = [Site]() {
         didSet{
-            // write to defaults
-            //            var arrayOfObjects = [Site]()
-            //            var arrayOfObjectsData = NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            //            defaults.setObject(arrayOfObjectsData, forKey: SavedPropertyKey.sitesArrayObjectsKey)
             saveAppData()
         }
     }
@@ -57,9 +53,9 @@ public class AppDataManager: NSObject {
     
     lazy var applicationDocumentsDirectory: NSURL? = {
         return NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(SharedAppGroupKey.NightscouterGroup) ?? nil
-    }()
+        }()
     
-    public var demoNoteFileURL: NSURL {
+    public var sitesFileURL: NSURL {
         let groupURL = applicationDocumentsDirectory
         let fileURL = groupURL?.URLByAppendingPathComponent(Site.PropertyKey.sitesPlistKey)
         
@@ -82,13 +78,7 @@ public class AppDataManager: NSObject {
         
         super.init()
         
-        //        if let arrayOfObjectsUnarchivedData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
-        //            if let arrayOfObjectsUnarchived = NSKeyedUnarchiver.unarchiveObjectWithData(arrayOfObjectsUnarchivedData) as? [Site] {
-        //                sites = arrayOfObjectsUnarchived
-        //            }
-        //        }
-        
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(demoNoteFileURL.path!) as? NSData {
+        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(sitesFileURL.path!) as? NSData {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
             }
@@ -97,23 +87,23 @@ public class AppDataManager: NSObject {
     }
     
     public func saveAppData() {
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
+        if !self.sites.isEmpty {
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
+                // write to disk
+                let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+                //            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
+                let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
+                
+                #if DEBUG
+                    if !fileDiskSave {
+                    println("Failed to save sites...")
+                    }else{
+                    println("Successful save...")
+                    }
+                #endif
+            })
             
-            // write to disk
-            let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            //            let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(data, toFile: Site.ArchiveURL.path!)
-            let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.demoNoteFileURL.path!)
-            
-            #if DEBUG
-                if !fileDiskSave {
-                println("Failed to save sites...")
-                }else{
-                println("Successful save...")
-                }
-            #endif
-        })
-        
+        }
         let isSuccessfulSave = defaults.synchronize()
         #if DEBUG
             if !isSuccessfulSave {
@@ -159,15 +149,17 @@ public class AppDataManager: NSObject {
     
     // MARK: Extras
     
+    public var sharedGroupIdentifier: String {
+        let group = "group"
+        return group.stringByAppendingPathExtension(bundleIdentifier!)!
+    }
+    
     public var infoDictionary: [String: AnyObject]? {
         return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
     }
     
     public var bundleIdentifier: String? {
-        if let dictionary = infoDictionary {
-            return dictionary["CFBundleIdentifier"] as? String
-        }
-        return nil
+        return NSBundle.mainBundle().bundleIdentifier
     }
     
     public var supportedSchemes: [String]? {

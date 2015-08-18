@@ -96,7 +96,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         site.configuration = configuration
                         site.watchEntry = watchEntry
                         AppDataManager.sharedInstance.updateSite(site)
-                        
                         self.scheduleLocalNotification(site)
                     })
                 }
@@ -132,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
                 
-                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
                         if let notificationIndex  = find(site.notifications, notification) {
@@ -263,12 +262,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         localNotification.alertAction = "View Site"
         
         if let config = site.configuration {
-            if let defaults = config.defaults {
-                localNotification.alertTitle = "Update for \(defaults.customTitle)"
+                localNotification.alertTitle = "Update for \(config.displayName)"
                 if let watch: WatchEntry = site.watchEntry {
-                    localNotification.alertBody = "As of \(dateFor.stringFromDate(watch.date)), \(defaults.customTitle) saw a BG of \(watch.sgv!.sgvString) with a delta of \(watch.bgdelta.formattedForBGDelta) \(watch.sgv!.direction.description). Uploader battery: \(watch.batteryString)"
+                    localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)"
                 }
-            }
         }
         site.notifications.append(localNotification)
         AppDataManager.sharedInstance.updateSite(site)

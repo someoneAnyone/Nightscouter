@@ -183,7 +183,7 @@ public struct ServerConfiguration: Printable {
         if let name = name {
             dict["name"] = name
         }
-
+        
         // let dict = ["status" : status, "apiEnabled" : apiEnabled?.description, "carePortal": careportalEnabled?.description, "enabledOptions": enabledOptions?.description, "defaults": defaults?.description, "units": unitsRoot?.rawValue, "head": head, "version": version, "thresholds": thresholds?.description, "alarm_types": alarm_types, "name": name]
         return dict.description
     }
@@ -318,12 +318,33 @@ public extension ServerConfiguration {
         let warnValue: NSTimeInterval = -max(fallback, warn)
         let urgentValue: NSTimeInterval = -max(fallback, urgent)
         var returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
-
+        
         #if DEBUG
             println("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
         #endif
         
         return returnValue
     }
+}
 
+public extension ServerConfiguration {
+    public var displayName: String {
+        if let defaults = defaults {
+            return defaults.customTitle
+        } else if let name = name {
+            return name
+        } else {
+            return "Nightscout"
+        }
+    }
+    
+    public var displayUnits: Units {
+        if let defaults = defaults {
+            return defaults.units
+        } else if let unitsRoot = unitsRoot {
+            return unitsRoot
+        } else {
+            return .Mgdl
+        }
+    }
 }

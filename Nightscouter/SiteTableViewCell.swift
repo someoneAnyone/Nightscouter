@@ -43,12 +43,12 @@ class SiteTableViewCell: UITableViewCell {
             
             let maxValue: NSTimeInterval
             if let defaults = configuration.defaults {
-                siteNameLabel.text = defaults.customTitle
                 maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
             } else {
-                siteNameLabel.text = configuration.name
                 maxValue = Constants.NotableTime.StaleDataTimeFrame
             }
+            
+            siteNameLabel.text = configuration.displayName
             
             if let watchEntry = site.watchEntry {
                 // Configure compass control

@@ -47,14 +47,9 @@ class SiteNSNowTableViewCell: UITableViewCell {
         
         if let configuration = site.configuration {
             
-            let unitsToUse: Units
-            if let defaults = configuration.defaults {
-                siteNameLabel.text = defaults.customTitle
-                unitsToUse = defaults.units
-            } else {
-                siteNameLabel.text = configuration.name
-                unitsToUse = configuration.unitsRoot!
-            }
+            siteNameLabel.text = configuration.displayName
+            
+            var units: Units = configuration.displayUnits
             
             if let watchEntry = site.watchEntry {
                 // Configure compass control
@@ -73,7 +68,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                     siteSgvLabel.text = "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
                     siteSgvLabel.textColor = color
                     
-                    siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(unitsToUse.description)"
+                    siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
                     siteDirectionLabel.textColor = color
                     
                     if let enabledOptions = configuration.enabledOptions {
