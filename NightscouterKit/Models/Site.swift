@@ -8,28 +8,24 @@
 import Foundation
 import UIKit
 
-class Site: NSObject, NSCoding {
+public class Site: NSObject, NSCoding, Printable {
     
-    struct PropertyKey {
+    public struct PropertyKey {
         static let urlKey = "url"
         static let apiSecretKey = "apiSecret"
         static let siteKey = "site"
         static let allowNotificationsKey = "notifications"
-        static let uuidKey = "uuid"
         static let notificationKey = "notification"
         static let notificationCountKey = "notificationCount"
         static let overrideScreenLockKey = "overrideScreenLock"
         static let disabledKey = "disabled"
+        static let lastConnectedDateKey = "lastConnectedDate"
         
-        static let sitesKey = "sites.plist"
-
+        static let sitesPlistKey = "sites.plist"
+        public static let uuidKey = "uuid"
     }
     
-    // MARK: Archiving Paths
-    static let DocumentsDirectory: AnyObject = NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first!
-    static let ArchiveURL = DocumentsDirectory.URLByAppendingPathComponent(PropertyKey.sitesKey)
-    
-    var url: NSURL! {
+    public var url: NSURL! {
         didSet {
             #if DEBUG
                 println("Changed site URL to \(url) from \(oldValue)")
@@ -41,20 +37,29 @@ class Site: NSObject, NSCoding {
             disabled = false
         }
     }
-    var apiSecret: String?
-    var configuration: ServerConfiguration?
-    var watchEntry: WatchEntry?
-    var entries: [Entry]?
-    var allowNotifications: Bool = true // Fix this at somepoint.
-    var overrideScreenLock: Bool
+    public var apiSecret: String?
+    public var configuration: ServerConfiguration? {
+        didSet {
+            lastConnectedDate = NSDate()
+        }
+    }
+    public var watchEntry: WatchEntry?
+    public var entries: [Entry]?
+    public var allowNotifications: Bool
+    public var overrideScreenLock: Bool
 
-    var notifications: [UILocalNotification]
-    var disabled: Bool
+    public var notifications: [UILocalNotification]
+    public var disabled: Bool
     
-    private(set) var uuid: NSUUID
+    public private(set) var uuid: NSUUID
+    public private(set) var lastConnectedDate: NSDate?
+    
+    public override var description: String {
+        return "{site: \(url), configuration: \(configuration), lastConnected: \(lastConnectedDate)"
+    }
     
     // MARK: Initialization
-    init?(url: NSURL, apiSecret: String?) {
+    public init?(url: NSURL, apiSecret: String?) {
         // Initialize stored properties.
         self.url = url
         self.apiSecret = apiSecret
@@ -63,6 +68,7 @@ class Site: NSObject, NSCoding {
         self.notifications = [UILocalNotification]()
         self.overrideScreenLock = false
         self.disabled = false
+        self.allowNotifications = true
         
         super.init()
         
@@ -73,7 +79,7 @@ class Site: NSObject, NSCoding {
     }
     
     // MARK: NSCoding
-    func encodeWithCoder(aCoder: NSCoder) {
+    public func encodeWithCoder(aCoder: NSCoder) {
         aCoder.encodeObject(url, forKey: PropertyKey.urlKey)
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
@@ -81,14 +87,16 @@ class Site: NSObject, NSCoding {
         aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
         aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
         aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
+        aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
     }
 
-    required init(coder aDecoder: NSCoder) {
+    required public init(coder aDecoder: NSCoder) {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
         let overrideScreen = aDecoder.decodeBoolForKey(PropertyKey.overrideScreenLockKey)
         let disabledSite = aDecoder.decodeBoolForKey(PropertyKey.disabledKey)
+        let lastConnectedDate = aDecoder.decodeObjectForKey(PropertyKey.lastConnectedDateKey) as? NSDate
         
         if let uuid = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? NSUUID {
             self.uuid = uuid
@@ -108,6 +116,13 @@ class Site: NSObject, NSCoding {
         }
         
         self.disabled = disabledSite
-        
+    }
+    
+    public override func isEqual(object: AnyObject?) -> Bool {
+        if let object = object as? Site {
+            return uuid == object.uuid
+        } else {
+            return false
+        }
     }
 }

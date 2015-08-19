@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class TestHarnessServerConfigurationViewController: UIViewController {
     

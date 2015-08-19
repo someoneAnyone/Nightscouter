@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigationControllerDelegate {
     
@@ -39,10 +40,9 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         if let site = site {
             navigationItem.title = site.url.host
             urlTextField.text   = site.url.absoluteString
-            
-            checkValidSiteName()
         }
-        
+        checkValidSiteName()
+
         // Or you can do it the old way
         let offset = 2.0
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(offset * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
@@ -105,16 +105,16 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     
     // MARK: UITextFieldDelegate
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        
+        if self.nextButton.enabled {
         // Hide the keyboard
         textField.resignFirstResponder()
         
-        if nextButton.enabled{
+
             self.view.endEditing(true)
-            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
+            performSegueWithIdentifier(Constants.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
         }
         
-        return true // validateUrl(textField.text!)
+        return self.nextButton.enabled // validateUrl(textField.text!)
     }
     
     // MARK: Navigation

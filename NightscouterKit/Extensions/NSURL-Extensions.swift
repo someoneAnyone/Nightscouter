@@ -7,15 +7,14 @@
 //
 
 import Foundation
-import UIKit
 
-extension NSURL
+public extension NSURL
 {
-    struct ValidationQueue {
-        static var queue = NSOperationQueue()
+    public struct ValidationQueue {
+        public static var queue = NSOperationQueue()
     }
     
-    class func validateUrl(urlString: String?, completion:(success: Bool, urlString: String? , error: NSString) -> Void)
+    public class func validateUrl(urlString: String?, completion:(success: Bool, urlString: String? , error: NSString) -> Void)
     {
         // Description: This function will validate the format of a URL, re-format if necessary, then attempt to make a header request to verify the URL actually exists and responds.
         // Return Value: This function has no return value but uses a closure to send the response to the caller.

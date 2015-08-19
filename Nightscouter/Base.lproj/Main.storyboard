@@ -56,7 +56,7 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view clipsSubviews="YES" alpha="0.79999999999999982" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KWx-hb-Jfz" customClass="ColorBlockView" customModule="Nightscouter" customModuleProvider="target">
+                                        <view clipsSubviews="YES" alpha="0.79999999999999982" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KWx-hb-Jfz" customClass="ColorBlockView" customModule="NightscouterKit">
                                             <rect key="frame" x="0.0" y="0.0" width="15" height="239"/>
                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -69,7 +69,7 @@
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hvW-MN-sK9" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hvW-MN-sK9" customClass="CompassControl" customModule="NightscouterKit">
                                             <rect key="frame" x="436" y="36" width="156" height="195"/>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -221,7 +221,7 @@
                         <viewControllerLayoutGuide type="top" id="oc4-tg-nNC"/>
                         <viewControllerLayoutGuide type="bottom" id="OWm-MG-Dzh"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="WwH-Wz-ZnL" customClass="TableViewBackgroundView" customModule="Nightscouter" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="WwH-Wz-ZnL" customClass="BackgroundView" customModule="Nightscouter" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -255,7 +255,7 @@
                         <viewControllerLayoutGuide type="top" id="sim-ic-EM0"/>
                         <viewControllerLayoutGuide type="bottom" id="UbX-Qv-sdH"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="A2Y-lA-0M9" customClass="TableViewBackgroundView" customModule="Nightscouter" customModuleProvider="target">
+                    <view key="view" contentMode="scaleToFill" id="A2Y-lA-0M9" customClass="BackgroundView" customModule="Nightscouter" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="536"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
@@ -285,7 +285,7 @@
                                     </mask>
                                 </variation>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ebb-7r-y9k" customClass="CompassControl" customModule="Nightscouter" customModuleProvider="target">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ebb-7r-y9k" customClass="CompassControl" customModule="NightscouterKit">
                                 <rect key="frame" x="222" y="42" width="156" height="195"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <accessibility key="accessibilityConfiguration">

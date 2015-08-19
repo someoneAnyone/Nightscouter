@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 /*
  A controller object that manages a simple model -- a collection of sites.
@@ -40,7 +41,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         }
 
         // Create a new view controller and pass suitable data.
-        let dataViewController = storyboard.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteDetailViewController.rawValue) as! SiteDetailViewController
+        let dataViewController = storyboard.instantiateViewControllerWithIdentifier(Constants.StoryboardViewControllerIdentifier.SiteDetailViewController.rawValue) as! SiteDetailViewController
         dataViewController.site = self.sites[index]
         return dataViewController
     }

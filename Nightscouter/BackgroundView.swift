@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import NightscouterKit
+
 @IBDesignable
-class TableViewBackgroundView: UIView {
+class BackgroundView: UIView {
     
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.

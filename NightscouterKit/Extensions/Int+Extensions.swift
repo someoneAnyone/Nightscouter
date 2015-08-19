@@ -8,8 +8,8 @@
 
 import Foundation
 
-extension Int {
-    var bgDeltaFormatter: NSNumberFormatter {
+public extension Int {
+    internal var bgDeltaFormatter: NSNumberFormatter {
         let numberFormat =  NSNumberFormatter()
             numberFormat.numberStyle = .NoStyle
             numberFormat.positivePrefix = numberFormat.plusSign
@@ -18,7 +18,7 @@ extension Int {
             return numberFormat
     }
     
-    var formattedForBGDelta: String {
+    public var formattedForBGDelta: String {
         return self.bgDeltaFormatter.stringFromNumber(self)!
     }
 }

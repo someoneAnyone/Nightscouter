@@ -10,13 +10,11 @@ import Foundation
 
 let NightscoutModelErrorDomain: String = "com.nightscout.nightscouter.models.entry"
 
-
-// TODO:// Clean these up.
-
+// TODO: Clean these up.
 public enum Direction : String, Printable {
     case None = "None", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange"
     
-    static let allValues = [None, DoubleUp, SingleUp, FortyFiveUp, Flat, FortyFiveDown, SingleDown, DoubleDown, NotComputable, RateOutOfRange]
+    public static let allValues = [None, DoubleUp, SingleUp, FortyFiveUp, Flat, FortyFiveDown, SingleDown, DoubleDown, NotComputable, RateOutOfRange]
     
     public var description : String {
         get {
@@ -36,22 +34,24 @@ public enum Direction : String, Printable {
         }
     }
     
-    func emojiForDirection() -> String {
-        switch (self) {
-        case .None: return "None"
-        case .DoubleUp: return  "⇈"
-        case .SingleUp: return "↑"
-        case .FortyFiveUp: return  "➚"
-        case .Flat: return "→"
-        case .FortyFiveDown: return "➘"
-        case .SingleDown: return "↓"
-        case .DoubleDown: return  "⇊"
-        case .NotComputable: return "-"
-        case .RateOutOfRange: return "✕"
+    public var emojiForDirection : String {
+        get {
+            switch (self) {
+            case .None: return "None"
+            case .DoubleUp: return  "⇈"
+            case .SingleUp: return "↑"
+            case .FortyFiveUp: return  "➚"
+            case .Flat: return "→"
+            case .FortyFiveDown: return "➘"
+            case .SingleDown: return "↓"
+            case .DoubleDown: return  "⇊"
+            case .NotComputable: return "-"
+            case .RateOutOfRange: return "✕"
+            }
         }
     }
     
-    func directionForString(directionString: String) -> Direction {
+    public func directionForString(directionString: String) -> Direction {
         switch directionString {
         case "None": return .None
         case "DoubleUp": return .DoubleUp
@@ -69,9 +69,9 @@ public enum Direction : String, Printable {
     }
 }
 
-enum Noise : Int, Printable {
+public enum Noise : Int, Printable {
     case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
-    var description: String {
+    public var description: String {
         switch (self) {
         case .None: return "---"
         case .Clean: return "Clean"
@@ -82,49 +82,48 @@ enum Noise : Int, Printable {
     }
 }
 
-enum Type: String {
+public enum Type: String {
     case sgv = "sgv"
     case cal = "cal"
     case mbg = "mbg"
     case serverforecast = "server-forecast"
     case none = "None"
     
-    init(){
+    public init(){
         self = .none
     }
 }
 
 // TODO: Add known devices and convert over to enum for future feature checking.
-/*
-enum Device: String {
-case Dexcom = "dexcom"
-case xDripDexcomShare = "xDrip-DexcomShare"
-case WatchFace = "watchFace"
-case Share2 = "share2"
+public enum Device: String {
+    case Unknown = "unknown"
+    case Dexcom = "dexcom"
+    case xDripDexcomShare = "xDrip-DexcomShare"
+    case WatchFace = "watchFace"
+    case Share2 = "share2"
 }
-*/
 
 // type = cal
-struct Calibration {
-    let slope: Double
-    let scale: Double
-    let intercept: Double
+public struct Calibration {
+    public let slope: Double
+    public let scale: Double
+    public let intercept: Double
 }
 
 // type = sgv
-struct SensorGlucoseValue {
-    let sgv: Int
-    let direction: Direction
-    let filtered: Int
-    let unfiltered: Int
-    let rssi: Int
-    let noise: Noise
+public struct SensorGlucoseValue {
+    public let sgv: Int
+    public let direction: Direction
+    public let filtered: Int
+    public let unfiltered: Int
+    public let rssi: Int
+    public let noise: Noise
     
     enum ReservedValues: Int {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
     
-    var sgvString: String { // Consider moving this to a Printable or similar protocal?
+    public var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
             if sgv <= 29 {
                 let special:ReservedValues = ReservedValues(rawValue: sgv)!
@@ -152,7 +151,7 @@ struct SensorGlucoseValue {
                 default:
                     return "✖"
                 }
-            } else if sgv > 30 && sgv < 40 {
+            } else if sgv >= 30 && sgv < 40 {
                 return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
             } else {
                 return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.NoStyle)
@@ -162,49 +161,27 @@ struct SensorGlucoseValue {
 }
 
 // type = mgb
-struct MeterBloodGlucose {
-    let mbg: Int
+public struct MeterBloodGlucose {
+    public let mbg: Int
 }
 
-struct EntryPropertyKey {
-    static let typeKey = "type"
-    static let sgvKey = "sgv"
-    static let calKey = "cal"
-    static let mgbKey = "mbg"
-    static let serverforecastKey = "serverForcastKey"
-    static let directionKey = "direction"
-    static let dateKey = "date"
-    static let filteredKey = "filtered"
-    static let unfilteredKey = "unfiltered"
-    static let noiseKey = "noise"
-    static let calsKey = "cals"
-    static let slopeKey = "slope"
-    static let interceptKey = "intercept"
-    static let scaleKey = "scale"
-    static let rssiKey = "rssi"
-    static let identKey = "_id"
-    static let deviceKey = "device"
-    static let dateStringKey = "dateString"
-}
-
-
-class Entry: NSObject {
-    var idString: String
-    var device: String
-    var date: NSDate
-    var dateTimeAgoString: String {
+public class Entry: NSObject {
+    public var idString: String
+    public var device: String
+    public var date: NSDate
+    public var dateTimeAgoString: String {
         get{
             return NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(date)
         }
     }
-    var dateString: String?
-    var sgv: SensorGlucoseValue?
-    var cal: Calibration?
-    var mbg: MeterBloodGlucose?
-    var raw: Double?
-    var type: Type?
+    public var dateString: String?
+    public var sgv: SensorGlucoseValue?
+    public var cal: Calibration?
+    public var mbg: MeterBloodGlucose?
+    public var raw: Double?
+    public var type: Type?
     
-    var dictionaryRep: NSDictionary {
+    public var dictionaryRep: NSDictionary {
         get{
             let entry: Entry = self
             
@@ -236,14 +213,14 @@ class Entry: NSObject {
         }
     }
     
-    var jsonForChart: String {
+    public var jsonForChart: String {
         let jsonError: NSError?
         let jsObj =  NSJSONSerialization.dataWithJSONObject(self.dictionaryRep, options:nil, error:nil)
         let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
         return String(str!)
     }
     
-    init(identifier: String, date: NSDate, device: String) {//, type: Type) {
+    public init(identifier: String, date: NSDate, device: String) {//, type: Type) {
         self.idString = identifier
         self.date = date
         self.device = device
@@ -252,8 +229,30 @@ class Entry: NSObject {
     
 }
 
-extension Entry {
-    convenience init(jsonDictionary: [String: AnyObject]) {
+struct EntryPropertyKey {
+    static let typeKey = "type"
+    static let sgvKey = "sgv"
+    static let calKey = "cal"
+    static let mgbKey = "mbg"
+    static let serverforecastKey = "serverForcastKey"
+    static let directionKey = "direction"
+    static let dateKey = "date"
+    static let filteredKey = "filtered"
+    static let unfilteredKey = "unfiltered"
+    static let noiseKey = "noise"
+    static let calsKey = "cals"
+    static let slopeKey = "slope"
+    static let interceptKey = "intercept"
+    static let scaleKey = "scale"
+    static let rssiKey = "rssi"
+    static let identKey = "_id"
+    static let deviceKey = "device"
+    static let dateStringKey = "dateString"
+}
+
+public extension Entry {
+    
+    public convenience init(jsonDictionary: [String: AnyObject]) {
         
         let dict = jsonDictionary
         
@@ -376,7 +375,7 @@ extension Entry {
         
     }
     
-    // TODO:// Is tihs the best it can be? Should it be a cumputed property?
+    // TODO: Is tihs the best it can be? Should it be a cumputed property?
     func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
         
         var raw: Double = 0
@@ -396,7 +395,7 @@ extension Entry {
             let ratioCalc1 = scale * (filtered - intercept) / slope
             let ratio = ratioCalc1 / sgv
             
-            //FIXME:// there is divid by zero happining here... need to recheck the math.
+            //FIXME: there is divid by zero happining here... need to recheck the math.
             // Fixed but could it be cleaner?
             let rawCalc = scale * (unfiltered - intercept) / slope
             raw = rawCalc / ratio

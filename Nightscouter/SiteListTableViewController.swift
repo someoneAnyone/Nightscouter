@@ -7,15 +7,17 @@
 //
 
 import UIKit
+import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController {
+class SiteListTableViewController: UITableViewController, NightscoutAPIClientDelegate {
     
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
     var sites: [Site] {
+        editButtonItem().enabled = !AppDataManager.sharedInstance.sites.isEmpty
         return AppDataManager.sharedInstance.sites
     }
     
@@ -46,7 +48,7 @@ class SiteListTableViewController: UITableViewController {
         super.viewDidLoad()
         
         if let site = siteToDisplay {
-            performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.ShowPageView.rawValue, sender: site)
+            performSegueWithIdentifier(Constants.SegueIdentifier.ShowPageView.rawValue, sender: site)
         }
         
         // Common setup.
@@ -100,7 +102,15 @@ class SiteListTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
+            
+            let site = sites[indexPath.row]
+            
+            for notification in site.notifications {
+                UIApplication.sharedApplication().cancelLocalNotification(notification)
+            }
+            
             AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
+        
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             shouldIShowNewSiteForm()
         } else if editingStyle == .Insert {
@@ -154,7 +164,7 @@ class SiteListTableViewController: UITableViewController {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let identifier = UIStoryboardSegue.SegueIdentifier(rawValue: segue.identifier!) {
+        if let identifier = Constants.SegueIdentifier(rawValue: segue.identifier!) {
             switch identifier {
                 
             case .EditSite:
@@ -259,12 +269,11 @@ class SiteListTableViewController: UITableViewController {
         navigationItem.leftBarButtonItem = self.editButtonItem()
         
         // Only allow the edit button to be enabled if there are items in the sites array.
-        editButtonItem().enabled = !sites.isEmpty
         clearsSelectionOnViewWillAppear = true
         
         // Configure table view properties.
         tableView.rowHeight = 240
-        tableView.backgroundView = TableViewBackgroundView() // TODO: Move this out to a theme manager.
+        tableView.backgroundView = BackgroundView() // TODO: Move this out to a theme manager.
         tableView.separatorColor = NSAssetKit.darkNavColor
         
         // Position refresh control above background view
@@ -289,7 +298,7 @@ class SiteListTableViewController: UITableViewController {
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
+        if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
             // No configuration was there... go get some.
             // println("Attempting to get configuration data from site...")
             loadDataFor(site, index: indexPath.row)
@@ -299,7 +308,7 @@ class SiteListTableViewController: UITableViewController {
     func shouldIShowNewSiteForm() {
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
-            let vc = storyboard?.instantiateViewControllerWithIdentifier(UIStoryboard.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
+            let vc = storyboard?.instantiateViewControllerWithIdentifier(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
             self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
                 // println("Finished presenting SiteFormViewController.")
             })
@@ -327,7 +336,7 @@ class SiteListTableViewController: UITableViewController {
     func loadDataFor(site: Site, index: Int){
         // Start up the API
         let nsApi = NightscoutAPIClient(url: site.url)
-        
+        nsApi.delegate = self
         //TODO: 1. There should be reachabiltiy checks before doing anything.
         //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
         //TODO: 3. Probably need to move this code to the application delegate?
@@ -393,7 +402,7 @@ class SiteListTableViewController: UITableViewController {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             let tableViewCell = self.tableView.cellForRowAtIndexPath(indexPath)
             self.accessoryIndexPath = indexPath
-            self.performSegueWithIdentifier(UIStoryboardSegue.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
+            self.performSegueWithIdentifier(Constants.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
         }
         alertController.addAction(editAction)
         
@@ -430,5 +439,9 @@ class SiteListTableViewController: UITableViewController {
     
     func stopUserActivity() {
         userActivity?.invalidate()
+    }
+    
+    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) {
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = usingNetwork
     }
 }

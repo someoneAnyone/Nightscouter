@@ -9,24 +9,24 @@
 import Foundation
 
 extension String {
-    var localized: String {
+    public var localized: String {
         return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: "")
     }
-    func localizedWithComment(comment:String) -> String {
+    public func localizedWithComment(comment:String) -> String {
         return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: comment)
     }
     
-    var versions: [String] {
+    public var versions: [String] {
         return self.componentsSeparatedByString(".")
     }
     
-    var majorVersion: Int {
+    public var majorVersion: Int {
         return versions.first!.toInt()!
     }
-    var minorVersion: Int {
+    public var minorVersion: Int {
         return versions[1].toInt()!
     }
-    var buildVersion: Int {
+    public var buildVersion: Int {
         return versions.last!.toInt()!
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import NightscouterKit
 
 class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
@@ -84,8 +85,8 @@ extension SiteDetailViewController {
         // print(">>> Entering \(__FUNCTION__) <<<")
         let updateData = "updateData(\(self.data))"
         
-        if let units = self.site?.configuration?.unitsRoot {
-            let updateUnits = "updateUnits(\(units.rawValue))"
+        if let configuration = site?.configuration {
+            let updateUnits = "updateUnits(\(configuration.displayUnits.rawValue))"
             webView.stringByEvaluatingJavaScriptFromString(updateUnits)
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
@@ -120,11 +121,8 @@ extension SiteDetailViewController {
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    if let defaults = configuration.defaults {
-                      self.updateTitles(defaults.customTitle)
-                    } else {
-                       self.updateTitles(configuration.name!)
-                    }
+
+                    self.updateTitles(configuration.displayName)
                     
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
@@ -240,7 +238,8 @@ extension SiteDetailViewController {
         
         AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
         AppDataManager.sharedInstance.updateSite(site!)
-        
+        UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
+
         #if DEBUG
             println("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
@@ -293,7 +292,7 @@ extension SiteDetailViewController {
     
     @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
         #if DEBUG
-            let storyboard = UIStoryboard(name: UIStoryboard.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
+            let storyboard = UIStoryboard(name: Constants.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
             NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
             
             presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
