@@ -27,7 +27,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     var site: Site? {
         didSet {
             if (site != nil){
-                // configureView()
+                configureView()
             }
         }
     }
