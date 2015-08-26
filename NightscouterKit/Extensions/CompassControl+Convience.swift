@@ -10,7 +10,7 @@ import UIKit
 
 public extension CompassControl {
     
- func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Int, units: String) -> Void {
+ func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
@@ -20,11 +20,16 @@ public extension CompassControl {
     public func configureWith(site: Site){
         if let configuration: ServerConfiguration = site.configuration,  watch: WatchEntry = site.watchEntry,  sgv: SensorGlucoseValue = watch.sgv {
           
-            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(sgv.sgv))
+            var boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv)
            
             var units: Units = configuration.displayUnits
+            if units == .Mmol {
+                boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv.toMgdl)
+            }
             
-            configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: units.rawValue)
+            let color = colorForDesiredColorState(boundedColor)
+            
+            configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: units.description)
         }
     }
     

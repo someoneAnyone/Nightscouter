@@ -112,21 +112,23 @@ public struct Calibration {
 
 // type = sgv
 public struct SensorGlucoseValue {
-    public let sgv: Int
+    public let sgv: Double
     public let direction: Direction
     public let filtered: Int
     public let unfiltered: Int
     public let rssi: Int
     public let noise: Noise
     
-    enum ReservedValues: Int {
+    enum ReservedValues: Double {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
     
     public var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
-            if sgv <= 29 {
-                let special:ReservedValues = ReservedValues(rawValue: sgv)!
+
+            let mgdlSgvValue: Double = sgv.isInteger ? sgv : sgv.toMgdl
+
+            if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
                 switch (special) {
                 case .NoGlucose:
                     return "?NG"
@@ -151,11 +153,11 @@ public struct SensorGlucoseValue {
                 default:
                     return "✖"
                 }
-            } else if sgv >= 30 && sgv < 40 {
-                return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
-            } else {
-                return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.NoStyle)
             }
+            if sgv >= 30 && sgv < 40 {
+                return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
+            }
+            return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
         }
     }
 }
@@ -187,8 +189,8 @@ public class Entry: NSObject {
             
             var color: String = "white"
             let typeString: Type = entry.type!
-            switch(typeString)
-            {
+            
+            switch(typeString) {
             case .sgv:
                 color = "grey"
             case .mbg:
@@ -200,6 +202,7 @@ public class Entry: NSObject {
             default:
                 color = "grey"
             }
+            
             let nsDateFormatter = NSDateFormatter()
             // nsDateFormatter.dateFormat = "EEE MMM d yyy HH:mm:ss OOOO (zzz)"
             nsDateFormatter.dateFormat = "EEE MMM d HH:mm:ss zzz yyy"
@@ -220,13 +223,11 @@ public class Entry: NSObject {
         return String(str!)
     }
     
-    public init(identifier: String, date: NSDate, device: String) {//, type: Type) {
+    public init(identifier: String, date: NSDate, device: String) {
         self.idString = identifier
         self.date = date
         self.device = device
-        // self.type = type
     }
-    
 }
 
 struct EntryPropertyKey {
@@ -296,7 +297,7 @@ public extension Entry {
                         }
                     }
                     
-                    if let sgv = dict[EntryPropertyKey.sgvKey] as? Int {
+                    if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
                         sgvItem?.sgv = sgv
                     }
                     
@@ -349,11 +350,11 @@ public extension Entry {
             #endif
             NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
             
-            if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
+            if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
                 if let directionString = dict[EntryPropertyKey.directionKey] as? String {
                     if let direction = Direction(rawValue: directionString) {
-                        let sgvInt: Int = Int(sgv.toInt()!)
-                        let sgvValue = SensorGlucoseValue(sgv: sgvInt, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
+                        //                        let sgvInt: Int = Int(sgv.toInt()!)
+                        let sgvValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: Noise.None)
                         sgvItem = sgvValue
                     }
                 }
@@ -372,19 +373,21 @@ public extension Entry {
         if (sgvItem != nil) && (calItem != nil){
             self.raw = rawIsigToRawBg(sgvItem!, calValue: calItem!)
         }
-        
     }
-    
-    // TODO: Is tihs the best it can be? Should it be a cumputed property?
-    func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
+}
+
+// TODO: fix this!
+// TODO: Is tihs the best it can be? Should it be a cumputed property?
+public extension Entry {
+    public func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
         
         var raw: Double = 0
         
+        let unfiltered = Double(sgValue.unfiltered)
+        let filtered = Double(sgValue.filtered)
+        let sgv: Double = sgValue.sgv.isInteger ? sgValue.sgv : sgValue.sgv.toMgdl
         let slope = calValue.slope
-        let unfiltered: Double = Double(sgValue.unfiltered)
-        let filtered: Double = Double(sgValue.filtered)
-        let sgv: Double = Double(sgValue.sgv)
-        let scale: Double = Double(calValue.scale)
+        let scale = calValue.scale
         let intercept = calValue.intercept
         
         if (slope == 0 || unfiltered == 0 || scale == 0) {
@@ -392,8 +395,8 @@ public extension Entry {
         } else if (filtered == 0 || sgv < 40) {
             raw = scale * (unfiltered - intercept) / slope
         } else {
-            let ratioCalc1 = scale * (filtered - intercept) / slope
-            let ratio = ratioCalc1 / sgv
+            let ratioCalc = scale * (filtered - intercept) / slope
+            let ratio = ratioCalc / sgv
             
             //FIXME: there is divid by zero happining here... need to recheck the math.
             // Fixed but could it be cleaner?
@@ -401,7 +404,6 @@ public extension Entry {
             raw = rawCalc / ratio
         }
         
-        return round(Double(raw))
+        return sgValue.sgv.isInteger ? round(raw) : raw
     }
-    
 }

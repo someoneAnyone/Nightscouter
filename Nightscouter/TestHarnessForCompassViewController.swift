@@ -98,7 +98,7 @@ extension TestHarnessForCompassViewController {
     
     func updateDelta(){
         print("newValue: \(newValue); oldValue: \(oldValue); delta: \(newValue - oldValue)")
-        let deltaValue = newValue - oldValue
+        let deltaValue = Double(newValue - oldValue)
         compassControlView.delta = "\(deltaValue.formattedForBGDelta) " + bgUnits
     }
     
