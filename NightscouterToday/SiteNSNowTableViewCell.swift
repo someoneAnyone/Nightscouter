@@ -63,13 +63,21 @@ class SiteNSNowTableViewCell: UITableViewCell {
                 siteLastReadingLabel.text = watchEntry.dateTimeAgoString
                 
                 if let sgvValue = watchEntry.sgv {
-                    let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
+                
+                    var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
+                    if units == .Mmol {
+                        boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
+                    }
+                    let color = colorForDesiredColorState(boundedColor)
+                    
                     siteColorBlockView.backgroundColor = color
+                    
                     siteSgvLabel.text = "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
                     siteSgvLabel.textColor = color
                     
                     siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
                     siteDirectionLabel.textColor = color
+
                     
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
@@ -77,18 +85,13 @@ class SiteNSNowTableViewCell: UITableViewCell {
                             if let rawValue = watchEntry.raw {
                                 let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
                                 
-                                let numberFormatter = NSNumberFormatter()
-                                var raw = rawValue
+                                var raw = "\(rawValue.formattedForMgdl)"
                                 if configuration.displayUnits == .Mmol {
-                                    raw = rawValue.toMmol
-                                    numberFormatter.numberStyle = .DecimalStyle
-                                    numberFormatter.minimumFractionDigits = 1
-                                    numberFormatter.maximumFractionDigits = 1
-                                    numberFormatter.secondaryGroupingSize = 1
+                                    raw = rawValue.formattedForMmol
                                 }
                                 
                                 siteRawLabel?.textColor = color
-                                siteRawLabel.text = "\(numberFormatter.stringFromNumber(raw)!) : \(sgvValue.noise)"
+                                siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
                             }
                         } else {
                             siteRawHeader.hidden = true
