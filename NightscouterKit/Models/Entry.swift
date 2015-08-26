@@ -349,14 +349,19 @@ public extension Entry {
                 println(errorString)
             #endif
             NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
-            
+            sgvItem = SensorGlucoseValue(sgv: 0, direction: .None, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
+
             if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
-                if let directionString = dict[EntryPropertyKey.directionKey] as? String {
-                    if let direction = Direction(rawValue: directionString) {
-                        //                        let sgvInt: Int = Int(sgv.toInt()!)
-                        let sgvValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: Noise.None)
-                        sgvItem = sgvValue
-                    }
+                sgvItem?.sgv = sgv
+            }
+            
+            if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
+                sgvItem?.sgv = sgv.toDouble!
+            }
+
+            if let directionString = dict[EntryPropertyKey.directionKey] as? String {
+                if let direction = Direction(rawValue: directionString) {
+                    sgvItem?.direction = direction
                 }
             }
         }
