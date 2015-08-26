@@ -75,16 +75,27 @@ class SiteNSNowTableViewCell: UITableViewCell {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
-                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(Int(rawValue)))
+                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                                
+                                let numberFormatter = NSNumberFormatter()
+                                var raw = rawValue
+                                if configuration.displayUnits == .Mmol {
+                                    raw = rawValue.toMmol
+                                    numberFormatter.numberStyle = .DecimalStyle
+                                    numberFormatter.minimumFractionDigits = 1
+                                    numberFormatter.maximumFractionDigits = 1
+                                    numberFormatter.secondaryGroupingSize = 1
+                                }
+                                
                                 siteRawLabel?.textColor = color
-                                siteRawLabel.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
+                                siteRawLabel.text = "\(numberFormatter.stringFromNumber(raw)!) : \(sgvValue.noise)"
                             }
                         } else {
                             siteRawHeader.hidden = true
                             siteRawLabel.hidden = true
                         }
                     }
-                    
+
                     let timeAgo = watchEntry.date.timeIntervalSinceNow
                     let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
                     // siteCompassControl.shouldLookStale(look: isStaleData.warn)

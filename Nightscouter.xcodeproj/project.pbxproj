@@ -31,7 +31,6 @@
 		1771B0691B7524AA006C1F5E /* NightscoutAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0651B7524AA006C1F5E /* NightscoutAPIClient.swift */; };
 		1771B0751B7524D5006C1F5E /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06B1B7524D5006C1F5E /* CompassControl+Convience.swift */; };
 		1771B0761B7524D5006C1F5E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06C1B7524D5006C1F5E /* Double+Extension.swift */; };
-		1771B0771B7524D5006C1F5E /* Int+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06D1B7524D5006C1F5E /* Int+Extensions.swift */; };
 		1771B0781B7524D5006C1F5E /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06E1B7524D5006C1F5E /* NSAssetKit.swift */; };
 		1771B0791B7524D5006C1F5E /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06F1B7524D5006C1F5E /* NSAssetKit+Helpers.swift */; };
 		1771B07A1B7524D5006C1F5E /* NSCalendar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */; };
@@ -126,7 +125,6 @@
 		1771B0651B7524AA006C1F5E /* NightscoutAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NightscoutAPIClient.swift; path = API/NightscoutAPIClient.swift; sourceTree = "<group>"; };
 		1771B06B1B7524D5006C1F5E /* CompassControl+Convience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CompassControl+Convience.swift"; path = "Extensions/CompassControl+Convience.swift"; sourceTree = "<group>"; };
 		1771B06C1B7524D5006C1F5E /* Double+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Double+Extension.swift"; path = "Extensions/Double+Extension.swift"; sourceTree = "<group>"; };
-		1771B06D1B7524D5006C1F5E /* Int+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Int+Extensions.swift"; path = "Extensions/Int+Extensions.swift"; sourceTree = "<group>"; };
 		1771B06E1B7524D5006C1F5E /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSAssetKit.swift; path = Extensions/NSAssetKit.swift; sourceTree = "<group>"; };
 		1771B06F1B7524D5006C1F5E /* NSAssetKit+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSAssetKit+Helpers.swift"; path = "Extensions/NSAssetKit+Helpers.swift"; sourceTree = "<group>"; };
 		1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSCalendar+Extension.swift"; path = "Extensions/NSCalendar+Extension.swift"; sourceTree = "<group>"; };
@@ -370,7 +368,6 @@
 			isa = PBXGroup;
 			children = (
 				1771B06C1B7524D5006C1F5E /* Double+Extension.swift */,
-				1771B06D1B7524D5006C1F5E /* Int+Extensions.swift */,
 				1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */,
 				1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */,
 				1771B0721B7524D5006C1F5E /* String+Extensions.swift */,
@@ -614,7 +611,6 @@
 				1771B0761B7524D5006C1F5E /* Double+Extension.swift in Sources */,
 				1771B0751B7524D5006C1F5E /* CompassControl+Convience.swift in Sources */,
 				1771B0781B7524D5006C1F5E /* NSAssetKit.swift in Sources */,
-				1771B0771B7524D5006C1F5E /* Int+Extensions.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
 				1771B0871B7524FD006C1F5E /* WatchEntry.swift in Sources */,
 				1771B0681B7524AA006C1F5E /* Constants.swift in Sources */,

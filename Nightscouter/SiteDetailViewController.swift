@@ -86,7 +86,8 @@ extension SiteDetailViewController {
         let updateData = "updateData(\(self.data))"
         
         if let configuration = site?.configuration {
-            let updateUnits = "updateUnits(\(configuration.displayUnits.rawValue))"
+            
+            let updateUnits = "updateUnits(\(configuration.displayUnits.hashValue))"
             webView.stringByEvaluatingJavaScriptFromString(updateUnits)
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
@@ -167,9 +168,15 @@ extension SiteDetailViewController {
                         
                         // Raw label
                         if let rawValue = watchEntry.raw {
-                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(Int(rawValue)))
+                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                            
+                            var raw = "\(rawValue.formattedForMgdl)"
+                            if configuration.displayUnits == .Mmol {
+                                raw = rawValue.formattedForMmol
+                            }
+
                             self.siteRawLabel?.textColor = color
-                            self.siteRawLabel?.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: NSNumberFormatterStyle.DecimalStyle)) : \(sgv.noise)"
+                            self.siteRawLabel?.text = "\(raw) : \(sgv.noise)"
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
@@ -195,7 +202,7 @@ extension SiteDetailViewController {
                                 if let entries = entries {
                                     for entry in entries {
                                         if let sgv = entry.sgv {
-                                            if (sgv.sgv > Constants.EntryCount.LowerLimitForValidSGV) {
+                                            if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
                                                 self.data.append(entry.jsonForChart)
                                             }
                                         }

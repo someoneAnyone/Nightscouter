@@ -28,10 +28,15 @@ public enum EnabledOptions: String, Printable {
 
 public enum Units: String, Printable {
     case Mgdl = "mg/dl"
-    case Mmoll = "mmol/L"
+    case Mmol = "mmol"
     
     public var description: String {
-        return self.rawValue
+        switch self {
+        case .Mgdl:
+            return "mg/dL"
+        case .Mmol:
+            return "mmol/L"
+        }
     }
 }
 
@@ -46,10 +51,10 @@ public enum RawBGMode: String, Printable {
 }
 
 public struct Threshold: Printable {
-    public let bg_high: Int
-    public let bg_low: Int
-    public let bg_target_bottom :Int
-    public let bg_target_top :Int
+    public let bg_high: Double
+    public let bg_low: Double
+    public let bg_target_bottom :Double
+    public let bg_target_top :Double
     
     public var description: String {
         let dict = ["bg_high": bg_high, "bg_low": bg_low, "bg_target_bottom": bg_target_bottom, "bg_target_top": bg_target_top]
@@ -189,7 +194,7 @@ public struct ServerConfiguration: Printable {
         if let name = name {
             dict["name"] = name
         }
-
+        
         return dict.description
     }
 }
@@ -218,7 +223,7 @@ public extension ServerConfiguration {
             let unitsRootUnit = Units(rawValue: unitsRootString)!
             serverConfig.unitsRoot = unitsRootUnit
         }
-
+        
         if let headString = root[ConfigurationPropertyKey.headKey] as? String {
             serverConfig.head = headString
         }
@@ -277,10 +282,10 @@ public extension ServerConfiguration {
         
         var threasholdsThreshold: Threshold?
         if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
-            let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Int
-            let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Int
-            let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Int
-            let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Int
+            let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Double
+            let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Double
+            let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Double
+            let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Double
             threasholdsThreshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
         }
         serverConfig.thresholds = threasholdsThreshold
@@ -297,18 +302,21 @@ public enum DesiredColorState {
 // TODO: Should this be here? Maybe it shuld be a threshold extension.
 public extension ServerConfiguration {
     
-    public func boundedColorForGlucoseValue(value: Int) -> DesiredColorState {
+    public func boundedColorForGlucoseValue(mgdlSGV: Double) -> DesiredColorState {
         var color = DesiredColorState.Neutral
+        
+        var mgdlValue: Double = mgdlSGV
+        
         if let thresholds = self.thresholds {
-            if (value >= thresholds.bg_high) {
+            if (mgdlValue >= thresholds.bg_high) {
                 color = .Alert
-            } else if (value > thresholds.bg_target_top && value < thresholds.bg_high) {
+            } else if (mgdlValue > thresholds.bg_target_top && mgdlValue < thresholds.bg_high) {
                 color =  .Warning
-            } else if (value >= thresholds.bg_target_bottom && value <= thresholds.bg_target_top) {
+            } else if (mgdlValue >= thresholds.bg_target_bottom && mgdlValue <= thresholds.bg_target_top) {
                 color = .Positive
-            } else if (value < thresholds.bg_target_bottom && value > thresholds.bg_low) {
+            } else if (mgdlValue < thresholds.bg_target_bottom && mgdlValue > thresholds.bg_low) {
                 color = .Warning
-            } else if (value <= thresholds.bg_low && value != 0) {
+            } else if (mgdlValue <= thresholds.bg_low && mgdlValue != 0) {
                 color = .Alert
             }
         }
@@ -344,7 +352,8 @@ public extension ServerConfiguration {
         } else if let name = name {
             return name
         } else {
-            return "Nightscout"
+            return  NSLocalizedString("nightscoutTitleString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to when we can't find a title for the website.")
+            
         }
     }
     
