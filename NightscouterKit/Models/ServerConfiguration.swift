@@ -20,6 +20,11 @@ public enum EnabledOptions: String, Printable {
     case errorcodes = "errorcodes"
     case simplealarms = "simplealarms"
     case pushover = "pushover"
+    case maker = "maker"
+    case cob = "cob"
+    case bwp = "bwp"
+    case cage = "cage"
+    case basal = "basal"
     
     public var description: String {
         return self.rawValue
@@ -97,8 +102,10 @@ public struct Defaults: Printable {
     public let theme: String
     public let alarms: Alarm
     public let language: String
-    public let showPlugins: String? = nil // Not implmented yet
-    public let enabled: [EnabledOptions]? = nil // Not implmented yet
+    public let showPlugins: String?
+    public let enable: [EnabledOptions]?
+    public let thresholds: Threshold?
+    public let defaultFeatures: [String]?
     // End of "defaults" dictionary
     
     public var description: String {
@@ -114,10 +121,14 @@ struct ConfigurationPropertyKey {
     static let defaultsKey = "defaults"
     static let alarmHighKey = "alarmHigh"
     static let alarmLowKey = "alarmLow"
-    static let alarmTimeAgoUrgentKey = "alarmTimeAgoUrgent"
-    static let alarmTimeAgoUrgentMinsKey = "alarmTimeAgoUrgentMins"
-    static let alarmTimeAgoWarnKey = "alarmTimeAgoWarn"
-    static let alarmTimeAgoWarnMinsKey = "alarmTimeAgoWarnMins"
+    static let alarmTimeAgoUrgentKey = "alarmTimeAgoUrgent" // for ns version 7.0.
+    static let alarmTimeagoUrgentKey = "alarmTimeagoUrgent" // for ns version 8.0.
+    static let alarmTimeAgoUrgentMinsKey = "alarmTimeAgoUrgentMins"  // for ns version 7.0.
+    static let alarmTimeagoUrgentMinsKey = "alarmTimeagoUrgentMins"  // for ns version 8.0.
+    static let alarmTimeAgoWarnKey = "alarmTimeAgoWarn" // for ns version 7.0.
+    static let alarmTimeagoWarnKey = "alarmTimeagoWarn"
+    static let alarmTimeAgoWarnMinsKey = "alarmTimeAgoWarnMins" // for ns version 7.0.
+    static let alarmTimeagoWarnMinsKey = "alarmTimeagoWarnMins"
     static let alarmUrgentHighKey = "alarmUrgentHigh"
     static let alarmUrgentLowKey = "alarmUrgentLow"
     static let customTitleKey = "customTitle"
@@ -132,17 +143,26 @@ struct ConfigurationPropertyKey {
     static let nameKey = "name"
     static let statusKey = "status"
     static let thresholdsKey = "thresholds"
+
+    // ver 7.0
     static let bg_highKey = "bg_high"
     static let bg_lowKey = "bg_low"
     static let bg_target_bottomKey = "bg_target_bottom"
     static let bg_target_topKey = "bg_target_top"
+    
+    // ver 8.0
+    static let bgHighKey = "bgHigh"
+    static let bgLowKey = "bgLow"
+    static let bgTargetBottomKey = "bgTargetBottom"
+    static let bgTargetTopKey = "bgTargetTop"
+    
     static let versionKey = "version"
     
     // Not implmented yet
-    // static let extendedSettingsKey = "extendedSettings"
-    // static let settingsKey = "settings"
-    // static let enableKey = "enable"
-    // static let showPluginsKey = "showPlugins"
+     static let extendedSettingsKey = "extendedSettings"
+     static let settingsKey = "settings"
+     static let enableKey = "enable"
+     static let showPluginsKey = "showPlugins"
 }
 
 public struct ServerConfiguration: Printable {
@@ -151,6 +171,7 @@ public struct ServerConfiguration: Printable {
     public let careportalEnabled: Bool?
     public let enabledOptions: [EnabledOptions]?
     public let defaults: Defaults?
+//    public let settings: Defaults?
     public let unitsRoot: Units?
     public let head:String?
     public let version: String?
@@ -244,11 +265,20 @@ public extension ServerConfiguration {
                 }
             }
         }
-        serverConfig.enabledOptions = options
         
         if let nameString = root[ConfigurationPropertyKey.nameKey] as? String {
             serverConfig.name = nameString
         }
+        
+        var threshold: Threshold?
+        if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
+            let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Double
+            let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Double
+            let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Double
+            let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Double
+            threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
+        }
+
         
         var defaultsDefaults: Defaults?
         if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
@@ -275,21 +305,63 @@ public extension ServerConfiguration {
             let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
             
             let language = defaultsDictionary[ConfigurationPropertyKey.languageKey] as! String
-            
-            defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language)
+        
+            defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: nil, thresholds: nil, defaultFeatures: nil)
         }
+        
+        if let settingsDictionary = root[ConfigurationPropertyKey.settingsKey] as? [String: AnyObject] {
+            let units = Units(rawValue: (settingsDictionary[ConfigurationPropertyKey.unitsKey] as! String).lowercaseString)!
+            let timeFormat = (settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
+            let nightMode = settingsDictionary[ConfigurationPropertyKey.nightModeKey] as! Bool
+            let showRawbg = RawBGMode(rawValue: settingsDictionary[ConfigurationPropertyKey.showRawbgKey] as! String)!
+            let customTitle = settingsDictionary[ConfigurationPropertyKey.customTitleKey] as! String
+            
+            let theme = settingsDictionary[ConfigurationPropertyKey.themeKey] as! String
+            
+            let aHigh = settingsDictionary[ConfigurationPropertyKey.alarmHighKey] as! Bool
+            let aLow = settingsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
+            let aTAU = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentKey] as! Bool
+            let aTAUMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as! Double
+            let aTAUMin: NSTimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
+            
+            let aTAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnKey] as! Bool
+            let aTAWMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as! Double
+            let aTAWMin: NSTimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
+            let aTUH = settingsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
+            let aTUL = settingsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
+            
+            let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
+            
+            let language = settingsDictionary[ConfigurationPropertyKey.languageKey] as! String
+            
+            
+            if let enableArray = settingsDictionary[ConfigurationPropertyKey.enableKey] as? [String] {
+                for stringItem in enableArray{
+                    if let item = EnabledOptions(rawValue: stringItem){
+                        options.append(item)
+                    }
+                }
+            }
+            
+            if let thresholdsDict = settingsDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
+                let bg_high = thresholdsDict[ConfigurationPropertyKey.bgHighKey] as! Double
+                let bg_low = thresholdsDict[ConfigurationPropertyKey.bgLowKey] as! Double
+                let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bgTargetBottomKey] as! Double
+                let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bgTargetTopKey] as! Double
+                threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
+            }
+
+
+            
+            defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: options, thresholds: threshold, defaultFeatures: nil)
+
+        }
+
         serverConfig.defaults = defaultsDefaults
         
-        var threasholdsThreshold: Threshold?
-        if let thresholdsDict = jsonDictionary[ConfigurationPropertyKey.thresholdsKey] as? [String : AnyObject] {
-            let bg_high = thresholdsDict[ConfigurationPropertyKey.bg_highKey] as! Double
-            let bg_low = thresholdsDict[ConfigurationPropertyKey.bg_lowKey] as! Double
-            let bg_target_bottom = thresholdsDict[ConfigurationPropertyKey.bg_target_bottomKey] as! Double
-            let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Double
-            threasholdsThreshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
-        }
-        serverConfig.thresholds = threasholdsThreshold
-        
+        serverConfig.thresholds = threshold
+        serverConfig.enabledOptions = options
+
         self = serverConfig
     }
 }
