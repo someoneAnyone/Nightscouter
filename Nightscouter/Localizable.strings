@@ -26,3 +26,5 @@
 "uiAlertScreenOverrideMessage" = "Selecting Yes will prevent the application from going to sleep and locking while viewing this site.";
 
 "sgvLowString" = "Low";
+
+"nightscoutTitleString" = "Nightscouter";

@@ -63,16 +63,27 @@ class SiteTableViewCell: UITableViewCell {
                 
                 if let sgvValue = watchEntry.sgv {
                     
-                    let color = colorForDesiredColorState(site.configuration!.boundedColorForGlucoseValue(sgvValue.sgv))
+                    var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
+                    if configuration.displayUnits == .Mmol {
+                        boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
+                    }
+                    let color = colorForDesiredColorState(boundedColor)
+                    
                     siteColorBlockView.backgroundColor = color
                     
                     if let enabledOptions = configuration.enabledOptions {
                         let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
-                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(Int(rawValue)))
+                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                                
+                                var raw = "\(rawValue.formattedForMgdl)"
+                                if configuration.displayUnits == .Mmol {
+                                    raw = rawValue.formattedForMmol
+                                }
+                                
                                 siteRawLabel?.textColor = color
-                                siteRawLabel.text = "\(NSNumberFormatter.localizedStringFromNumber(rawValue, numberStyle: .DecimalStyle)) : \(sgvValue.noise)"
+                                siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
                             }
                         } else {
                             siteRawHeader.hidden = true
@@ -132,7 +143,7 @@ class SiteTableViewCell: UITableViewCell {
         siteColorBlockView.backgroundColor = siteCompassControl.color
         siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
         siteLastReadingLabel.textColor = Theme.Color.labelTextColor
-    
+        
         siteRawHeader.hidden = false
         siteRawLabel.hidden = false
         siteRawLabel.textColor = Theme.Color.labelTextColor

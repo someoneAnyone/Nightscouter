@@ -23,13 +23,19 @@ let WatchFaceDeviceValue = "watchFace"
 
 public class WatchEntry: Entry {
     public var now: NSDate
-    public var bgdelta: Int
+    public var bgdelta: Double
     public let battery: Int
     public var batteryString: String {
         get{
             // Convert int from JSON into a proper precentge.
             var percentage = Float(battery)/100
-            return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
+            
+            let numberFormatter: NSNumberFormatter = NSNumberFormatter()
+            numberFormatter.numberStyle = .PercentStyle
+            numberFormatter.zeroSymbol = "---%"
+            
+            return numberFormatter.stringFromNumber(percentage)!
+//            return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
         }
     }
     public var batteryColorState: DesiredColorState {
@@ -41,7 +47,7 @@ public class WatchEntry: Entry {
         return DesiredColorState.Neutral
     }
     
-    public init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Int, battery: Int) {
+    public init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Double, battery: Int) {
         self.now = now
         self.bgdelta = bgdelta
         self.battery = battery
@@ -55,7 +61,7 @@ public extension WatchEntry {
         var now: NSDate = NSDate()
         var date: NSDate = NSDate()
         var device: String = WatchFaceDeviceValue
-        var bgdelta: Int = 0
+        var bgdelta: Double = 0
         var battery: Int = 0
         var sgvItem: SensorGlucoseValue?
         var calItem: Calibration?
@@ -87,7 +93,7 @@ public extension WatchEntry {
             }
             
             if let sgvString = bgs[EntryPropertyKey.sgvKey] as? String {
-                sgvItem?.sgv = sgvString.toInt()!
+                sgvItem?.sgv = sgvString.toDouble!
             }
             
             if let filtered = bgs[EntryPropertyKey.filteredKey] as? Int {
@@ -104,8 +110,11 @@ public extension WatchEntry {
                 }
             }
             
-            if let bgdeltaInt = bgs[EntryPropertyKey.bgdeltaKey] as? Int {
-                bgdelta = bgdeltaInt
+            if let bgdeltaString = bgs[EntryPropertyKey.bgdeltaKey] as? String {
+                bgdelta = bgdeltaString.toDouble!
+            }
+            if let bgdeltaNumber = bgs[EntryPropertyKey.bgdeltaKey] as? Double {
+                bgdelta = bgdeltaNumber
             }
             
             if let batteryString = bgs[EntryPropertyKey.batteryKey] as? String {
