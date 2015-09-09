@@ -5,8 +5,7 @@ An Native iOS app used for displaying CGM data from a Nightscout website data. T
 - Xcode Version 6.4 (6E35b)
 - iOS 8.4 or better
 - iPhone 5, 5s, 6, 6 Plus (not specifically optimized for iPad yet)
-- Nightscout Remote Monitor version 0.7.0 (https://github.com/nightscout/cgm-remote-monitor)
-- Limited Support for Nightscout Remote Monitor version 0.8.0 (will come shortly after the official release)
+- Nightscout Remote Monitor versions 0.7.0 & 0.8.0 (https://github.com/nightscout/cgm-remote-monitor)
 
 ## Features
 - Multiple Nightscout Remote Monitor web sites can be added and viewed within the App.
