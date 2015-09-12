@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum EnabledOptions: String, Printable {
+public enum EnabledOptions: String, CustomStringConvertible {
     case careportal = "careportal"
     case rawbg = "rawbg"
     case iob = "iob"
@@ -31,7 +31,7 @@ public enum EnabledOptions: String, Printable {
     }
 }
 
-public enum Units: String, Printable {
+public enum Units: String, CustomStringConvertible {
     case Mgdl = "mg/dl"
     case Mmol = "mmol"
     
@@ -45,7 +45,7 @@ public enum Units: String, Printable {
     }
 }
 
-public enum RawBGMode: String, Printable {
+public enum RawBGMode: String, CustomStringConvertible {
     case Never = "never"
     case Always = "always"
     case Noise = "noise"
@@ -55,7 +55,7 @@ public enum RawBGMode: String, Printable {
     }
 }
 
-public struct Threshold: Printable {
+public struct Threshold: CustomStringConvertible {
     public let bg_high: Double
     public let bg_low: Double
     public let bg_target_bottom :Double
@@ -67,7 +67,7 @@ public struct Threshold: Printable {
     }
 }
 
-public struct Alarm: Printable {
+public struct Alarm: CustomStringConvertible {
     public let alarmHigh: Bool
     public let alarmLow: Bool
     public let alarmTimeAgoUrgent: Bool
@@ -83,7 +83,7 @@ public struct Alarm: Printable {
     }
 }
 
-public enum AlarmTypes: String, Printable {
+public enum AlarmTypes: String, CustomStringConvertible {
     case predict = "predict"
     case simple = "simple"
     
@@ -92,7 +92,7 @@ public enum AlarmTypes: String, Printable {
     }
 }
 
-public struct Defaults: Printable {
+public struct Defaults: CustomStringConvertible {
     // Start of "defaults" dictionary // In future nightscout this becomes settings... not sure how we want to manage the transition.
     public let units: Units
     public let timeFormat: Int
@@ -165,19 +165,19 @@ struct ConfigurationPropertyKey {
      static let showPluginsKey = "showPlugins"
 }
 
-public struct ServerConfiguration: Printable {
-    public let status: String?
-    public let apiEnabled: Bool?
-    public let careportalEnabled: Bool?
-    public let enabledOptions: [EnabledOptions]?
-    public let defaults: Defaults?
+public struct ServerConfiguration: CustomStringConvertible {
+    public var status: String?
+    public var apiEnabled: Bool?
+    public var careportalEnabled: Bool?
+    public var enabledOptions: [EnabledOptions]?
+    public var defaults: Defaults?
 //    public let settings: Defaults?
-    public let unitsRoot: Units?
-    public let head:String?
-    public let version: String?
-    public let thresholds: Threshold?
-    public let alarm_types: String?
-    public let name: String?
+    public var unitsRoot: Units?
+    public var head:String?
+    public var version: String?
+    public var thresholds: Threshold?
+    public var alarm_types: String?
+    public var name: String?
     
     public var description: String {
         
@@ -283,7 +283,7 @@ public extension ServerConfiguration {
         var defaultsDefaults: Defaults?
         if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
             let units = Units(rawValue: defaultsDictionary[ConfigurationPropertyKey.unitsKey] as! String)!
-            let timeFormat = (defaultsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
+            let timeFormat = Int((defaultsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String))!
             let nightMode = defaultsDictionary[ConfigurationPropertyKey.nightModeKey] as! Bool
             let showRawbg = RawBGMode(rawValue: defaultsDictionary[ConfigurationPropertyKey.showRawbgKey] as! String)!
             let customTitle = defaultsDictionary[ConfigurationPropertyKey.customTitleKey] as! String
@@ -311,7 +311,7 @@ public extension ServerConfiguration {
         
         if let settingsDictionary = root[ConfigurationPropertyKey.settingsKey] as? [String: AnyObject] {
             let units = Units(rawValue: (settingsDictionary[ConfigurationPropertyKey.unitsKey] as! String).lowercaseString)!
-            let timeFormat = (settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String).toInt()!
+            let timeFormat = Int((settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String))!
             let nightMode = settingsDictionary[ConfigurationPropertyKey.nightModeKey] as! Bool
             let showRawbg = RawBGMode(rawValue: settingsDictionary[ConfigurationPropertyKey.showRawbgKey] as! String)!
             let customTitle = settingsDictionary[ConfigurationPropertyKey.customTitleKey] as! String
@@ -377,7 +377,7 @@ public extension ServerConfiguration {
     public func boundedColorForGlucoseValue(mgdlSGV: Double) -> DesiredColorState {
         var color = DesiredColorState.Neutral
         
-        var mgdlValue: Double = mgdlSGV
+        let mgdlValue: Double = mgdlSGV
         
         if let thresholds = self.thresholds {
             if (mgdlValue >= thresholds.bg_high) {
@@ -407,10 +407,10 @@ public extension ServerConfiguration {
         
         let warnValue: NSTimeInterval = -max(fallback, warn)
         let urgentValue: NSTimeInterval = -max(fallback, urgent)
-        var returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
+        let returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
         
         #if DEBUG
-            println("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
+            print("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
         #endif
         
         return returnValue

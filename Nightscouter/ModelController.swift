@@ -51,7 +51,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
 //        currentIndex = sites.indexOf(viewController.site!) ?? NSNotFound
         
-        currentIndex = find(sites, viewController.site!) ?? NSNotFound
+        currentIndex = sites.indexOf(viewController.site!) ?? NSNotFound
         return currentIndex
     }
 

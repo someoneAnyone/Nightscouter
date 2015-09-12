@@ -11,7 +11,7 @@ import Foundation
 let NightscoutModelErrorDomain: String = "com.nightscout.nightscouter.models.entry"
 
 // TODO: Clean these up.
-public enum Direction : String, Printable {
+public enum Direction : String, CustomStringConvertible {
     case None = "None", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange"
     
     public static let allValues = [None, DoubleUp, SingleUp, FortyFiveUp, Flat, FortyFiveDown, SingleDown, DoubleDown, NotComputable, RateOutOfRange]
@@ -69,7 +69,7 @@ public enum Direction : String, Printable {
     }
 }
 
-public enum Noise : Int, Printable {
+public enum Noise : Int, CustomStringConvertible {
     case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
     public var description: String {
         switch (self) {
@@ -125,9 +125,9 @@ public struct SensorGlucoseValue {
     
     public var sgvString: String { // Consider moving this to a Printable or similar protocal?
         get {
-
+            
             let mgdlSgvValue: Double = sgv.isInteger ? sgv : sgv.toMgdl
-
+            
             if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
                 switch (special) {
                 case .NoGlucose:
@@ -150,8 +150,8 @@ public struct SensorGlucoseValue {
                     return "?RF✖"
                 case .HupHolland:
                     return "MH"
-                default:
-                    return "✖"
+                    //                default:
+                    //                    return "✖"
                 }
             }
             if sgv >= 30 && sgv < 40 {
@@ -167,8 +167,8 @@ public struct MeterBloodGlucose {
     public let mbg: Int
 }
 
-public class Entry: NSObject {
-    public var idString: String
+public class Entry {
+    public var identifier: String
     public var device: String
     public var date: NSDate
     public var dateTimeAgoString: String {
@@ -180,7 +180,38 @@ public class Entry: NSObject {
     public var sgv: SensorGlucoseValue?
     public var cal: Calibration?
     public var mbg: MeterBloodGlucose?
-    public var raw: Double?
+    public var raw: Double? {
+        get {
+            guard let sgValue:SensorGlucoseValue = self.sgv, calValue = cal else {
+                return 0
+            }
+            var raw: Double = 0
+            
+            let unfiltered = Double(sgValue.unfiltered)
+            let filtered = Double(sgValue.filtered)
+            let sgv: Double = sgValue.sgv.isInteger ? sgValue.sgv : sgValue.sgv.toMgdl
+            let slope = calValue.slope
+            let scale = calValue.scale
+            let intercept = calValue.intercept
+            
+            if (slope == 0 || unfiltered == 0 || scale == 0) {
+                raw = 0;
+            } else if (filtered == 0 || sgv < 40) {
+                raw = scale * (unfiltered - intercept) / slope
+            } else {
+                let ratioCalc = scale * (filtered - intercept) / slope
+                let ratio = ratioCalc / sgv
+                
+                //FIXME: there is divid by zero happining here... need to recheck the math.
+                // Fixed but could it be cleaner?
+                let rawCalc = scale * (unfiltered - intercept) / slope
+                raw = rawCalc / ratio
+            }
+            
+            return sgValue.sgv.isInteger ? round(raw) : raw
+            
+        }
+    }
     public var type: Type?
     
     public var dictionaryRep: NSDictionary {
@@ -217,16 +248,25 @@ public class Entry: NSObject {
     }
     
     public var jsonForChart: String {
-        let jsonError: NSError?
-        let jsObj =  NSJSONSerialization.dataWithJSONObject(self.dictionaryRep, options:nil, error:nil)
+        let jsObj =  try? NSJSONSerialization.dataWithJSONObject(self.dictionaryRep, options:[])
         let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
         return String(str!)
     }
-    
     public init(identifier: String, date: NSDate, device: String) {
-        self.idString = identifier
+        self.identifier = identifier
         self.date = date
         self.device = device
+    }
+    
+    public init(identifier: String, date: NSDate, device: String, dateString: String, sgv: SensorGlucoseValue, cal: Calibration, mbg: MeterBloodGlucose, type: Type) {
+        self.identifier = identifier
+        self.date = date
+        self.device = device
+        self.dateString = dateString
+        self.sgv = sgv
+        self.cal = cal
+        self.mbg = mbg
+        self.type = type
     }
 }
 
@@ -257,127 +297,71 @@ public extension Entry {
         
         let dict = jsonDictionary
         
-        var idString: String = ""
-        var date: NSDate = NSDate()
-        var device: String = ""
+        guard let identifier = dict[EntryPropertyKey.identKey] as? String,
+            device = dict[EntryPropertyKey.deviceKey] as? String,
+            rawEpoch = dict[EntryPropertyKey.dateKey] as? Double else {
+                
+                self.init(identifier: "none", date: NSDate(), device:"none")
+                return
+        }
+        let date = rawEpoch.toDateUsingSeconds()
         
-        var sgvItem: SensorGlucoseValue?
-        var calItem: Calibration?
-        var meterItem: MeterBloodGlucose?
+        let dateString = dict[EntryPropertyKey.dateStringKey] as? String
         
-        var type: Type = Type()
-        
-        if let identifier = dict[EntryPropertyKey.identKey] as? String {
-            idString = identifier
+        guard let stringForType = dict[EntryPropertyKey.typeKey] as? String,
+            type: Type = Type(rawValue: stringForType) else {
+                
+                self.init(identifier: "none", date: NSDate(), device:"none")
+                
+                return
         }
         
-        if let deviceString = dict[EntryPropertyKey.deviceKey] as? String {
-            device = deviceString
-        }
+        var sgValue: SensorGlucoseValue? = nil
+        var calValue: Calibration? = nil
+        var mbgValue: MeterBloodGlucose? = nil
         
-        var dateString: String = ""
-        if let dateStringOptional = dict[EntryPropertyKey.dateStringKey] as? String {
-            dateString = dateStringOptional
-        }
-        
-        if let rawEpoch = dict[EntryPropertyKey.dateKey] as? Double {
-            date = rawEpoch.toDateUsingSeconds()
-        }
-        if let stringForType = dict[EntryPropertyKey.typeKey] as? String {
-            if let typedString: Type = Type(rawValue: stringForType) {
-                type = typedString
-                switch type {
-                case .sgv:
+        switch type {
+        case .sgv:
+            
+            guard let directionString = dict[EntryPropertyKey.directionKey] as? String,
+                direction = Direction(rawValue: directionString),
+                sgv = dict[EntryPropertyKey.sgvKey] as? Double,
+                filtered = dict[EntryPropertyKey.filteredKey] as? Int,
+                unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int,
+                rssi = dict[EntryPropertyKey.rssiKey] as? Int,
+                noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
+                noise = Noise(rawValue: noiseInt) else {
                     
-                    sgvItem = SensorGlucoseValue(sgv: 0, direction: .None, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
-                    
-                    if let directionString = dict[EntryPropertyKey.directionKey] as? String {
-                        if let direction = Direction(rawValue: directionString) {
-                            sgvItem?.direction = direction
-                        }
-                    }
-                    
-                    if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
-                        sgvItem?.sgv = sgv
-                    }
-                    
-                    if let filtered = dict[EntryPropertyKey.filteredKey] as? Int {
-                        sgvItem?.filtered = filtered
-                    }
-                    
-                    if let unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int {
-                        sgvItem?.unfiltered = unfiltlered
-                    }
-                    
-                    if let rssi = dict[EntryPropertyKey.rssiKey] as? Int {
-                        sgvItem?.rssi = rssi
-                    }
-                    
-                    if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int {
-                        if let noise = Noise(rawValue: noiseInt) {
-                            sgvItem?.noise = noise
-                        }
-                    }
-                    
-                case .mbg:
-                    if let mbg = dict[EntryPropertyKey.mgbKey] as? Int {
-                        let meter = MeterBloodGlucose(mbg: mbg)
-                        meterItem = meter
-                    }
-                    
-                case .cal:
-                    if let slope = dict[EntryPropertyKey.slopeKey] as? Double {
-                        if let intercept = dict[EntryPropertyKey.interceptKey] as? Double {
-                            if let scale = dict[EntryPropertyKey.scaleKey] as? Double {
-                                let calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
-                                calItem = calValue
-                            }
-                        }
-                    }
-                    
-                default:
-                    let errorString: String = "I have encountered a nightscout recorded type I don't know\ntype:\(typedString)"
-                    #if DEBUG
-                        println(errorString)
-                    #endif
-                    NSError(domain: NightscoutModelErrorDomain, code: -10, userInfo: ["description": errorString])
-                }
-            }
-        } else {
-            let errorString: String = "Type feild is missing for \(dict)"
-            #if DEBUG
-                println(errorString)
-            #endif
-            NSError(domain: NightscoutModelErrorDomain, code: -11, userInfo: ["description": errorString])
-            sgvItem = SensorGlucoseValue(sgv: 0, direction: .None, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
-
-            if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
-                sgvItem?.sgv = sgv
+                    break
             }
             
-            if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
-                sgvItem?.sgv = sgv.toDouble!
+            sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
+            break
+            
+        case .mbg:
+            guard let mbg = dict[EntryPropertyKey.mgbKey] as? Int else {
+                break
             }
-
-            if let directionString = dict[EntryPropertyKey.directionKey] as? String {
-                if let direction = Direction(rawValue: directionString) {
-                    sgvItem?.direction = direction
-                }
+            mbgValue = MeterBloodGlucose(mbg: mbg)
+            
+            
+        case .cal:
+            guard let slope = dict[EntryPropertyKey.slopeKey] as? Double,
+                intercept = dict[EntryPropertyKey.interceptKey] as? Double,
+                let scale = dict[EntryPropertyKey.scaleKey] as? Double else {
+                    break
             }
+            
+            calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
+            break
+        default:
+            let errorString: String = "I have encountered a nightscout recorded type I don't know\ntype:\(type)"
+            #if DEBUG
+                print(errorString)
+            #endif
+            break
         }
-        
-        self.init(identifier: idString, date: date, device:device)//, type: type)
-        
-        self.dateString = dateString
-        self.sgv = sgvItem
-        self.mbg = meterItem
-        self.cal = calItem
-        
-        self.type = type
-        
-        if (sgvItem != nil) && (calItem != nil){
-            self.raw = rawIsigToRawBg(sgvItem!, calValue: calItem!)
-        }
+        self.init(identifier: identifier, date: date, device:device, dateString: dateString!, sgv: sgValue!, cal: calValue!, mbg: mbgValue!, type: type)
     }
 }
 

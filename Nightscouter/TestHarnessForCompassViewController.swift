@@ -52,9 +52,9 @@ class TestHarnessForCompassViewController: UIViewController {
         compassControlView.setNeedsDisplay()
         
         if UIDevice.currentDevice().orientation.isLandscape.boolValue {
-            print("land")
+            print("land", terminator: "")
         } else {
-            print("port")
+            print("port", terminator: "")
         }
         
     }
@@ -89,7 +89,7 @@ class TestHarnessForCompassViewController: UIViewController {
 extension TestHarnessForCompassViewController {
     func setModeSwitch (){
         self.modeSwitch.removeAllSegments()
-        for (index, value) in enumerate(Direction.allValues) {
+        for (index, value) in Direction.allValues.enumerate() {
             self.modeSwitch.insertSegmentWithTitle("\(value.emojiForDirection)", atIndex: index, animated: true)
         }
         self.modeSwitch.selectedSegmentIndex = 0
@@ -97,7 +97,7 @@ extension TestHarnessForCompassViewController {
     }
     
     func updateDelta(){
-        print("newValue: \(newValue); oldValue: \(oldValue); delta: \(newValue - oldValue)")
+        print("newValue: \(newValue); oldValue: \(oldValue); delta: \(newValue - oldValue)", terminator: "")
         let deltaValue = Double(newValue - oldValue)
         compassControlView.delta = "\(deltaValue.formattedForBGDelta) " + bgUnits
     }

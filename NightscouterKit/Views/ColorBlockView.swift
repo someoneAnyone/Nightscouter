@@ -15,6 +15,7 @@ public class ColorBlockView: UIView {
     override public func drawRect(rect: CGRect) {
         // Drawing code
         if let color = self.backgroundColor {
+            print("color: \(color)")
         }
     }
 }

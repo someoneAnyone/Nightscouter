@@ -27,7 +27,7 @@ class TestHarnessForLogTableViewController: UITableViewController {
         let url: NSURL = NSUserDefaults.standardUserDefaults().URLForKey("url")!// NSURL(string:  ")!
         let nsAPI = NightscoutAPIClient(url:url)
         
-        nsAPI.fetchDataForEntries(count: 100) { (entries, errorCode) -> Void in
+        nsAPI.fetchDataForEntries(100) { (entries, errorCode) -> Void in
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
 
             if let entriesForTable = entries {
@@ -81,7 +81,7 @@ class TestHarnessForLogTableViewController: UITableViewController {
         }
 
         cell.device.text = entry.device
-        cell.idString.text = "id:\(entry.idString)"
+        cell.idString.text = "id:\(entry.identifier)"
         cell.dateString.text = entry.dateString
         
         let dateFormatter = NSDateFormatter()

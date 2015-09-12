@@ -44,7 +44,7 @@ public class CompassControl: UIView {
             case .None:
                 configireDrawRect(isArrowVisible: false)
             case .DoubleUp:
-                configireDrawRect(isDoubleUp: true)
+                configireDrawRect(true)
             case .SingleUp:
                 configireDrawRect()
             case .FortyFiveUp:
@@ -56,7 +56,7 @@ public class CompassControl: UIView {
             case .SingleDown:
                 configireDrawRect(angle:-180)
             case .DoubleDown:
-                configireDrawRect(isDoubleUp: true, angle: -180)
+                configireDrawRect(true, angle: -180)
             case .NotComputable:
                 configireDrawRect(isArrowVisible: false, isUncomputable: true)
             case .RateOutOfRange:
