@@ -113,7 +113,7 @@ extension NightscoutAPIClient {
     
     func stringForEntriesWithCount(count: Int) -> NSURL {
         let numberOfEntries = "?\(URLPart.CountParameter)=\(count)"
-        return entriesString.URLByAppendingPathComponent(numberOfEntries)
+        return NSURL(string:"\(entriesString)\(numberOfEntries)")!
     }
     
 }

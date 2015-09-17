@@ -258,7 +258,7 @@ public class Entry {
         self.device = device
     }
     
-    public init(identifier: String, date: NSDate, device: String, dateString: String, sgv: SensorGlucoseValue, cal: Calibration, mbg: MeterBloodGlucose, type: Type) {
+    public init(identifier: String, date: NSDate, device: String, dateString: String, sgv: SensorGlucoseValue?, cal: Calibration?, mbg: MeterBloodGlucose?, type: Type) {
         self.identifier = identifier
         self.date = date
         self.device = device
@@ -316,9 +316,9 @@ public extension Entry {
                 return
         }
         
-        var sgValue: SensorGlucoseValue? = nil
-        var calValue: Calibration? = nil
-        var mbgValue: MeterBloodGlucose? = nil
+        var sgValue: SensorGlucoseValue! = nil
+        var calValue: Calibration! = nil
+        var mbgValue: MeterBloodGlucose! = nil
         
         switch type {
         case .sgv:
@@ -361,7 +361,7 @@ public extension Entry {
             #endif
             break
         }
-        self.init(identifier: identifier, date: date, device:device, dateString: dateString!, sgv: sgValue!, cal: calValue!, mbg: mbgValue!, type: type)
+        self.init(identifier: identifier, date: date, device:device, dateString: dateString!, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
     }
 }
 
