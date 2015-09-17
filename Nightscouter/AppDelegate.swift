@@ -130,7 +130,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
                 
-                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
+                _ = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = sites.indexOf(site) { // Use the site object to get its index position in the array.
                         if let notificationIndex  = site.notifications.indexOf(notification) {
@@ -195,8 +195,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
                 let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
                 var viewControllers = navController.viewControllers // Grab all the current view controllers in the stack.
-                for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
-                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
+                for stringID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
+//                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
                         if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
                             let linkIsAllowed = Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards.contains(stor) // Check to see if this is an allowed viewcontroller.
                             if linkIsAllowed {
@@ -213,7 +213,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                     viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                                 }
                             }
-                        }
+//                        }
                     }
                 }
                 navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
