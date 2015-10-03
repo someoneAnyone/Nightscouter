@@ -22,7 +22,7 @@ public extension CompassControl {
           
             var boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv)
            
-            var units: Units = configuration.displayUnits
+            let units: Units = configuration.displayUnits
             if units == .Mmol {
                 boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv.toMgdl)
             }

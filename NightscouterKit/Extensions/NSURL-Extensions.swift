@@ -42,7 +42,7 @@ public extension NSURL
         // Example:
         // textField.text = textField.text.stringByReplacingOccurrencesOfString(" ", withString: "", options: nil, range: nil)
         let range = urlString!.rangeOfCharacterFromSet(NSCharacterSet.whitespaceCharacterSet())
-        if let test = range {
+        if let _ = range {
             completion(success: false, urlString: nil, error: "Url String cannot contain whitespaces")
             return
         }
@@ -58,11 +58,11 @@ public extension NSURL
         if let validatedUrl = NSURL(string: formattedUrlString!)
         {
             // Test that URL actually exists by sending a URL request that returns only the header response
-            var request = NSMutableURLRequest(URL: validatedUrl)
+            let request = NSMutableURLRequest(URL: validatedUrl)
             request.HTTPMethod = "HEAD"
             ValidationQueue.queue.cancelAllOperations()
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: ValidationQueue.queue, completionHandler:{ (response: NSURLResponse!, data: NSData!, error: NSError!) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request, queue: ValidationQueue.queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
                 let url = request.URL!.absoluteString
                 
                 // URL failed - No Response

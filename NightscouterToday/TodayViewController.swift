@@ -55,7 +55,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         return UIEdgeInsets(top: defaultMarginInsets.top, left: 0, bottom: defaultMarginInsets.bottom, right: defaultMarginInsets.right)
     }
     
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)!) {
+    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)) {
         // Perform any setup necessary in order to update the view.
         
         // If an error is encountered, use NCUpdateResult.Failed
@@ -81,7 +81,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if sites.isEmpty {
-            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath) as! UITableViewCell
+            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath) 
             
             cell.textLabel!.text = NSLocalizedString("No Nighscout sites were found.", comment: "")
             
@@ -113,7 +113,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
             for site in sites {
-                loadDataFor(site, index: find(sites, site)!)
+                loadDataFor(site, index: sites.indexOf(site)!)
             }
         } else {
             // No data in the sites array. Cancel the refreshing!
@@ -125,12 +125,12 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         let nsApi = NightscoutAPIClient(url: site.url)
         
         // Get settings for a given site.
-        println("Loading data for \(site.url!)")
+        print("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
             switch (result) {
             case let .Error(error):
                 // display error message
-                println("\(__FUNCTION__) ERROR recieved: \(error)")
+                print("\(__FUNCTION__) ERROR recieved: \(error)")
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // do something with user

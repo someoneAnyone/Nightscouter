@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class Site: NSObject, NSCoding, Printable {
+public class Site: NSObject, NSCoding {
     
     public struct PropertyKey {
         static let urlKey = "url"
@@ -28,7 +28,7 @@ public class Site: NSObject, NSCoding, Printable {
     public var url: NSURL! {
         didSet {
             #if DEBUG
-                println("Changed site URL to \(url) from \(oldValue)")
+                print("Changed site URL to \(url) from \(oldValue)")
             #endif
             
             configuration = nil
@@ -73,7 +73,7 @@ public class Site: NSObject, NSCoding, Printable {
         super.init()
         
         // Initialization should fail if there is no name.
-        if url.absoluteString!.isEmpty {
+        if url.absoluteString.isEmpty {
             return nil
         }
     }
@@ -90,7 +90,7 @@ public class Site: NSObject, NSCoding, Printable {
         aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
     }
 
-    required public init(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
         let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
@@ -108,6 +108,7 @@ public class Site: NSObject, NSCoding, Printable {
         self.apiSecret = apiSecret
         self.allowNotifications =  allowNotif
         self.overrideScreenLock = overrideScreen
+        self.lastConnectedDate = lastConnectedDate
         
         if let notification = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
             self.notifications = notification

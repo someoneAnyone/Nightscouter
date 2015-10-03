@@ -49,7 +49,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
             
             siteNameLabel.text = configuration.displayName
             
-            var units: Units = configuration.displayUnits
+            let units: Units = configuration.displayUnits
             
             if let watchEntry = site.watchEntry {
                 // Configure compass control
@@ -80,7 +80,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
 
                     
                     if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
                                 let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))

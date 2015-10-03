@@ -41,12 +41,12 @@ class SiteTableViewCell: UITableViewCell {
         
         if let configuration = site.configuration {
             
-            let maxValue: NSTimeInterval
-            if let defaults = configuration.defaults {
-                maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
-            } else {
-                maxValue = Constants.NotableTime.StaleDataTimeFrame
-            }
+//            let maxValue: NSTimeInterval?
+//            if let defaults = configuration.defaults {
+//                maxValue = max(Constants.NotableTime.StaleDataTimeFrame, defaults.alarms.alarmTimeAgoWarnMins)
+//            } else {
+//                maxValue = Constants.NotableTime.StaleDataTimeFrame
+//            }
             
             siteNameLabel.text = configuration.displayName
             
@@ -72,7 +72,7 @@ class SiteTableViewCell: UITableViewCell {
                     siteColorBlockView.backgroundColor = color
                     
                     if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
                         if rawEnabled {
                             if let rawValue = watchEntry.raw {
                                 let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
@@ -110,19 +110,19 @@ class SiteTableViewCell: UITableViewCell {
                     
                 } else {
                     #if DEBUG
-                        println("No SGV was found in the watch")
+                        print("No SGV was found in the watch")
                     #endif
                 }
                 
             } else {
                 // No watch was there...
                 #if DEBUG
-                    println("No watch data was found...")
+                    print("No watch data was found...")
                 #endif
             }
         } else {
             #if DEBUG
-                println("No site current configuration was found for \(site.url)")
+                print("No site current configuration was found for \(site.url)")
             #endif
         }
     }
