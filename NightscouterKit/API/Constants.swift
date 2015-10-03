@@ -9,7 +9,7 @@ import Foundation
 
 public struct Constants {
     
-    public enum StoryboardName: String, Printable {
+    public enum StoryboardName: String, CustomStringConvertible {
         case LaunchScreen = "LaunchScreen"
         case Main = "Main"
         case Labs = "Labs"
@@ -19,7 +19,7 @@ public struct Constants {
         }
     }
     
-    public enum SegueIdentifier: String, Printable {
+    public enum SegueIdentifier: String, CustomStringConvertible {
         case EditSite = "EditSite"
         case ShowDetail = "ShowDetail"
         case AddNew = "AddNew"
@@ -33,7 +33,7 @@ public struct Constants {
         }
     }
     
-    public enum StoryboardViewControllerIdentifier: String, Printable {
+    public enum StoryboardViewControllerIdentifier: String, CustomStringConvertible {
         case SiteListTableNavigationController = "SiteListTableNavigationController"
         case SiteListTableViewController = "SiteListTableViewController"
         case SiteListPageViewController = "SiteListPageViewController"
@@ -74,15 +74,15 @@ public struct Constants {
     }
     
     public struct Notification {
-        public static let DataIsStaleUpdateNow: String =  AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.stale.update")
-        public static let DataUpdateSuccessful = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.successful")
+        public static let DataIsStaleUpdateNow: String =  AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.stale.update").absoluteString
+        public static let DataUpdateSuccessful = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.update.successful").absoluteString
         // public static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
     }
     
     public struct ActivityType {
-        public static let sites = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("sites")
-        public static let site = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("site")
-        public static let new = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingPathExtension("new")
+        public static let sites = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("sites")
+        public static let site = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("site")
+        public static let new = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("new")
     }
 
    public struct ActivityKey {

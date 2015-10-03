@@ -17,8 +17,8 @@ public extension NSCalendar {
 //            let hourMinuteComponents: NSCalendarUnit = [.Month, .Weekday, .Hour, .Minute, .Day]
 //            let componentsVar: NSDateComponents = self.components(hourMinuteComponents, fromDate: startDate, toDate: endDate, options: [])
             
-            let hourMinuteComponents: NSCalendarUnit = .CalendarUnitMonth | .CalendarUnitWeekday | .CalendarUnitHour | .CalendarUnitMinute | .CalendarUnitDay
-            let componentsVar: NSDateComponents = self.components(hourMinuteComponents, fromDate: startDate, toDate: endDate, options: nil)
+            let hourMinuteComponents: NSCalendarUnit = [.Month, .Weekday, .Hour, .Minute, .Day]
+            let componentsVar: NSDateComponents = self.components(hourMinuteComponents, fromDate: startDate, toDate: endDate, options: [])
 
             
             var months: Int = componentsVar.month

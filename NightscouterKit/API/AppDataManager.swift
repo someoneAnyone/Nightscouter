@@ -34,7 +34,7 @@ public class AppDataManager: NSObject {
     public var shouldDisableIdleTimer: Bool {
         set {
             #if DEBUG
-                println("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
+                print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
             #endif
             
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
@@ -94,9 +94,9 @@ public class AppDataManager: NSObject {
             let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
             #if DEBUG
                 if !fileDiskSave {
-                    println("Failed to save sites...")
+                    print("Failed to save sites...")
                 }else{
-                    println("Successful save...")
+                    print("Successful save...")
                 }
             #endif
         })
@@ -114,7 +114,7 @@ public class AppDataManager: NSObject {
     }
     
     public func updateSite(site: Site)  ->  Bool {
-        if let index = find(AppDataManager.sharedInstance.sites, site) {
+        if let index = AppDataManager.sharedInstance.sites.indexOf(site) {
             self.sites[index] = site
             saveAppData()
             return true
@@ -124,7 +124,7 @@ public class AppDataManager: NSObject {
     }
     
     public func deleteSiteAtIndex(index: Int) {
-        let site = sites[index]
+//        let site = sites[index]
         sites.removeAtIndex(index)
         saveAppData()
     }
@@ -142,23 +142,24 @@ public class AppDataManager: NSObject {
     // MARK: Extras
     
     public var sharedGroupIdentifier: String {
-        let group = "group"
-        return group.stringByAppendingPathExtension(bundleIdentifier!)!
+        let group = NSURL(string: "group")
+        
+        return (group?.URLByAppendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
     }
     
     public var infoDictionary: [String: AnyObject]? {
-        return NSBundle.mainBundle().infoDictionary as? [String : AnyObject] // Grab the info.plist dictionary from the main bundle.
+        return NSBundle.mainBundle().infoDictionary as [String : AnyObject]? // Grab the info.plist dictionary from the main bundle.
     }
     
-    public var bundleIdentifier: String? {
-        return NSBundle.mainBundle().bundleIdentifier
+    public var bundleIdentifier: NSURL? {
+        return NSURL(string: NSBundle.mainBundle().bundleIdentifier!)
     }
     
     public var supportedSchemes: [String]? {
         if let info = infoDictionary {
             var schemes = [String]() // Create an empty array we can later set append available schemes.
             if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
-                for (index, object) in enumerate(bundleURLTypes) {
+                for (index, _) in bundleURLTypes.enumerate() {
                     if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
                         if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
                             schemes += urlScheme // We've found the supported schemes appending to the array.

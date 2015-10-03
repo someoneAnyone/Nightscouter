@@ -77,14 +77,14 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     
     func checkValidSiteName() {
         // Remove Spaces
-        urlTextField.text = urlTextField.text.stringByReplacingOccurrencesOfString(" ", withString: "", options: nil, range: nil)
+        urlTextField.text = urlTextField.text!.stringByReplacingOccurrencesOfString(" ", withString: "", options: [], range: nil)
 
         // Or you can do it the old way
         let offset = 0.5
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(offset * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
             // Validate URL
             NSURL.validateUrl(self.urlTextField.text, completion: { (success, urlString, error) -> Void in
-                println("validateURL Error: \(error)")
+                print("validateURL Error: \(error)")
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     
                     if (success)

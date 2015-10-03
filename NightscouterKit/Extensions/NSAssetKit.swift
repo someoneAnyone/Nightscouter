@@ -42,7 +42,7 @@ public class NSAssetKit : NSObject {
 
     //// Drawing Methods
 
-    public class func drawWatchFaceOnly(#frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool) {
+    public class func drawWatchFaceOnly(frame frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -74,7 +74,7 @@ public class NSAssetKit : NSObject {
             CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.53248 * frame.height)
             CGContextRotateCTM(context, -angle * CGFloat(M_PI) / 180)
 
-            var doubleRingWithArrowPath = UIBezierPath()
+            let doubleRingWithArrowPath = UIBezierPath()
             doubleRingWithArrowPath.moveToPoint(CGPointMake(-0, -68.33))
             doubleRingWithArrowPath.addLineToPoint(CGPointMake(-0.53, -68.33))
             doubleRingWithArrowPath.addLineToPoint(CGPointMake(-0.67, -68.33))
@@ -211,7 +211,7 @@ public class NSAssetKit : NSObject {
             CGContextDrawLinearGradient(context, arrowGradient,
                 CGPointMake(doubleRingWithArrowBounds.midX, doubleRingWithArrowBounds.minY),
                 CGPointMake(doubleRingWithArrowBounds.midX, doubleRingWithArrowBounds.maxY),
-                0)
+                  CGGradientDrawingOptions(rawValue: 0))
             CGContextEndTransparencyLayer(context)
 
             ////// doubleRingWithArrow Inner Shadow
@@ -222,7 +222,7 @@ public class NSAssetKit : NSObject {
             CGContextBeginTransparencyLayer(context, nil)
             let doubleRingWithArrowOpaqueShadow = (innerShaddow.shadowColor as! UIColor).colorWithAlphaComponent(1)
             CGContextSetShadowWithColor(context, innerShaddow.shadowOffset, innerShaddow.shadowBlurRadius, doubleRingWithArrowOpaqueShadow.CGColor)
-            CGContextSetBlendMode(context, kCGBlendModeSourceOut)
+            CGContextSetBlendMode(context, CGBlendMode.SourceOut)
             CGContextBeginTransparencyLayer(context, nil)
 
             doubleRingWithArrowOpaqueShadow.setFill()
@@ -245,7 +245,7 @@ public class NSAssetKit : NSObject {
             CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.52779 * frame.height)
             CGContextRotateCTM(context, -angle * CGFloat(M_PI) / 180)
 
-            var ringWithArrowPath = UIBezierPath()
+            let ringWithArrowPath = UIBezierPath()
             ringWithArrowPath.moveToPoint(CGPointMake(0, -51.16))
             ringWithArrowPath.addCurveToPoint(CGPointMake(-23.51, -45.43), controlPoint1: CGPointMake(-8.48, -51.16), controlPoint2: CGPointMake(-16.47, -49.09))
             ringWithArrowPath.addCurveToPoint(CGPointMake(-51.09, 0), controlPoint1: CGPointMake(-39.89, -36.91), controlPoint2: CGPointMake(-51.09, -19.77))
@@ -270,7 +270,7 @@ public class NSAssetKit : NSObject {
             CGContextDrawLinearGradient(context, arrowGradient,
                 CGPointMake(ringWithArrowBounds.midX, ringWithArrowBounds.minY),
                 CGPointMake(ringWithArrowBounds.midX, ringWithArrowBounds.maxY),
-                0)
+                  CGGradientDrawingOptions(rawValue: 0))
             CGContextEndTransparencyLayer(context)
 
             ////// ringWithArrow Inner Shadow
@@ -281,7 +281,7 @@ public class NSAssetKit : NSObject {
             CGContextBeginTransparencyLayer(context, nil)
             let ringWithArrowOpaqueShadow = (innerShaddow.shadowColor as! UIColor).colorWithAlphaComponent(1)
             CGContextSetShadowWithColor(context, innerShaddow.shadowOffset, innerShaddow.shadowBlurRadius, ringWithArrowOpaqueShadow.CGColor)
-            CGContextSetBlendMode(context, kCGBlendModeSourceOut)
+            CGContextSetBlendMode(context, CGBlendMode.SourceOut)
             CGContextBeginTransparencyLayer(context, nil)
 
             ringWithArrowOpaqueShadow.setFill()
@@ -303,7 +303,7 @@ public class NSAssetKit : NSObject {
             CGContextSaveGState(context)
             CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.52821 * frame.height)
 
-            var ringPath = UIBezierPath()
+            let ringPath = UIBezierPath()
             ringPath.moveToPoint(CGPointMake(0, -52))
             ringPath.addCurveToPoint(CGPointMake(-23.93, -46.18), controlPoint1: CGPointMake(-8.63, -52), controlPoint2: CGPointMake(-16.77, -49.9))
             ringPath.addCurveToPoint(CGPointMake(-52, 0), controlPoint1: CGPointMake(-40.61, -37.52), controlPoint2: CGPointMake(-52, -20.09))
@@ -326,7 +326,7 @@ public class NSAssetKit : NSObject {
             CGContextDrawLinearGradient(context, arrowGradient,
                 CGPointMake(ringBounds.midX, ringBounds.minY),
                 CGPointMake(ringBounds.midX, ringBounds.maxY),
-                0)
+                  CGGradientDrawingOptions(rawValue: 0))
             CGContextEndTransparencyLayer(context)
 
             ////// ring Inner Shadow
@@ -337,7 +337,7 @@ public class NSAssetKit : NSObject {
             CGContextBeginTransparencyLayer(context, nil)
             let ringOpaqueShadow = (innerShaddow.shadowColor as! UIColor).colorWithAlphaComponent(1)
             CGContextSetShadowWithColor(context, innerShaddow.shadowOffset, innerShaddow.shadowBlurRadius, ringOpaqueShadow.CGColor)
-            CGContextSetBlendMode(context, kCGBlendModeSourceOut)
+            CGContextSetBlendMode(context, CGBlendMode.SourceOut)
             CGContextBeginTransparencyLayer(context, nil)
 
             ringOpaqueShadow.setFill()
@@ -357,7 +357,7 @@ public class NSAssetKit : NSObject {
             CGContextSaveGState(context)
             CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.52821 * frame.height)
 
-            var ring2Path = UIBezierPath()
+            let ring2Path = UIBezierPath()
             ring2Path.moveToPoint(CGPointMake(0, -52))
             ring2Path.addCurveToPoint(CGPointMake(-23.93, -46.18), controlPoint1: CGPointMake(-8.63, -52), controlPoint2: CGPointMake(-16.77, -49.9))
             ring2Path.addCurveToPoint(CGPointMake(-52, 0), controlPoint1: CGPointMake(-40.61, -37.52), controlPoint2: CGPointMake(-52, -20.09))
@@ -385,7 +385,7 @@ public class NSAssetKit : NSObject {
             CGContextBeginTransparencyLayer(context, nil)
             let ring2OpaqueShadow = (innerShaddow.shadowColor as! UIColor).colorWithAlphaComponent(1)
             CGContextSetShadowWithColor(context, innerShaddow.shadowOffset, innerShaddow.shadowBlurRadius, ring2OpaqueShadow.CGColor)
-            CGContextSetBlendMode(context, kCGBlendModeSourceOut)
+            CGContextSetBlendMode(context, CGBlendMode.SourceOut)
             CGContextBeginTransparencyLayer(context, nil)
 
             ring2OpaqueShadow.setFill()
@@ -402,7 +402,7 @@ public class NSAssetKit : NSObject {
         }
     }
 
-    public class func drawTextBlock(#frame: CGRect, arrowTintColor: UIColor, sgvText: String, bg_delta: String, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) {
+    public class func drawTextBlock(frame frame: CGRect, arrowTintColor: UIColor, sgvText: String, bg_delta: String, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -455,7 +455,7 @@ public class NSAssetKit : NSObject {
         CGContextRestoreGState(context)
     }
 
-    public class func drawWatchFaceComposite(#frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool, sgvText: String, bg_delta: String, isUncomputable: Bool, computeAnimation: CGFloat, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) {
+    public class func drawWatchFaceComposite(frame frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool, sgvText: String, bg_delta: String, isUncomputable: Bool, computeAnimation: CGFloat, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -491,7 +491,7 @@ public class NSAssetKit : NSObject {
         CGContextRestoreGState(context)
     }
 
-    public class func drawUncomputedCircle(#frame: CGRect, arrowTintColor: UIColor, isUncomputable: Bool, computeAnimation: CGFloat) {
+    public class func drawUncomputedCircle(frame frame: CGRect, arrowTintColor: UIColor, isUncomputable: Bool, computeAnimation: CGFloat) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -511,7 +511,7 @@ public class NSAssetKit : NSObject {
             CGContextTranslateCTM(context, frame.minX + 0.50000 * frame.width, frame.minY + 0.52821 * frame.height)
             CGContextRotateCTM(context, -computeAnimation * CGFloat(M_PI) / 180)
 
-            var uncomputableRingPath = UIBezierPath(ovalInRect: CGRectMake(-54, -54, 108, 108))
+            let uncomputableRingPath = UIBezierPath(ovalInRect: CGRectMake(-54, -54, 108, 108))
             CGContextSaveGState(context)
             CGContextSetShadowWithColor(context, dropShaddow.shadowOffset, dropShaddow.shadowBlurRadius, (dropShaddow.shadowColor as! UIColor).CGColor)
             arrowTintShadowColor.setStroke()
@@ -526,7 +526,7 @@ public class NSAssetKit : NSObject {
         }
     }
 
-    public class func drawNightscoutLogo(#logoFrame: CGRect, logoTintColor: UIColor) {
+    public class func drawNightscoutLogo(logoFrame logoFrame: CGRect, logoTintColor: UIColor) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -541,12 +541,12 @@ public class NSAssetKit : NSObject {
         CGContextRestoreGState(context)
     }
 
-    public class func drawLogoSource(#logoTintColor: UIColor) {
+    public class func drawLogoSource(logoTintColor logoTintColor: UIColor) {
         //// Color Declarations
         let logoHighlightColor = logoTintColor.colorWithHighlight(1)
 
         //// Bezier Drawing
-        var bezierPath = UIBezierPath()
+        let bezierPath = UIBezierPath()
         bezierPath.moveToPoint(CGPointMake(289.28, 24.48))
         bezierPath.addCurveToPoint(CGPointMake(346.48, 64.7), controlPoint1: CGPointMake(311.36, 34.93), controlPoint2: CGPointMake(330.37, 48.49))
         bezierPath.addCurveToPoint(CGPointMake(386.51, 122.21), controlPoint1: CGPointMake(362.58, 80.92), controlPoint2: CGPointMake(376.18, 99.9))
@@ -580,7 +580,7 @@ public class NSAssetKit : NSObject {
 
         //// Group 6
         //// Bezier 33 Drawing
-        var bezier33Path = UIBezierPath()
+        let bezier33Path = UIBezierPath()
         bezier33Path.moveToPoint(CGPointMake(176.55, 35.54))
         bezier33Path.addCurveToPoint(CGPointMake(155.22, 40.57), controlPoint1: CGPointMake(169.06, 36.77), controlPoint2: CGPointMake(161.93, 38.44))
         bezier33Path.addCurveToPoint(CGPointMake(64, 107.39), controlPoint1: CGPointMake(115.46, 53.15), controlPoint2: CGPointMake(85.56, 76.63))
@@ -641,7 +641,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Bezier 34 Drawing
-        var bezier34Path = UIBezierPath()
+        let bezier34Path = UIBezierPath()
         bezier34Path.moveToPoint(CGPointMake(320.65, 125.06))
         bezier34Path.addCurveToPoint(CGPointMake(267.94, 119.23), controlPoint1: CGPointMake(307.08, 119.26), controlPoint2: CGPointMake(286.68, 116.16))
         bezier34Path.addCurveToPoint(CGPointMake(205.58, 158.31), controlPoint1: CGPointMake(239.23, 123.93), controlPoint2: CGPointMake(219.23, 138.6))
@@ -663,7 +663,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Bezier 35 Drawing
-        var bezier35Path = UIBezierPath()
+        let bezier35Path = UIBezierPath()
         bezier35Path.moveToPoint(CGPointMake(244.18, 171.69))
         bezier35Path.addCurveToPoint(CGPointMake(233.47, 188.15), controlPoint1: CGPointMake(239.62, 176.34), controlPoint2: CGPointMake(236.17, 181.53))
         bezier35Path.addCurveToPoint(CGPointMake(229.42, 211.27), controlPoint1: CGPointMake(230.97, 194.32), controlPoint2: CGPointMake(229.03, 202.41))
@@ -733,19 +733,19 @@ public class NSAssetKit : NSObject {
 
 
         //// Oval 7 Drawing
-        var oval7Path = UIBezierPath(ovalInRect: CGRectMake(104.36, 185.84, 46, 46.1))
+        let oval7Path = UIBezierPath(ovalInRect: CGRectMake(104.36, 185.84, 46, 46.1))
         logoTintColor.setFill()
         oval7Path.fill()
 
 
         //// Oval 10 Drawing
-        var oval10Path = UIBezierPath(ovalInRect: CGRectMake(260.86, 185.84, 46, 46.1))
+        let oval10Path = UIBezierPath(ovalInRect: CGRectMake(260.86, 185.84, 46, 46.1))
         logoTintColor.setFill()
         oval10Path.fill()
 
 
         //// Bezier 36 Drawing
-        var bezier36Path = UIBezierPath()
+        let bezier36Path = UIBezierPath()
         bezier36Path.moveToPoint(CGPointMake(174.04, 374.99))
         bezier36Path.addCurveToPoint(CGPointMake(145.33, 419.98), controlPoint1: CGPointMake(165.22, 390.73), controlPoint2: CGPointMake(155.48, 405.56))
         bezier36Path.addCurveToPoint(CGPointMake(98.78, 340.84), controlPoint1: CGPointMake(127.93, 395.51), controlPoint2: CGPointMake(112.22, 369.31))
@@ -759,7 +759,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Bezier 37 Drawing
-        var bezier37Path = UIBezierPath()
+        let bezier37Path = UIBezierPath()
         bezier37Path.moveToPoint(CGPointMake(165.04, 446.19))
         bezier37Path.addCurveToPoint(CGPointMake(208.33, 377.9), controlPoint1: CGPointMake(180.82, 424.79), controlPoint2: CGPointMake(195.25, 402.01))
         bezier37Path.addCurveToPoint(CGPointMake(312.21, 340.76), controlPoint1: CGPointMake(253.92, 376.48), controlPoint2: CGPointMake(285.65, 361.2))
@@ -777,7 +777,7 @@ public class NSAssetKit : NSObject {
         bezier37Path.fill()
     }
 
-    public class func drawSourceAppicon(#logoTintColor: UIColor) {
+    public class func drawSourceAppicon(logoTintColor logoTintColor: UIColor) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -793,12 +793,12 @@ public class NSAssetKit : NSObject {
         let rectanglePath = UIBezierPath(rect: CGRectMake(0, 0, 60, 60))
         CGContextSaveGState(context)
         rectanglePath.addClip()
-        CGContextDrawLinearGradient(context, logoGradient, CGPointMake(30, -0), CGPointMake(30, 60), 0)
+        CGContextDrawLinearGradient(context, logoGradient, CGPointMake(30, -0), CGPointMake(30, 60),   CGGradientDrawingOptions(rawValue: 0))
         CGContextRestoreGState(context)
 
 
         //// outerShape 2 Drawing
-        var outerShape2Path = UIBezierPath()
+        let outerShape2Path = UIBezierPath()
         outerShape2Path.moveToPoint(CGPointMake(47.92, 22.86))
         outerShape2Path.addCurveToPoint(CGPointMake(44.72, 34.95), controlPoint1: CGPointMake(48.36, 25.52), controlPoint2: CGPointMake(47.02, 30.11))
         outerShape2Path.addCurveToPoint(CGPointMake(32.89, 51.19), controlPoint1: CGPointMake(41.79, 41.09), controlPoint2: CGPointMake(37.3, 47.65))
@@ -811,9 +811,9 @@ public class NSAssetKit : NSObject {
         outerShape2Path.addCurveToPoint(CGPointMake(30.54, 6), controlPoint1: CGPointMake(29.66, 6), controlPoint2: CGPointMake(30.36, 6))
         outerShape2Path.addCurveToPoint(CGPointMake(47.92, 22.86), controlPoint1: CGPointMake(40.14, 6), controlPoint2: CGPointMake(47.92, 13.55))
         outerShape2Path.closePath()
-        outerShape2Path.lineCapStyle = kCGLineCapRound;
+        outerShape2Path.lineCapStyle = CGLineCap.Round;
 
-        outerShape2Path.lineJoinStyle = kCGLineJoinRound;
+        outerShape2Path.lineJoinStyle = CGLineJoin.Round;
 
         logoHighlightColor.setStroke()
         outerShape2Path.lineWidth = 1.5
@@ -821,7 +821,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Oval Drawing
-        var ovalPath = UIBezierPath(ovalInRect: CGRectMake(17, 11, 26, 24))
+        let ovalPath = UIBezierPath(ovalInRect: CGRectMake(17, 11, 26, 24))
         logoHighlightColor.setStroke()
         ovalPath.lineWidth = 1.5
         ovalPath.stroke()
@@ -829,7 +829,7 @@ public class NSAssetKit : NSObject {
 
         //// crest
         //// Bezier Drawing
-        var bezierPath = UIBezierPath()
+        let bezierPath = UIBezierPath()
         bezierPath.moveToPoint(CGPointMake(39, 36))
         bezierPath.addCurveToPoint(CGPointMake(31.81, 45.8), controlPoint1: CGPointMake(39, 36), controlPoint2: CGPointMake(36.89, 41.57))
         bezierPath.addCurveToPoint(CGPointMake(30.43, 46.9), controlPoint1: CGPointMake(30.79, 46.65), controlPoint2: CGPointMake(30.64, 46.78))
@@ -848,9 +848,9 @@ public class NSAssetKit : NSObject {
         bezierPath.addCurveToPoint(CGPointMake(21, 36), controlPoint1: CGPointMake(22.02, 38.69), controlPoint2: CGPointMake(21, 36))
         bezierPath.addLineToPoint(CGPointMake(21, 36))
         bezierPath.closePath()
-        bezierPath.lineCapStyle = kCGLineCapRound;
+        bezierPath.lineCapStyle = CGLineCap.Round;
 
-        bezierPath.lineJoinStyle = kCGLineJoinRound;
+        bezierPath.lineJoinStyle = CGLineJoin.Round;
 
         logoHighlightColor.setFill()
         bezierPath.fill()
@@ -859,16 +859,16 @@ public class NSAssetKit : NSObject {
 
 
         //// Oval 5 Drawing
-        var oval5Path = UIBezierPath(ovalInRect: CGRectMake(22, 20, 4, 4))
+        let oval5Path = UIBezierPath(ovalInRect: CGRectMake(22, 20, 4, 4))
         logoHighlightColor.setFill()
         oval5Path.fill()
 
 
         //// Bezier 3 Drawing
-        var bezier3Path = UIBezierPath()
+        let bezier3Path = UIBezierPath()
         bezier3Path.moveToPoint(CGPointMake(30, 17))
         bezier3Path.addLineToPoint(CGPointMake(30, 28))
-        bezier3Path.lineCapStyle = kCGLineCapRound;
+        bezier3Path.lineCapStyle = CGLineCap.Round;
 
         logoHighlightColor.setStroke()
         bezier3Path.lineWidth = 1.5
@@ -876,7 +876,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Oval 2 Drawing
-        var oval2Path = UIBezierPath(ovalInRect: CGRectMake(34, 20, 4, 4))
+        let oval2Path = UIBezierPath(ovalInRect: CGRectMake(34, 20, 4, 4))
         logoHighlightColor.setFill()
         oval2Path.fill()
     }
@@ -884,7 +884,7 @@ public class NSAssetKit : NSObject {
     public class func drawListIconSource() {
 
         //// Rectangle Drawing
-        var rectanglePath = UIBezierPath(roundedRect: CGRectMake(0, 0, 10, 10), byRoundingCorners: UIRectCorner.TopRight | UIRectCorner.BottomRight, cornerRadii: CGSizeMake(2, 2))
+        let rectanglePath = UIBezierPath(roundedRect: CGRectMake(0, 0, 10, 10), byRoundingCorners: [UIRectCorner.TopRight, UIRectCorner.BottomRight], cornerRadii: CGSizeMake(2, 2))
         rectanglePath.closePath()
         UIColor.grayColor().setFill()
         rectanglePath.fill()
@@ -937,7 +937,7 @@ public class NSAssetKit : NSObject {
 
         //// Group 2
         //// Bezier Drawing
-        var bezierPath = UIBezierPath()
+        let bezierPath = UIBezierPath()
         bezierPath.moveToPoint(CGPointMake(9.49, 15.3))
         bezierPath.addCurveToPoint(CGPointMake(9.65, 14.79), controlPoint1: CGPointMake(9.59, 15.15), controlPoint2: CGPointMake(9.65, 14.97))
         bezierPath.addCurveToPoint(CGPointMake(9.6, 14.5), controlPoint1: CGPointMake(9.65, 14.69), controlPoint2: CGPointMake(9.63, 14.59))
@@ -1034,7 +1034,7 @@ public class NSAssetKit : NSObject {
 
 
         //// Bezier 2 Drawing
-        var bezier2Path = UIBezierPath()
+        let bezier2Path = UIBezierPath()
         bezier2Path.moveToPoint(CGPointMake(22, 16.51))
         bezier2Path.addLineToPoint(CGPointMake(21.98, 16.02))
         bezier2Path.addCurveToPoint(CGPointMake(21.81, 15.64), controlPoint1: CGPointMake(21.96, 15.86), controlPoint2: CGPointMake(21.9, 15.74))
@@ -1130,7 +1130,7 @@ public class NSAssetKit : NSObject {
         bezier2Path.fill()
     }
 
-    public class func drawAppStoreIcon(#logoTintColor: UIColor) {
+    public class func drawAppStoreIcon(logoTintColor logoTintColor: UIColor) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -1145,7 +1145,7 @@ public class NSAssetKit : NSObject {
         CGContextRestoreGState(context)
     }
 
-    public class func drawTableViewBackgroundView(#backgroundFrame: CGRect) {
+    public class func drawTableViewBackgroundView(backgroundFrame backgroundFrame: CGRect) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()
 
@@ -1163,13 +1163,13 @@ public class NSAssetKit : NSObject {
         CGContextDrawLinearGradient(context, tableBackgroundViewGradient,
             CGPointMake(backgroundViewRect.midX, backgroundViewRect.minY),
             CGPointMake(backgroundViewRect.midX, backgroundViewRect.maxY),
-            0)
+            CGGradientDrawingOptions(rawValue: 0))
         CGContextRestoreGState(context)
     }
 
     //// Generated Images
 
-    public class func imageOfWatchFaceComposite(#frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool, sgvText: String, bg_delta: String, isUncomputable: Bool, computeAnimation: CGFloat, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) -> UIImage {
+    public class func imageOfWatchFaceComposite(frame frame: CGRect, arrowTintColor: UIColor, angle: CGFloat, isArrowVisible: Bool, doubleUp: Bool, sgvText: String, bg_delta: String, isUncomputable: Bool, computeAnimation: CGFloat, textSizeForSgv: CGFloat, textSizeForDelta: CGFloat) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
             NSAssetKit.drawWatchFaceComposite(frame: frame, arrowTintColor: arrowTintColor, angle: angle, isArrowVisible: isArrowVisible, doubleUp: doubleUp, sgvText: sgvText, bg_delta: bg_delta, isUncomputable: isUncomputable, computeAnimation: computeAnimation, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta)
 

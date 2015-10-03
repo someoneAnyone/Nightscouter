@@ -44,7 +44,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         // Do any additional setup after loading the view, typically from a nib.
         // navigationController?.hidesBarsOnTap = true
         // remove any uneeded decorations from this view if contained within a UI page view controller
-        if let pageViewController = parentViewController as? UIPageViewController {
+        if let _ = parentViewController as? UIPageViewController {
             // println("contained in UIPageViewController")
             self.view.backgroundColor = UIColor.clearColor()
             self.siteNameLabel?.removeFromSuperview()
@@ -115,7 +115,7 @@ extension SiteDetailViewController {
             switch (result) {
             case let .Error(error):
                 // display error message
-                // println("error: \(error)")
+                 print("error: \(error)")
                 self.navigationController?.popViewControllerAnimated(true)
                 
             case let .Value(boxedConfiguration):
@@ -126,11 +126,11 @@ extension SiteDetailViewController {
                     self.updateTitles(configuration.displayName)
                     
                     if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  contains(enabledOptions, EnabledOptions.rawbg)
+                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
                         if !rawEnabled {
                             // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
                             // self.rawReadingLabel!.removeFromSuperview()
-                            if let rawHeader = self.siteRawHeader {
+                            if let _ = self.siteRawHeader {
                                 self.siteRawHeader?.hidden = true
                                 self.siteRawLabel?.hidden = true
                             }
@@ -198,7 +198,7 @@ extension SiteDetailViewController {
                         }
                         
                         if timeAgo >= Constants.StandardTimeFrame.TwoHoursInSeconds.inThePast {
-                            self.nsApi!.fetchDataForEntries(count: Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
+                            self.nsApi!.fetchDataForEntries(Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
                                 if let entries = entries {
                                     for entry in entries {
                                         if let sgv = entry.sgv {
@@ -230,13 +230,16 @@ extension SiteDetailViewController {
         self.siteWebView?.scrollView.scrollEnabled = false
         
         let filePath = NSBundle.mainBundle().pathForResource("index", ofType: "html", inDirectory: "html")
-        let defaultDBPath =  NSBundle.mainBundle().resourcePath?.stringByAppendingPathComponent("html")
+        let defaultDBPath = "\(NSBundle.mainBundle().resourcePath)\\html"
         
         let fileExists = NSFileManager.defaultManager().fileExistsAtPath(filePath!)
         if !fileExists {
-            NSFileManager.defaultManager().copyItemAtPath(defaultDBPath!, toPath: filePath!, error: nil)
+            do {
+                try NSFileManager.defaultManager().copyItemAtPath(defaultDBPath, toPath: filePath!)
+            } catch _ {
+            }
         }
-        let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!)!)
+        let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!))
         self.siteWebView?.loadRequest(request)
     }
     
@@ -248,7 +251,7 @@ extension SiteDetailViewController {
         UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
 
         #if DEBUG
-            println("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+            print("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
     }
     
@@ -260,7 +263,7 @@ extension SiteDetailViewController {
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
             #if DEBUG
-                println("Canceled action: \(action)")
+                print("Canceled action: \(action)")
             #endif
         }
         alertController.addAction(cancelAction)
@@ -273,7 +276,7 @@ extension SiteDetailViewController {
         let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.updateScreenOverride(true)
             #if DEBUG
-                println("Yes action: \(action)")
+                print("Yes action: \(action)")
             #endif
         }
         alertController.addAction(yesAction)
@@ -285,14 +288,14 @@ extension SiteDetailViewController {
         let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
             self.updateScreenOverride(false)
             #if DEBUG
-                println("No action: \(action)")
+                print("No action: \(action)")
             #endif
         }
         alertController.addAction(noAction)
         
         self.presentViewController(alertController, animated: true) {
             #if DEBUG
-                println("presentViewController: \(alertController.debugDescription)")
+                print("presentViewController: \(alertController.debugDescription)")
             #endif
         }
     }
@@ -302,8 +305,8 @@ extension SiteDetailViewController {
             let storyboard = UIStoryboard(name: Constants.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
             NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
             
-            presentViewController(storyboard.instantiateInitialViewController() as! UIViewController, animated: true) { () -> Void in
-                println("Present Labs as a modal controller!")
+            presentViewController(storyboard.instantiateInitialViewController()!, animated: true) { () -> Void in
+                print("Present Labs as a modal controller!")
             }
         #endif
     }
