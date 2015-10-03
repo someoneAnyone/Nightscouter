@@ -92,8 +92,8 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     func pageViewController(pageViewController: UIPageViewController, spineLocationForInterfaceOrientation orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
         if (orientation == .Portrait) || (orientation == .PortraitUpsideDown) || (UIDevice.currentDevice().userInterfaceIdiom == .Phone) {
             // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewControllerSpineLocationMid' in landscape orientation sets the doubleSided property to YES, so set it to NO here.
-            let currentViewController: AnyObject = self.pageViewController!.viewControllers![0]
-            let viewControllers = [currentViewController]
+            let currentViewController: UIViewController = self.pageViewController!.viewControllers![0]
+            let viewControllers: [UIViewController] = [currentViewController]
             self.pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: true, completion: {done in })
             self.pageViewController!.doubleSided = false
             return .Min
@@ -116,7 +116,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         return .Mid
     }
     
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [AnyObject], transitionCompleted completed: Bool) {
+    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if finished && completed {
             updateNavigationController()
         }
@@ -128,7 +128,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     }
     
     func updateNavigationController() {
-        navigationItem.title = pageViewController?.viewControllers.first?.navigationItem.title
-        navigationItem.rightBarButtonItems = pageViewController?.viewControllers.first?.navigationItem.rightBarButtonItems
+        navigationItem.title = pageViewController?.viewControllers!.first?.navigationItem.title
+        navigationItem.rightBarButtonItems = pageViewController?.viewControllers!.first?.navigationItem.rightBarButtonItems
     }
 }

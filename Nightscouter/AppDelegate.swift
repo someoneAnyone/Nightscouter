@@ -76,18 +76,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
-            
-            for notification in UIApplication.sharedApplication().scheduledLocalNotifications as! [UILocalNotification] { // loop through notifications...
-                if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-                }
-            }
+//            
+//            for notification in (UIApplication.sharedApplication().scheduledLocalNotifications as? [UILocalNotification])! { // loop through notifications...
+//                if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+//                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+//                }
+//            }
             
             nsApi.fetchServerConfiguration { (result) -> Void in
                 switch (result) {
                 case let .Error(error):
                     // display error message
-                    println("error: \(error)")
+                    print("error: \(error)")
                     break
                 case let .Value(boxedConfiguration):
                     let configuration:ServerConfiguration = boxedConfiguration.value
@@ -107,12 +107,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         completionHandler(.NewData)
     }
     
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
-        println(">>> Entering \(__FUNCTION__) <<<")
-        println("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        print("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
         
-        var schemes = AppDataManager.sharedInstance.supportedSchemes!
-        if (!contains(schemes, url.scheme!)) { // If the incoming scheme is not contained within the array of supported schemes return false.
+        let schemes = AppDataManager.sharedInstance.supportedSchemes!
+        if (!schemes.contains((url.scheme))) { // If the incoming scheme is not contained within the array of supported schemes return false.
             return false
         }
         
@@ -130,10 +130,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
                 let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
                 
-                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
+                _ = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
-                    if let siteIndex = find(sites, site) { // Use the site object to get its index position in the array.
-                        if let notificationIndex  = find(site.notifications, notification) {
+                    if let siteIndex = sites.indexOf(site) { // Use the site object to get its index position in the array.
+                        if let notificationIndex  = site.notifications.indexOf(notification) {
                             
                             site.notifications.removeAtIndex(notificationIndex)
                             AppDataManager.sharedInstance.updateSite(site)
@@ -187,20 +187,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             if let queryItems = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)?.queryItems {
                 #if DEBUG
-                    println("queryItems: \(queryItems)") // Not handling queries at that moment, but might want to.
+                    print("queryItems: \(queryItems)") // Not handling queries at that moment, but might want to.
                 #endif
             }
             
             if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
                 navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
                 let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
-                var viewControllers = navController.viewControllers as! [UIViewController] // Grab all the current view controllers in the stack.
-                for storyboardID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
-                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
+                var viewControllers = navController.viewControllers // Grab all the current view controllers in the stack.
+                for stringID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
+//                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
                         if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
-                            let linkIsAllowed = contains(Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards, stor) // Check to see if this is an allowed viewcontroller.
+                            let linkIsAllowed = Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards.contains(stor) // Check to see if this is an allowed viewcontroller.
                             if linkIsAllowed {
-                                let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) as! UIViewController
+                                let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) 
                                 
                                 switch (stor) {
                                 case .SiteListPageViewController:
@@ -213,7 +213,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                     viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                                 }
                             }
-                        }
+//                        }
                     }
                 }
                 navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
@@ -253,7 +253,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         dateFor.dateStyle = .ShortStyle
         dateFor.doesRelativeDateFormatting = true
         
-        var localNotification = UILocalNotification()
+        let localNotification = UILocalNotification()
         localNotification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(arc4random_uniform(UInt32(sites.count))))
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.category = "Nightscout_Category"
@@ -273,9 +273,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func setupNotificationSettings() {
-        println(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(__FUNCTION__) <<<")
         // Specify the notification types.
-        var notificationTypes: UIUserNotificationType = UIUserNotificationType.Alert | UIUserNotificationType.Sound | UIUserNotificationType.Badge
+        let notificationTypes: UIUserNotificationType = [UIUserNotificationType.Alert, UIUserNotificationType.Sound, UIUserNotificationType.Badge]
         
         // Register the notification settings.
         let newNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)

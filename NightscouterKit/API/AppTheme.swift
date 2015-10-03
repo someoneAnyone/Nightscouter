@@ -46,7 +46,7 @@ public class AppThemeManager: NSObject {
             let navBarColor: UIColor = Theme.Color.navBarColor
             UINavigationBar.appearance().barTintColor = navBarColor
             
-            let navBarAttributesDictionary: [NSObject: AnyObject]? = [
+            let navBarAttributesDictionary: [String: AnyObject]? = [
                 NSForegroundColorAttributeName: Theme.Color.navBarTextColor,
                 NSFontAttributeName: navBarFont
             ]

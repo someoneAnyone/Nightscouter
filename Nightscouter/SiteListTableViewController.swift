@@ -140,12 +140,12 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         accessoryIndexPath = indexPath
     }
     
-    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String! {
+    override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
         return Constants.LocalizedString.tableViewCellRemove.localized
     }
     
     override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
-        var cell = tableView.cellForRowAtIndexPath(indexPath)
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
         //        cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
         let highlightView = UIView()
         highlightView.backgroundColor = NSAssetKit.darkNavColor
@@ -169,7 +169,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 
             case .EditSite:
                 #if DEBUG
-                    print("Editing existing site")
+                    print("Editing existing site", terminator: "")
                 #endif
                 editing = false
                 let siteDetailViewController = segue.destinationViewController as! SiteFormViewController
@@ -182,13 +182,13 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 
             case .AddNew:
                 #if DEBUG
-                    print("Adding new site")
+                    print("Adding new site", terminator: "")
                 #endif
                 self.setEditing(false, animated: true)
                 
             case .AddNewWhenEmpty:
                 #if DEBUG
-                    print("Adding new site when empty")
+                    print("Adding new site when empty", terminator: "")
                 #endif
                 self.setEditing(false, animated: true)
                 return
@@ -203,7 +203,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 }
                 
             case .ShowPageView:
-                let siteListPageViewController = segue.destinationViewController as! SiteListPageViewController
+//                let siteListPageViewController = segue.destinationViewController as! SiteListPageViewController
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPathForCell(selectedSiteCell)!
@@ -211,14 +211,14 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 }
                 
                 if let incomingSite = sender as? Site{
-                    if let indexOfSite = find(sites, incomingSite) {
+                    if let indexOfSite = sites.indexOf(incomingSite) {
                         AppDataManager.sharedInstance.currentSiteIndex = indexOfSite
                     }
                 }
                 
             default:
                 #if DEBUG
-                    print("Unhandled segue idendifier: \(segue.identifier)")
+                    print("Unhandled segue idendifier: \(segue.identifier)", terminator: "")
                 #endif
             }
         }
@@ -325,7 +325,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
             for site in sites {
-                loadDataFor(site, index: find(sites, site)!)
+                loadDataFor(site, index: sites.indexOf(site)!)
             }
         } else {
             // No data in the sites array. Cancel the refreshing!
@@ -342,7 +342,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         //TODO: 3. Probably need to move this code to the application delegate?
         
         // Get settings for a given site.
-        println("Loading data for \(site.url!)")
+        print("Loading data for \(site.url!)")
         nsApi.fetchServerConfiguration { (result) -> Void in
             switch (result) {
             case let .Error(error):
@@ -425,7 +425,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     // MARK: Handoff
     
     func startUserActivity() {
-        let activity = NSUserActivity(activityType: Constants.ActivityType.sites!)
+        let activity = NSUserActivity(activityType: Constants.ActivityType.sites.absoluteString)
         activity.title = "Viewing Nightscout List of Sites"
         activity.userInfo = [Constants.ActivityKey.SitesKey: sites]
         userActivity = activity

@@ -22,13 +22,13 @@ public extension String {
         return self.componentsSeparatedByString(".")
     }
     public var majorVersion: Int {
-        return versions.first!.toInt()!
+        return Int(versions.first!)!
     }
     public var minorVersion: Int {
-        return versions[1].toInt()!
+        return Int(versions[1])!
     }
     public var buildVersion: Int {
-        return versions.last!.toInt()!
+        return Int(versions.last!)!
     }
 }
 
