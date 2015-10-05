@@ -257,9 +257,8 @@ extension SiteDetailViewController {
     
     @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {
         
-        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: UIAlertControllerStyle.ActionSheet)
+        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: .ActionSheet)
         
-        alertController.view.tintColor = NSAssetKit.darkNavColor
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
             #if DEBUG
@@ -273,25 +272,37 @@ extension SiteDetailViewController {
         if site!.overrideScreenLock == true {
             yesString = checkEmoji
         }
-        let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
+        
+        let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: .Default) { (action) -> Void in
             self.updateScreenOverride(true)
             #if DEBUG
                 print("Yes action: \(action)")
             #endif
         }
+        
         alertController.addAction(yesAction)
+
+        if #available(iOS 9.0, *) {
+            alertController.preferredAction = yesAction
+        }
+        
         
         var noString = "   "
         if (site!.overrideScreenLock == false) {
             noString = checkEmoji
         }
-        let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: UIAlertActionStyle.Default) { (action) -> Void in
+        
+        let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: .Destructive) { (action) -> Void in
             self.updateScreenOverride(false)
             #if DEBUG
                 print("No action: \(action)")
             #endif
         }
         alertController.addAction(noAction)
+
+        alertController.view.tintColor = NSAssetKit.darkNavColor
+
+        self.view.window?.tintColor = nil
         
         self.presentViewController(alertController, animated: true) {
             #if DEBUG
