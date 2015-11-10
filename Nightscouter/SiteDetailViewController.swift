@@ -305,9 +305,15 @@ extension SiteDetailViewController {
         alertController.addAction(noAction)
 
         alertController.view.tintColor = NSAssetKit.darkNavColor
-
+        
         self.view.window?.tintColor = nil
         
+        // Resolving Incident with Identifier: 1169918A-77AC-4D15-8610-E62C1D74E386
+        // Crash in UIPopoverPresentationController
+        if let popoverController = alertController.popoverPresentationController {
+            popoverController.barButtonItem = sender
+        }
+
         self.presentViewController(alertController, animated: true) {
             #if DEBUG
                 print("presentViewController: \(alertController.debugDescription)")
