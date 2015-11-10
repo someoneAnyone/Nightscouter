@@ -6,8 +6,8 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 import Foundation
-import UIKit
-
+//import UIKit
+//
 public class Site: NSObject, NSCoding {
     
     public struct PropertyKey {
@@ -47,15 +47,28 @@ public class Site: NSObject, NSCoding {
     public var entries: [Entry]?
     public var allowNotifications: Bool
     public var overrideScreenLock: Bool
-
-    public var notifications: [UILocalNotification]
+    
+    // public var notifications: [UILocalNotification]
     public var disabled: Bool
     
     public private(set) var uuid: NSUUID
     public private(set) var lastConnectedDate: NSDate?
     
     public override var description: String {
-        return "{site: \(url), configuration: \(configuration), lastConnected: \(lastConnectedDate)"
+        return dictionary.description
+    }
+    
+    public var dictionary: [String: AnyObject] {
+
+        var dict = Dictionary<String, AnyObject>()
+      
+        dict["urlString"] = url.absoluteString
+        
+        if let configuration = configuration {
+            dict["displayName"] = configuration.displayName
+        }
+        
+        return dict
     }
     
     // MARK: Initialization
@@ -65,7 +78,7 @@ public class Site: NSObject, NSCoding {
         self.apiSecret = apiSecret
         
         self.uuid = NSUUID()
-        self.notifications = [UILocalNotification]()
+        //        self.notifications = [UILocalNotification]()
         self.overrideScreenLock = false
         self.disabled = false
         self.allowNotifications = true
@@ -84,12 +97,12 @@ public class Site: NSObject, NSCoding {
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
-        aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
+        // aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
         aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
         aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
         aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
     }
-
+    
     required public init?(coder aDecoder: NSCoder) {
         let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
         let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
@@ -110,11 +123,13 @@ public class Site: NSObject, NSCoding {
         self.overrideScreenLock = overrideScreen
         self.lastConnectedDate = lastConnectedDate
         
+        /*
         if let notification = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
-            self.notifications = notification
+        self.notifications = notification
         } else {
-            self.notifications = [UILocalNotification]()
+        self.notifications = [UILocalNotification]()
         }
+        */
         
         self.disabled = disabledSite
     }
@@ -125,5 +140,17 @@ public class Site: NSObject, NSCoding {
         } else {
             return false
         }
+    }
+}
+
+extension Site {
+    public convenience init?(dictionary: [String: AnyObject]) {
+        
+        guard let url = dictionary["url"] as? NSURL else {
+            return nil
+        }
+        let api = dictionary["apiapiSecret"] as? String
+        
+        self.init(url: url, apiSecret: api)
     }
 }

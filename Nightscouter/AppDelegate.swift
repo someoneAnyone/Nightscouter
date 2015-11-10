@@ -25,6 +25,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // Override point for customization after application launch.
+        WatchSessionManager.sharedManager.startSession()
+
+        AppDataManager.sharedInstance.updateWatch()
         
         setupNotificationSettings() // Need to move this to when the user adds a server valid to the array.
         
@@ -55,10 +58,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func applicationDidBecomeActive(application: UIApplication) {
-        // println(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(__FUNCTION__) <<<")
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         // application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
-        
+
         updateDataNotification(nil)
     }
     
@@ -76,12 +79,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         for site in sites {
             // Get settings for a given site.
             let nsApi = NightscoutAPIClient(url: site.url)
-//            
-//            for notification in (UIApplication.sharedApplication().scheduledLocalNotifications as? [UILocalNotification])! { // loop through notifications...
-//                if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
-//                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
-//                }
-//            }
+            //
+            //            for notification in (UIApplication.sharedApplication().scheduledLocalNotifications as? [UILocalNotification])! { // loop through notifications...
+            //                if (notification.userInfo![Site.PropertyKey.uuidKey] as! String == site.uuid) { // ...and cancel the notification that corresponds to this TodoItem instance (matched by UUID)
+            //                    UIApplication.sharedApplication().cancelLocalNotification(notification) // there should be a maximum of one match on UUID
+            //                }
+            //            }
             
             nsApi.fetchServerConfiguration { (result) -> Void in
                 switch (result) {
@@ -95,6 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         site.configuration = configuration
                         site.watchEntry = watchEntry
                         AppDataManager.sharedInstance.updateSite(site)
+                        
                         self.scheduleLocalNotification(site)
                     })
                 }
@@ -106,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         completionHandler(.NewData)
     }
-
+    
     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
         print(">>> Entering \(__FUNCTION__) <<<")
         
@@ -124,7 +128,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // MARK: Local Notifications
-    
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         // println("Received a local notification payload: \(notification)")
         if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
@@ -134,21 +137,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 _ = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = sites.indexOf(site) { // Use the site object to get its index position in the array.
-                        if let notificationIndex  = site.notifications.indexOf(notification) {
-                            
-                            site.notifications.removeAtIndex(notificationIndex)
-                            AppDataManager.sharedInstance.updateSite(site)
-                            AppDataManager.sharedInstance.currentSiteIndex = siteIndex
-                            
-                            #if DEDBUG
-                                println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
-                            #endif
-                            
-                            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
-                            deepLinkToURL(url!)
-                        }
+                        //                        if let notificationIndex  = site.notifications.indexOf(notification) {
+                        
+                        //                            site.notifications.removeAtIndex(notificationIndex)
+                        //                            AppDataManager.sharedInstance.updateSite(site)
+                        AppDataManager.sharedInstance.currentSiteIndex = siteIndex
+                        
+                        #if DEDBUG
+                            println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
+                        #endif
+                        
+                        let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+                        deepLinkToURL(url!)
                     }
                 }
+                //                }
             } else {
                 let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue)")
                 deepLinkToURL(url!)
@@ -156,32 +159,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
     
-    // MARK: Remote Notifications
-    /*
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
-    println(">>> Entering \(__FUNCTION__) <<<")
-    println("userInfo: \(userInfo)")
-    }
-    
-    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject], fetchCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
-    println(">>> Entering \(__FUNCTION__) <<<")
-    println("userInfo: \(userInfo)")
-    completionHandler(.NewData)
-    }
-    
-    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
-    println(">>> Entering \(__FUNCTION__) <<<")
-    println("deviceToken: \(deviceToken)")
-    }
-    
-    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
-    println(">>> Entering \(__FUNCTION__) <<<")
-    println("\(error), \(error.localizedDescription)")
-    }
-    */
     
     // MARK: Custom Methods
-    
     func deepLinkToURL(url: NSURL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
         if let pathComponents = url.pathComponents {
@@ -197,24 +176,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
                 var viewControllers = navController.viewControllers // Grab all the current view controllers in the stack.
                 for stringID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
-//                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
-                        if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
-                            let linkIsAllowed = Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards.contains(stor) // Check to see if this is an allowed viewcontroller.
-                            if linkIsAllowed {
-                                let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID) 
-                                
-                                switch (stor) {
-                                case .SiteListPageViewController:
-                                    viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
-                                case .SiteFormViewController:
-                                    navController.presentViewController(newViewController, animated: false, completion: { () -> Void in
-                                        // ...
-                                    })
-                                default:
-                                    viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
-                                }
+                    //                    if let stringID = storyboardID as? String { // Cast the AnyObject into a string.
+                    if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
+                        let linkIsAllowed = Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards.contains(stor) // Check to see if this is an allowed viewcontroller.
+                        if linkIsAllowed {
+                            let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID)
+                            
+                            switch (stor) {
+                            case .SiteListPageViewController:
+                                viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
+                            case .SiteFormViewController:
+                                navController.presentViewController(newViewController, animated: false, completion: { () -> Void in
+                                    // ...
+                                })
+                            default:
+                                viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                             }
-//                        }
+                        }
+                        //                        }
                     }
                 }
                 navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
@@ -230,7 +209,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func updateDataNotification(timer: NSTimer?) -> Void {
         // println(">>> Entering \(__FUNCTION__) <<<")
         // println("Posting \(Constants.Notification.DataIsStaleUpdateNow) Notification at \(NSDate())")
-        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataIsStaleUpdateNow, object: self))
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
@@ -244,10 +223,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // println("Scheduling a notification for site: \(site.url)")
         
-        // remove old notifications before posting new one.
-        for notification in site.notifications {
-            UIApplication.sharedApplication().cancelLocalNotification(notification)
-        }
+        //        // remove old notifications before posting new one.
+        //        for notification in site.notifications {
+        //            UIApplication.sharedApplication().cancelLocalNotification(notification)
+        //        }
         
         let dateFor = NSDateFormatter()
         dateFor.timeStyle = .ShortStyle
@@ -262,12 +241,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         localNotification.alertAction = "View Site"
         
         if let config = site.configuration {
-                localNotification.alertTitle = "Update for \(config.displayName)"
-                if let watch: WatchEntry = site.watchEntry {
-                    localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)%"
-                }
+            localNotification.alertTitle = "Update for \(config.displayName)"
+            if let watch: WatchEntry = site.watchEntry {
+                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)%"
+            }
         }
-        site.notifications.append(localNotification)
+        //        site.notifications.append(localNotification)
         AppDataManager.sharedInstance.updateSite(site)
         
         UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
@@ -293,5 +272,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func saveSites() -> Void {
         AppDataManager.sharedInstance.saveAppData()
+//        WatchSessionManager.sharedManager.transferUserInfo(["data": AppDataManager.sharedInstance.sites])
+        
+        //        do {
+        //         try WatchSessionManager.sharedManager.transferUserInfo(["data": AppDataManager.sharedInstance.sites])
+        //        } catch {
+        //            print("error")
+        //        }
     }
 }

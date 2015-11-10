@@ -80,6 +80,16 @@ public enum Noise : Int, CustomStringConvertible {
         case .Heavy: return "Heavy"
         }
     }
+    
+    public var descriptionShort: String {
+        switch (self) {
+        case .None: return "---"
+        case .Clean: return "C"
+        case .Light: return "L"
+        case .Medium: return "M"
+        case .Heavy: return "H"
+        }
+    }
 }
 
 public enum Type: String {
@@ -174,6 +184,23 @@ public class Entry {
     public var dateTimeAgoString: String {
         get{
             return NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(date)
+        }
+    }
+    public var dateTimeAgoStringShort: String {
+        get{
+            
+            let shorterTimeAgo = dateTimeAgoString.componentsSeparatedByString(" ").dropLast()
+
+            var finalString: String = ""
+            
+            
+            for stringPart in shorterTimeAgo {
+                
+                finalString += " " + stringPart
+            }
+            
+            
+            return "\(finalString)"
         }
     }
     public var dateString: String?

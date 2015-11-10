@@ -14,7 +14,7 @@ An Native iOS app used for displaying CGM data from a Nightscout website data. T
 
 ## Future Plans
 - ~~Today Extension~~ *Added in Merge Pull [#12](https://github.com/someoneAnyone/Nightscouter/commit/9b1120726ea64faca3b0dd859b7caa8d32e4b797)*
-- Apple Watch Extension / App (targeting watchOS2)
+- ~~Apple Watch Extension / App (targeting watchOS2)~~
 - Push Notifications
 - Better layouts for iPad
 - Allow changing Nightscout Remote Monitor directly within the app and update the server.

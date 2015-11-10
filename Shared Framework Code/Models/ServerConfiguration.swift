@@ -43,6 +43,15 @@ public enum Units: String, CustomStringConvertible {
             return "mmol/L"
         }
     }
+    
+    public var descriptionShort: String {
+        switch self {
+        case .Mgdl:
+            return "mg"
+        case .Mmol:
+            return "mmol"
+        }
+    }
 }
 
 public enum RawBGMode: String, CustomStringConvertible {
@@ -180,7 +189,10 @@ public struct ServerConfiguration: CustomStringConvertible {
     public var name: String?
     
     public var description: String {
-        
+        return dictionary.description
+    }
+    
+    public var dictionary: [String: AnyObject] {
         var dict = Dictionary<String, AnyObject>()
         if let status = status {
             dict["status"] = status
@@ -216,7 +228,7 @@ public struct ServerConfiguration: CustomStringConvertible {
             dict["name"] = name
         }
         
-        return dict.description
+        return dict
     }
 }
 
@@ -438,7 +450,6 @@ public extension ServerConfiguration {
             return name
         } else {
             return  NSLocalizedString("nightscoutTitleString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to when we can't find a title for the website.")
-            
         }
     }
     

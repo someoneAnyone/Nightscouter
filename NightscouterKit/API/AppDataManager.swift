@@ -45,11 +45,18 @@ public class AppDataManager: NSObject {
         }
     }
     
-    public let defaults: NSUserDefaults
+    public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
     lazy var applicationDocumentsDirectory: NSURL? = {
-        return NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(SharedAppGroupKey.NightscouterGroup) ?? nil
-        }()
+        
+        if let appDocDirURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(SharedAppGroupKey.NightscouterGroup) {
+            #if DEBUG
+                print("applicationDocumentsDirectory: \(appDocDirURL)")
+            #endif
+            return appDocDirURL
+        }
+        return  nil
+    }()
     
     public var sitesFileURL: NSURL {
         get {
@@ -72,15 +79,13 @@ public class AppDataManager: NSObject {
     }
     
     internal override init() {
-        defaults  = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
-        
         super.init()
         
         if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(sitesFileURL.path!) as? NSData {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
                 
-                saveAppData()
+//                saveAppData()
             }
         }
         
@@ -92,6 +97,10 @@ public class AppDataManager: NSObject {
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
             let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
+            
+            self.defaults.setObject(data, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+            self.defaults.synchronize()
+                        
             #if DEBUG
                 if !fileDiskSave {
                     print("Failed to save sites...")
@@ -99,7 +108,28 @@ public class AppDataManager: NSObject {
                     print("Successful save...")
                 }
             #endif
+            
         })
+    }
+    
+    public func updateWatch() {
+        if #available(iOSApplicationExtension 9.0, *) {
+            
+            var dictionaryArray: [[String: AnyObject]] = []
+            for site in self.sites {
+                dictionaryArray.append(site.dictionary)
+            }
+            let context = ["siteDictionary": dictionaryArray]
+            do {
+                try WatchSessionManager.sharedManager.updateApplicationContext(context)
+            } catch let error{
+                print("updateContextError: \(error)")
+            }
+            
+        } else {
+            // Fallback on earlier versions
+        }
+
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -111,12 +141,14 @@ public class AppDataManager: NSObject {
             sites.append(site)
         }
         saveAppData()
+        updateWatch()
     }
     
     public func updateSite(site: Site)  ->  Bool {
         if let index = AppDataManager.sharedInstance.sites.indexOf(site) {
             self.sites[index] = site
             saveAppData()
+            updateWatch()
             return true
         }
         
@@ -124,9 +156,10 @@ public class AppDataManager: NSObject {
     }
     
     public func deleteSiteAtIndex(index: Int) {
-//        let site = sites[index]
+        //        let site = sites[index]
         sites.removeAtIndex(index)
         saveAppData()
+        updateWatch()
     }
     
     public func loadSampleSites() -> Void {

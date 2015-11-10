@@ -8,6 +8,28 @@
 
 import Foundation
 
+public extension Range
+{
+    public var randomInt: Int
+        {
+        get
+        {
+            var offset = 0
+            
+            if (startIndex as! Int) < 0   // allow negative ranges
+            {
+                offset = abs(startIndex as! Int)
+            }
+            
+            let mini = UInt32(startIndex as! Int + offset)
+            let maxi = UInt32(endIndex as! Int + offset)
+            
+            return Int(mini + arc4random_uniform(maxi - mini)) - offset
+        }
+    }
+}
+
+
 public extension Double {
     public func millisecondsToSecondsTimeInterval() -> NSTimeInterval {
         return round(self/1000)

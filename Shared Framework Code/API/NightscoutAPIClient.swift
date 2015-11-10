@@ -40,6 +40,13 @@ public enum NightscoutAPIError {
     case JSONParseError(String)
 }
 
+
+public struct NightscoutAPIClientNotification {
+    public static let DataIsStaleUpdateNow: String =  "data.stale.update"
+    public static let DataUpdateSuccessful: String = "data.update.successful"
+    // public static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
+}
+
 public class NightscoutAPIClient {
     
     lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -48,6 +55,8 @@ public class NightscoutAPIClient {
     public var url: NSURL!
 
     public var delegate: NightscoutAPIClientDelegate?
+
+    public var task: NSURLSessionDownloadTask?
 
     /*! Initializes the calss with a Nightscout site URL.
     * \param url This class only needs the base URL to the site. For example, https://nightscout.hostingcompany.com, the class will discover the API. Currently uses veriion 1.
@@ -151,7 +160,7 @@ private extension NightscoutAPIClient {
                                     completetion(result: responseObject, errorCode: .NoErorr)
                                     
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:Constants.Notification.DataUpdateSuccessful, object: self))
+                                        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:NightscoutAPIClientNotification.DataUpdateSuccessful, object: self))
                                     })
                                     
                                 }
@@ -224,10 +233,10 @@ extension NightscoutAPIClient {
 }
 
 private extension NightscoutAPIClient {
-
+    
     func fetchJSONWithURL(url: NSURL!, callback: (Result<JSON>) -> Void) {
         
-        let task: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
+         task = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
             
             // if the response returned an error send it to the callback
             if let err = downloadError {
@@ -273,15 +282,13 @@ private extension NightscoutAPIClient {
                 default:
                     // hhtpResonse other than 200
                     callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -220, userInfo: nil)))
-
                 }
             }
             
             // if we couldn't parse all the properties then send back an error
-            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))
-            
+            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))            
         })
         
-        task.resume()
+        task!.resume()
     }
 }

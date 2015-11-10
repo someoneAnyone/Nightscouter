@@ -103,11 +103,11 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         if editingStyle == .Delete {
             // Delete the row from the data source
             
-            let site = sites[indexPath.row]
+//            let site = sites[indexPath.row]
             
-            for notification in site.notifications {
-                UIApplication.sharedApplication().cancelLocalNotification(notification)
-            }
+//            for notification in site.notifications {
+//                UIApplication.sharedApplication().cancelLocalNotification(notification)
+//            }
             
             AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
         
@@ -290,7 +290,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.

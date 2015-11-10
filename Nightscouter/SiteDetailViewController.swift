@@ -104,7 +104,7 @@ extension SiteDetailViewController {
         if let siteOptional = site {
             nsApi = NightscoutAPIClient(url:siteOptional.url)
             AppDataManager.sharedInstance.shouldDisableIdleTimer = siteOptional.overrideScreenLock
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
             
             updateSite(nil)
         }

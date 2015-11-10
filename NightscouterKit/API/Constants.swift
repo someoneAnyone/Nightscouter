@@ -72,12 +72,12 @@ public struct Constants {
         public static let LowerLimitForValidSGV = 39
         public static let UpperLimitForValidSGV = 400
     }
-    
-    public struct Notification {
-        public static let DataIsStaleUpdateNow: String =  AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.stale.update").absoluteString
-        public static let DataUpdateSuccessful = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.update.successful").absoluteString
-        // public static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
-    }
+//    
+//    public struct Notification {
+//        public static let DataIsStaleUpdateNow: String =  AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.stale.update").absoluteString
+//        public static let DataUpdateSuccessful = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("data.update.successful").absoluteString
+//        // public static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
+//    }
     
     public struct ActivityType {
         public static let sites = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("sites")
