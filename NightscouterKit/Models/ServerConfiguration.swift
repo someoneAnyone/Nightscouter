@@ -311,7 +311,20 @@ public extension ServerConfiguration {
         
         if let settingsDictionary = root[ConfigurationPropertyKey.settingsKey] as? [String: AnyObject] {
             let units = Units(rawValue: (settingsDictionary[ConfigurationPropertyKey.unitsKey] as! String).lowercaseString)!
-            let timeFormat = Int((settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as! String))!
+            
+            
+            var timeFormat: Int = 12
+            
+            if let stringTimeFormat = settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as? String {
+                timeFormat = Int(stringTimeFormat)!
+            }
+            
+            
+            if let intTimeFormat = settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as? Int {
+                timeFormat = intTimeFormat
+            }
+            
+            
             let nightMode = settingsDictionary[ConfigurationPropertyKey.nightModeKey] as! Bool
             let showRawbg = RawBGMode(rawValue: settingsDictionary[ConfigurationPropertyKey.showRawbgKey] as! String)!
             let customTitle = settingsDictionary[ConfigurationPropertyKey.customTitleKey] as! String

@@ -106,10 +106,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         completionHandler(.NewData)
     }
-    
-    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+
+    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
         print(">>> Entering \(__FUNCTION__) <<<")
-        print("Recieved URL: \(url) from sourceApplication: \(sourceApplication) annotation: \(annotation))")
+        
+        print("Recieved URL: \(url) with options: \(options)")
         
         let schemes = AppDataManager.sharedInstance.supportedSchemes!
         if (!schemes.contains((url.scheme))) { // If the incoming scheme is not contained within the array of supported schemes return false.

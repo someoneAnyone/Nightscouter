@@ -381,7 +381,6 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     func presentAlertDialog(siteURL:NSURL, index: Int, error: NSError) {
         
         let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: Constants.LocalizedString.uiAlertBadSiteMessage.localized, siteURL, error.localizedDescription), preferredStyle: .Alert)
-        alertController.view.tintColor = NSAssetKit.darkNavColor
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
             // ...
@@ -414,6 +413,10 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         }
         alertController.addAction(removeAction)
         
+        alertController.view.tintColor = NSAssetKit.darkNavColor
+
+        self.view.window?.tintColor = nil
+
         self.navigationController?.popToRootViewControllerAnimated(true)
         
         self.presentViewController(alertController, animated: true) {
