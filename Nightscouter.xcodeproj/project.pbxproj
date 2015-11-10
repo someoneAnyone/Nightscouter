@@ -15,6 +15,7 @@
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
 		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
 		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
+		171EAE8E1BF27B82006C77B8 /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
@@ -66,7 +67,7 @@
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		83883D881BC1F7E900BD1A9C /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D871BC1F7E900BD1A9C /* InterfaceController.swift */; };
+		83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */; };
 		83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */; };
 		83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */; };
 		83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
@@ -202,6 +203,7 @@
 		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
 		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
 		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
+		171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchModel.swift; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
@@ -251,7 +253,7 @@
 		83883D7B1BC1F7E800BD1A9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "NightscouterNow Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
-		83883D871BC1F7E900BD1A9C /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDetailTextInterfaceController.swift; sourceTree = "<group>"; };
 		83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
@@ -507,7 +509,7 @@
 			children = (
 				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
 				83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */,
-				83883D871BC1F7E900BD1A9C /* InterfaceController.swift */,
+				83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */,
 				83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */,
 			);
 			name = "View Controllers";
@@ -561,6 +563,7 @@
 				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
 				17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */,
 				17F22E5C1BEF9E600041E0B0 /* Info.plist */,
+				171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */,
 			);
 			name = NightscouterWatchOSKit;
 			path = ../NightscouterWatchOSKit;
@@ -587,9 +590,9 @@
 				83883D931BC1F7E900BD1A9C /* Info.plist */,
 				83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */,
 				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
-				83883DAB1BC2089000BD1A9C /* SiteRowController.swift */,
 				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
 				178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */,
+				83F16A171BF1A4A500610E99 /* Views */,
 				178AACCD1BEFE76C00B0DEBC /* View Controllers */,
 				83883D911BC1F7E900BD1A9C /* Assets.xcassets */,
 				83883D851BC1F7E900BD1A9C /* Supporting Files */,
@@ -603,6 +606,14 @@
 				83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		83F16A171BF1A4A500610E99 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				83883DAB1BC2089000BD1A9C /* SiteRowController.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		83F4C57A1B7C201800C74285 /* NightscouterToday */ = {
@@ -961,6 +972,7 @@
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */,
+				171EAE8E1BF27B82006C77B8 /* WatchModel.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
@@ -976,7 +988,7 @@
 				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
 				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
 				83883D901BC1F7E900BD1A9C /* ComplicationController.swift in Sources */,
-				83883D881BC1F7E900BD1A9C /* InterfaceController.swift in Sources */,
+				83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */,
 				178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */,
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,

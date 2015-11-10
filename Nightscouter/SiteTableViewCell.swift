@@ -70,10 +70,10 @@ class SiteTableViewCell: UITableViewCell {
                     let color = colorForDesiredColorState(boundedColor)
                     
                     siteColorBlockView.backgroundColor = color
-                    
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if rawEnabled {
+//                    
+//                    if let enabledOptions = configuration.enabledOptions {
+//                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
+                        if configuration.displayRawData {
                             if let rawValue = watchEntry.raw {
                                 let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
                                 
@@ -89,7 +89,7 @@ class SiteTableViewCell: UITableViewCell {
                             siteRawHeader.hidden = true
                             siteRawLabel.hidden = true
                         }
-                    }
+//                    }
                     
                     let timeAgo = watchEntry.date.timeIntervalSinceNow
                     let isStaleData = configuration.isDataStaleWith(interval: timeAgo)

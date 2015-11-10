@@ -7,6 +7,7 @@
 //
 
 import WatchKit
+import NightscouterWatchOSKit
 
 class SiteRowController: NSObject {
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
@@ -24,6 +25,39 @@ class SiteRowController: NSObject {
     
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     @IBOutlet var siteDirectionLabel: WKInterfaceLabel!
+    
+    var model: WatchModel? {
+        didSet {
+            
+            if let model = model {
+                // Site name in row
+                siteNameLabel.setText(model.displayName)
+                
+                // Last reading label
+                siteLastReadingLabel.setText(model.lastReadingString)
+                siteLastReadingLabel.setTextColor(model.lastReadingColor)
+                
+                // Battery label
+                siteBatteryLabel.setText(model.batteryString)
+                siteBatteryLabel.setTextColor(model.batteryColor)
+                
+                // Raw data
+                siteRawGroup.setHidden(model.rawVisible)
+                siteRawLabel.setText(model.rawString)
+                siteRawLabel.setTextColor(model.rawColor)
+                
+                // SGV formatted value
+                siteSgvLabel.setText(model.sgvString)
+                siteSgvLabel.setTextColor(model.sgvColor)
+                
+                // Delta
+                siteDirectionLabel.setText(model.deltaString)
+                siteDirectionLabel.setTextColor(model.sgvColor)
+                
+                backgroundGroup.setBackgroundColor(model.sgvColor.colorWithAlphaComponent(0.2))
+            }
+        }
+    }
+    
 }
-
 

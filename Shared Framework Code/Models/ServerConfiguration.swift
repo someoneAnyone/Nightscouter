@@ -152,7 +152,7 @@ struct ConfigurationPropertyKey {
     static let nameKey = "name"
     static let statusKey = "status"
     static let thresholdsKey = "thresholds"
-
+    
     // ver 7.0
     static let bg_highKey = "bg_high"
     static let bg_lowKey = "bg_low"
@@ -168,10 +168,10 @@ struct ConfigurationPropertyKey {
     static let versionKey = "version"
     
     // Not implmented yet
-     static let extendedSettingsKey = "extendedSettings"
-     static let settingsKey = "settings"
-     static let enableKey = "enable"
-     static let showPluginsKey = "showPlugins"
+    static let extendedSettingsKey = "extendedSettings"
+    static let settingsKey = "settings"
+    static let enableKey = "enable"
+    static let showPluginsKey = "showPlugins"
 }
 
 public struct ServerConfiguration: CustomStringConvertible {
@@ -180,7 +180,7 @@ public struct ServerConfiguration: CustomStringConvertible {
     public var careportalEnabled: Bool?
     public var enabledOptions: [EnabledOptions]?
     public var defaults: Defaults?
-//    public let settings: Defaults?
+    //    public let settings: Defaults?
     public var unitsRoot: Units?
     public var head:String?
     public var version: String?
@@ -290,7 +290,7 @@ public extension ServerConfiguration {
             let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Double
             threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
         }
-
+        
         
         var defaultsDefaults: Defaults?
         if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
@@ -317,7 +317,7 @@ public extension ServerConfiguration {
             let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
             
             let language = defaultsDictionary[ConfigurationPropertyKey.languageKey] as! String
-        
+            
             defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: nil, thresholds: nil, defaultFeatures: nil)
         }
         
@@ -375,18 +375,18 @@ public extension ServerConfiguration {
                 let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bgTargetTopKey] as! Double
                 threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
             }
-
-
+            
+            
             
             defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: options, thresholds: threshold, defaultFeatures: nil)
-
+            
         }
-
+        
         serverConfig.defaults = defaultsDefaults
         
         serverConfig.thresholds = threshold
         serverConfig.enabledOptions = options
-
+        
         self = serverConfig
     }
 }
@@ -451,6 +451,28 @@ public extension ServerConfiguration {
         } else {
             return  NSLocalizedString("nightscoutTitleString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to when we can't find a title for the website.")
         }
+    }
+    
+    public var displayRawData: Bool {
+        if let enabledOptions = enabledOptions {
+            let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
+            if rawEnabled {
+                if let defaults = defaults {
+                    
+                    switch defaults.showRawbg {
+                    case .Noise:
+                        return true
+                    case .Always:
+                        return true
+                    case .Never:
+                        return false
+                    }
+                    
+                }
+            }
+        }
+        
+        return false
     }
     
     public var displayUnits: Units {

@@ -11,35 +11,52 @@ import NightscouterWatchOSKit
 
 class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate, SiteDetailViewDidUpdateItemDelegate {
     
-    @IBOutlet var table: WKInterfaceTable!
+    @IBOutlet var sitesTable: WKInterfaceTable!
     
     var sites: [Site] = []
     
     var lastUpdatedTime: NSDate?
+    var timer: NSTimer = NSTimer()
+    var nsApi: [NightscoutAPIClient]?
     
-    override func willActivate() {
-        super.willActivate()
+    override func awakeWithContext(context: AnyObject?) {
+        super.awakeWithContext(context)
         
         if let data = NSUserDefaults.standardUserDefaults().objectForKey("sites") as? NSData {
             if let sites  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [Site] {
                 dataSourceDidUpdate(sites)
             }
         }
-        
+
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        // WatchSessionManager.sharedManager.wakeUp()
+        
+        timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
+    }
+    
+    override func willActivate() {
+        // This method is called when watch view controller is about to be visible to user
+        super.willActivate()
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        WatchSessionManager.sharedManager.wakeUp()
+    }
+    
+    override func didDeactivate() {
+        // This method is called when watch view controller is no longer visible
+        print(">>> Entering \(__FUNCTION__) <<<")
+        super.didDeactivate()
+        
+        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
+        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        timer.invalidate()
     }
     
     override func willDisappear() {
         super.willDisappear()
-        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
-        NSUserDefaults.standardUserDefaults().synchronize()
-    }
-    
-    func dataSourceDidUpdate(dataSource: [Site]) {
-        sites = dataSource
-        self.loadTableRows()
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
     }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
@@ -47,202 +64,90 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
         pushControllerWithName("SiteDetail", context: ["delegate": self, "site": sites[rowIndex]])
-        //        presentControllerWithName("SiteDetail", context: sites[rowIndex])
     }
     
-    /*
-    override func contextForSegueWithIdentifier(segueIdentifier: String,
-    inTable table: WKInterfaceTable, rowIndex: Int) -> AnyObject? {
-    print(">>> Entering \(__FUNCTION__) <<<")
     
-    if segueIdentifier == "detail" {
-    return sites[rowIndex]
-    }
-    
-    return nil
-    }
-    */
-    
-    func didUpdateItem(site: Site) {
-        if let index = self.sites.indexOf(site) {
-            self.sites[index] = site
-        }
-    }
-    
-    func loadTableRows(){
-        table.setNumberOfRows(0, withRowType: "site")
+    private func loadTableData() {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        let rowTypeIdentifier: String = "SiteRowController"
+        
+        sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
         
         if sites.isEmpty {
-            table.setNumberOfRows(1, withRowType: "site")
-            
-            let row = table.rowControllerAtIndex(0) as? SiteRowController
-            
+            sitesTable.setNumberOfRows(1, withRowType: rowTypeIdentifier)
+            let row = sitesTable.rowControllerAtIndex(0) as? SiteRowController
             if let row = row {
                 row.siteNameLabel.setText("Nothing")
             }
             
         } else {
-            table.setNumberOfRows(sites.count, withRowType: "site")
-            
+            sitesTable.setNumberOfRows(sites.count, withRowType: rowTypeIdentifier)
             for (index, site) in sites.enumerate() {
-                let row = table.rowControllerAtIndex(index) as? SiteRowController
-                if let row = row {
-                    
-                    if (site.configuration == nil) {
-                        loadDataFor(site, index: index)
-                    } else {
-                        updateUI(row, site: site)
-                    }
+                if let _ = sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+                    loadDataFor(site, index: index)
                 }
             }
         }
     }
     
-    func updateUI(row: SiteRowController, site: Site) {
+    func dataSourceDidUpdate(dataSource: [Site]) {
+        print(">>> Entering \(__FUNCTION__) <<<")
         
-        guard let configuration = site.configuration, watchEntry = site.watchEntry else {
-            return
+        sites = dataSource
+        loadTableData()
+    }
+    
+    func didUpdateItem(site: Site) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        if let index = self.sites.indexOf(site) {
+            self.sites[index] = site
         }
-        
-        let units: Units = configuration.displayUnits
-        
-        let timeAgo = watchEntry.date.timeIntervalSinceNow
-        let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
-        
-        guard let sgvValue = watchEntry.sgv  else {
-            #if DEBUG
-                println("No SGV was found in the watch")
-            #endif
-            
-            return
+    }
+    
+    func updateData() {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        for (index, site) in sites.enumerate() {
+            loadDataFor(site, index: index)
         }
-        
-        let defaultTextColor = NSAssetKitWatchOS.predefinedNeutralColor
-        
-        var sgvString: String = ""
-        var sgvColor: UIColor = defaultTextColor
-        
-        var deltaString: String = ""
-        
-        var isRawDataAvailable: Bool = false
-        var rawString: String = ""
-        var rawColor: UIColor = defaultTextColor
-        
-        var batteryString: String = watchEntry.batteryString
-        var batteryColor: UIColor = colorForDesiredColorState(watchEntry.batteryColorState)
-        var lastUpdatedColor: UIColor = defaultTextColor
-        
-        var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-        if units == .Mmol {
-            boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
-        }
-        
-        sgvString =  "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
-        deltaString = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.descriptionShort)"
-        sgvColor = colorForDesiredColorState(boundedColor)
-        
-        if let enabledOptions = configuration.enabledOptions {
-            let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-            isRawDataAvailable = true
-            if rawEnabled {
-                if let rawValue = watchEntry.raw {
-                    rawColor = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                    
-                    var raw = "\(rawValue.formattedForMgdl)"
-                    if configuration.displayUnits == .Mmol {
-                        raw = rawValue.formattedForMmol
-                    }
-                    
-                    rawString = "\(raw) : \(sgvValue.noise.descriptionShort)"
-                }
-            }
-        }
-        
-        
-        if isStaleData.warn {
-            batteryString = ("---%")
-            batteryColor = defaultTextColor
-            
-            rawString = "--- : ---"
-            rawColor = defaultTextColor
-            
-            deltaString = "- --/--"
-            
-            sgvString = "---"
-            sgvColor = colorForDesiredColorState(.Neutral)
-        }
-        
-        if isStaleData.urgent{
-            
-            lastUpdatedColor = NSAssetKitWatchOS.predefinedAlertColor
-            
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            // Site name in row
-            row.siteNameLabel.setText(configuration.displayName)
-            
-            // Last reading label
-            row.siteLastReadingLabel.setText(watchEntry.dateTimeAgoStringShort)
-            row.siteLastReadingLabel.setTextColor(lastUpdatedColor)
-            
-            // Battery label
-            row.siteBatteryLabel.setText(batteryString)
-            row.siteBatteryLabel.setTextColor(batteryColor)
-            
-            // Raw data
-            row.siteRawGroup.setHidden(!isRawDataAvailable)
-            row.siteRawLabel.setText(rawString)
-            row.siteRawLabel.setTextColor(rawColor)
-            
-            // SGV formatted value
-            row.siteSgvLabel.setText(sgvString)
-            row.siteSgvLabel.setTextColor(sgvColor)
-            
-            // Delta
-            row.siteDirectionLabel.setText(deltaString)
-            row.siteDirectionLabel.setTextColor(sgvColor)
-            
-            row.backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
-            
-        })
     }
     
     func loadDataFor(site: Site, index: Int){
-        // Start up the API
-        let nsApi = NightscoutAPIClient(url: site.url)
-        if (lastUpdatedTime?.timeIntervalSinceNow > 120 || lastUpdatedTime == nil || site.configuration == nil) {
-            
-            // Get settings for a given site.
-            print("Loading data for \(site.url!)")
-            nsApi.fetchServerConfiguration { (result) -> Void in
-                switch (result) {
-                case let .Error(error):
-                    // display error message
-                    print("\(__FUNCTION__) ERROR recieved: \(error)")
-                case let .Value(boxedConfiguration):
-                    let configuration:ServerConfiguration = boxedConfiguration.value
-                    // do something with user
-                    nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                        // Get back on the main queue to update the user interface
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            
+        print(">>> Entering \(__FUNCTION__) <<<")
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            // Start up the API
+            let nsApi = NightscoutAPIClient(url: site.url)
+            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
+                // Get settings for a given site.
+                print("Loading data for \(site.url!)")
+                nsApi.fetchServerConfiguration { (result) -> Void in
+                    switch (result) {
+                    case let .Error(error):
+                        // display error message
+                        print("\(__FUNCTION__) ERROR recieved: \(error)")
+                    case let .Value(boxedConfiguration):
+                        let configuration:ServerConfiguration = boxedConfiguration.value
+                        // do something with user
+                        nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
+
                             site.configuration = configuration
                             site.watchEntry = watchEntry
                             self.lastUpdatedTime = site.lastConnectedDate
+                            self.sites[index] = site
                             
-                            if let index = self.sites.indexOf(site) {
-                                self.sites[index] = site
-                            } else {
-                                print("warning...")
-                            }
-                            
-                            self.loadTableRows()
+                            // Get back on the main queue to update the user interface
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                print("Update rows...")
+                                if let watchModel = WatchModel(fromSite: site) {
+                                    let row = self.sitesTable.rowControllerAtIndex(index) as! SiteRowController
+                                    row.model = watchModel
+                                }
+                            })
                         })
-                    })
+                    }
                 }
             }
         }
     }
 }
+

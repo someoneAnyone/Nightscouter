@@ -10,7 +10,7 @@ import WatchKit
 import Foundation
 
 
-class InterfaceController: WKInterfaceController {
+class SiteDetailTextInterfaceController: WKInterfaceController {
     
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
     @IBOutlet var siteLastReadingLabel: WKInterfaceLabel!

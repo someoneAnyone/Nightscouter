@@ -79,9 +79,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                     siteDirectionLabel.textColor = color
 
                     
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if rawEnabled {
+                    if configuration.displayRawData {
                             if let rawValue = watchEntry.raw {
                                 let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
                                 
@@ -97,7 +95,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                             siteRawHeader.hidden = true
                             siteRawLabel.hidden = true
                         }
-                    }
+                
 
                     let timeAgo = watchEntry.date.timeIntervalSinceNow
                     let isStaleData = configuration.isDataStaleWith(interval: timeAgo)

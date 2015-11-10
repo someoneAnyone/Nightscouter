@@ -61,89 +61,112 @@ public extension WatchEntry {
         
         
         
-        let newDict: NSMutableDictionary = NSMutableDictionary()
+        let rootDictionary: NSMutableDictionary = NSMutableDictionary()
         
         for (key, obj) in watchEntryDictionary {
             if let array = obj as? [AnyObject] {
                 if let objDict: NSDictionary = array.first as? NSDictionary {
-                    newDict["\(key)"] = objDict
+                    rootDictionary["\(key)"] = objDict
                 }
             }
         }
         
-        guard let status: NSDictionary = newDict[EntryPropertyKey.statusKey] as? NSDictionary,
-            nowDouble = status[EntryPropertyKey.nowKey] as? Double  else {
-                self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-
-                return
-        }
         
+        var nowDouble: Double = 0
+        if let statusDictionary = rootDictionary[EntryPropertyKey.statusKey] as? NSDictionary, now = statusDictionary[EntryPropertyKey.nowKey] as? Double {
+            nowDouble = now
+        }
         
         // Blood glucose object
-        guard let bgs: NSDictionary = newDict[EntryPropertyKey.bgsKey] as? NSDictionary else {
-            self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-            return
-        }
         
-        guard let directionString = bgs[EntryPropertyKey.directionKey] as? String,
-            direction = Direction(rawValue: directionString),
-            sgv = bgs[EntryPropertyKey.sgvKey] as? String,
-            filtered = bgs[EntryPropertyKey.filteredKey] as? Int,
-            unfiltlered = bgs[EntryPropertyKey.unfilteredKey] as? Int,
-            noiseInt = bgs[EntryPropertyKey.noiseKey] as? Int,
-            noise = Noise(rawValue: noiseInt) else {
-                self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-                return
-        }
+        var direction = Direction.None
+        var sgv: Double = 0
         
+        var filtered = 0
+        var unfiltlered = 0
+        var noise: Noise = .None
         
         var bgdelta: Double = 0
+        var batteryInt: Int = 0
+        var datetime: Double = 0
         
-        if let bgdeltaString = bgs[EntryPropertyKey.bgdeltaKey] as? String {
-            bgdelta = bgdeltaString.toDouble!
-        }
-        if let bgdeltaNumber = bgs[EntryPropertyKey.bgdeltaKey] as? Double {
-            bgdelta = bgdeltaNumber
+        if let bgsDictionary = rootDictionary[EntryPropertyKey.bgsKey] as? NSDictionary {
+            if let directionString = bgsDictionary[EntryPropertyKey.directionKey] as? String,
+                directionType = Direction(rawValue: directionString),
+                sgvString = bgsDictionary[EntryPropertyKey.sgvKey] as? String {
+                    
+                    direction = directionType
+                    
+                    if let sgvDouble = sgvString.toDouble {
+                        sgv = sgvDouble
+                    }
+                    
+            }
+            
+            if let opFiltered = bgsDictionary[EntryPropertyKey.filteredKey] as? Int,
+                opUnfiltlered = bgsDictionary[EntryPropertyKey.unfilteredKey] as? Int,
+                opNoiseInt = bgsDictionary[EntryPropertyKey.noiseKey] as? Int,
+                opNoise = Noise(rawValue: opNoiseInt) {
+                    
+                    filtered = opFiltered
+                    unfiltlered = opUnfiltlered
+                    noise = opNoise
+                    
+            }
+            
+            
+            
+            
+            if let bgdeltaString = bgsDictionary[EntryPropertyKey.bgdeltaKey] as? String {
+                bgdelta = bgdeltaString.toDouble!
+            }
+            if let bgdeltaNumber = bgsDictionary[EntryPropertyKey.bgdeltaKey] as? Double {
+                bgdelta = bgdeltaNumber
+            }
+            
+            
+            
+            if let batteryString = bgsDictionary[EntryPropertyKey.batteryKey] as? String {
+                
+                if let batInt = Int(batteryString) {
+                    batteryInt = batInt
+                }
+                
+            }
+            
+            if let datetimeDouble = bgsDictionary[EntryPropertyKey.datetimeKey] as? Double  {
+                datetime = datetimeDouble
+            }
         }
         
-        guard let batteryString = bgs[EntryPropertyKey.batteryKey] as? String else {
-            self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-         return
-        }
         
-        let batteryInt = Int(batteryString)
         
-        guard let datetime = bgs[EntryPropertyKey.datetimeKey] as? Double else {
-            self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-            return
-        }
         
         // cals object
-        guard let cals: NSDictionary = newDict[EntryPropertyKey.calsKey] as? NSDictionary else {
-            self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
-            return
+        var cals: NSDictionary = NSDictionary()
+        
+        if let opCals: NSDictionary = rootDictionary[EntryPropertyKey.calsKey] as? NSDictionary {
+            cals = opCals
         }
+        
+        
         
         guard let slope = cals[EntryPropertyKey.slopeKey] as? Double,
             intercept = cals[EntryPropertyKey.interceptKey] as? Double,
             scale = cals[EntryPropertyKey.scaleKey] as? Double else {
-                self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: "", now: NSDate(), bgdelta: 0, battery: 0)
-
+                self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: WatchFaceDeviceValue, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+                self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
+                
+                
                 return
         }
-
-
         
-        self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: WatchFaceDeviceValue, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt!)
-        self.sgv =  SensorGlucoseValue(sgv: sgv.toDouble!, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
+        
+        
+        self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: WatchFaceDeviceValue, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+        self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
         self.cal = Calibration(slope: slope, scale: scale, intercept: intercept)
-     
-
+        
+        
     }
 }

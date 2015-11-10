@@ -26,15 +26,3 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
 }
 
-public func colorForDesiredColorState(desiredState: DesiredColorState) -> UIColor {
-    switch (desiredState) {
-    case .Neutral:
-        return NSAssetKitWatchOS.predefinedNeutralColor
-    case .Alert:
-        return NSAssetKitWatchOS.predefinedAlertColor
-    case .Positive:
-        return NSAssetKitWatchOS.predefinedPostiveColor
-    case .Warning:
-        return NSAssetKitWatchOS.predefinedWarningColor
-    }
-}

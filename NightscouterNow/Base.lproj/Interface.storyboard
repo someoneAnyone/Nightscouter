@@ -12,7 +12,7 @@
                     <items>
                         <table alignment="left" id="aSP-OI-u6m" userLabel="Sites List">
                             <items>
-                                <tableRow identifier="site" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
+                                <tableRow identifier="SiteRowController" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" id="e1q-GZ-XQa">
                                         <items>
                                             <group alignment="left" verticalAlignment="center" layout="vertical" id="46F-G9-p5c">
@@ -85,17 +85,22 @@
                             </items>
                         </table>
                     </items>
+                    <menu key="menu" id="EpU-0X-abL">
+                        <items>
+                            <menuItem title="Menu Item" icon="add" id="p4e-ZI-aoE"/>
+                        </items>
+                    </menu>
                     <connections>
-                        <outlet property="table" destination="aSP-OI-u6m" id="HE1-Uw-CL3"/>
+                        <outlet property="sitesTable" destination="aSP-OI-u6m" id="gVB-m3-lIb"/>
                     </connections>
                 </controller>
             </objects>
             <point key="canvasLocation" x="403" y="129"/>
         </scene>
-        <!--InterfaceController-->
+        <!--SiteDetailText-->
         <scene sceneID="aou-V4-d1y">
             <objects>
-                <controller identifier="InterfaceController" id="AgC-eL-Hgc" customClass="InterfaceController" customModule="NightscouterNow" customModuleProvider="target">
+                <controller identifier="SiteDetailText" id="AgC-eL-Hgc" customClass="SiteDetailTextInterfaceController" customModule="NightscouterNow_Extension">
                     <items>
                         <label alignment="left" text="Test Site" id="XWb-re-l4B">
                             <fontDescription key="font" style="UICTFontTextStyleTitle1"/>
@@ -160,20 +165,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="730" y="153"/>
-        </scene>
-        <!--Glance Interface Controller-->
-        <scene sceneID="BOz-TT-tkC">
-            <objects>
-                <glanceController spacing="0.0" id="0uZ-2p-rRc" customClass="GlanceController" customModule="NightscouterNow" customModuleProvider="target">
-                    <items>
-                        <group alignment="left" id="t8f-Gd-c4y"/>
-                        <group alignment="left" id="uCw-4Q-Ouw"/>
-                    </items>
-                    <edgeInsets key="margins" left="0.0" right="0.0" top="0.0" bottom="14"/>
-                </glanceController>
-            </objects>
-            <point key="canvasLocation" x="379" y="651"/>
+            <point key="canvasLocation" x="735" y="362"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
@@ -198,10 +190,10 @@
             </objects>
             <point key="canvasLocation" x="553" y="1001"/>
         </scene>
-        <!--Loading...-->
+        <!--SiteDetail-->
         <scene sceneID="TUC-Pp-aRl">
             <objects>
-                <controller identifier="SiteDetail" title="Loading..." id="QpE-HT-5Ki" customClass="SiteDetailInterfaceController" customModule="NightscouterNow_Extension">
+                <controller identifier="SiteDetail" id="QpE-HT-5Ki" customClass="SiteDetailInterfaceController" customModule="NightscouterNow_Extension">
                     <items>
                         <group height="1" heightAdjustment="-27" alignment="center" layout="vertical" id="pcb-8V-E7x" userLabel="Compass Group">
                             <items>
@@ -210,18 +202,18 @@
                         </group>
                         <group width="1" alignment="center" verticalAlignment="bottom" id="KK0-PA-ZWg">
                             <items>
-                                <group alignment="left" layout="vertical" spacing="1" id="RTL-DC-Ar5">
+                                <group alignment="left" layout="vertical" spacing="0.0" id="RTL-DC-Ar5">
                                     <items>
                                         <label alignment="left" text="UPDATED" id="hR9-AL-08K">
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="font" type="system" pointSize="8"/>
                                         </label>
-                                        <label alignment="left" text="- --- ---" id="JRe-kw-DOn">
+                                        <label alignment="left" text="- ---" id="JRe-kw-DOn">
                                             <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                         </label>
                                     </items>
                                 </group>
-                                <group alignment="right" layout="vertical" spacing="1" id="F4f-Bs-kBz">
+                                <group alignment="right" layout="vertical" spacing="0.0" id="F4f-Bs-kBz">
                                     <items>
                                         <label alignment="right" text="BATTERY" id="QGg-rk-PXv">
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -248,6 +240,26 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="403" y="362"/>
+        </scene>
+        <!--Glance Interface Controller-->
+        <scene sceneID="24W-o7-ARC">
+            <objects>
+                <glanceController id="QBG-iS-ldb" customClass="GlanceController" customModule="NightscouterNow_Extension">
+                    <items>
+                        <group alignment="left" id="eBZ-OY-tTh">
+                            <items>
+                                <imageView width="1" height="1" alignment="left" id="iVO-X3-l1n"/>
+                            </items>
+                        </group>
+                        <group alignment="left" id="Dwp-Kt-5dg">
+                            <items>
+                                <imageView width="1" height="1" alignment="left" id="wC9-hD-9gN"/>
+                            </items>
+                        </group>
+                    </items>
+                </glanceController>
+            </objects>
+            <point key="canvasLocation" x="220" y="641"/>
         </scene>
         <!--Nightscouter-->
         <scene sceneID="7Yn-WO-84n">

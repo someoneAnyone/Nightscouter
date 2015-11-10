@@ -125,9 +125,7 @@ extension SiteDetailViewController {
 
                     self.updateTitles(configuration.displayName)
                     
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if !rawEnabled {
+                    if !configuration.displayRawData {
                             // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
                             // self.rawReadingLabel!.removeFromSuperview()
                             if let _ = self.siteRawHeader {
@@ -135,7 +133,7 @@ extension SiteDetailViewController {
                                 self.siteRawLabel?.hidden = true
                             }
                         }
-                    }
+
                     self.updateData()
                 })
             }
@@ -166,6 +164,8 @@ extension SiteDetailViewController {
                         self.siteLastReadingLabel?.text = watchEntry.dateTimeAgoString
                         self.siteLastReadingLabel?.textColor = self.defaultTextColor
                         
+                        if configuration.displayRawData {
+
                         // Raw label
                         if let rawValue = watchEntry.raw {
                             let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
@@ -177,6 +177,10 @@ extension SiteDetailViewController {
 
                             self.siteRawLabel?.textColor = color
                             self.siteRawLabel?.text = "\(raw) : \(sgv.noise)"
+                        }
+                        } else {
+                            self.siteRawHeader?.hidden = true
+                            self.siteRawLabel?.hidden = true
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
