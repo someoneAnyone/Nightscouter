@@ -321,17 +321,6 @@ extension SiteDetailViewController {
         }
     }
     
-    @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
-        #if DEBUG
-            let storyboard = UIStoryboard(name: Constants.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
-            NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
-            
-            presentViewController(storyboard.instantiateInitialViewController()!, animated: true) { () -> Void in
-                print("Present Labs as a modal controller!")
-            }
-        #endif
-    }
-    
     // MARK: Handoff
     
     override func updateUserActivityState(activity: NSUserActivity) {
