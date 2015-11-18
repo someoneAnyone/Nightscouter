@@ -363,10 +363,10 @@
 		170825E51B2CBABB00304F8F /* iOS App */ = {
 			isa = PBXGroup;
 			children = (
-				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
-				170825F21B2CBABB00304F8F /* Info.plist */,
 				17ECEA5A1BF6F46C00733588 /* App */,
+				170825F21B2CBABB00304F8F /* Info.plist */,
 				1771B0431B75235B006C1F5E /* iOS Framework */,
+				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
 				83F4C57A1B7C201800C74285 /* Today Widget */,
 			);
 			name = "iOS App";
