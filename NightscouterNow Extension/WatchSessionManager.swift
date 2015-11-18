@@ -11,6 +11,7 @@ import WatchConnectivity
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
     // func dataSourceDidUpdate(dataSource: [Site])
+    func dataSourceDidUpdateAppContext(models: [WatchModel])
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int)
     func dataSourceDidAddSiteModel(model: WatchModel)
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
@@ -75,7 +76,7 @@ extension WatchSessionManager {
     
     // Receiver
     public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
-        // print("didReceiveApplicationContext: \(applicationContext)")
+        print("didReceiveApplicationContext: \(applicationContext)")
         processApplicationContext(applicationContext)
     }
     
@@ -89,11 +90,14 @@ extension WatchSessionManager {
 
 extension WatchSessionManager {
     public func requestLatestAppContext() {
+        print("requestLatestAppContext")
         let applicationData = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        
+
         session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
             
-            // print("recievedMessageReply: \(context)")
+            print("recievedMessageReply: \(context)")
             self.processApplicationContext(context)
             
             }, errorHandler: {(error ) -> Void in
@@ -127,9 +131,8 @@ extension WatchSessionManager {
                             
                         } else {
                             models.append(model)
-                            
                             dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model) }
+                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model)}
                             }
                             
                         }
@@ -150,6 +153,21 @@ extension WatchSessionManager {
                     }
                 }
             }
+        case .AppContext:
+            
+            
+            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]] {
+                models.removeAll()
+                for modelDict in modelArray {
+                    let model = WatchModel(fromDictionary: modelDict)!
+                    models.append(model)
+                }
+                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                    self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+                }
+            }
+            
+            
         default:
             break
         }

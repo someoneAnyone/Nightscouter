@@ -29,7 +29,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-       
+        print(">>> Entering \(__FUNCTION__) <<<")
+
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+//        WatchSessionManager.sharedManager.requestLatestAppContext()
+
         if models.isEmpty {
             if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
                 print("Loading models from default.")
@@ -47,8 +51,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        WatchSessionManager.sharedManager.requestLatestAppContext()
     }
     
     override func didDeactivate() {
@@ -100,11 +102,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                     row.model = model
                 }
             }
+            
         }
-//        else if models.count == 1 {
-//            print("only one site...")
-//            presentControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: models.first!.dictionary])
-//        }
     }
     
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
@@ -125,6 +124,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         } else {
             models.append(model)
         }
+    }
+    
+    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        self.models = models
     }
     
     func didUpdateItem(site: Site, withModel model: WatchModel) {
