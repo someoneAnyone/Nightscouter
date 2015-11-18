@@ -11,9 +11,9 @@ import UIKit
 public struct WatchPayloadPropertyKeys {
     static let contextKey = "context"
     static let actionKey = "action"
-    static let modelKey = "siteModel"
-    static let modelsKey = "siteModels"
-    static let delegateKey = "delegate"
+    static let modelKey: String = "siteModel"
+    static let modelsKey: String = "siteModels"
+    static let delegateKey: String = "delegate"
 
 }
 

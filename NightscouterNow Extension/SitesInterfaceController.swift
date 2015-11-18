@@ -12,12 +12,12 @@ import NightscouterWatchOSKit
 
 class SitesInterfaceController: WKInterfaceController{//, DataSourceChangedDelegate{
     
-    var sites: [Site] = [] {
+    var sites: [WatchModel] = [] {
         didSet{
             print("sites did set in PageController")
-            let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
-            NSUserDefaults.standardUserDefaults().synchronize()
+// let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+// NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
+// NSUserDefaults.standardUserDefaults().synchronize()
         }
     }
     var names: [String] = []
@@ -26,26 +26,26 @@ class SitesInterfaceController: WKInterfaceController{//, DataSourceChangedDeleg
         super.willActivate()
         
         if let data = NSUserDefaults.standardUserDefaults().objectForKey("sites") as? NSData {
-            if let sites  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [Site] {
-                dataSourceDidUpdate(sites)
+            if let _  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [WatchModel] {
+//                dataSourceDidUpdate(sites)
             }
         }
 
-//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-//        WatchSessionManager.sharedManager.wakeUp()
+// WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+// WatchSessionManager.sharedManager.wakeUp()
     }
     
-    func dataSourceDidUpdate(dataSource: [Site]) {
-
-        sites = dataSource
-
-        names.removeAll()
-        for _ in (0..<sites.count) {
-            names.append("SiteDetail")
-        }
-        
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            WKInterfaceController.reloadRootControllersWithNames(self.names, contexts: self.sites)
-        })
-    }
+//    func dataSourceDidUpdate(dataSource: [Site]) {
+//
+//        sites = dataSource
+//
+//        names.removeAll()
+//        for _ in (0..<sites.count) {
+//            names.append("SiteDetail")
+//        }
+//        
+//        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+//            WKInterfaceController.reloadRootControllersWithNames(self.names, contexts: self.sites)
+//        })
+//    }
 }

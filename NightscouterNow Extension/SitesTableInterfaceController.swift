@@ -20,9 +20,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             }
             updateData()
         }
-
+        
     }
- 
+    
     var lastUpdatedTime: NSDate?
     var timer: NSTimer?
     var nsApi: [NightscoutAPIClient]?
@@ -30,22 +30,19 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-//        if let data = NSUserDefaults.standardUserDefaults().objectForKey("sites") as? NSData {
-//            if let sites  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [Site] {
-//                // dataSourceDidUpdate(sites)
-//            }
-//        } else {
-//            updateTableData()
-//        }
-
-        updateTableData()
-        
-        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        if models.isEmpty {
+            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey("models") as? [[String: AnyObject]] {
+                print("Loading models from default.")
+                models = dictArray.map({ WatchModel(fromDictionary: $0)! })
+            } else {
+                updateTableData()
+            }
+        }
         
         if (self.timer == nil) {
             timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
         }
-
+        
     }
     
     override func willActivate() {
@@ -61,9 +58,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
         
-//        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-//        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
-//        NSUserDefaults.standardUserDefaults().synchronize()
+        let dictArray = models.map({ $0.dictionary })
+        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: "models")
+        NSUserDefaults.standardUserDefaults().synchronize()
         
         timer?.invalidate()
         
@@ -75,19 +72,15 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-
     }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
-       // pushControllerWithName("SiteDetail", context: ["delegate": self, "site": sites[rowIndex]])
-        
         let model = models[rowIndex]
         
         pushControllerWithName("SiteDetail", context: ["delegate": self, "site": model.dictionary])
-
     }
     
     
@@ -109,7 +102,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             sitesTable.setNumberOfRows(models.count, withRowType: rowTypeIdentifier)
             for (index, model) in models.enumerate() {
                 if let row = sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                    
                     lastUpdatedTime = model.lastReadingDate
                     row.model = model
                 }
@@ -121,7 +113,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         models[index] = model
     }
-   
+    
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
         models.removeAtIndex(index)
@@ -147,54 +139,5 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             WatchSessionManager.sharedManager.loadDataFor(site, index: index)
         }
     }
-//    
-//    func loadDataFor(site: Site, index: Int){
-//
-//        print(">>> Entering \(__FUNCTION__) <<<")
-//        
-//        
-//        
-//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-//            // Start up the API
-//            let nsApi = NightscoutAPIClient(url: site.url)
-////            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
-//                // Get settings for a given site.
-//                print("Loading data for \(site.url!)")
-//                nsApi.fetchServerConfiguration { (result) -> Void in
-//                    switch (result) {
-//                    case let .Error(error):
-//                        // display error message
-//                        print("\(__FUNCTION__) ERROR recieved: \(error)")
-//                    case let .Value(boxedConfiguration):
-//                        let configuration:ServerConfiguration = boxedConfiguration.value
-//                        // do something with user
-//                        nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-//
-//                            site.configuration = configuration
-//                            site.watchEntry = watchEntry
-//                            self.lastUpdatedTime = site.lastConnectedDate
-//                            self.models[index] = WatchModel(fromSite: site)!
-//                            
-////                            // Get back on the main queue to update the user interface
-////                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-////                                print("Update rows...")
-////                                self.updateRowForSite(site, index: index)
-////                            })
-//                        })
-//                    }
-//                }
-//        }
-//    
-//    }
-    
-//    func updateRowForSite(site: Site, index: Int) {
-//        if let watchModel = WatchModel(fromSite: site) {
-//            let row = self.sitesTable.rowControllerAtIndex(index) as! SiteRowController
-//            row.model = watchModel
-//        } else {
-//            print("Why have you failed me yet again?")
-//        }
-//
-//    }
 }
 
