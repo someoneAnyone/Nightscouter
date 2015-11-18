@@ -9,8 +9,8 @@ import Foundation
 
 public class AppDataManager: NSObject {
     
-    internal struct SavedPropertyKey {
-        static let sitesArrayObjectsKey = "userSites"
+    public struct SavedPropertyKey {
+        public static let sitesArrayObjectsKey = "userSites"
         static let currentSiteIndexKey = "currentSiteIndex"
         static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
     }
@@ -19,10 +19,29 @@ public class AppDataManager: NSObject {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
     
-    public var sites: [Site] = [Site]()
+    public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
+    
+    public var sites: [Site] = [Site]() {
+        didSet {
+            
+            #if DEBUG
+               // print("sites has been set with: \(sites)")
+            #endif
+            
+            let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            
+            defaults.setObject(data, forKey: SavedPropertyKey.sitesArrayObjectsKey)
+            defaults.synchronize()
+        }
+    }
     
     public var currentSiteIndex: Int {
         set {
+            
+            #if DEBUG
+                print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
+            #endif
+            
             defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
             defaults.synchronize()
         }
@@ -33,6 +52,7 @@ public class AppDataManager: NSObject {
     
     public var shouldDisableIdleTimer: Bool {
         set {
+            
             #if DEBUG
                 print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
             #endif
@@ -45,27 +65,6 @@ public class AppDataManager: NSObject {
         }
     }
     
-    public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
-    
-    lazy var applicationDocumentsDirectory: NSURL? = {
-        
-        if let appDocDirURL = NSFileManager.defaultManager().containerURLForSecurityApplicationGroupIdentifier(SharedAppGroupKey.NightscouterGroup) {
-            #if DEBUG
-                print("applicationDocumentsDirectory: \(appDocDirURL)")
-            #endif
-            return appDocDirURL
-        }
-        return  nil
-    }()
-    
-    public var sitesFileURL: NSURL {
-        get {
-            let groupURL = applicationDocumentsDirectory
-            let fileURL = groupURL?.URLByAppendingPathComponent(Site.PropertyKey.sitesPlistKey)
-            
-            return fileURL!
-        }
-    }
     
     public class var sharedInstance: AppDataManager {
         struct Static {
@@ -81,55 +80,13 @@ public class AppDataManager: NSObject {
     internal override init() {
         super.init()
         
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(sitesFileURL.path!) as? NSData {
+        if let  sitesData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
-                
-//                saveAppData()
             }
         }
         
-    }
-    
-    public func saveAppData() {
-        // write to disk
-        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), {
-            let fileDiskSave = NSKeyedArchiver.archiveRootObject(data, toFile: self.sitesFileURL.path!)
-            
-            self.defaults.setObject(data, forKey: SavedPropertyKey.sitesArrayObjectsKey)
-            self.defaults.synchronize()
-                        
-            #if DEBUG
-                if !fileDiskSave {
-                    print("Failed to save sites...")
-                }else{
-                    print("Successful save...")
-                }
-            #endif
-            
-        })
-    }
-    
-    public func updateWatch() {
-        if #available(iOSApplicationExtension 9.0, *) {
-            
-            var dictionaryArray: [[String: AnyObject]] = []
-            for site in self.sites {
-                dictionaryArray.append(site.dictionary)
-            }
-            let context = ["siteDictionary": dictionaryArray]
-            do {
-                try WatchSessionManager.sharedManager.updateApplicationContext(context)
-            } catch let error{
-                print("updateContextError: \(error)")
-            }
-            
-        } else {
-            // Fallback on earlier versions
-        }
-
+        // updateWatch(.AppContext, withSite: nil)
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -140,15 +97,15 @@ public class AppDataManager: NSObject {
         }else {
             sites.append(site)
         }
-        saveAppData()
-        updateWatch()
+        
+        updateWatch(withAction:.Create, withSite: [site])
     }
     
     public func updateSite(site: Site)  ->  Bool {
         if let index = AppDataManager.sharedInstance.sites.indexOf(site) {
             self.sites[index] = site
-            saveAppData()
-            updateWatch()
+            updateWatch(withAction: .Update, withSite: [site])
+            
             return true
         }
         
@@ -156,10 +113,10 @@ public class AppDataManager: NSObject {
     }
     
     public func deleteSiteAtIndex(index: Int) {
-        //        let site = sites[index]
+        
+        updateWatch(withAction: .Delete, withSite: [sites[index]])
+        
         sites.removeAtIndex(index)
-        saveAppData()
-        updateWatch()
     }
     
     public func loadSampleSites() -> Void {
@@ -204,5 +161,52 @@ public class AppDataManager: NSObject {
         }
         return nil
     }
+    
+}
+
+extension AppDataManager {
+    public func updateWatchAppContext() {
+        
+    }
+    
+    public func updateWatch(withAction action: WatchAction, withSite sites: [Site]) {
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+            // print("Please \(action) the watch with the \(sites)")
+        #endif
+        
+        var context = [String: AnyObject]()
+        context[WatchPayloadPropertyKeys.actionKey] = action.rawValue
+        var models:[[String: AnyObject]] = []
+        
+        for site in sites {
+            if let watchModel = WatchModel(fromSite: site) {
+                models.append(watchModel.dictionary)
+            }
+        }
+        context[WatchPayloadPropertyKeys.modelsKey] = models
+        
+        if #available(iOSApplicationExtension 9.0, *) {
+            
+            switch action {
+            case .AppContext:
+                do {
+                    // print("sending context: \(context)")
+                    try WatchSessionManager.sharedManager.updateApplicationContext(context)
+                } catch let error{
+                    print("updateContextError: \(error)")
+                }
+                
+            default:
+                WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
+                    print("recieved reply: \(reply)")
+                    }) { (error) -> Void in
+                        print("recieved an error: \(error)")
+                }
+            }
+            
+        }
+    }
+    
     
 }

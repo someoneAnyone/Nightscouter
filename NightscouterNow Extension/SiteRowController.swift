@@ -31,30 +31,40 @@ class SiteRowController: NSObject {
             
             if let model = model {
                 // Site name in row
+                
+                let sgvColor = UIColor(hexString: model.sgvColor)
+                let rawColor = UIColor(hexString: model.rawColor)
+                let batteryColor = UIColor(hexString: model.batteryColor)
+                let lastReadingColor = UIColor(hexString: model.lastReadingColor)
+                
+
                 siteNameLabel.setText(model.displayName)
                 
+                let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+
+                
                 // Last reading label
-                siteLastReadingLabel.setText(model.lastReadingString)
-                siteLastReadingLabel.setTextColor(model.lastReadingColor)
+                siteLastReadingLabel.setText(date)
+                siteLastReadingLabel.setTextColor(lastReadingColor)
                 
                 // Battery label
                 siteBatteryLabel.setText(model.batteryString)
-                siteBatteryLabel.setTextColor(model.batteryColor)
+                siteBatteryLabel.setTextColor(batteryColor)
                 
                 // Raw data
-                siteRawGroup.setHidden(model.rawVisible)
+                siteRawGroup.setHidden(!model.rawVisible)
                 siteRawLabel.setText(model.rawString)
-                siteRawLabel.setTextColor(model.rawColor)
+                siteRawLabel.setTextColor(rawColor)
                 
                 // SGV formatted value
-                siteSgvLabel.setText(model.sgvString)
-                siteSgvLabel.setTextColor(model.sgvColor)
+                siteSgvLabel.setText(model.sgvStringWithEmoji)
+                siteSgvLabel.setTextColor(sgvColor)
                 
                 // Delta
                 siteDirectionLabel.setText(model.deltaString)
-                siteDirectionLabel.setTextColor(model.sgvColor)
+                siteDirectionLabel.setTextColor(sgvColor)
                 
-                backgroundGroup.setBackgroundColor(model.sgvColor.colorWithAlphaComponent(0.2))
+                backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
             }
         }
     }

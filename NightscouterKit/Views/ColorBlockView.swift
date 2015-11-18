@@ -14,8 +14,8 @@ public class ColorBlockView: UIView {
     // An empty implementation adversely affects performance during animation.
     override public func drawRect(rect: CGRect) {
         // Drawing code
-        if let color = self.backgroundColor {
-            print("color: \(color)")
+        if let _ = self.backgroundColor {
+            // print("color: \(color)")
         }
     }
 }

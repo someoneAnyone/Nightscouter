@@ -13,16 +13,23 @@
                         <table alignment="left" id="aSP-OI-u6m" userLabel="Sites List">
                             <items>
                                 <tableRow identifier="SiteRowController" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
-                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="e1q-GZ-XQa">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="e1q-GZ-XQa">
                                         <items>
-                                            <group alignment="left" verticalAlignment="center" layout="vertical" id="46F-G9-p5c">
+                                            <group width="1" alignment="center" id="46F-G9-p5c">
                                                 <items>
                                                     <label alignment="left" verticalAlignment="center" text="----" id="KPc-Pc-EYl">
                                                         <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                                     </label>
-                                                    <group alignment="left" verticalAlignment="center" id="Rxr-pt-Myi">
+                                                    <label alignment="right" verticalAlignment="center" text="----" id="r4d-0W-AgY">
+                                                        <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
+                                                    </label>
+                                                </items>
+                                            </group>
+                                            <group width="1" alignment="center" verticalAlignment="center" id="Rxr-pt-Myi">
+                                                <items>
+                                                    <group alignment="left" verticalAlignment="center" id="XPB-eC-B96">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="center" text="LR" id="ZGd-P5-JG6">
+                                                            <label alignment="left" text="LR" id="ZGd-P5-JG6">
                                                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
@@ -31,9 +38,16 @@
                                                             </label>
                                                         </items>
                                                     </group>
-                                                    <group alignment="left" verticalAlignment="center" id="ZTh-uQ-Vsl">
+                                                    <label alignment="right" verticalAlignment="center" text="---" id="hGo-RA-vnl">
+                                                        <fontDescription key="font" type="system" pointSize="11"/>
+                                                    </label>
+                                                </items>
+                                            </group>
+                                            <group width="1" alignment="center" verticalAlignment="bottom" id="ZTh-uQ-Vsl">
+                                                <items>
+                                                    <group alignment="left" verticalAlignment="center" id="rhp-j8-i4I">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="center" text="B" id="eQO-Fc-4sQ">
+                                                            <label alignment="left" text="B" id="eQO-Fc-4sQ">
                                                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
@@ -42,19 +56,9 @@
                                                             </label>
                                                         </items>
                                                     </group>
-                                                </items>
-                                            </group>
-                                            <group alignment="right" verticalAlignment="center" layout="vertical" id="4CT-Zg-l2b">
-                                                <items>
-                                                    <label alignment="right" verticalAlignment="center" text="----" id="r4d-0W-AgY">
-                                                        <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                                    </label>
-                                                    <label alignment="right" verticalAlignment="center" text="---" id="hGo-RA-vnl">
-                                                        <fontDescription key="font" type="system" pointSize="11"/>
-                                                    </label>
                                                     <group alignment="right" verticalAlignment="center" id="uI5-1C-zXY">
                                                         <items>
-                                                            <label alignment="left" verticalAlignment="center" text="R" id="XwO-b7-cwc">
+                                                            <label alignment="left" text="R" id="XwO-b7-cwc">
                                                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
@@ -80,6 +84,18 @@
                                         <outlet property="siteRawHeader" destination="XwO-b7-cwc" id="IE2-yJ-nkN"/>
                                         <outlet property="siteRawLabel" destination="rlM-jC-3gb" id="ugV-ez-ECT"/>
                                         <outlet property="siteSgvLabel" destination="r4d-0W-AgY" id="mi7-7E-WjQ"/>
+                                    </connections>
+                                </tableRow>
+                                <tableRow identifier="SiteEmptyRowController" selectable="NO" id="S77-fP-8yz" customClass="SiteEmptyRowController" customModule="NightscouterNow_Extension">
+                                    <group key="rootItem" width="1" alignment="left" id="wCq-82-UfK">
+                                        <items>
+                                            <label alignment="center" verticalAlignment="center" text="No Sites Available" id="udT-as-uND">
+                                                <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                                            </label>
+                                        </items>
+                                    </group>
+                                    <connections>
+                                        <outlet property="messageLabel" destination="udT-as-uND" id="6Ts-pQ-msW"/>
                                     </connections>
                                 </tableRow>
                             </items>
@@ -165,7 +181,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="735" y="362"/>
+            <point key="canvasLocation" x="580" y="362"/>
         </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
@@ -239,7 +255,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="426" y="376"/>
+            <point key="canvasLocation" x="403" y="362"/>
         </scene>
         <!--Glance Interface Controller-->
         <scene sceneID="24W-o7-ARC">
@@ -259,14 +275,14 @@
                     </items>
                 </glanceController>
             </objects>
-            <point key="canvasLocation" x="220" y="641"/>
+            <point key="canvasLocation" x="403" y="-103"/>
         </scene>
         <!--Nightscouter-->
         <scene sceneID="7Yn-WO-84n">
             <objects>
                 <controller identifier="SitesPage" title="Nightscouter" id="zQV-gh-g4y" customClass="SitesInterfaceController" customModule="NightscouterNow_Extension"/>
             </objects>
-            <point key="canvasLocation" x="646" y="100"/>
+            <point key="canvasLocation" x="580" y="129"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="calibratedRGB"/>

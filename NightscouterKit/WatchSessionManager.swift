@@ -12,8 +12,11 @@ import WatchConnectivity
 public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public static let sharedManager = WatchSessionManager()
+    
     private override init() {
         super.init()
+        
+// startSession()
     }
     
     private let session: WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
@@ -35,7 +38,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public func startSession() {
         session?.delegate = self
         session?.activateSession()
+        #if DEBUG
+            print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(session?.paired), Watch App Installed: \(session?.watchAppInstalled)")
+        #endif
     }
+    
 }
 
 // MARK: Application Context
@@ -66,24 +73,32 @@ public extension WatchSessionManager {
 }
 
 // MARK: User Info
-// use when@available(iOSApplicationExtension 9.0, *)
-@available(iOSApplicationExtension 9.0, *)
+// use when your app needs all the data
 // FIFO queue
+@available(iOSApplicationExtension 9.0, *)
 extension WatchSessionManager {
     
     // Sender
     public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
-        print("transferUserInfo: \(userInfo)")
+        #if DEBUG
+            print("transferUserInfo: \(userInfo)")
+        #endif
         return validSession?.transferUserInfo(userInfo)
     }
     
     public func session(session: WCSession, didFinishUserInfoTransfer userInfoTransfer: WCSessionUserInfoTransfer, error: NSError?) {
+        #if DEBUG
+            print("session \(session), didFinishUserInfoTransfer: \(userInfoTransfer), error: \(error)")
+        #endif
         // implement this on the sender if you need to confirm that
         // the user info did in fact transfer
     }
     
     // Receiver
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
+        #if DEBUG
+            print("session \(session), didReceiveUserInfo: \(userInfo)")
+        #endif
         // handle receiving user info
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
@@ -102,11 +117,17 @@ extension WatchSessionManager {
     }
     
     public func session(session: WCSession, didFinishFileTransfer fileTransfer: WCSessionFileTransfer, error: NSError?) {
+        #if DEBUG
+            print("session \(session), didFinishFileTransfer: \(fileTransfer), error: \(error)")
+        #endif
         // handle filed transfer completion
     }
     
     // Receiver
     public func session(session: WCSession, didReceiveFile file: WCSessionFile) {
+        #if DEBUG
+            print("session \(session), didReceiveFile: \(file)")
+        #endif
         // handle receiving file
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
@@ -120,7 +141,7 @@ extension WatchSessionManager {
 extension WatchSessionManager {
     
     // Live messaging! App has to be reachable
-    private var validReachableSession: WCSession? {
+    public var validReachableSession: WCSession? {
         if let session = validSession where session.reachable {
             return session
         }
@@ -145,24 +166,37 @@ extension WatchSessionManager {
     // Receiver
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         // handle receiving message
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+            print("session: \(session), didReceiveMessage: \(message)")
+        #endif
         
-        if let updateTask = message["type"] as? String where updateTask == "update" {
-            var dictionaryArray: [[String: AnyObject]] = []
-            for site in AppDataManager.sharedInstance.sites {
-                dictionaryArray.append(site.dictionary)
-            }
-            let context = ["siteDictionary": dictionaryArray]
-            
-            replyHandler(context)
+        guard let action = WatchAction(rawValue: (message[WatchPayloadPropertyKeys.actionKey] as? String)!) else {
+            print("No action was found, didReceiveMessage: \(message)")
+            return
         }
-        
+       
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
+            switch action {
+            case .AppContext:
+                print("appContext")
+                AppDataManager.sharedInstance.updateWatch(withAction: .AppContext, withSite: AppDataManager.sharedInstance.sites)
+            default:
+                print("default")
+                break
+            }
         }
+        
     }
     
-    
     public func session(session: WCSession, didReceiveMessageData messageData: NSData, replyHandler: (NSData) -> Void) {
+
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+            print("session: \(session), messageData: \(messageData)")
+        #endif
+        
         // handle receiving message data
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!

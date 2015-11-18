@@ -35,6 +35,10 @@ public enum Units: String, CustomStringConvertible {
     case Mgdl = "mg/dl"
     case Mmol = "mmol"
     
+    public init() {
+        self = .Mgdl
+    }
+    
     public var description: String {
         switch self {
         case .Mgdl:
@@ -64,7 +68,7 @@ public enum RawBGMode: String, CustomStringConvertible {
     }
 }
 
-public struct Threshold: CustomStringConvertible {
+public struct Threshold: CustomStringConvertible, DictionaryConvertible {
     public let bg_high: Double
     public let bg_low: Double
     public let bg_target_bottom :Double
@@ -76,7 +80,7 @@ public struct Threshold: CustomStringConvertible {
     }
 }
 
-public struct Alarm: CustomStringConvertible {
+public struct Alarm: CustomStringConvertible, DictionaryConvertible {
     public let alarmHigh: Bool
     public let alarmLow: Bool
     public let alarmTimeAgoUrgent: Bool
@@ -85,11 +89,15 @@ public struct Alarm: CustomStringConvertible {
     public let alarmTimeAgoWarnMins: NSTimeInterval
     public let alarmUrgentHigh: Bool
     public let alarmUrgentLow: Bool
-    
+
+
     public var description: String {
-        let dict = ["alarmHigh": alarmHigh, "alarmLow:": alarmLow, "alarmTimeAgoUrgent": alarmTimeAgoUrgentMins, "alarmTimeAgoWarn": alarmTimeAgoWarn, "alarmTimeAgoWarnMins": alarmTimeAgoWarnMins, "alarmUrgentHigh": alarmUrgentHigh, "alarmUrgentLow": alarmUrgentLow]
-        return dict.description
+        return dictionary.description
     }
+//    public var description: String {
+//        let dict = ["alarmHigh": alarmHigh, "alarmLow:": alarmLow, "alarmTimeAgoUrgent": alarmTimeAgoUrgentMins, "alarmTimeAgoWarn": alarmTimeAgoWarn, "alarmTimeAgoWarnMins": alarmTimeAgoWarnMins, "alarmUrgentHigh": alarmUrgentHigh, "alarmUrgentLow": alarmUrgentLow]
+//        return dict.description
+//    }
 }
 
 public enum AlarmTypes: String, CustomStringConvertible {
@@ -101,7 +109,7 @@ public enum AlarmTypes: String, CustomStringConvertible {
     }
 }
 
-public struct Defaults: CustomStringConvertible {
+public struct Defaults: CustomStringConvertible, DictionaryConvertible {
     // Start of "defaults" dictionary // In future nightscout this becomes settings... not sure how we want to manage the transition.
     public let units: Units
     public let timeFormat: Int
@@ -118,8 +126,8 @@ public struct Defaults: CustomStringConvertible {
     // End of "defaults" dictionary
     
     public var description: String {
-        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language]
-        return dict.description
+//        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language]
+        return dictionary.description
     }
 }
 
@@ -174,7 +182,7 @@ struct ConfigurationPropertyKey {
     static let showPluginsKey = "showPlugins"
 }
 
-public struct ServerConfiguration: CustomStringConvertible {
+public struct ServerConfiguration: CustomStringConvertible, DictionaryConvertible {
     public var status: String?
     public var apiEnabled: Bool?
     public var careportalEnabled: Bool?
@@ -192,44 +200,44 @@ public struct ServerConfiguration: CustomStringConvertible {
         return dictionary.description
     }
     
-    public var dictionary: [String: AnyObject] {
-        var dict = Dictionary<String, AnyObject>()
-        if let status = status {
-            dict["status"] = status
-        }
-        if let apiEnabled = apiEnabled{
-            dict["apiEnabled"] = apiEnabled
-        }
-        if let capreporatlEnabled = careportalEnabled {
-            dict["capreporatlEnabled"] = capreporatlEnabled
-        }
-        if let enabledOptions = enabledOptions {
-            dict["enabledOptions"] = enabledOptions.description
-        }
-        if let defaults = defaults {
-            dict["defaults"] = defaults.description
-        }
-        if let unitsRoot = unitsRoot {
-            dict["unitsRoot"] = unitsRoot.description
-        }
-        if let head = head {
-            dict["head"] = head
-        }
-        if let version = version {
-            dict["version"] = version
-        }
-        if let thresholds = thresholds {
-            dict["thresholds"] = thresholds.description
-        }
-        if let alarm_types = alarm_types {
-            dict["alram_types"] = alarm_types
-        }
-        if let name = name {
-            dict["name"] = name
-        }
-        
-        return dict
-    }
+//    public var dictionary: [String: AnyObject] {
+//        var dict = Dictionary<String, AnyObject>()
+//        if let status = status {
+//            dict["status"] = status
+//        }
+//        if let apiEnabled = apiEnabled{
+//            dict["apiEnabled"] = apiEnabled
+//        }
+//        if let capreporatlEnabled = careportalEnabled {
+//            dict["capreporatlEnabled"] = capreporatlEnabled
+//        }
+//        if let enabledOptions = enabledOptions {
+//            dict["enabledOptions"] = enabledOptions.description
+//        }
+//        if let defaults = defaults {
+//            dict["defaults"] = defaults.description
+//        }
+//        if let unitsRoot = unitsRoot {
+//            dict["unitsRoot"] = unitsRoot.description
+//        }
+//        if let head = head {
+//            dict["head"] = head
+//        }
+//        if let version = version {
+//            dict["version"] = version
+//        }
+//        if let thresholds = thresholds {
+//            dict["thresholds"] = thresholds.description
+//        }
+//        if let alarm_types = alarm_types {
+//            dict["alram_types"] = alarm_types
+//        }
+//        if let name = name {
+//            dict["name"] = name
+//        }
+//        
+//        return dict
+//    }
 }
 
 public extension ServerConfiguration {
@@ -392,8 +400,12 @@ public extension ServerConfiguration {
 }
 
 // TODO: Should this be here?
-public enum DesiredColorState {
+public enum DesiredColorState: String, CustomStringConvertible {
     case Alert, Warning, Positive, Neutral
+    
+    public var description: String {
+        return self.rawValue
+    }
 }
 
 // TODO: Should this be here? Maybe it shuld be a threshold extension.
@@ -435,7 +447,7 @@ public extension ServerConfiguration {
         let returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
         
         #if DEBUG
-            print("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
+            // print("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
         #endif
         
         return returnValue
@@ -484,4 +496,26 @@ public extension ServerConfiguration {
             return .Mgdl
         }
     }
+    
+    public var settingsTableArray: [[String: AnyObject?]] {
+        
+        var finalArray = [[String: AnyObject?]]()
+        
+        let dict: [String : String] = ["Site Name" : displayName, "Version": version!, "Units": displayUnits.description]
+        let section1: [String: AnyObject] = ["sectionTitle": "General", "data": dict]
+        
+        finalArray.append(section1)
+        
+        if let thresholds = defaults?.thresholds {
+            
+            let dict: [String: String] = ["Target Top": String(thresholds.bg_target_top), "High": String(thresholds.bg_high), "Low": String(thresholds.bg_low), "Target Bottom": String(thresholds.bg_target_bottom)]
+            
+            let section2: [String: AnyObject] = ["sectionTitle": "Thresholds", "data": dict]
+            
+            finalArray.append(section2)
+        }
+        
+        return finalArray
+    }
+
 }

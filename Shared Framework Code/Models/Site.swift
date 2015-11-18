@@ -6,17 +6,14 @@
 //  Copyright (c) 2015 Peter Ina. All rights reserved.
 //
 import Foundation
-//import UIKit
-//
-public class Site: NSObject, NSCoding {
+
+public class Site: NSObject, NSCoding, DictionaryConvertible {
     
     public struct PropertyKey {
         static let urlKey = "url"
         static let apiSecretKey = "apiSecret"
         static let siteKey = "site"
         static let allowNotificationsKey = "notifications"
-        static let notificationKey = "notification"
-        static let notificationCountKey = "notificationCount"
         static let overrideScreenLockKey = "overrideScreenLock"
         static let disabledKey = "disabled"
         static let lastConnectedDateKey = "lastConnectedDate"
@@ -37,7 +34,12 @@ public class Site: NSObject, NSCoding {
             disabled = false
         }
     }
-    public var apiSecret: String?
+    public var apiSecret: String? // set in keychain
+    
+    public var hasApiSecret: Bool {
+        return (apiSecret?.isEmpty != nil)
+    }
+    
     public var configuration: ServerConfiguration? {
         didSet {
             lastConnectedDate = NSDate()
@@ -48,7 +50,6 @@ public class Site: NSObject, NSCoding {
     public var allowNotifications: Bool
     public var overrideScreenLock: Bool
     
-    // public var notifications: [UILocalNotification]
     public var disabled: Bool
     
     public private(set) var uuid: NSUUID
@@ -58,7 +59,7 @@ public class Site: NSObject, NSCoding {
         return dictionary.description
     }
     
-    public var dictionary: [String: AnyObject] {
+    public var dictionaryRep: [String: AnyObject] {
 
         var dict = Dictionary<String, AnyObject>()
       
@@ -78,7 +79,6 @@ public class Site: NSObject, NSCoding {
         self.apiSecret = apiSecret
         
         self.uuid = NSUUID()
-        //        self.notifications = [UILocalNotification]()
         self.overrideScreenLock = false
         self.disabled = false
         self.allowNotifications = true
@@ -97,7 +97,6 @@ public class Site: NSObject, NSCoding {
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
         aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
-        // aCoder.encodeObject(notifications, forKey: PropertyKey.notificationKey)
         aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
         aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
         aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
@@ -122,15 +121,7 @@ public class Site: NSObject, NSCoding {
         self.allowNotifications =  allowNotif
         self.overrideScreenLock = overrideScreen
         self.lastConnectedDate = lastConnectedDate
-        
-        /*
-        if let notification = aDecoder.decodeObjectForKey(PropertyKey.notificationKey) as? [UILocalNotification] {
-        self.notifications = notification
-        } else {
-        self.notifications = [UILocalNotification]()
-        }
-        */
-        
+
         self.disabled = disabledSite
     }
     
@@ -145,10 +136,11 @@ public class Site: NSObject, NSCoding {
 
 extension Site {
     public convenience init?(dictionary: [String: AnyObject]) {
-        
+
         guard let url = dictionary["url"] as? NSURL else {
             return nil
         }
+        
         let api = dictionary["apiapiSecret"] as? String
         
         self.init(url: url, apiSecret: api)

@@ -13,24 +13,39 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
-    var sites: [Site] = []
-    
+    var models = [WatchModel]() {
+        didSet {
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.updateTableData()
+            }
+            updateData()
+        }
+
+    }
+ 
     var lastUpdatedTime: NSDate?
-    var timer: NSTimer = NSTimer()
+    var timer: NSTimer?
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        if let data = NSUserDefaults.standardUserDefaults().objectForKey("sites") as? NSData {
-            if let sites  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [Site] {
-                dataSourceDidUpdate(sites)
-            }
+//        if let data = NSUserDefaults.standardUserDefaults().objectForKey("sites") as? NSData {
+//            if let sites  = NSKeyedUnarchiver.unarchiveObjectWithData(data) as? [Site] {
+//                // dataSourceDidUpdate(sites)
+//            }
+//        } else {
+//            updateTableData()
+//        }
+
+        updateTableData()
+        
+        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        
+        if (self.timer == nil) {
+            timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
         }
 
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        
-        timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
     }
     
     override func willActivate() {
@@ -38,116 +53,148 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        WatchSessionManager.sharedManager.wakeUp()
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        WatchSessionManager.sharedManager.requestLatestAppContext()
     }
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
+        
+//        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+//        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
+//        NSUserDefaults.standardUserDefaults().synchronize()
+        
+        timer?.invalidate()
+        
         super.didDeactivate()
-        
-        let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        NSUserDefaults.standardUserDefaults().setObject(data, forKey: "sites")
-        NSUserDefaults.standardUserDefaults().synchronize()
-        
-        timer.invalidate()
     }
     
     override func willDisappear() {
         super.willDisappear()
         print(">>> Entering \(__FUNCTION__) <<<")
         
+        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+
     }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
-        pushControllerWithName("SiteDetail", context: ["delegate": self, "site": sites[rowIndex]])
+       // pushControllerWithName("SiteDetail", context: ["delegate": self, "site": sites[rowIndex]])
+        
+        let model = models[rowIndex]
+        
+        pushControllerWithName("SiteDetail", context: ["delegate": self, "site": model.dictionary])
+
     }
     
     
-    private func loadTableData() {
+    private func updateTableData() {
         print(">>> Entering \(__FUNCTION__) <<<")
         
         let rowTypeIdentifier: String = "SiteRowController"
         
         sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
         
-        if sites.isEmpty {
-            sitesTable.setNumberOfRows(1, withRowType: rowTypeIdentifier)
-            let row = sitesTable.rowControllerAtIndex(0) as? SiteRowController
+        if models.isEmpty {
+            sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")
+            let row = sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
             if let row = row {
-                row.siteNameLabel.setText("Nothing")
+                row.messageLabel.setText("No sites availble.")
             }
             
         } else {
-            sitesTable.setNumberOfRows(sites.count, withRowType: rowTypeIdentifier)
-            for (index, site) in sites.enumerate() {
-                if let _ = sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                    loadDataFor(site, index: index)
+            sitesTable.setNumberOfRows(models.count, withRowType: rowTypeIdentifier)
+            for (index, model) in models.enumerate() {
+                if let row = sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+                    
+                    lastUpdatedTime = model.lastReadingDate
+                    row.model = model
                 }
             }
         }
     }
     
-    func dataSourceDidUpdate(dataSource: [Site]) {
+    func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        sites = dataSource
-        loadTableData()
+        models[index] = model
+    }
+   
+    func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        models.removeAtIndex(index)
+    }
+    
+    func dataSourceDidAddSiteModel(model: WatchModel) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        models.append(model)
     }
     
     func didUpdateItem(site: Site) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        if let index = self.sites.indexOf(site) {
-            self.sites[index] = site
+        if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
+            self.models[index] = model
         }
     }
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        for (index, site) in sites.enumerate() {
-            loadDataFor(site, index: index)
+        for (index, model) in models.enumerate() {
+            let url = NSURL(string: model.urlString)!
+            let site = Site(url: url, apiSecret: nil)!
+            WatchSessionManager.sharedManager.loadDataFor(site, index: index)
         }
     }
+//    
+//    func loadDataFor(site: Site, index: Int){
+//
+//        print(">>> Entering \(__FUNCTION__) <<<")
+//        
+//        
+//        
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+//            // Start up the API
+//            let nsApi = NightscoutAPIClient(url: site.url)
+////            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
+//                // Get settings for a given site.
+//                print("Loading data for \(site.url!)")
+//                nsApi.fetchServerConfiguration { (result) -> Void in
+//                    switch (result) {
+//                    case let .Error(error):
+//                        // display error message
+//                        print("\(__FUNCTION__) ERROR recieved: \(error)")
+//                    case let .Value(boxedConfiguration):
+//                        let configuration:ServerConfiguration = boxedConfiguration.value
+//                        // do something with user
+//                        nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
+//
+//                            site.configuration = configuration
+//                            site.watchEntry = watchEntry
+//                            self.lastUpdatedTime = site.lastConnectedDate
+//                            self.models[index] = WatchModel(fromSite: site)!
+//                            
+////                            // Get back on the main queue to update the user interface
+////                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+////                                print("Update rows...")
+////                                self.updateRowForSite(site, index: index)
+////                            })
+//                        })
+//                    }
+//                }
+//        }
+//    
+//    }
     
-    func loadDataFor(site: Site, index: Int){
-        print(">>> Entering \(__FUNCTION__) <<<")
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            // Start up the API
-            let nsApi = NightscoutAPIClient(url: site.url)
-            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
-                // Get settings for a given site.
-                print("Loading data for \(site.url!)")
-                nsApi.fetchServerConfiguration { (result) -> Void in
-                    switch (result) {
-                    case let .Error(error):
-                        // display error message
-                        print("\(__FUNCTION__) ERROR recieved: \(error)")
-                    case let .Value(boxedConfiguration):
-                        let configuration:ServerConfiguration = boxedConfiguration.value
-                        // do something with user
-                        nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-
-                            site.configuration = configuration
-                            site.watchEntry = watchEntry
-                            self.lastUpdatedTime = site.lastConnectedDate
-                            self.sites[index] = site
-                            
-                            // Get back on the main queue to update the user interface
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                print("Update rows...")
-                                if let watchModel = WatchModel(fromSite: site) {
-                                    let row = self.sitesTable.rowControllerAtIndex(index) as! SiteRowController
-                                    row.model = watchModel
-                                }
-                            })
-                        })
-                    }
-                }
-            }
-        }
-    }
+//    func updateRowForSite(site: Site, index: Int) {
+//        if let watchModel = WatchModel(fromSite: site) {
+//            let row = self.sitesTable.rowControllerAtIndex(index) as! SiteRowController
+//            row.model = watchModel
+//        } else {
+//            print("Why have you failed me yet again?")
+//        }
+//
+//    }
 }
 

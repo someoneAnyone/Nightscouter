@@ -74,13 +74,9 @@ class TestHarnessForLogTableViewController: UITableViewController {
             cell.noise.text = "noise: \(sgValue.noise)"
         }
 
-        if let type = entry.type {
-            cell.type.text = "type: \(type.rawValue)"
-        } else {
-            cell.type.text = "type: \(Type().rawValue)"
-        }
+        cell.type.text = "type: \(Type().rawValue)"
 
-        cell.device.text = entry.device
+        cell.device.text = entry.device.description
         cell.idString.text = "id:\(entry.identifier)"
         cell.dateString.text = entry.dateString
         

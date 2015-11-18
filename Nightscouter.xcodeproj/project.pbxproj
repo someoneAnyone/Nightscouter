@@ -15,7 +15,6 @@
 		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
 		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
 		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
-		171EAE8E1BF27B82006C77B8 /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
@@ -34,6 +33,11 @@
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
 		178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
+		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
+		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
+		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
+		17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
+		17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
 		17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
 		17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
 		17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */; };
@@ -60,6 +64,15 @@
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
 		17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* BackgroundView.swift */; };
+		17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */; };
+		17DA132B1BF4DF0000A89DA4 /* Calibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13271BF4DF0000A89DA4 /* Calibration.swift */; };
+		17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13271BF4DF0000A89DA4 /* Calibration.swift */; };
+		17DA132D1BF4DF0000A89DA4 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13281BF4DF0000A89DA4 /* Device.swift */; };
+		17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13281BF4DF0000A89DA4 /* Device.swift */; };
+		17DA132F1BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */; };
+		17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */; };
+		17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
+		17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
 		17F22E5B1BEF9E600041E0B0 /* NightscouterWatchOSKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
@@ -203,7 +216,6 @@
 		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
 		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
 		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
-		171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchModel.swift; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
@@ -223,6 +235,9 @@
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
 		178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesInterfaceController.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
+		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; };
+		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
+		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		17BD1C141BF0EC1D0014EE38 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = "Shared Framework Code/Models/Entry.swift"; sourceTree = SOURCE_ROOT; };
 		17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerConfiguration.swift; path = "Shared Framework Code/Models/ServerConfiguration.swift"; sourceTree = SOURCE_ROOT; };
@@ -242,6 +257,11 @@
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
+		17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteEmptyRowController.swift; sourceTree = "<group>"; };
+		17DA13271BF4DF0000A89DA4 /* Calibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Calibration.swift; path = "Shared Framework Code/Struct/Calibration.swift"; sourceTree = SOURCE_ROOT; };
+		17DA13281BF4DF0000A89DA4 /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Device.swift; path = "Shared Framework Code/Struct/Device.swift"; sourceTree = SOURCE_ROOT; };
+		17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MeterBloodGlucose.swift; path = "Shared Framework Code/Struct/MeterBloodGlucose.swift"; sourceTree = SOURCE_ROOT; };
+		17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SensorGlucoseValue.swift; path = "Shared Framework Code/Struct/SensorGlucoseValue.swift"; sourceTree = SOURCE_ROOT; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterWatchOSKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
@@ -333,11 +353,11 @@
 				839DBD081BC0170300691B75 /* .travis.yml */,
 				17B1E57C1B5A89EF0093BC72 /* README.md */,
 				17BD1C351BF0EEAB0014EE38 /* External Assets */,
-				170825E51B2CBABB00304F8F /* NightscouteriOSApp */,
+				170825E51B2CBABB00304F8F /* iOS App */,
+				83883D751BC1F7E800BD1A9C /* Watch App */,
 				17BD1C131BF0EBC10014EE38 /* Shared Framework Code */,
-				83883D751BC1F7E800BD1A9C /* NightscouterWatchApp */,
-				1725511C1B75544700AC09E0 /* Frameworks */,
 				170825E41B2CBABB00304F8F /* Products */,
+				1725511C1B75544700AC09E0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -354,20 +374,16 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		170825E51B2CBABB00304F8F /* NightscouteriOSApp */ = {
+		170825E51B2CBABB00304F8F /* iOS App */ = {
 			isa = PBXGroup;
 			children = (
-				83F4C57A1B7C201800C74285 /* NightscouterToday */,
-				1771B0431B75235B006C1F5E /* NightscouteriOSKit */,
 				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
-				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
 				170825F21B2CBABB00304F8F /* Info.plist */,
-				173454561B308F2300931278 /* Models */,
-				1739B1BC1B3113B500C22762 /* Resources */,
-				173454551B308F1700931278 /* ViewControllers */,
-				17D5A69E1B30EBDB0043C0D1 /* Views */,
+				17ECEA5A1BF6F46C00733588 /* App */,
+				1771B0431B75235B006C1F5E /* iOS Framework */,
+				83F4C57A1B7C201800C74285 /* Today Widget */,
 			);
-			name = NightscouteriOSApp;
+			name = "iOS App";
 			path = Nightscouter;
 			sourceTree = "<group>";
 		};
@@ -434,7 +450,15 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		1771B0431B75235B006C1F5E /* NightscouteriOSKit */ = {
+		175ADA1D1BFA7846002F89F8 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		1771B0431B75235B006C1F5E /* iOS Framework */ = {
 			isa = PBXGroup;
 			children = (
 				1771B0621B7524AA006C1F5E /* AppDataManager.swift */,
@@ -446,7 +470,7 @@
 				1771B08D1B75251E006C1F5E /* Views */,
 				1771B0441B75235B006C1F5E /* Supporting Files */,
 			);
-			name = NightscouteriOSKit;
+			name = "iOS Framework";
 			path = NightscouterKit;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -507,6 +531,9 @@
 		178AACCD1BEFE76C00B0DEBC /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
+				178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */,
+				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
 				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
 				83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */,
 				83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */,
@@ -518,9 +545,11 @@
 		17BD1C131BF0EBC10014EE38 /* Shared Framework Code */ = {
 			isa = PBXGroup;
 			children = (
-				17BD1C2C1BF0ECEE0014EE38 /* Extensions */,
 				1771B06A1B7524AF006C1F5E /* API */,
+				17BD1C2C1BF0ECEE0014EE38 /* Extensions */,
 				1771B0881B752502006C1F5E /* Models */,
+				175ADA1D1BFA7846002F89F8 /* Protocols */,
+				17DA13331BF4DF0500A89DA4 /* Structs */,
 			);
 			name = "Shared Framework Code";
 			path = NightscouterKit;
@@ -529,10 +558,10 @@
 		17BD1C2C1BF0ECEE0014EE38 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */,
 				17BD1C231BF0ECE40014EE38 /* Double+Extension.swift */,
 				17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */,
 				17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */,
+				17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -556,47 +585,77 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		17F22E591BEF9E600041E0B0 /* NightscouterWatchOSKit */ = {
+		17DA13331BF4DF0500A89DA4 /* Structs */ = {
 			isa = PBXGroup;
 			children = (
-				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
-				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
-				17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */,
-				17F22E5C1BEF9E600041E0B0 /* Info.plist */,
-				171EAE8C1BF27B6F006C77B8 /* WatchModel.swift */,
+				17B07CD21BF590B2001017CE /* WatchModel.swift */,
+				17DA13271BF4DF0000A89DA4 /* Calibration.swift */,
+				17DA13281BF4DF0000A89DA4 /* Device.swift */,
+				17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */,
+				17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */,
 			);
-			name = NightscouterWatchOSKit;
+			name = Structs;
+			sourceTree = "<group>";
+		};
+		17ECEA5A1BF6F46C00733588 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
+				173454561B308F2300931278 /* Models */,
+				1739B1BC1B3113B500C22762 /* Resources */,
+				173454551B308F1700931278 /* ViewControllers */,
+				17D5A69E1B30EBDB0043C0D1 /* Views */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		17ECEA5B1BF6F4BB00733588 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				83883D761BC1F7E800BD1A9C /* Interface.storyboard */,
+				83883D791BC1F7E800BD1A9C /* Assets.xcassets */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		17F22E591BEF9E600041E0B0 /* Watch Framework */ = {
+			isa = PBXGroup;
+			children = (
+				17F22E5C1BEF9E600041E0B0 /* Info.plist */,
+				17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */,
+				17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */,
+				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
+				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
+			);
+			name = "Watch Framework";
 			path = ../NightscouterWatchOSKit;
 			sourceTree = "<group>";
 		};
-		83883D751BC1F7E800BD1A9C /* NightscouterWatchApp */ = {
+		83883D751BC1F7E800BD1A9C /* Watch App */ = {
 			isa = PBXGroup;
 			children = (
-				83883D841BC1F7E900BD1A9C /* NightscouterNow Extension */,
 				83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */,
-				83883D761BC1F7E800BD1A9C /* Interface.storyboard */,
-				83883D791BC1F7E800BD1A9C /* Assets.xcassets */,
 				83883D7B1BC1F7E800BD1A9C /* Info.plist */,
+				17ECEA5B1BF6F4BB00733588 /* App */,
+				83883D841BC1F7E900BD1A9C /* Extension */,
+				17F22E591BEF9E600041E0B0 /* Watch Framework */,
 			);
-			name = NightscouterWatchApp;
+			name = "Watch App";
 			path = NightscouterNow;
 			sourceTree = "<group>";
 		};
-		83883D841BC1F7E900BD1A9C /* NightscouterNow Extension */ = {
+		83883D841BC1F7E900BD1A9C /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				17F22E591BEF9E600041E0B0 /* NightscouterWatchOSKit */,
 				83883D9F1BC1F81A00BD1A9C /* NightscouterNow Extension.entitlements */,
 				83883D931BC1F7E900BD1A9C /* Info.plist */,
 				83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */,
-				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
-				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
-				178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */,
-				83F16A171BF1A4A500610E99 /* Views */,
-				178AACCD1BEFE76C00B0DEBC /* View Controllers */,
 				83883D911BC1F7E900BD1A9C /* Assets.xcassets */,
 				83883D851BC1F7E900BD1A9C /* Supporting Files */,
+				178AACCD1BEFE76C00B0DEBC /* View Controllers */,
+				83F16A171BF1A4A500610E99 /* Views */,
 			);
+			name = Extension;
 			path = "NightscouterNow Extension";
 			sourceTree = SOURCE_ROOT;
 		};
@@ -612,11 +671,12 @@
 			isa = PBXGroup;
 			children = (
 				83883DAB1BC2089000BD1A9C /* SiteRowController.swift */,
+				17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
 		};
-		83F4C57A1B7C201800C74285 /* NightscouterToday */ = {
+		83F4C57A1B7C201800C74285 /* Today Widget */ = {
 			isa = PBXGroup;
 			children = (
 				83F4C5871B7C202500C74285 /* NightscouterToday.entitlements */,
@@ -625,6 +685,7 @@
 				83F4C58B1B7C23F200C74285 /* TodayViewController.swift */,
 				83F4C57B1B7C201800C74285 /* Supporting Files */,
 			);
+			name = "Today Widget";
 			path = NightscouterToday;
 			sourceTree = SOURCE_ROOT;
 		};
@@ -951,12 +1012,18 @@
 				1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */,
 				1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */,
 				8389AC6B1BEB05B300B81A18 /* WatchSessionManager.swift in Sources */,
+				17DA132D1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17DA132B1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
 				17BD1C211BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
+				17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
 				1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */,
 				17BD1C1C1BF0EC1D0014EE38 /* Site.swift in Sources */,
+				17DA132F1BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
+				17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
+				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				1771B0681B7524AA006C1F5E /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -968,13 +1035,19 @@
 				17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */,
 				17BD1C291BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */,
+				17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C1D1BF0EC1D0014EE38 /* Site.swift in Sources */,
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
+				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
+				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */,
-				171EAE8E1BF27B82006C77B8 /* WatchModel.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
 				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
+				17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
+				17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
 				17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
 				17BD1C1B1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 			);
@@ -991,6 +1064,7 @@
 				83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */,
 				178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */,
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
+				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
 				83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */,
 			);

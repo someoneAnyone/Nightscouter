@@ -33,12 +33,20 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.clearColor()
         
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.sitesFileURL.path!) as? NSData {
+        // if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.sitesFileURL.path!) as? NSData {
+        //  if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
+        //   sites = sitesArray
+        //  }
+        // }
+        
+        if let  sitesData = AppDataManager.sharedInstance.defaults.dataForKey(AppDataManager.SavedPropertyKey.sitesArrayObjectsKey) {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
             }
         }
-
+        
+        // sites = AppDataManager.sharedInstance.sites
+        
         let itemCount = sites.isEmpty ? 1 : sites.count
         
         preferredContentSize = CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
@@ -81,16 +89,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if sites.isEmpty {
-            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath) 
+            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath)
             
-            cell.textLabel!.text = NSLocalizedString("No Nighscout sites were found.", comment: "")
+            cell.textLabel!.text = NSLocalizedString("No Nightscout sites were found.", comment: "")
             
             return cell
         } else {
             let contentCell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.content, forIndexPath: indexPath) as! SiteNSNowTableViewCell
             let site = sites[indexPath.row]
             
-            contentCell.configureCell(site)            
+            contentCell.configureCell(site)
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
                 // println("Attempting to get configuration data from site...")

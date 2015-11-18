@@ -10,7 +10,10 @@ import WatchConnectivity
 
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
-    func dataSourceDidUpdate(dataSource: [Site])
+    // func dataSourceDidUpdate(dataSource: [Site])
+    func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int)
+    func dataSourceDidAddSiteModel(model: WatchModel)
+    func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
 }
 
 @available(watchOS 2.0, *)
@@ -26,10 +29,19 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private let session: WCSession = WCSession.defaultSession()
     
     private var sites: [Site] = []
+    private var models: [WatchModel] = []
+    
     
     public func startSession() {
-        session.delegate = self
-        session.activateSession()
+        if WCSession.isSupported() {
+            session.delegate = self
+            session.activateSession()
+        }
+        
+        if !session.receivedApplicationContext.isEmpty {
+            let context = session.receivedApplicationContext
+            processApplicationContext(context)
+        }
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -51,29 +63,35 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
 // if the data was not sent, it will be replaced
 extension WatchSessionManager {
     public func session(session: WCSession, didReceiveFile file: WCSessionFile) {
-        print("didReceiveFile: \(file)")
+       // print("didReceiveFile: \(file)")
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
         }
     }
     
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-        print("didReceiveUserInfo: \(userInfo)")
+       // print("didReceiveUserInfo: \(userInfo)")
     }
     
     // Receiver
     public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
-        print("didReceiveApplicationContext: \(applicationContext)")
-        updateDataSource(applicationContext)
+        // print("didReceiveApplicationContext: \(applicationContext)")
+        
+        processApplicationContext(applicationContext)
     }
     
-    public func wakeUp() {
-        let applicationData = ["type": "update"]
+    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+        processApplicationContext(message)
+        
+    }
+    
+    public func requestLatestAppContext() {
+        let applicationData = [WatchPayloadPropertyKeys.actionKey: WatchAction.AppContext.rawValue]
         session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
             
-            print("recievedMessageReply: \(context)")
-            self.updateDataSource(context)
+            // print("recievedMessageReply: \(context)")
+            self.processApplicationContext(context)
             
             }, errorHandler: {(error ) -> Void in
                 // catch any errors here
@@ -81,21 +99,90 @@ extension WatchSessionManager {
         })
     }
     
-    func updateDataSource(context: [String : AnyObject]) {
+    func processApplicationContext(context: [String : AnyObject]) {
+        // print("processApplicationContext \(context)")
         
-        sites.removeAll()
-
-        if let siteArray = context["siteDictionary"] as? [[String : AnyObject]] {
-            for item in siteArray {
-                if let urlString = item["urlString"] as? String {
-                    let site = Site(url: NSURL(string: urlString)!, apiSecret: nil)!
-                    self.sites.append(site)
+        guard let action = WatchAction(rawValue: (context[WatchPayloadPropertyKeys.actionKey] as? String)!) else {
+            print("No action was found, didReceiveMessage: \(context)")
+            return
+        }
+        
+        switch action {
+            
+        case .Update:
+            print("update on watch framework")
+            
+            if let modelArray = context[WatchPayloadPropertyKeys.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
+                    for modelDict in modelArray {
+                    
+                        if let model = WatchModel(fromDictionary: modelDict) {
+                    if let pos = models.indexOf(model){
+                        models[pos] = model
+                        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateSiteModel(model, atIndex: pos) }
+                        }
+                        
+                    } else {
+                        models.append(model)
+                        
+                        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model) }
+                        }
+                        
+                    }
+                        }
                 }
             }
-            
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdate(self!.sites) }
+        case .Delete:
+            if let modelArray = context[WatchPayloadPropertyKeys.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
+
+                for modelDict in modelArray {
+                    let model = WatchModel(fromDictionary: modelDict)!
+
+                if let pos = models.indexOf(model){
+                    models.removeAtIndex(pos)
+                    dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                        self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidDeleteSiteModel(model, atIndex: pos) }
+                    }
+                }
+                }
+            }
+        default:
+            break
+        }
+    }
+    
+    
+    public func loadDataFor(site: Site, index: Int) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            // Start up the API
+            let nsApi = NightscoutAPIClient(url: site.url)
+            //            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
+            // Get settings for a given site.
+            print("Loading data for \(site.url!)")
+            nsApi.fetchServerConfiguration { (result) -> Void in
+                switch (result) {
+                case let .Error(error):
+                    // display error message
+                    print("\(__FUNCTION__) ERROR recieved: \(error)")
+                case let .Value(boxedConfiguration):
+                    let configuration:ServerConfiguration = boxedConfiguration.value
+                    // do something with user
+                    nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
+                        
+                        site.configuration = configuration
+                        site.watchEntry = watchEntry
+                        let model = WatchModel(fromSite: site)!
+
+                        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateSiteModel(model, atIndex: index) }
+                        }
+                    })
+                }
             }
         }
     }
+    
+
 }

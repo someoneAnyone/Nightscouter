@@ -19,9 +19,7 @@ extension EntryPropertyKey {
     static let iob = "iob" // Not implmented yet.
 }
 
-let WatchFaceDeviceValue = "watchFace"
-
-public class WatchEntry: Entry {
+public class WatchEntry: Entry, CustomStringConvertible {
     public var now: NSDate
     public var bgdelta: Double
     public let battery: Int
@@ -35,7 +33,6 @@ public class WatchEntry: Entry {
             numberFormatter.zeroSymbol = "---%"
             
             return numberFormatter.stringFromNumber(percentage)!
-            //            return "\(NSNumberFormatter.localizedStringFromNumber(percentage, numberStyle: NSNumberFormatterStyle.PercentStyle))"
         }
     }
     public var batteryColorState: DesiredColorState {
@@ -47,7 +44,39 @@ public class WatchEntry: Entry {
         return DesiredColorState.Neutral
     }
     
-    public init(identifier: String, date: NSDate, device: String, now: NSDate, bgdelta: Double, battery: Int) {
+    public var raw: Double? {
+        if let sgValue:SensorGlucoseValue = self.sgv, calValue = self.cal {
+            let raw: Double = sgValue.rawIsigToRawBg(calValue)
+            return sgValue.sgv.isInteger ? round(raw) : raw
+            
+        }
+        return nil
+    }
+    
+    public var dictionaryRep: [String : AnyObject] {
+        
+        var dict: [String : AnyObject] = ["now" : now, "bgdelta" : bgdelta, "battery" : battery, "batteryString" :batteryString, "batteryColorState" : batteryColorState.description]
+        
+        if let raw = raw {
+            dict["raw"] = raw
+        }
+        
+        if let sgv = sgv {
+            dict["sgv"] = String(sgv)
+        }
+        
+        if let cal = cal {
+            dict["cal"] = String(cal)
+        }
+        
+        return dict
+    }
+    
+    public var description: String {
+        return "WatchEntry: { \(dictionaryRep) }"
+    }
+    
+    public init(identifier: String, date: NSDate, device: Device, now: NSDate, bgdelta: Double, battery: Int) {
         self.now = now
         self.bgdelta = bgdelta
         self.battery = battery
@@ -59,9 +88,9 @@ public class WatchEntry: Entry {
 public extension WatchEntry {
     public convenience init(watchEntryDictionary: [String : AnyObject]) {
         
-        
-        
         let rootDictionary: NSMutableDictionary = NSMutableDictionary()
+        
+        let device = Device.WatchFace
         
         for (key, obj) in watchEntryDictionary {
             if let array = obj as? [AnyObject] {
@@ -154,7 +183,7 @@ public extension WatchEntry {
         guard let slope = cals[EntryPropertyKey.slopeKey] as? Double,
             intercept = cals[EntryPropertyKey.interceptKey] as? Double,
             scale = cals[EntryPropertyKey.scaleKey] as? Double else {
-                self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: WatchFaceDeviceValue, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+                self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: device, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
                 self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
                 
                 
@@ -163,7 +192,7 @@ public extension WatchEntry {
         
         
         
-        self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: WatchFaceDeviceValue, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+        self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: device, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
         self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
         self.cal = Calibration(slope: slope, scale: scale, intercept: intercept)
         

@@ -10,7 +10,7 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate{
+class SitesInterfaceController: WKInterfaceController{//, DataSourceChangedDelegate{
     
     var sites: [Site] = [] {
         didSet{
@@ -31,8 +31,8 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
             }
         }
 
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        WatchSessionManager.sharedManager.wakeUp()
+//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+//        WatchSessionManager.sharedManager.wakeUp()
     }
     
     func dataSourceDidUpdate(dataSource: [Site]) {
