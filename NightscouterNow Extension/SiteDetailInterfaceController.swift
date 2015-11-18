@@ -11,7 +11,7 @@ import Foundation
 import NightscouterWatchOSKit
 
 protocol SiteDetailViewDidUpdateItemDelegate {
-    func didUpdateItem(site: Site)
+    func didUpdateItem(site: Site, withModel model: WatchModel)
 }
 
 class SiteDetailInterfaceController: WKInterfaceController {
@@ -60,7 +60,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
             }
         }
         
-        timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
     }
     
     override func didDeactivate() {
@@ -80,14 +80,15 @@ class SiteDetailInterfaceController: WKInterfaceController {
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        if let modelDict = context!["site"] as? [String : AnyObject], model = WatchModel(fromDictionary: modelDict) { self.model = model }
-        if let delegate = context!["delegate"] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+        if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], model = WatchModel(fromDictionary: modelDict) { self.model = model }
+        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
         
     }
     
     func updateData(){
         
         guard let model = self.model else {
+            print("No model was found...")
             return
         }
         
@@ -122,9 +123,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
                                 site.watchEntry = watchEntry
                                 self.lastUpdatedTime = site.lastConnectedDate
                                 self.model = WatchModel(fromSite: site)!
-                                
-                                self.delegate?.didUpdateItem(site)
-                                
+                                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                                    self?.delegate?.didUpdateItem(site, withModel: (self?.model)!)
+                                }
                             })
                         })
                     }
@@ -133,9 +134,8 @@ class SiteDetailInterfaceController: WKInterfaceController {
         }
     }
     
-    
     func configureView(){
-      
+        
         let watchModel = self.model!
         
         let compassAlpha: CGFloat = watchModel.warn ? 0.5 : 1.0
@@ -157,15 +157,17 @@ class SiteDetailInterfaceController: WKInterfaceController {
             
             self.compassImage.setAlpha(compassAlpha)
             self.compassImage.setImage(image)
-            self.setTitle(watchModel.displayName)
             
             // Battery label
             self.batteryLabel.setText(watchModel.batteryString)
             self.batteryLabel.setTextColor(batteryColor)
+            self.batteryLabel.setAlpha(compassAlpha)
+            
             let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(watchModel.lastReadingDate)
             // Last reading label
             self.lastUpdateLabel.setText(date)//watchModel.lastReadingString)
             self.lastUpdateLabel.setTextColor(lastReadingColor)
+            
             
             self.lastUpdatedTime = watchModel.lastReadingDate
         })

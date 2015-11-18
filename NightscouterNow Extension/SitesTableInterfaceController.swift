@@ -29,9 +29,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-        
+       
         if models.isEmpty {
-            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey("models") as? [[String: AnyObject]] {
+            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
                 print("Loading models from default.")
                 models = dictArray.map({ WatchModel(fromDictionary: $0)! })
             } else {
@@ -39,10 +39,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             }
         }
         
-        if (self.timer == nil) {
-            timer = NSTimer.scheduledTimerWithTimeInterval(240.0, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
-        }
-        
+        timer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
     }
     
     override func willActivate() {
@@ -57,10 +54,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        let dictArray = models.map({ $0.dictionary })
-        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: "models")
-        NSUserDefaults.standardUserDefaults().synchronize()
         
         timer?.invalidate()
         
@@ -80,7 +73,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         let model = models[rowIndex]
         
-        pushControllerWithName("SiteDetail", context: ["delegate": self, "site": model.dictionary])
+        pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
     }
     
     
@@ -88,6 +81,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         let rowTypeIdentifier: String = "SiteRowController"
+        print("models.count = \(models.count)")
         
         sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
         
@@ -107,6 +101,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 }
             }
         }
+//        else if models.count == 1 {
+//            print("only one site...")
+//            presentControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: models.first!.dictionary])
+//        }
     }
     
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
@@ -121,14 +119,25 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func dataSourceDidAddSiteModel(model: WatchModel) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        models.append(model)
+        
+        if let modelIndex = models.indexOf(model){
+            models[modelIndex] = model
+        } else {
+            models.append(model)
+        }
     }
     
-    func didUpdateItem(site: Site) {
+    func didUpdateItem(site: Site, withModel model: WatchModel) {
+        
         print(">>> Entering \(__FUNCTION__) <<<")
-        if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
+
+        if let index = self.models.indexOf(model) {
             self.models[index] = model
         }
+        
+//        if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
+//            self.models[index] = model
+//        }
     }
     
     func updateData() {
@@ -136,8 +145,15 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         for (index, model) in models.enumerate() {
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
-            WatchSessionManager.sharedManager.loadDataFor(site, index: index)
+            
+            WatchSessionManager.sharedManager.loadDataFor(site, index: index, lastUpdateDate: model.lastReadingDate)
         }
+        
+        
+        let dictArray = models.map({ $0.dictionary })
+        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
+//        NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
+        NSUserDefaults.standardUserDefaults().synchronize()
     }
 }
 

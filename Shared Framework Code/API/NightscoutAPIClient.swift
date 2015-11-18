@@ -144,7 +144,12 @@ private extension NightscoutAPIClient {
             if let httpResponse = response as? NSHTTPURLResponse {
                 switch httpResponse.statusCode {
                 case 200:
-                    if let dataObject: NSData = NSData(contentsOfURL: location!) {
+                    
+                    guard let locationURL = location else {
+                        completetion(result: nil, errorCode: .DownloadErorr("Data did not have a valid location on disk."))
+                        return
+                    }
+                    if let dataObject: NSData = NSData(contentsOfURL: locationURL) {
                         var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
                         stringVersion = stringVersion?.stringByReplacingOccurrencesOfString("+", withString: "")
                         

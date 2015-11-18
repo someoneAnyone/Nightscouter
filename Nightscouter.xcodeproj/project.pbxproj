@@ -19,9 +19,9 @@
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B05A1B75235C006C1F5E /* NightscouterKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0621B7524AA006C1F5E /* AppDataManager.swift */; };
+		1771B0661B7524AA006C1F5E /* AppDataManageriOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */; };
 		1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0631B7524AA006C1F5E /* AppTheme.swift */; };
-		1771B0681B7524AA006C1F5E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0641B7524AA006C1F5E /* Constants.swift */; };
+		1771B0681B7524AA006C1F5E /* ConstantsiOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */; };
 		1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */; };
 		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
@@ -68,6 +68,8 @@
 		17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
 		17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
+		17EF27731BFCDA5900A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
+		17EF27741BFCDA5A00A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
 		17F22E5B1BEF9E600041E0B0 /* NightscouterWatchOSKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -214,9 +216,9 @@
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0451B75235B006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B0621B7524AA006C1F5E /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManager.swift; path = API/AppDataManager.swift; sourceTree = "<group>"; };
+		1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManageriOS.swift; path = API/AppDataManageriOS.swift; sourceTree = "<group>"; };
 		1771B0631B7524AA006C1F5E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTheme.swift; path = API/AppTheme.swift; sourceTree = "<group>"; };
-		1771B0641B7524AA006C1F5E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = API/Constants.swift; sourceTree = "<group>"; };
+		1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConstantsiOS.swift; path = API/ConstantsiOS.swift; sourceTree = "<group>"; };
 		1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL-Extensions.swift"; path = "Extensions/NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		1771B0891B75251A006C1F5E /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 		17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MeterBloodGlucose.swift; path = "Shared Framework Code/Struct/MeterBloodGlucose.swift"; sourceTree = SOURCE_ROOT; };
 		17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SensorGlucoseValue.swift; path = "Shared Framework Code/Struct/SensorGlucoseValue.swift"; sourceTree = SOURCE_ROOT; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		17EF27721BFCDA0D00A16136 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = "Shared Framework Code/API/Constants.swift"; sourceTree = SOURCE_ROOT; };
 		17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterWatchOSKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
 		17F22E5C1BEF9E600041E0B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -432,10 +435,10 @@
 		1771B0431B75235B006C1F5E /* iOS Framework */ = {
 			isa = PBXGroup;
 			children = (
-				1771B0621B7524AA006C1F5E /* AppDataManager.swift */,
+				1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */,
 				8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */,
 				1771B0631B7524AA006C1F5E /* AppTheme.swift */,
-				1771B0641B7524AA006C1F5E /* Constants.swift */,
+				1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */,
 				1771B07F1B7524E2006C1F5E /* Extensions */,
 				1771B0911B7541F3006C1F5E /* Resources */,
 				1771B08D1B75251E006C1F5E /* Views */,
@@ -457,6 +460,7 @@
 			isa = PBXGroup;
 			children = (
 				17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */,
+				17EF27721BFCDA0D00A16136 /* Constants.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -971,9 +975,10 @@
 				1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */,
 				17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
 				17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */,
 				17BD1C261BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
-				1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */,
+				1771B0661B7524AA006C1F5E /* AppDataManageriOS.swift in Sources */,
 				1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */,
 				8389AC6B1BEB05B300B81A18 /* WatchSessionManager.swift in Sources */,
 				17DA132D1BF4DF0000A89DA4 /* Device.swift in Sources */,
@@ -988,7 +993,7 @@
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
-				1771B0681B7524AA006C1F5E /* Constants.swift in Sources */,
+				1771B0681B7524AA006C1F5E /* ConstantsiOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -997,6 +1002,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */,
+				17EF27741BFCDA5A00A16136 /* Constants.swift in Sources */,
 				17BD1C291BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */,
 				17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */,
@@ -1329,7 +1335,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = NightscouterNow_Extension;
 				INFOPLIST_FILE = NightscouterNow/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1351,7 +1356,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				IBSC_MODULE = NightscouterNow_Extension;
 				INFOPLIST_FILE = NightscouterNow/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

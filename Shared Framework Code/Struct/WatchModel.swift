@@ -8,15 +8,6 @@
 
 import UIKit
 
-public struct WatchPayloadPropertyKeys {
-    static let contextKey = "context"
-    static let actionKey = "action"
-    static let modelKey: String = "siteModel"
-    static let modelsKey: String = "siteModels"
-    static let delegateKey: String = "delegate"
-
-}
-
 public enum WatchAction: String {
     case Create, Read, Update, Delete, AppContext
 }
@@ -26,6 +17,14 @@ public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
 }
 
 public struct WatchModel: DictionaryConvertible, Hashable {
+    
+    public struct PropertyKey {
+       public static let contextKey = "context"
+       public static let actionKey = "action"
+       public static let modelKey = "siteModel"
+       public static let modelsKey = "siteModels"
+       public static let delegateKey = "delegate"
+    }
     
     public var hashValue: Int {
         return Int(urlString.hashValue + displayName.hashValue)
@@ -223,9 +222,12 @@ public struct WatchModel: DictionaryConvertible, Hashable {
             deltaString = "- --/--"
             
             sgvString = "---"
+            sgvStringWithEmoji = sgvString
             sgvColor = colorForDesiredColorState(.Neutral)
             
             isArrowVisible = false
+            
+            lastUpdatedColor = colorForDesiredColorState(.Warning)
             
         }
         

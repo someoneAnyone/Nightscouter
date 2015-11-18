@@ -25,7 +25,7 @@ public class AppDataManager: NSObject {
         didSet {
             
             #if DEBUG
-               // print("sites has been set with: \(sites)")
+                // print("sites has been set with: \(sites)")
             #endif
             
             let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
@@ -39,7 +39,7 @@ public class AppDataManager: NSObject {
         set {
             
             #if DEBUG
-                print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
+               // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
             #endif
             
             defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
@@ -54,7 +54,7 @@ public class AppDataManager: NSObject {
         set {
             
             #if DEBUG
-                print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
+               // print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
             #endif
             
             defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
@@ -165,10 +165,6 @@ public class AppDataManager: NSObject {
 }
 
 extension AppDataManager {
-    public func updateWatchAppContext() {
-        
-    }
-    
     public func updateWatch(withAction action: WatchAction, withSite sites: [Site]) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
@@ -176,7 +172,7 @@ extension AppDataManager {
         #endif
         
         var context = [String: AnyObject]()
-        context[WatchPayloadPropertyKeys.actionKey] = action.rawValue
+        context[WatchModel.PropertyKey.actionKey] = action.rawValue
         var models:[[String: AnyObject]] = []
         
         for site in sites {
@@ -184,7 +180,7 @@ extension AppDataManager {
                 models.append(watchModel.dictionary)
             }
         }
-        context[WatchPayloadPropertyKeys.modelsKey] = models
+        context[WatchModel.PropertyKey.modelsKey] = models
         
         if #available(iOSApplicationExtension 9.0, *) {
             
@@ -207,6 +203,4 @@ extension AppDataManager {
             
         }
     }
-    
-    
 }

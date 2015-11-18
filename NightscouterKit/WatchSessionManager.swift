@@ -171,7 +171,7 @@ extension WatchSessionManager {
             print("session: \(session), didReceiveMessage: \(message)")
         #endif
         
-        guard let action = WatchAction(rawValue: (message[WatchPayloadPropertyKeys.actionKey] as? String)!) else {
+        guard let action = WatchAction(rawValue: (message[WatchModel.PropertyKey.actionKey] as? String)!) else {
             print("No action was found, didReceiveMessage: \(message)")
             return
         }
