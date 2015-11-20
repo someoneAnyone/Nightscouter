@@ -7,6 +7,7 @@
 //
 
 import WatchConnectivity
+import ClockKit
 
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
@@ -38,10 +39,21 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             session.delegate = self
             session.activateSession()
         }
+
+        
+        /*
+        let complicationServer = CLKComplicationServer.sharedInstance()
+        for complication in complicationServer.activeComplications {
+            complicationServer.reloadTimelineForComplication(complication)
+        }
+        */
+
         
         if !session.receivedApplicationContext.isEmpty {
             let context = session.receivedApplicationContext
             processApplicationContext(context)
+        } else {
+            requestLatestAppContext()
         }
     }
     
