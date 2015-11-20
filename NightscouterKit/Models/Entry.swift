@@ -101,6 +101,8 @@ public enum Device: String {
     case xDripDexcomShare = "xDrip-DexcomShare"
     case WatchFace = "watchFace"
     case Share2 = "share2"
+    case MedtronicCGM = "Medtronic_CGM"
+    
 }
 
 // type = cal
@@ -258,7 +260,7 @@ public class Entry {
         self.device = device
     }
     
-    public init(identifier: String, date: NSDate, device: String, dateString: String, sgv: SensorGlucoseValue?, cal: Calibration?, mbg: MeterBloodGlucose?, type: Type) {
+    public init(identifier: String, date: NSDate, device: String, dateString: String?, sgv: SensorGlucoseValue?, cal: Calibration?, mbg: MeterBloodGlucose?, type: Type) {
         self.identifier = identifier
         self.date = date
         self.device = device
@@ -361,7 +363,7 @@ public extension Entry {
             #endif
             break
         }
-        self.init(identifier: identifier, date: date, device:device, dateString: dateString!, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
+        self.init(identifier: identifier, date: date, device:device, dateString: dateString, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
     }
 }
 
