@@ -310,17 +310,23 @@ public extension Entry {
         
         let dateString = dict[EntryPropertyKey.dateStringKey] as? String
         
+        /*
         guard let stringForType = dict[EntryPropertyKey.typeKey] as? String,
-            type: Type = Type(rawValue: stringForType) else {
-                
-                self.init(identifier: "none", date: NSDate(), device:"none")
-                
-                return
+        type: Type = Type(rawValue: stringForType) else {
+        
+        self.init(identifier: "none", date: date, device: device)
+        return
         }
+        */
         
         var sgValue: SensorGlucoseValue! = nil
         var calValue: Calibration! = nil
         var mbgValue: MeterBloodGlucose! = nil
+        
+        var type: Type = .none
+        if let stringForType = dict[EntryPropertyKey.typeKey] as? String, t: Type = Type(rawValue: stringForType) {
+            type = t
+        }
         
         switch type {
         case .sgv:
@@ -361,6 +367,13 @@ public extension Entry {
             #if DEBUG
                 print(errorString)
             #endif
+            if let directionString = dict[EntryPropertyKey.directionKey] as? String,
+                direction = Direction(rawValue: directionString),
+                sgv = dict[EntryPropertyKey.sgvKey] as? Double {
+                    
+                    sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
+            }
+            
             break
         }
         self.init(identifier: identifier, date: date, device:device, dateString: dateString, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
