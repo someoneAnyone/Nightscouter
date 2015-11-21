@@ -143,7 +143,7 @@ struct ConfigurationPropertyKey {
     static let nameKey = "name"
     static let statusKey = "status"
     static let thresholdsKey = "thresholds"
-
+    
     // ver 7.0
     static let bg_highKey = "bg_high"
     static let bg_lowKey = "bg_low"
@@ -159,10 +159,10 @@ struct ConfigurationPropertyKey {
     static let versionKey = "version"
     
     // Not implmented yet
-     static let extendedSettingsKey = "extendedSettings"
-     static let settingsKey = "settings"
-     static let enableKey = "enable"
-     static let showPluginsKey = "showPlugins"
+    static let extendedSettingsKey = "extendedSettings"
+    static let settingsKey = "settings"
+    static let enableKey = "enable"
+    static let showPluginsKey = "showPlugins"
 }
 
 public struct ServerConfiguration: CustomStringConvertible {
@@ -171,7 +171,7 @@ public struct ServerConfiguration: CustomStringConvertible {
     public var careportalEnabled: Bool?
     public var enabledOptions: [EnabledOptions]?
     public var defaults: Defaults?
-//    public let settings: Defaults?
+    //    public let settings: Defaults?
     public var unitsRoot: Units?
     public var head:String?
     public var version: String?
@@ -278,7 +278,7 @@ public extension ServerConfiguration {
             let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bg_target_topKey] as! Double
             threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
         }
-
+        
         
         var defaultsDefaults: Defaults?
         if let defaultsDictionary = root[ConfigurationPropertyKey.defaultsKey] as? [String: AnyObject] {
@@ -305,7 +305,7 @@ public extension ServerConfiguration {
             let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
             
             let language = defaultsDictionary[ConfigurationPropertyKey.languageKey] as! String
-        
+            
             defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: nil, thresholds: nil, defaultFeatures: nil)
         }
         
@@ -315,6 +315,7 @@ public extension ServerConfiguration {
             
             var timeFormat: Int = 12
             
+            // Some sites seem to post a number other seem to have strings.
             if let stringTimeFormat = settingsDictionary[ConfigurationPropertyKey.timeFormatKey] as? String {
                 timeFormat = Int(stringTimeFormat)!
             }
@@ -334,11 +335,31 @@ public extension ServerConfiguration {
             let aHigh = settingsDictionary[ConfigurationPropertyKey.alarmHighKey] as! Bool
             let aLow = settingsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
             let aTAU = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentKey] as! Bool
-            let aTAUMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as! Double
+            
+            // Some sites seem to post a number other seem to have strings.
+            var aTAUMDouble: Double = 0
+            if let doubleATAUM = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as? Double {
+                aTAUMDouble = doubleATAUM
+            }
+            
+            if let stringATAUM = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as? String {
+                aTAUMDouble = Double(stringATAUM)!
+            }
+            
             let aTAUMin: NSTimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
             
             let aTAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnKey] as! Bool
-            let aTAWMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as! Double
+            
+            var aTAWMDouble: Double = 0
+            
+            if let doubATAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as? Double {
+                aTAWMDouble = doubATAW
+            }
+            
+            if let stringATAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as? String {
+                aTAWMDouble = Double(stringATAW)!
+            }
+            
             let aTAWMin: NSTimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
             let aTUH = settingsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
             let aTUL = settingsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
@@ -346,7 +367,6 @@ public extension ServerConfiguration {
             let alarms = Alarm(alarmHigh: aHigh, alarmLow: aLow, alarmTimeAgoUrgent: aTAU, alarmTimeAgoUrgentMins: aTAUMin, alarmTimeAgoWarn: aTAW, alarmTimeAgoWarnMins: aTAWMin, alarmUrgentHigh: aTUH, alarmUrgentLow: aTUL)
             
             let language = settingsDictionary[ConfigurationPropertyKey.languageKey] as! String
-            
             
             if let enableArray = settingsDictionary[ConfigurationPropertyKey.enableKey] as? [String] {
                 for stringItem in enableArray{
@@ -363,18 +383,18 @@ public extension ServerConfiguration {
                 let bg_target_top = thresholdsDict[ConfigurationPropertyKey.bgTargetTopKey] as! Double
                 threshold = Threshold(bg_high: bg_high, bg_low: bg_low, bg_target_bottom: bg_target_bottom, bg_target_top: bg_target_top)
             }
-
-
+            
+            
             
             defaultsDefaults = Defaults(units: units, timeFormat: timeFormat, nightMode: nightMode, showRawbg: showRawbg, customTitle: customTitle, theme: theme, alarms: alarms, language: language, showPlugins: nil, enable: options, thresholds: threshold, defaultFeatures: nil)
-
+            
         }
-
+        
         serverConfig.defaults = defaultsDefaults
         
         serverConfig.thresholds = threshold
         serverConfig.enabledOptions = options
-
+        
         self = serverConfig
     }
 }
