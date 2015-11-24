@@ -50,11 +50,14 @@ public struct WatchModel: DictionaryConvertible, Hashable {
     
     // Main glucouse reading. Color coded based on server provided thresholds.
     public let sgvString: String
+    public let sgvEmoji: String
     public let sgvStringWithEmoji: String
     public let sgvColor: String
     
     // Delta between readings. Provided by the server. Color coded based on server provided thresholds.
     public let deltaString: String
+    public let deltaStringShort: String
+    
     public let deltaColor: String
     
     // Used for configuring the Compass image.
@@ -87,10 +90,13 @@ public struct WatchModel: DictionaryConvertible, Hashable {
         self.rawColor =  d["rawColor"] as! String
         
         self.sgvString = d["sgvString"] as! String
+        self.sgvEmoji = d["sgvEmoji"] as! String
         self.sgvStringWithEmoji = d["sgvStringWithEmoji"] as! String
         self.sgvColor = d["sgvColor"] as! String
         
         self.deltaString = d["deltaString"] as! String
+        self.deltaStringShort = d["deltaStringShort"] as! String
+        
         self.deltaColor = d["deltaColor"] as! String
         
         self.isArrowVisible =  d["isArrowVisible"] as! Bool
@@ -141,10 +147,12 @@ public struct WatchModel: DictionaryConvertible, Hashable {
         let defaultTextColor = colorForDesiredColorState(.Neutral)
         
         var sgvString: String = ""
-        var sgvStringWithEmoji = ""
+        var sgvEmoji: String = ""
+        var sgvStringWithEmoji : String = ""
         var sgvColor: UIColor = defaultTextColor
         
         var deltaString: String = ""
+        var deltaStringShort: String = ""
         
         var isRawDataAvailable: Bool = false
         var rawString: String = ""
@@ -162,9 +170,12 @@ public struct WatchModel: DictionaryConvertible, Hashable {
         }
         
         sgvString =  "\(sgvValue.sgvString)"
+        sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
         sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
-
-        deltaString = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.descriptionShort)"
+        
+        deltaString = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
+        deltaStringShort = "\(watchEntry.bgdelta.formattedForBGDelta) Δ"
+        
         sgvColor = colorForDesiredColorState(boundedColor)
         
         isRawDataAvailable = configuration.displayRawData
@@ -220,15 +231,18 @@ public struct WatchModel: DictionaryConvertible, Hashable {
             rawColor = defaultTextColor
             
             deltaString = "- --/--"
+            deltaStringShort = "-"
             
             sgvString = "---"
             sgvStringWithEmoji = sgvString
+            sgvEmoji = sgvString
+            
             sgvColor = colorForDesiredColorState(.Neutral)
             
             isArrowVisible = false
-            
+
             lastUpdatedColor = colorForDesiredColorState(.Warning)
-            
+
         }
         
         if isStaleData.urgent{
@@ -254,10 +268,12 @@ public struct WatchModel: DictionaryConvertible, Hashable {
         self.rawColor = rawColor.toHexString()
         
         self.sgvString = sgvString
+        self.sgvEmoji = sgvEmoji
         self.sgvStringWithEmoji = sgvStringWithEmoji
         self.sgvColor = sgvColor.toHexString()
         
         self.deltaString = deltaString
+        self.deltaStringShort = deltaStringShort
         self.deltaColor = sgvColor.toHexString()
         
         self.isArrowVisible = isArrowVisible
