@@ -32,7 +32,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
 
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        // WatchSessionManager.sharedManager.requestLatestAppContext()
+        WatchSessionManager.sharedManager.requestLatestAppContext()
 
         if models.isEmpty {
             if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
