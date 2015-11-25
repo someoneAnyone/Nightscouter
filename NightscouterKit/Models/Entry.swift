@@ -127,7 +127,7 @@ public struct SensorGlucoseValue {
 
     public func sgvString(forUnits units: Units) -> String {
         
-        let mgdlSgvValue: Double = units == .Mgdl ? sgv : sgv.toMmol // If the units are set to mgd/L do nothing let it pass... if its mmol/L then convert it back to mgd/L to get its proper string.
+        let mgdlSgvValue: Double = (units == .Mgdl) ? sgv : sgv.toMgdl // If the units are set to mgd/L do nothing let it pass... if its mmol/L then convert it back to mgd/L to get its proper string.
         
         if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
             switch (special) {
