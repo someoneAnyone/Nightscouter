@@ -251,8 +251,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let config = site.configuration {
             localNotification.alertTitle = "Update for \(config.displayName)"
+            
+            let units = config.displayUnits
             if let watch: WatchEntry = site.watchEntry {
-                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)%"
+                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString(forUnits: units)) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)%"
             }
         }
         

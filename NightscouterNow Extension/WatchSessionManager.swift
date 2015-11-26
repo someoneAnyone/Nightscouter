@@ -39,7 +39,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             session.delegate = self
             session.activateSession()
         }
-
         
         /*
         let complicationServer = CLKComplicationServer.sharedInstance()
@@ -49,12 +48,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         */
 
         
-        if !session.receivedApplicationContext.isEmpty {
-            let context = session.receivedApplicationContext
-            processApplicationContext(context)
-        } else {
-            requestLatestAppContext()
-        }
+//        if !session.receivedApplicationContext.isEmpty {
+//            let context = session.receivedApplicationContext
+//            processApplicationContext(context)
+//        } else {
+//            requestLatestAppContext()
+//        }
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -83,7 +82,8 @@ extension WatchSessionManager {
     }
     
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-        // print("didReceiveUserInfo: \(userInfo)")
+         print("didReceiveUserInfo: \(userInfo)")
+        processApplicationContext(userInfo)
     }
     
     // Receiver
@@ -119,7 +119,7 @@ extension WatchSessionManager {
     }
     
     func processApplicationContext(context: [String : AnyObject]) -> Bool {
-        // print("processApplicationContext \(context)")
+        print("processApplicationContext \(context)")
         
         guard let action = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
             print("No action was found, didReceiveMessage: \(context)")
@@ -166,8 +166,6 @@ extension WatchSessionManager {
                 }
             }
         case .AppContext:
-            
-            
             if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]] {
                 models.removeAll()
                 for modelDict in modelArray {

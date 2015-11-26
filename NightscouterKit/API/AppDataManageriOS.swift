@@ -80,13 +80,17 @@ public class AppDataManager: NSObject {
     internal override init() {
         super.init()
         
+        if #available(iOSApplicationExtension 9.0, *) {
+            WatchSessionManager.sharedManager.startSession()
+        }
+        
         if let  sitesData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
             }
         }
         
-        // updateWatch(.AppContext, withSite: nil)
+         updateWatch(withAction: .UserInfo, withSite: sites)
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -193,6 +197,8 @@ extension AppDataManager {
                     print("updateContextError: \(error)")
                 }
                 
+            case .UserInfo:
+                WatchSessionManager.sharedManager.transferUserInfo(context)
             default:
                 WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
                     print("recieved reply: \(reply)")

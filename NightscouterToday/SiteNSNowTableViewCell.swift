@@ -72,7 +72,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                     
                     siteColorBlockView.backgroundColor = color
                     
-                    siteSgvLabel.text = "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
+                    siteSgvLabel.text = "\(sgvValue.sgvString(forUnits: units)) \(sgvValue.direction.emojiForDirection)"
                     siteSgvLabel.textColor = color
                     
                     siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"

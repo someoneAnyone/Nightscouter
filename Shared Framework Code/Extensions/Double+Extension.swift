@@ -55,7 +55,7 @@ public extension Double {
     
     public var toMgdl: Double {
         get{
-            return self * 18
+            return floor(self * 18)
         }
     }
     

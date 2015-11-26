@@ -9,7 +9,7 @@
 import UIKit
 
 public enum WatchAction: String {
-    case Create, Read, Update, Delete, AppContext
+    case Create, Read, Update, Delete, AppContext, UserInfo
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
@@ -169,7 +169,7 @@ public struct WatchModel: DictionaryConvertible, Hashable {
             boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
         }
         
-        sgvString =  "\(sgvValue.sgvString)"
+        sgvString =  "\(sgvValue.sgvString(forUnits: units))"
         sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
         sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
         

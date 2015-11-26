@@ -29,7 +29,7 @@ public extension CompassControl {
             
             let color = colorForDesiredColorState(boundedColor)
             
-            configure(sgv.sgvString, color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: units.description)
+            configure(sgv.sgvString(forUnits: units), color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: units.description)
         }
     }
     

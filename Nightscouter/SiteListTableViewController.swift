@@ -146,7 +146,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     
     override func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
         let cell = tableView.cellForRowAtIndexPath(indexPath)
-        //        cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
+        // cell?.contentView.backgroundColor = NSAssetKit.darkNavColor
         let highlightView = UIView()
         highlightView.backgroundColor = NSAssetKit.darkNavColor
         cell?.selectedBackgroundView = highlightView
