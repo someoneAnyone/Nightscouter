@@ -43,17 +43,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         /*
         let complicationServer = CLKComplicationServer.sharedInstance()
         for complication in complicationServer.activeComplications {
-            complicationServer.reloadTimelineForComplication(complication)
+        complicationServer.reloadTimelineForComplication(complication)
         }
         */
-
         
-//        if !session.receivedApplicationContext.isEmpty {
-//            let context = session.receivedApplicationContext
-//            processApplicationContext(context)
-//        } else {
-//            requestLatestAppContext()
-//        }
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -82,7 +75,7 @@ extension WatchSessionManager {
     }
     
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-         print("didReceiveUserInfo: \(userInfo)")
+        print("didReceiveUserInfo: \(userInfo)")
         processApplicationContext(userInfo)
     }
     
@@ -101,21 +94,26 @@ extension WatchSessionManager {
 }
 
 extension WatchSessionManager {
-    public func requestLatestAppContext() {
+    public func requestLatestAppContext() -> Bool {
         print("requestLatestAppContext")
         let applicationData = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
         
-
+        var returnBool = false
+        
         session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
             
             print("recievedMessageReply: \(context)")
-            self.processApplicationContext(context)
+            returnBool = self.processApplicationContext(context)
             
             }, errorHandler: {(error ) -> Void in
                 // catch any errors here
                 print("error: \(error)")
+                
+                returnBool = false
         })
+        
+        return returnBool
     }
     
     func processApplicationContext(context: [String : AnyObject]) -> Bool {

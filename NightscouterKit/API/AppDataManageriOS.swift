@@ -90,6 +90,10 @@ public class AppDataManager: NSObject {
             }
         }
         
+        if sites.isEmpty {
+            updateWatch(withAction: .AppContext, withSite: [])
+        }
+        
          updateWatch(withAction: .UserInfo, withSite: sites)
     }
     

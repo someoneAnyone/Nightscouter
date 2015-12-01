@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="GKK-vj-5UX">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="zQV-gh-g4y">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="9019"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="9515"/>
     </dependencies>
     <scenes>
         <!--Nightscouter-->
@@ -280,9 +280,15 @@
         <!--Nightscouter-->
         <scene sceneID="7Yn-WO-84n">
             <objects>
-                <controller identifier="SitesPage" title="Nightscouter" id="zQV-gh-g4y" customClass="SitesInterfaceController" customModule="NightscouterNow_Extension"/>
+                <controller identifier="SitesPage" title="Nightscouter" id="zQV-gh-g4y" customClass="SitesInterfaceController" customModule="NightscouterNow_Extension">
+                    <items>
+                        <label alignment="center" verticalAlignment="center" text="No Sites Available" id="2iw-BD-wjx">
+                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
+                        </label>
+                    </items>
+                </controller>
             </objects>
-            <point key="canvasLocation" x="580" y="129"/>
+            <point key="canvasLocation" x="700" y="129"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="calibratedRGB"/>
