@@ -32,8 +32,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
     
     var delegate: SiteDetailViewDidUpdateItemDelegate?
     
-    var timer: NSTimer = NSTimer()
-    
     var model: WatchModel? {
         didSet {
             print("didSet WatchModel in SiteDetailInterfaceController")
@@ -59,8 +57,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 self.configureView()
             }
         }
-        
-        timer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
     }
     
     override func didDeactivate() {
@@ -73,8 +69,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 t.cancel()
             }
         }
-        
-        timer.invalidate()
     }
     
     override func awakeWithContext(context: AnyObject?) {

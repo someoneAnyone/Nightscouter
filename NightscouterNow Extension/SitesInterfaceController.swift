@@ -27,6 +27,9 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         setupNotifications()
         
+        WatchSessionManager.sharedManager.requestLatestAppContext()
+
+        
         //        if models.isEmpty {
         //            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
         //                print("Loading models from default.")
@@ -50,7 +53,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        //        WatchSessionManager.sharedManager.requestLatestAppContext()
+        WatchSessionManager.sharedManager.requestLatestAppContext()
         
         for (index, model) in models.enumerate() {
             let url = NSURL(string: model.urlString)!
@@ -59,9 +62,9 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
             WatchSessionManager.sharedManager.loadDataFor(site, index: index, lastUpdateDate: model.lastReadingDate)
         }
         
-        let dictArray = models.map({ $0.dictionary })
+        //        let dictArray = models.map({ $0.dictionary })
         //        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
-        NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
+        //        NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
         //        NSUserDefaults.standardUserDefaults().synchronize()
     }
     
@@ -79,9 +82,12 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
                 // pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
                 
                 let modelDicts = self.models.map({ [WatchModel.PropertyKey.modelKey : $0.dictionary] })
-                
-                WKInterfaceController.reloadRootControllersWithNames(self.names, contexts: modelDicts)
+                self.animateWithDuration(0.2) { () -> Void in
+                    WKInterfaceController.reloadRootControllersWithNames(self.names, contexts: modelDicts)
+                }
             }
+        } else {
+            popController()
         }
     }
     
@@ -93,6 +99,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
         models.removeAtIndex(index)
+        updatePages()
     }
     
     func dataSourceDidAddSiteModel(model: WatchModel) {
