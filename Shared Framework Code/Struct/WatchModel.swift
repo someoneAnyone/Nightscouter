@@ -19,11 +19,12 @@ public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
 public struct WatchModel: DictionaryConvertible, Hashable {
     
     public struct PropertyKey {
-       public static let contextKey = "context"
-       public static let actionKey = "action"
-       public static let modelKey = "siteModel"
-       public static let modelsKey = "siteModels"
-       public static let delegateKey = "delegate"
+        public static let contextKey = "context"
+        public static let actionKey = "action"
+        public static let modelKey = "siteModel"
+        public static let modelsKey = "siteModels"
+        public static let delegateKey = "delegate"
+        public static let currentIndexKey = "currentIndex"
     }
     
     public var hashValue: Int {
@@ -240,9 +241,9 @@ public struct WatchModel: DictionaryConvertible, Hashable {
             sgvColor = colorForDesiredColorState(.Neutral)
             
             isArrowVisible = false
-
+            
             lastUpdatedColor = colorForDesiredColorState(.Warning)
-
+            
         }
         
         if isStaleData.urgent{

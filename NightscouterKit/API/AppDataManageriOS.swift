@@ -90,10 +90,6 @@ public class AppDataManager: NSObject {
             }
         }
         
-        if sites.isEmpty {
-            updateWatch(withAction: .AppContext, withSite: [])
-        }
-        
          updateWatch(withAction: .UserInfo, withSite: sites)
     }
     
@@ -189,6 +185,8 @@ extension AppDataManager {
             }
         }
         context[WatchModel.PropertyKey.modelsKey] = models
+        
+        context[WatchModel.PropertyKey.currentIndexKey] = currentSiteIndex
         
         if #available(iOSApplicationExtension 9.0, *) {
             
