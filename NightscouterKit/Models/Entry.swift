@@ -124,42 +124,44 @@ public struct SensorGlucoseValue {
     enum ReservedValues: Double {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
+
+    public func sgvString(forUnits units: Units) -> String {
+        
+        let mgdlSgvValue: Double = (units == .Mgdl) ? sgv : sgv.toMgdl // If the units are set to mgd/L do nothing let it pass... if its mmol/L then convert it back to mgd/L to get its proper string.
+        
+        if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
+            switch (special) {
+            case .NoGlucose:
+                return "?NG"
+            case .SensoreNotActive:
+                return "?NA"
+            case .MinimalDeviation:
+                return "?MD"
+            case .NoAntenna:
+                return "?NA"
+            case .SensorNotCalibrated:
+                return "?NC"
+            case .CountsDeviation:
+                return "?CD"
+            case .AbsoluteDeviation:
+                return "?AD"
+            case .PowerDeviation:
+                return "?PD"
+            case .BadRF:
+                return "?RF✖"
+            case .HupHolland:
+                return "MH"
+            }
+        }
+        if sgv >= 30 && sgv < 40 {
+            return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
+        }
+        return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
+    }
     
-    public var sgvString: String { // Consider moving this to a Printable or similar protocal?
+    public var sgvString: String { // moved its logic to [public func sgvString(forUnits units: Units) -> String]
         get {
-            
-            let mgdlSgvValue: Double = sgv.isInteger ? sgv : sgv.toMgdl
-            
-            if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
-                switch (special) {
-                case .NoGlucose:
-                    return "?NG"
-                case .SensoreNotActive:
-                    return "?NA"
-                case .MinimalDeviation:
-                    return "?MD"
-                case .NoAntenna:
-                    return "?NA"
-                case .SensorNotCalibrated:
-                    return "?NC"
-                case .CountsDeviation:
-                    return "?CD"
-                case .AbsoluteDeviation:
-                    return "?AD"
-                case .PowerDeviation:
-                    return "?PD"
-                case .BadRF:
-                    return "?RF✖"
-                case .HupHolland:
-                    return "MH"
-                    //                default:
-                    //                    return "✖"
-                }
-            }
-            if sgv >= 30 && sgv < 40 {
-                return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
-            }
-            return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
+            return sgvString(forUnits: .Mgdl)
         }
     }
 }
@@ -310,17 +312,23 @@ public extension Entry {
         
         let dateString = dict[EntryPropertyKey.dateStringKey] as? String
         
+        /*
         guard let stringForType = dict[EntryPropertyKey.typeKey] as? String,
-            type: Type = Type(rawValue: stringForType) else {
-                
-                self.init(identifier: "none", date: NSDate(), device:"none")
-                
-                return
+        type: Type = Type(rawValue: stringForType) else {
+        
+        self.init(identifier: "none", date: date, device: device)
+        return
         }
+        */
         
         var sgValue: SensorGlucoseValue! = nil
         var calValue: Calibration! = nil
         var mbgValue: MeterBloodGlucose! = nil
+        
+        var type: Type = .none
+        if let stringForType = dict[EntryPropertyKey.typeKey] as? String, t: Type = Type(rawValue: stringForType) {
+            type = t
+        }
         
         switch type {
         case .sgv:
@@ -361,6 +369,13 @@ public extension Entry {
             #if DEBUG
                 print(errorString)
             #endif
+            if let directionString = dict[EntryPropertyKey.directionKey] as? String,
+                direction = Direction(rawValue: directionString),
+                sgv = dict[EntryPropertyKey.sgvKey] as? Double {
+                    
+                    sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: 0, unfiltered: 0, rssi: 0, noise: .None)
+            }
+            
             break
         }
         self.init(identifier: identifier, date: date, device:device, dateString: dateString, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
