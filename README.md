@@ -4,7 +4,7 @@ An Native iOS app used for displaying CGM data from a Nightscout website data. T
 ## Minimum Requirements
 - Version 7.1.1 (7B1005)
 - iOS 8.4 or better
-- iPhone 5, 5s, 6, 6 Plus (not specifically optimized for iPad yet)
+- iPhone 5, 5s, 6, 6 Plus (Will work on iPads but not specifically optimized for it yet)
 - Nightscout Remote Monitor versions 0.7.0 & 0.8.0 (https://github.com/nightscout/cgm-remote-monitor)
 - Dexcom CGM
 
