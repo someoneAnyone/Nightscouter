@@ -462,6 +462,28 @@ public extension ServerConfiguration {
         }
     }
     
+    public var displayRawData: Bool {
+        if let enabledOptions = enabledOptions {
+            let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
+            if rawEnabled {
+                if let defaults = defaults {
+                    
+                    switch defaults.showRawbg {
+                    case .Noise:
+                        return true
+                    case .Always:
+                        return true
+                    case .Never:
+                        return false
+                    }
+                    
+                }
+            }
+        }
+        
+        return false
+    }
+    
     public var displayUnits: Units {
         if let defaults = defaults {
             return defaults.units

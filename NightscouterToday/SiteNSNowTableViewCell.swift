@@ -22,7 +22,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     @IBOutlet weak var siteNameLabel: UILabel!
     
-     @IBOutlet weak var siteColorBlockView: UIView!
+    @IBOutlet weak var siteColorBlockView: UIView!
     // @IBOutlet weak var siteCompassControl: CompassControl!
     
     @IBOutlet weak var siteSgvLabel: UILabel!
@@ -63,7 +63,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
                 siteLastReadingLabel.text = watchEntry.dateTimeAgoString
                 
                 if let sgvValue = watchEntry.sgv {
-                
+                    
                     var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
                     if units == .Mmol {
                         boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
@@ -77,28 +77,25 @@ class SiteNSNowTableViewCell: UITableViewCell {
                     
                     siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
                     siteDirectionLabel.textColor = color
-
                     
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if rawEnabled {
-                            if let rawValue = watchEntry.raw {
-                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                                
-                                var raw = "\(rawValue.formattedForMgdl)"
-                                if configuration.displayUnits == .Mmol {
-                                    raw = rawValue.formattedForMmol
-                                }
-                                
-                                siteRawLabel?.textColor = color
-                                siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
+                    
+                    if configuration.displayRawData {
+                        if let rawValue = watchEntry.raw {
+                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                            
+                            var raw = "\(rawValue.formattedForMgdl)"
+                            if configuration.displayUnits == .Mmol {
+                                raw = rawValue.formattedForMmol
                             }
-                        } else {
-                            siteRawHeader.hidden = true
-                            siteRawLabel.hidden = true
+                            
+                            siteRawLabel?.textColor = color
+                            siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
                         }
+                    } else {
+                        siteRawHeader.hidden = true
+                        siteRawLabel.hidden = true
                     }
-
+                    
                     let timeAgo = watchEntry.date.timeIntervalSinceNow
                     let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
                     // siteCompassControl.shouldLookStale(look: isStaleData.warn)
@@ -154,7 +151,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
         // siteCompassControl.shouldLookStale(look: true)
-         siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
+        siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
         
         siteSgvLabel.text = nil
         siteSgvLabel.textColor = Theme.Color.labelTextColor
