@@ -1,10 +1,12 @@
 # Nightscouter
 An Native iOS app used for displaying CGM data from a Nightscout website data. To build and run for your self, you'll need to have a valid Apple Developer account to generate the proper entitlements needed to share data between the Today Widget and the main App.
 
+Don't want to build and install on your own? Nightscouter is now available on the [Apple AppStore] (https://itunes.apple.com/us/app/nightscouter/id1010503247?ls=1&mt=8).
+
 ## Minimum Requirements
 - Version 7.1.1 (7B1005)
 - iOS 8.4 or better
-- iPhone 5, 5s, 6, 6 Plus (not specifically optimized for iPad yet)
+- iPhone 5, 5s, 6, 6 Plus (Will work on iPads but not specifically optimized for it yet)
 - Nightscout Remote Monitor versions 0.7.0 & 0.8.0 (https://github.com/nightscout/cgm-remote-monitor)
 - Dexcom CGM
 
@@ -27,7 +29,11 @@ Feel free to post an [issue].
 
 ##License
 <<<<<<< HEAD
+<<<<<<< HEAD
 Coming...
+=======
+Nightscouter is available under the MIT license. See the LICENSE file for more info.
+>>>>>>> dev
 =======
 Nightscouter is available under the MIT license. See the LICENSE file for more info.
 >>>>>>> dev
