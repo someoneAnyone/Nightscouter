@@ -33,10 +33,16 @@ public extension String {
 }
 
 public extension String {
+    var formatter: NSNumberFormatter {
+        let formatter = NSNumberFormatter()
+        formatter.locale = NSLocale.systemLocale()
+        return formatter
+    }
+    
     public var floatValue: Float? {
-        return NSNumberFormatter().numberFromString(self)?.floatValue //(self as NSString).floatValue
+        return formatter.numberFromString(self)?.floatValue
     }
     public var toDouble: Double? {
-        return NSNumberFormatter().numberFromString(self)?.doubleValue
+        return formatter.numberFromString(self)?.doubleValue
     }
 }
