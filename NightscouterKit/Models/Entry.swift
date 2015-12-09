@@ -124,7 +124,7 @@ public struct SensorGlucoseValue {
     enum ReservedValues: Double {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
-
+    
     public func sgvString(forUnits units: Units) -> String {
         
         let mgdlSgvValue: Double = (units == .Mgdl) ? sgv : sgv.toMgdl // If the units are set to mgd/L do nothing let it pass... if its mmol/L then convert it back to mgd/L to get its proper string.
@@ -338,12 +338,18 @@ public extension Entry {
                 sgv = dict[EntryPropertyKey.sgvKey] as? Double,
                 filtered = dict[EntryPropertyKey.filteredKey] as? Int,
                 unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int,
-                rssi = dict[EntryPropertyKey.rssiKey] as? Int,
-                noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
-                noise = Noise(rawValue: noiseInt) else {
+                rssi = dict[EntryPropertyKey.rssiKey] as? Int else {
                     
                     break
             }
+            
+            var noise = Noise.None
+            if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
+                noiseType = Noise(rawValue: noiseInt) {
+                    
+                    noise = noiseType
+            }
+            
             
             sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
             break
