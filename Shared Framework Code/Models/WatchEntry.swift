@@ -133,17 +133,18 @@ public extension WatchEntry {
             }
             
             if let opFiltered = bgsDictionary[EntryPropertyKey.filteredKey] as? Int,
-                opUnfiltlered = bgsDictionary[EntryPropertyKey.unfilteredKey] as? Int,
-                opNoiseInt = bgsDictionary[EntryPropertyKey.noiseKey] as? Int,
+                opUnfiltlered = bgsDictionary[EntryPropertyKey.unfilteredKey] as? Int
+            {
+                filtered = opFiltered
+                unfiltlered = opUnfiltlered
+                
+            }
+            if let opNoiseInt = bgsDictionary[EntryPropertyKey.noiseKey] as? Int,
                 opNoise = Noise(rawValue: opNoiseInt) {
                     
-                    filtered = opFiltered
-                    unfiltlered = opUnfiltlered
                     noise = opNoise
                     
             }
-            
-            
             
             
             if let bgdeltaString = bgsDictionary[EntryPropertyKey.bgdeltaKey] as? String {

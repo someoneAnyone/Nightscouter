@@ -106,7 +106,7 @@ public struct SensorGlucoseValue: DictionaryConvertible {
         if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
             switch (special) {
             case .NoGlucose:
-                return "?NG"
+                return "?NC"
             case .SensoreNotActive:
                 return "?NA"
             case .MinimalDeviation:

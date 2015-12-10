@@ -169,17 +169,21 @@ public extension Entry {
         
         switch type {
         case .Sgv:
-            
             guard let directionString = dict[EntryPropertyKey.directionKey] as? String,
                 direction = Direction(rawValue: directionString),
                 sgv = dict[EntryPropertyKey.sgvKey] as? Double,
                 filtered = dict[EntryPropertyKey.filteredKey] as? Int,
                 unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int,
-                rssi = dict[EntryPropertyKey.rssiKey] as? Int,
-                noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
-                noise = Noise(rawValue: noiseInt) else {
+                rssi = dict[EntryPropertyKey.rssiKey] as? Int else {
                     
                     break
+            }
+            
+            var noise = Noise.None
+            if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
+                noiseType = Noise(rawValue: noiseInt) {
+                    
+                    noise = noiseType
             }
             
             sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
