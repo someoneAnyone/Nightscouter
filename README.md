@@ -28,12 +28,4 @@ Feel free to post an [issue].
 [issue]: https://github.com/someoneAnyone/Nightscouter/issues
 
 ##License
-<<<<<<< HEAD
-<<<<<<< HEAD
-Coming...
-=======
 Nightscouter is available under the MIT license. See the LICENSE file for more info.
->>>>>>> dev
-=======
-Nightscouter is available under the MIT license. See the LICENSE file for more info.
->>>>>>> dev
