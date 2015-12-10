@@ -30,10 +30,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-
+        
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         // WatchSessionManager.sharedManager.requestLatestAppContext()
-
+        
         if models.isEmpty {
             if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
                 print("Loading models from default.")
@@ -116,7 +116,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         models.removeAtIndex(index)
     }
     
-    func dataSourceDidAddSiteModel(model: WatchModel) {
+    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
+        
         print(">>> Entering \(__FUNCTION__) <<<")
         
         if let modelIndex = models.indexOf(model){
@@ -133,25 +134,24 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     func didUpdateItem(site: Site, withModel model: WatchModel) {
         
         print(">>> Entering \(__FUNCTION__) <<<")
-
+        
         if let index = self.models.indexOf(model) {
             self.models[index] = model
         } else {
             print("Did not update table view with recent item")
         }
         
-//        if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
-//            self.models[index] = model
-//        }
+        // if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
+        //  self.models[index] = model
+        // }
     }
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        for (index, model) in models.enumerate() {
-            let url = NSURL(string: model.urlString)!
-            let site = Site(url: url, apiSecret: nil)!
-            
-            WatchSessionManager.sharedManager.loadDataFor(site, index: index, lastUpdateDate: model.lastReadingDate)
+        for model in models {
+            AppDataManager.sharedInstance.loadDataFor(model, replyHandler: { (model) -> Void in
+                //..
+            })
         }
         
         let dictArray = models.map({ $0.dictionary })

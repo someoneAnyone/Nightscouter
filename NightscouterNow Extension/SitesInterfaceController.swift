@@ -28,16 +28,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         setupNotifications()
         
         WatchSessionManager.sharedManager.requestLatestAppContext()
-
-        
-        //        if models.isEmpty {
-        //            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
-        //                print("Loading models from default.")
-        //                models = dictArray.map({ WatchModel(fromDictionary: $0)! })
-        //            }
-        
         updatePages()
-        //        }
     }
     
     func setupNotifications() {
@@ -50,27 +41,20 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        WatchSessionManager.sharedManager.requestLatestAppContext()
-        
-        for (index, model) in models.enumerate() {
-            let url = NSURL(string: model.urlString)!
-            let site = Site(url: url, apiSecret: nil)!
-            
-            WatchSessionManager.sharedManager.loadDataFor(site, index: index, lastUpdateDate: model.lastReadingDate)
+        if !WatchSessionManager.sharedManager.requestLatestAppContext() {
+            for model in models {
+                AppDataManager.sharedInstance.loadDataFor(model, replyHandler: { (model) -> Void in
+                    //..
+                })
+            }
         }
-        
-        //        let dictArray = models.map({ $0.dictionary })
-        //        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
-        //        NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
-        //        NSUserDefaults.standardUserDefaults().synchronize()
     }
     
     func updatePages() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        
+        popToRootController()
         names.removeAll()
         for _ in (0..<models.count) {
             names.append("SiteDetail")
@@ -86,8 +70,29 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
                     WKInterfaceController.reloadRootControllersWithNames(self.names, contexts: modelDicts)
                 }
             }
+            
         } else {
-            popController()
+            
+            // MARK: Need a better experience for an empty experience....
+            
+            //            WKInterfaceController.reloadRootControllersWithNames(["empty"], contexts: [" "])
+            
+            //            NSOperationQueue.mainQueue().addOperationWithBlock {
+            //                let alertMessage = "No sites were found."
+            //                let okButtom = WKAlertAction(title: "Retry", style: WKAlertActionStyle.Default, handler: { () -> Void in
+            //                    WatchSessionManager.sharedManager.requestLatestAppContext()
+            //                })
+            //                self.popToRootController()
+            //
+            //                // Or you can do it the old way
+            //                let offset = 2.0
+            //                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(offset * Double(NSEC_PER_SEC))), dispatch_get_main_queue(), {
+            //                    // Do something
+            //                    self.presentAlertControllerWithTitle(alertMessage, message: "We didn't find any sites. You can try looking for sites again.", preferredStyle: WKAlertControllerStyle.Alert, actions: [okButtom])
+            //
+            //                })
+            
+            //            }
         }
     }
     
@@ -102,7 +107,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         updatePages()
     }
     
-    func dataSourceDidAddSiteModel(model: WatchModel) {
+    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
         if let modelIndex = models.indexOf(model){

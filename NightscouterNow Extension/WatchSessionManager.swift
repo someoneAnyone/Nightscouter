@@ -11,11 +11,14 @@ import ClockKit
 
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
-    // func dataSourceDidUpdate(dataSource: [Site])
     func dataSourceDidUpdateAppContext(models: [WatchModel])
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int)
-    func dataSourceDidAddSiteModel(model: WatchModel)
+    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int)
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
+}
+
+public protocol ModelDataSourceChangedDelegate {
+    func dataSourceDidChange(withAction action: WatchAction, forModel model: WatchModel, atIndex index: Int)
 }
 
 @available(watchOS 2.0, *)
@@ -24,6 +27,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public static let sharedManager = WatchSessionManager()
     private override init() {
         super.init()
+        
+        if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
+            print("Loading models from default.")
+            models = dictArray.map({ WatchModel(fromDictionary: $0)! })
+        }
+        
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
@@ -31,7 +40,14 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private let session: WCSession = WCSession.defaultSession()
     
     private var sites: [Site] = []
-    private var models: [WatchModel] = []
+    private var models: [WatchModel] = [] {
+        didSet {
+            let dictArray = models.map({ $0.dictionary })
+            NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
+            // NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
+            NSUserDefaults.standardUserDefaults().synchronize()
+        }
+    }
     
     
     public func startSession() {
@@ -112,7 +128,6 @@ extension WatchSessionManager {
                 
                 returnBool = false
         })
-        
         return returnBool
     }
     
@@ -142,7 +157,7 @@ extension WatchSessionManager {
                         } else {
                             models.append(model)
                             dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model)}
+                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model, atIndex: self!.models.count)}
                             }
                             
                         }
@@ -182,39 +197,5 @@ extension WatchSessionManager {
         
         return true
     }
-    
-    
-    public func loadDataFor(site: Site, index: Int, lastUpdateDate: NSDate?) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            // Start up the API
-            let nsApi = NightscoutAPIClient(url: site.url)
-            if (lastUpdateDate?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds) || lastUpdateDate == nil {
-                // Get settings for a given site.
-                print("Loading data for \(site.url!)")
-                nsApi.fetchServerConfiguration { (result) -> Void in
-                    switch (result) {
-                    case let .Error(error):
-                        // display error message
-                        print("\(__FUNCTION__) ERROR recieved: \(error)")
-                    case let .Value(boxedConfiguration):
-                        let configuration:ServerConfiguration = boxedConfiguration.value
-                        // do something with user
-                        nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                            
-                            site.configuration = configuration
-                            site.watchEntry = watchEntry
-                            let model = WatchModel(fromSite: site)!
-                            
-                            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateSiteModel(model, atIndex: index) }
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    }
-    
     
 }

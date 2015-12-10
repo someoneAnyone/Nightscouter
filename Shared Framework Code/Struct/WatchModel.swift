@@ -16,7 +16,7 @@ public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
     return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName
 }
 
-public struct WatchModel: DictionaryConvertible, Hashable {
+public struct WatchModel: DictionaryConvertible, Equatable {
     
     public struct PropertyKey {
         public static let contextKey = "context"

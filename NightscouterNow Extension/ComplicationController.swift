@@ -255,7 +255,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         }
     }
     
-    func dataSourceDidAddSiteModel(model: WatchModel) {
+    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
+        
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif

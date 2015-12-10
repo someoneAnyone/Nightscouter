@@ -206,6 +206,7 @@ extension AppDataManager {
                     print("recieved reply: \(reply)")
                     }) { (error) -> Void in
                         print("recieved an error: \(error)")
+                        WatchSessionManager.sharedManager.transferUserInfo(context)
                 }
             }
             

@@ -11,6 +11,7 @@
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
 		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
+		17304D541C16838600C057D7 /* AppDataManagerWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
@@ -209,6 +210,7 @@
 		170825F21B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1713D5A61C11388700A52345 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
+		17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDataManagerWatchOS.swift; sourceTree = "<group>"; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		1734545E1B30A8A200931278 /* SiteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteTableViewCell.swift; sourceTree = "<group>"; };
@@ -604,6 +606,7 @@
 				17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */,
 				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
 				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
+				17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */,
 			);
 			name = "Watch Framework";
 			path = ../NightscouterWatchOSKit;
@@ -1014,6 +1017,7 @@
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17304D541C16838600C057D7 /* AppDataManagerWatchOS.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */,

@@ -11,9 +11,8 @@ import Foundation
 Create protocol for setting base URL, API Token, etc...
 */
 public protocol NightscoutAPIClientDelegate {
-    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool)
+    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) -> Void
 }
-
 
 // TODO: Create a queue of requests... and make this a singleton.
 
@@ -30,7 +29,16 @@ internal struct URLPart {
     static let Pebble = "pebble"
     static let CountParameter = "count"
     static let Status = "status"
+    static let Cals = "cal"
+    static let ExperimentTest = "experiments/test"
+
     static let FileExtension = "json"
+}
+
+internal struct HeaderPart {
+    static let APISecretKey = "api-secret"
+    static let ContentTypeKey = "Content-Type"
+    static let ContentTypeValueApplicationJSON = "application/json"
 }
 
 public enum NightscoutAPIError {
@@ -40,11 +48,9 @@ public enum NightscoutAPIError {
     case JSONParseError(String)
 }
 
-
 public struct NightscoutAPIClientNotification {
     public static let DataIsStaleUpdateNow: String =  "data.stale.update"
     public static let DataUpdateSuccessful: String = "data.update.successful"
-    // public static let DataUpdateFail = AppDataManager.sharedInstance.bundleIdentifier!.stringByAppendingString("data.update.fail")
 }
 
 public class NightscoutAPIClient {
@@ -53,18 +59,31 @@ public class NightscoutAPIClient {
     lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
     
     public var url: NSURL!
-
+    
     public var delegate: NightscoutAPIClientDelegate?
-
+    
     public var task: NSURLSessionDownloadTask?
-
+    
+    private var apiSecret: String?
+    
+    var headers = [String: String]()
+    
     /*! Initializes the calss with a Nightscout site URL.
     * \param url This class only needs the base URL to the site. For example, https://nightscout.hostingcompany.com, the class will discover the API. Currently uses veriion 1.
+    * \apiSecret ?.
     *
     */
-    public init(url: NSURL){
+    public init(url: NSURL, apiSecret: String? = nil) {
         self.url = url
+        self.apiSecret = apiSecret
+        
+        headers[HeaderPart.ContentTypeKey] = HeaderPart.ContentTypeValueApplicationJSON
+        
+        if let apiSecret = self.apiSecret {
+            headers[HeaderPart.APISecretKey] = apiSecret
+        }
     }
+    
     internal convenience init() {
         self.init(url: NSURL())
     }
@@ -99,6 +118,46 @@ extension NightscoutAPIClient {
             }
         })
     }
+    
+    public func fetchCalibrations(count: Int = 1, completetion:(calibrations: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
+        //find[type]=cal&count=1
+        let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
+        
+        let urlComponents = NSURLComponents(URL: self.urlForCalibrations, resolvingAgainstBaseURL: true)
+        urlComponents?.queryItems = [queryItemCount]
+        
+        self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
+            if let entries = result as? JSONArray {
+                var finalArray = Array<Entry>()
+                for jsonDictionary: JSONDictionary in entries {
+                    let entry: Entry = Entry(jsonDictionary: jsonDictionary)
+                    finalArray.append(entry)
+                }
+                completetion(calibrations: finalArray, errorCode: errorCode)
+            } else {
+                completetion(calibrations: nil, errorCode: errorCode)
+            }
+        })
+    }
+    
+    internal func postExperiments() {
+        let request = NSMutableURLRequest(URL: self.urlForExperimentTest)
+        request.HTTPMethod = "POST"
+        request.allHTTPHeaderFields = headers
+        // request.HTTPBody = "postData"
+        
+        let dataTask: NSURLSessionDataTask = sharedSession.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
+            if (error != nil) {
+                print(error)
+            } else {
+                let httpResponse = response as? NSHTTPURLResponse
+                print(httpResponse)
+            }
+        })
+        
+        dataTask.resume()
+    }
+    
 }
 
 // MARK: - Convenience Methods
@@ -123,6 +182,15 @@ extension NightscoutAPIClient {
     func stringForEntriesWithCount(count: Int) -> NSURL {
         let numberOfEntries = "?\(URLPart.CountParameter)=\(count)"
         return NSURL(string:"\(entriesString)\(numberOfEntries)")!
+    }
+    
+    internal var urlForCalibrations: NSURL {
+        return baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathComponent(URLPart.Cals).URLByAppendingPathExtension(URLPart.FileExtension)
+    }
+    
+    internal var urlForExperimentTest: NSURL {
+        let temp = baseURL.URLByAppendingPathComponent(URLPart.ExperimentTest)
+        return temp
     }
     
 }
@@ -173,7 +241,7 @@ private extension NightscoutAPIClient {
                                 jsonError = error
                                 print("Could not create a response object")
                                 completetion(result: nil, errorCode: .DataError("Could not create a response object from given data."))
-
+                                
                             } catch {
                                 fatalError()
                             }
@@ -225,7 +293,7 @@ extension NightscoutAPIClient {
                 // display error message
                 print("Recieved an error fetching Configuration: \(error)")
                 callback(.Error(error))
-
+                
             case let .Value(boxedConfiguration):
                 let result: JSON = boxedConfiguration.value
                 if let settingsDictionary = result as? JSONDictionary {
@@ -241,7 +309,7 @@ private extension NightscoutAPIClient {
     
     func fetchJSONWithURL(url: NSURL!, callback: (Result<JSON>) -> Void) {
         
-         task = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
+        task = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
             
             // if the response returned an error send it to the callback
             if let err = downloadError {
@@ -291,7 +359,7 @@ private extension NightscoutAPIClient {
             }
             
             // if we couldn't parse all the properties then send back an error
-            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))            
+            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))
         })
         
         task!.resume()
