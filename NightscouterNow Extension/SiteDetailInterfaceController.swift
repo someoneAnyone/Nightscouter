@@ -90,7 +90,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
         // Remove this class from the observer list. Was listening for a global update timer.
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
-
+    
     
     func updateData(){
         
@@ -178,6 +178,10 @@ class SiteDetailInterfaceController: WKInterfaceController {
             
             self.lastUpdatedTime = watchModel.lastReadingDate
         })
+    }
+    
+    @IBAction func updateButton() {
+        updateData()
     }
 }
 

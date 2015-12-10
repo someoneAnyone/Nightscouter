@@ -103,8 +103,11 @@
                     </items>
                     <menu key="menu" id="EpU-0X-abL">
                         <items>
-                            <menuItem title="Update" icon="add" id="p4e-ZI-aoE"/>
-                            <menuItem title="Mode Swap" icon="shuffle" id="Q5Z-Ei-VZu"/>
+                            <menuItem title="Update" icon="add" id="p4e-ZI-aoE">
+                                <connections>
+                                    <action selector="updateButton" destination="GKK-vj-5UX" id="MfZ-a0-7ap"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                     <connections>
@@ -245,6 +248,15 @@
                             <edgeInsets key="margins" left="5" right="5" top="0.0" bottom="0.0"/>
                         </group>
                     </items>
+                    <menu key="menu" id="ax9-qs-Uw1">
+                        <items>
+                            <menuItem title="Update" icon="add" id="UOF-CU-DHG">
+                                <connections>
+                                    <action selector="updateButton" destination="QpE-HT-5Ki" id="YHK-po-cdT"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
                     <connections>
                         <outlet property="batteryHeader" destination="QGg-rk-PXv" id="u2Q-4E-pOR"/>
                         <outlet property="batteryLabel" destination="qjI-J1-2Qh" id="21E-Nw-1mf"/>
@@ -289,8 +301,11 @@
                     </items>
                     <menu key="menu" id="t9u-0R-OZI">
                         <items>
-                            <menuItem title="Update" icon="add" id="8Fg-Fp-bKg"/>
-                            <menuItem title="Mode Swap" icon="shuffle" id="4lT-N9-lXn"/>
+                            <menuItem title="Update" icon="add" id="8Fg-Fp-bKg">
+                                <connections>
+                                    <action selector="updateButton" destination="zQV-gh-g4y" id="IwI-It-prD"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </controller>

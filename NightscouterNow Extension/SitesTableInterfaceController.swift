@@ -29,15 +29,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        if models.isEmpty {
-            if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
-                print("Loading models from default.")
-                models = dictArray.map({ WatchModel(fromDictionary: $0)! })
-            } else {
-                updateTableData()
-            }
-        }
     }
     
     
@@ -49,7 +40,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         WatchSessionManager.sharedManager.requestLatestAppContext()
     }
-
+    
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
@@ -144,7 +135,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             print("Did not update table view with recent item")
         }
     }
-
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
@@ -153,11 +143,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 //..
             })
         }
-        
-        let dictArray = models.map({ $0.dictionary })
-        NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
-        // NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
-        NSUserDefaults.standardUserDefaults().synchronize()
+    }
+    
+    @IBAction func updateButton() {
+        updateData()
     }
 }
 

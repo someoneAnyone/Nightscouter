@@ -131,5 +131,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
             print("Did not update table view with recent item")
         }
     }
-    
+    @IBAction func updateButton() {
+        updateData()
+    }
 }
