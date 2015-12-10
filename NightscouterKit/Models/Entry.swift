@@ -37,7 +37,7 @@ public enum Direction : String, CustomStringConvertible {
     public var emojiForDirection : String {
         get {
             switch (self) {
-            case .None: return "None"
+            case .None: return " "
             case .DoubleUp: return  "⇈"
             case .SingleUp: return "↑"
             case .FortyFiveUp: return  "➚"
@@ -132,7 +132,7 @@ public struct SensorGlucoseValue {
         if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
             switch (special) {
             case .NoGlucose:
-                return "?NG"
+                return "?NC"
             case .SensoreNotActive:
                 return "?NA"
             case .MinimalDeviation:
