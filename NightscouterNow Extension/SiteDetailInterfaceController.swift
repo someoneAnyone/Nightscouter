@@ -57,6 +57,8 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 self.configureView()
             }
         }
+        
+        setupNotifications()
     }
     
     override func didDeactivate() {
@@ -78,6 +80,17 @@ class SiteDetailInterfaceController: WKInterfaceController {
         if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
         
     }
+    
+    func setupNotifications() {
+        // Listen for global update timer.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+    }
+    
+    deinit {
+        // Remove this class from the observer list. Was listening for a global update timer.
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+
     
     func updateData(){
         

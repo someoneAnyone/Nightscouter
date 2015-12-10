@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="zQV-gh-g4y">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9531" systemVersion="15B42" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="GKK-vj-5UX">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9529"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="9515"/>
@@ -103,7 +103,8 @@
                     </items>
                     <menu key="menu" id="EpU-0X-abL">
                         <items>
-                            <menuItem title="Menu Item" icon="add" id="p4e-ZI-aoE"/>
+                            <menuItem title="Update" icon="add" id="p4e-ZI-aoE"/>
+                            <menuItem title="Mode Swap" icon="shuffle" id="Q5Z-Ei-VZu"/>
                         </items>
                     </menu>
                     <connections>
@@ -286,6 +287,12 @@
                             <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
                         </label>
                     </items>
+                    <menu key="menu" id="t9u-0R-OZI">
+                        <items>
+                            <menuItem title="Update" icon="add" id="8Fg-Fp-bKg"/>
+                            <menuItem title="Mode Swap" icon="shuffle" id="4lT-N9-lXn"/>
+                        </items>
+                    </menu>
                 </controller>
             </objects>
             <point key="canvasLocation" x="580" y="129"/>

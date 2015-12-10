@@ -24,15 +24,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     var lastUpdatedTime: NSDate?
-    var timer: NSTimer?
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        // WatchSessionManager.sharedManager.requestLatestAppContext()
         
         if models.isEmpty {
             if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
@@ -42,23 +38,21 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 updateTableData()
             }
         }
-        
-        timer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: nil, repeats: true)
     }
+    
     
     override func willActivate() {
-        // This method is called when watch view controller is about to be visible to user
         super.willActivate()
-        print(">>> Entering \(__FUNCTION__) <<<")
         
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        setupNotifications()
+        
+        WatchSessionManager.sharedManager.requestLatestAppContext()
     }
-    
+
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        timer?.invalidate()
-        
         super.didDeactivate()
     }
     
@@ -69,6 +63,16 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
     }
     
+    func setupNotifications() {
+        // Listen for global update timer.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+    }
+    
+    deinit {
+        // Remove this class from the observer list. Was listening for a global update timer.
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
@@ -77,7 +81,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
     }
-    
     
     private func updateTableData() {
         print(">>> Entering \(__FUNCTION__) <<<")
@@ -114,10 +117,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
         models.removeAtIndex(index)
+        updateTableData()
     }
     
     func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
-        
         print(">>> Entering \(__FUNCTION__) <<<")
         
         if let modelIndex = models.indexOf(model){
@@ -140,11 +143,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         } else {
             print("Did not update table view with recent item")
         }
-        
-        // if let model = WatchModel(fromSite: site), index = self.models.indexOf(model) {
-        //  self.models[index] = model
-        // }
     }
+
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
