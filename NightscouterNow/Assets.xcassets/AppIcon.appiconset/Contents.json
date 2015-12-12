@@ -11,7 +11,7 @@
     {
       "size" : "27.5x27.5",
       "idiom" : "watch",
-      "filename" : "watchNotification42mm.png",
+      "filename" : "watchNotification42mm@2x.png",
       "scale" : "2x",
       "role" : "notificationCenter",
       "subtype" : "42mm"
@@ -41,7 +41,7 @@
     {
       "size" : "44x44",
       "idiom" : "watch",
-      "filename" : "watchLongLook42mm.png",
+      "filename" : "watchLongLook42mm@2x.png",
       "scale" : "2x",
       "role" : "longLook",
       "subtype" : "42mm"
