@@ -11,6 +11,7 @@
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
 		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
+		1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172033091C19D073005208F6 /* Settings-Watch.bundle */; };
 		17304D541C16838600C057D7 /* AppDataManagerWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
@@ -209,6 +210,7 @@
 		170825EB1B2CBABB00304F8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		170825F21B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1713D5A61C11388700A52345 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		172033091C19D073005208F6 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = "Settings-Watch.bundle"; path = "Nightscouter/Settings-Watch.bundle"; sourceTree = SOURCE_ROOT; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDataManagerWatchOS.swift; sourceTree = "<group>"; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				172033091C19D073005208F6 /* Settings-Watch.bundle */,
 				17E1B47A1B62DB3E0047D594 /* Settings.bundle */,
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1BD1B31141000C22762 /* html */,
@@ -706,6 +709,7 @@
 				170825DF1B2CBABB00304F8F /* Sources */,
 				170825E01B2CBABB00304F8F /* Frameworks */,
 				170825E11B2CBABB00304F8F /* Resources */,
+				1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 				1771B0601B75235C006C1F5E /* Embed Frameworks */,
 				1725512C1B75544700AC09E0 /* Embed App Extensions */,
 				83883D9E1BC1F7E900BD1A9C /* Embed Watch Content */,
@@ -763,6 +767,7 @@
 			buildConfigurationList = 83883D9D1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow" */;
 			buildPhases = (
 				83883D721BC1F7E800BD1A9C /* Resources */,
+				175722801C1A129E0015E554 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 				83883D9C1BC1F7E900BD1A9C /* Embed App Extensions */,
 				83883DBE1BC2145A00BD1A9C /* Frameworks */,
 				83883DBF1BC2145A00BD1A9C /* Embed Frameworks */,
@@ -784,6 +789,7 @@
 				83883D7C1BC1F7E800BD1A9C /* Sources */,
 				83883D7D1BC1F7E800BD1A9C /* Frameworks */,
 				83883D7E1BC1F7E800BD1A9C /* Resources */,
+				175722801C1A129E0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 				17F22E641BEF9E600041E0B0 /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -803,6 +809,7 @@
 				83F4C5741B7C201700C74285 /* Sources */,
 				83F4C5751B7C201700C74285 /* Frameworks */,
 				83F4C5761B7C201700C74285 /* Resources */,
+				1757227F1C1A125C0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 			);
 			buildRules = (
 			);
@@ -906,6 +913,7 @@
 			files = (
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
+				1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				1713D5A71C11388700A52345 /* LICENSE in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
@@ -954,6 +962,65 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		1757227F1C1A125C0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		175722801C1A129E0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		175722801C1A129E0015E554 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Version Tracking";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		170825DF1B2CBABB00304F8F /* Sources */ = {
