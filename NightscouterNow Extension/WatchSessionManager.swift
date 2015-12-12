@@ -24,14 +24,33 @@ public protocol ModelDataSourceChangedDelegate {
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
     
+    public var currentSiteIndex: Int {
+        set {
+            
+            #if DEBUG
+                // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
+            #endif
+            
+            sharedDefaults?.setInteger(newValue, forKey: AppDataManager.SavedPropertyKey.currentSiteIndexKey)
+            sharedDefaults?.synchronize()
+        }
+        get {
+            return (sharedDefaults?.integerForKey(AppDataManager.SavedPropertyKey.currentSiteIndexKey))!
+        }
+    }
+    
+    private let sharedDefaults = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")
+    
     public static let sharedManager = WatchSessionManager()
     private override init() {
         super.init()
         
-        if let dictArray = NSUserDefaults.standardUserDefaults().objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
+        if let dictArray = sharedDefaults?.objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
             print("Loading models from default.")
             models = dictArray.map({ WatchModel(fromDictionary: $0)! })
         }
+        
+        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
         
     }
     
@@ -43,9 +62,8 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private var models: [WatchModel] = [] {
         didSet {
             let dictArray = models.map({ $0.dictionary })
-            NSUserDefaults.standardUserDefaults().setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
-            // NSUserDefaults.standardUserDefaults().removeObjectForKey(WatchModel.PropertyKey.modelsKey)
-            NSUserDefaults.standardUserDefaults().synchronize()
+            sharedDefaults?.setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
+            sharedDefaults?.synchronize()
         }
     }
     
@@ -127,6 +145,11 @@ extension WatchSessionManager {
                 print("error: \(error)")
                 
                 returnBool = false
+                
+                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                    self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+                }
+                
         })
         return returnBool
     }
@@ -137,6 +160,10 @@ extension WatchSessionManager {
         guard let action = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
             print("No action was found, didReceiveMessage: \(context)")
             return false
+        }
+        
+        if let currentSiteIndex = context[WatchModel.PropertyKey.currentIndexKey] as? Int {
+            self.currentSiteIndex = currentSiteIndex
         }
         
         switch action {
@@ -166,7 +193,6 @@ extension WatchSessionManager {
             }
         case .Delete:
             if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
-                
                 for modelDict in modelArray {
                     let model = WatchModel(fromDictionary: modelDict)!
                     
