@@ -103,7 +103,7 @@
                     </items>
                     <menu key="menu" id="EpU-0X-abL">
                         <items>
-                            <menuItem title="Update" icon="add" id="p4e-ZI-aoE">
+                            <menuItem title="Update" image="RefreshIcon" id="p4e-ZI-aoE">
                                 <connections>
                                     <action selector="updateButton" destination="GKK-vj-5UX" id="MfZ-a0-7ap"/>
                                 </connections>
@@ -250,7 +250,7 @@
                     </items>
                     <menu key="menu" id="ax9-qs-Uw1">
                         <items>
-                            <menuItem title="Update" icon="add" id="UOF-CU-DHG">
+                            <menuItem title="Update" image="RefreshIcon" id="UOF-CU-DHG">
                                 <connections>
                                     <action selector="updateButton" destination="QpE-HT-5Ki" id="YHK-po-cdT"/>
                                 </connections>
@@ -301,7 +301,7 @@
                     </items>
                     <menu key="menu" id="t9u-0R-OZI">
                         <items>
-                            <menuItem title="Update" icon="add" id="8Fg-Fp-bKg">
+                            <menuItem title="Update" image="RefreshIcon" id="8Fg-Fp-bKg">
                                 <connections>
                                     <action selector="updateButton" destination="zQV-gh-g4y" id="IwI-It-prD"/>
                                 </connections>
