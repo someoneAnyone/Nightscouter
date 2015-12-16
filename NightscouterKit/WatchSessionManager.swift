@@ -181,7 +181,7 @@ extension WatchSessionManager {
             case .AppContext:
                 print("appContext")
                 dispatch_async(dispatch_get_main_queue()) {
-                AppDataManager.sharedInstance.updateWatch(withAction: .AppContext, withSite: AppDataManager.sharedInstance.sites)
+                AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withSites: AppDataManageriOS.sharedInstance.sites)
                 }
 
             default:

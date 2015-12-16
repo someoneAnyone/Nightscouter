@@ -567,9 +567,6 @@
                                 <exclude reference="vJH-L1-MgZ"/>
                             </mask>
                         </variation>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="mbr-LP-yHi" appends="YES" id="7Nu-C4-gu0"/>
-                        </connections>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="Loading..." id="KxS-n8-bsf">
@@ -594,11 +591,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="45H-R3-BhD" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer numberOfTapsRequired="2" numberOfTouchesRequired="2" id="mbr-LP-yHi">
-                    <connections>
-                        <action selector="gotoLabs:" destination="MFN-Ce-ICW" id="jhd-u9-43t"/>
-                    </connections>
-                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="4277" y="-3"/>
         </scene>

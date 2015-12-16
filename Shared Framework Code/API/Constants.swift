@@ -8,6 +8,13 @@
 
 import Foundation
 
+public struct DefaultKey {
+    public static let sitesArrayObjectsKey = "userSitesData"
+    public static let currentSiteIndexKey = "currentSiteIndexInt"
+    public static let shouldDisableIdleTimerKey = "shouldDisableIdleTimerBool"
+    public static let modelArrayObjectsKey = "siteModelsArray"
+}
+
 public struct Constants {
     
     public struct StandardTimeFrame {
@@ -27,8 +34,9 @@ public struct Constants {
     
     public struct EntryCount {
         public static let NumberForChart = 100
+        public static let NumberForComplication = 288
         public static let LowerLimitForValidSGV = 39
         public static let UpperLimitForValidSGV = 400
     }
-
+    
 }

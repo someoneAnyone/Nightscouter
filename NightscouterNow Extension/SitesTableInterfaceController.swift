@@ -9,18 +9,17 @@
 import WatchKit
 import NightscouterWatchOSKit
 
-class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate, SiteDetailViewDidUpdateItemDelegate {
+class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate { //, SiteDetailViewDidUpdateItemDelegate {
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
     var models = [WatchModel]() {
         didSet {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.updateTableData()
+            updateTableData()
+            if !models.isEmpty && (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds) {
+                updateData()
             }
-            updateData()
         }
-        
     }
     
     var lastUpdatedTime: NSDate?
@@ -36,22 +35,24 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        setupNotifications()
-        
         WatchSessionManager.sharedManager.requestLatestAppContext()
+        WatchSessionManager.sharedManager.timelineDataForComplication()
+        
+        setupNotifications()
     }
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(__FUNCTION__) <<<")
         super.didDeactivate()
+        
+        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func willDisappear() {
         super.willDisappear()
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
     }
     
     func setupNotifications() {
@@ -59,10 +60,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
-    deinit {
-        // Remove this class from the observer list. Was listening for a global update timer.
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
@@ -74,27 +71,33 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     private func updateTableData() {
-        print(">>> Entering \(__FUNCTION__) <<<")
         
-        let rowTypeIdentifier: String = "SiteRowController"
-        print("models.count = \(models.count)")
-        
-        sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
-        
-        if models.isEmpty {
-            sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")
-            let row = sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
-            if let row = row {
-                row.messageLabel.setText("No sites availble.")
-            }
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             
-        } else {
-            sitesTable.setNumberOfRows(models.count, withRowType: rowTypeIdentifier)
-            for (index, model) in models.enumerate() {
-                if let row = sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                    lastUpdatedTime = model.lastReadingDate
-                    row.model = model
+            
+            print(">>> Entering \(__FUNCTION__) <<<")
+            
+            let rowTypeIdentifier: String = "SiteRowController"
+            print("models.count = \(self.models.count)")
+            
+            self.sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
+            
+            if self.models.isEmpty {
+                self.sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")
+                let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
+                if let row = row {
+                    row.messageLabel.setText("No sites availble.")
                 }
+                
+            } else {
+                self.sitesTable.setNumberOfRows(self.models.count, withRowType: rowTypeIdentifier)
+                for (index, model) in self.models.enumerate() {
+                    if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+                        self.lastUpdatedTime = model.lastReadingDate
+                        row.model = model
+                    }
+                }
+                
             }
             
         }
@@ -102,13 +105,23 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
+        //        if let modelIndex = models.indexOf(model){
+        //            models[modelIndex] = model
+        //        }
+        
         models[index] = model
     }
     
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        models.removeAtIndex(index)
-        updateTableData()
+        
+        if let realIndex = models.indexOf(model) {
+            models.removeAtIndex(realIndex)
+        } else {
+            fatalError()
+        }
+        
+        //        updateTableData()
     }
     
     func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
@@ -125,22 +138,23 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         self.models = models
     }
     
-    func didUpdateItem(site: Site, withModel model: WatchModel) {
-        
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        if let index = self.models.indexOf(model) {
-            self.models[index] = model
-        } else {
-            print("Did not update table view with recent item")
-        }
-    }
+//    func didUpdateItem(model: WatchModel) {
+//        
+//        print(">>> Entering \(__FUNCTION__) <<<")
+//        
+//        if let index = models.indexOf(model) {
+//            self.models[index] = model
+//        } else {
+//            print("Did not update table view with recent item")
+//        }
+//    }
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        for model in models {
-            AppDataManager.sharedInstance.loadDataFor(model, replyHandler: { (model) -> Void in
-                //..
+        for (index, model) in models.enumerate() {
+            loadDataFor(model, replyHandler: { (model) -> Void in
+                self.dataSourceDidUpdateSiteModel(model, atIndex: index)
+                //                self.updateTableData()
             })
         }
     }

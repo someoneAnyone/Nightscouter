@@ -26,6 +26,8 @@ class SiteRowController: NSObject {
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     @IBOutlet var siteDirectionLabel: WKInterfaceLabel!
     
+    @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
+    
     var model: WatchModel? {
         didSet {
             
@@ -46,6 +48,9 @@ class SiteRowController: NSObject {
                 // Last reading label
                 siteLastReadingLabel.setText(date)
                 siteLastReadingLabel.setTextColor(lastReadingColor)
+           
+                siteUpdateTimer.setDate(model.lastReadingDate)
+                siteUpdateTimer.setTextColor(lastReadingColor)
                 
                 // Battery label
                 siteBatteryLabel.setText(model.batteryString)

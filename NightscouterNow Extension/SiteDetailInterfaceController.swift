@@ -10,9 +10,9 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-protocol SiteDetailViewDidUpdateItemDelegate {
-    func didUpdateItem(site: Site, withModel model: WatchModel)
-}
+//protocol SiteDetailViewDidUpdateItemDelegate {
+//    func didUpdateItem(model: WatchModel)
+//}
 
 class SiteDetailInterfaceController: WKInterfaceController {
     
@@ -24,21 +24,28 @@ class SiteDetailInterfaceController: WKInterfaceController {
     @IBOutlet var batteryHeader: WKInterfaceLabel!
     @IBOutlet var compassImage: WKInterfaceImage!
     
+    @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
     var nsApi: NightscoutAPIClient?
     
     var task: NSURLSessionDataTask?
     
     var isActive: Bool = false
     
-    var delegate: SiteDetailViewDidUpdateItemDelegate?
+//    var delegate: SiteDetailViewDidUpdateItemDelegate?
     
     var model: WatchModel? {
         didSet {
-            print("didSet WatchModel in SiteDetailInterfaceController")
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.configureView()
+            
+            if let model = model {
+                print("didSet WatchModel in SiteDetailInterfaceController")
+                
+                self.configureView(model)
+                
+                if self.lastUpdatedTime == nil {
+                    updateData()
+                }
+                
             }
-            updateData()
         }
     }
     var lastUpdatedTime: NSDate?
@@ -52,10 +59,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
         
         self.isActive = true
         
-        if let _ = model {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.configureView()
-            }
+        if let model = model {
+            self.configureView(model)
+            
         }
         
         setupNotifications()
@@ -77,7 +83,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
         super.awakeWithContext(context)
         
         if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], model = WatchModel(fromDictionary: modelDict) { self.model = model }
-        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+// if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
         
     }
     
@@ -94,90 +100,54 @@ class SiteDetailInterfaceController: WKInterfaceController {
     
     func updateData(){
         
-        guard let model = self.model else {
-            print("No model was found...")
-            return
-        }
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            
-            // Start up the API
-            
-            let url = NSURL(string: model.urlString)!
-            
-            let site = Site(url: url, apiSecret: nil)!
-            self.nsApi = NightscoutAPIClient(url: site.url)
-            
-            if (self.lastUpdatedTime?.timeIntervalSinceNow > 120) || self.lastUpdatedTime == nil {
+        if let model = model {
+            loadDataFor(model) { (model) -> Void in
+                self.model = model
+
+//                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+//                    self?.delegate?.didUpdateItem(model)
+//                }
                 
-                // Get settings for a given site.
-                // print("Loading data for \(site.url!)")
-                self.nsApi!.fetchServerConfiguration { (result) -> Void in
-                    switch (result) {
-                    case let .Error(error):
-                        // display error message
-                        print("\(__FUNCTION__) ERROR recieved: \(error)")
-                    case let .Value(boxedConfiguration):
-                        let configuration:ServerConfiguration = boxedConfiguration.value
-                        // do something with user
-                        self.nsApi!.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                            // Get back on the main queue to update the user interface
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                
-                                // print("recieved data: { configuration: \(configuration), watchEntry: \(watchEntry) })")
-                                
-                                site.configuration = configuration
-                                site.watchEntry = watchEntry
-                                self.lastUpdatedTime = site.lastConnectedDate
-                                self.model = WatchModel(fromSite: site)!
-                                dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                    self?.delegate?.didUpdateItem(site, withModel: (self?.model)!)
-                                }
-                            })
-                        })
-                    }
-                }
             }
         }
     }
     
-    func configureView(){
+    func configureView(model: WatchModel){
         
-        let watchModel = self.model!
-        
-        let compassAlpha: CGFloat = watchModel.warn ? 0.5 : 1.0
+        let compassAlpha: CGFloat = model.warn ? 0.5 : 1.0
         
         let frame = self.contentFrame
         let smallest = min(min(frame.height, frame.width), 134)
         let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
         
-        let sgvColor = UIColor(hexString: watchModel.sgvColor)
-        let rawColor = UIColor(hexString: watchModel.rawColor)
-        let batteryColor = UIColor(hexString: watchModel.batteryColor)
-        let lastReadingColor = UIColor(hexString: watchModel.lastReadingColor)
+        let sgvColor = UIColor(hexString: model.sgvColor)
+        let rawColor = UIColor(hexString: model.rawColor)
+        let batteryColor = UIColor(hexString: model.batteryColor)
+        let lastReadingColor = UIColor(hexString: model.lastReadingColor)
         
-        let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: watchModel.isDoubleUp, isArrowVisible: watchModel.isArrowVisible, isRawEnabled: watchModel.rawVisible, deltaString: watchModel.deltaString, sgvString: watchModel.sgvString, rawString: watchModel.rawString, angle: watchModel.angle, watchFrame: groupFrame)
+        let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            
-            self.setTitle(watchModel.displayName)
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.setTitle(model.displayName)
             
             self.compassImage.setAlpha(compassAlpha)
             self.compassImage.setImage(image)
             
             // Battery label
-            self.batteryLabel.setText(watchModel.batteryString)
+            self.batteryLabel.setText(model.batteryString)
             self.batteryLabel.setTextColor(batteryColor)
             self.batteryLabel.setAlpha(compassAlpha)
             
-            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(watchModel.lastReadingDate)
+            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             // Last reading label
             self.lastUpdateLabel.setText(date)//watchModel.lastReadingString)
             self.lastUpdateLabel.setTextColor(lastReadingColor)
             
+            self.siteUpdateTimer.setDate(model.lastReadingDate)
+            self.siteUpdateTimer.setTextColor(lastReadingColor)
             
-            self.lastUpdatedTime = watchModel.lastReadingDate
-        })
+            self.lastUpdatedTime = model.lastReadingDate
+        }
     }
     
     @IBAction func updateButton() {

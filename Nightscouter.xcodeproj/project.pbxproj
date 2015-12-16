@@ -12,7 +12,6 @@
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
 		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
 		1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172033091C19D073005208F6 /* Settings-Watch.bundle */; };
-		17304D541C16838600C057D7 /* AppDataManagerWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
@@ -58,6 +57,10 @@
 		17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
 		17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
+		17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */; };
+		17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */; };
+		17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */; };
+		17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
 		17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* BackgroundView.swift */; };
@@ -212,7 +215,6 @@
 		1713D5A61C11388700A52345 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		172033091C19D073005208F6 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = "Settings-Watch.bundle"; path = "Nightscouter/Settings-Watch.bundle"; sourceTree = SOURCE_ROOT; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
-		17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDataManagerWatchOS.swift; sourceTree = "<group>"; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		1734545E1B30A8A200931278 /* SiteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteTableViewCell.swift; sourceTree = "<group>"; };
@@ -249,6 +251,8 @@
 		17BD1C371BF0EEAB0014EE38 /* NightscouterWatchOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterWatchOSAssets.pcvd; sourceTree = "<group>"; };
 		17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Extension.swift"; path = "Shared Framework Code/Extensions/UIColor+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKitWatchOS.swift; sourceTree = "<group>"; };
+		17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NightscoutAppDataManager.swift; path = "Shared Framework Code/API/NightscoutAppDataManager.swift"; sourceTree = SOURCE_ROOT; };
+		17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BundleRepresntable.swift; path = "Shared Framework Code/Protocols/BundleRepresntable.swift"; sourceTree = SOURCE_ROOT; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
@@ -396,9 +400,9 @@
 			isa = PBXGroup;
 			children = (
 				1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */,
-				1734544A1B30771300931278 /* SiteListTableViewController.swift */,
-				176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */,
 				170825E81B2CBABB00304F8F /* SiteFormViewController.swift */,
+				176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */,
+				1734544A1B30771300931278 /* SiteListTableViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -436,6 +440,7 @@
 			isa = PBXGroup;
 			children = (
 				17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */,
+				17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -469,6 +474,7 @@
 			children = (
 				17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */,
 				17EF27721BFCDA0D00A16136 /* Constants.swift */,
+				17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -609,7 +615,6 @@
 				17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */,
 				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
 				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
-				17304D521C16835900C057D7 /* AppDataManagerWatchOS.swift */,
 			);
 			name = "Watch Framework";
 			path = ../NightscouterWatchOSKit;
@@ -767,7 +772,7 @@
 			buildConfigurationList = 83883D9D1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow" */;
 			buildPhases = (
 				83883D721BC1F7E800BD1A9C /* Resources */,
-				175722801C1A129E0015E554 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
+				175722801C1A129E0015E554 /* Version Tracking */,
 				83883D9C1BC1F7E900BD1A9C /* Embed App Extensions */,
 				83883DBE1BC2145A00BD1A9C /* Frameworks */,
 				83883DBF1BC2145A00BD1A9C /* Embed Frameworks */,
@@ -1006,7 +1011,7 @@
 			shellPath = /bin/sh;
 			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
 		};
-		175722801C1A129E0015E554 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+		175722801C1A129E0015E554 /* Version Tracking */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1045,8 +1050,10 @@
 				17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */,
 				17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */,
+				17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */,
 				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
 				1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */,
+				17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */,
 				17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
@@ -1084,11 +1091,12 @@
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
-				17304D541C16838600C057D7 /* AppDataManagerWatchOS.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */,
+				17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */,
 				17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
 				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
@@ -1454,6 +1462,7 @@
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp.watchkitextension;
 				PRODUCT_NAME = "${TARGET_NAME}";
 				PROVISIONING_PROFILE = "";

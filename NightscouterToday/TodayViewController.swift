@@ -33,13 +33,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         // tableView.rowHeight = UITableViewAutomaticDimension
         tableView.backgroundColor = UIColor.clearColor()
         
-        // if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.sitesFileURL.path!) as? NSData {
-        //  if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
-        //   sites = sitesArray
-        //  }
-        // }
-        
-        if let  sitesData = AppDataManager.sharedInstance.defaults.dataForKey(AppDataManager.SavedPropertyKey.sitesArrayObjectsKey) {
+        if let  sitesData = AppDataManageriOS.sharedInstance.defaults.dataForKey(DefaultKey.sitesArrayObjectsKey) {
             if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
                 sites = sitesArray
             }
@@ -102,7 +96,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
                 // println("Attempting to get configuration data from site...")
-                loadDataFor(site, index: indexPath.row)
+                refreshDataFor(site, index: indexPath.row)
             }
             
             return contentCell
@@ -120,38 +114,28 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
-            for site in sites {
-                loadDataFor(site, index: sites.indexOf(site)!)
+            for (index, site) in sites.enumerate() {
+                refreshDataFor(site, index: index)
             }
         } else {
             // No data in the sites array. Cancel the refreshing!
         }
     }
     
-    func loadDataFor(site: Site, index: Int){
+    func refreshDataFor(site: Site, index: Int){
         // Start up the API
-        let nsApi = NightscoutAPIClient(url: site.url)
         
-        // Get settings for a given site.
-        print("Loading data for \(site.url!)")
-        nsApi.fetchServerConfiguration { (result) -> Void in
-            switch (result) {
-            case let .Error(error):
-                // display error message
-                print("\(__FUNCTION__) ERROR recieved: \(error)")
-            case let .Value(boxedConfiguration):
-                let configuration:ServerConfiguration = boxedConfiguration.value
-                // do something with user
-                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                    // Get back on the main queue to update the user interface
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        site.configuration = configuration
-                        site.watchEntry = watchEntry
-                        AppDataManager.sharedInstance.updateSite(site)
-                        self.lastUpdatedTime = NSDate()
-                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    })
-                })
+        
+        loadDataFor(site, index: index) { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+            
+
+            if let error = returnedError {
+            print("\(__FUNCTION__) ERROR recieved: \(error)")
+                
+            } else {
+                self.lastUpdatedTime = returnedSite!.lastConnectedDate
+                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
+                AppDataManageriOS.sharedInstance.updateSite(returnedSite!)
             }
         }
     }
@@ -160,8 +144,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         if let context = extensionContext {
             
             let site = sites[indexPath.row], uuidString = site.uuid.UUIDString
-            AppDataManager.sharedInstance.updateSite(site)
-            AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
+            AppDataManageriOS.sharedInstance.currentSiteIndex = indexPath.row
             
             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
             context.openURL(url!, completionHandler: nil)

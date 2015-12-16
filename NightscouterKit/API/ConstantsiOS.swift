@@ -52,11 +52,6 @@ extension Constants {
         public static let SiteTableViewStyle = "siteCell"
     }
  
-    public struct ActivityType {
-        public static let sites = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("sites")
-        public static let site = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("site")
-        public static let new = AppDataManager.sharedInstance.bundleIdentifier!.URLByAppendingPathExtension("new")
-    }
 
    public struct ActivityKey {
         public static let SitesKey = "nightscouter.sites.key"

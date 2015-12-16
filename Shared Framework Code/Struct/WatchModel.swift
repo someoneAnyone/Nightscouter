@@ -13,7 +13,7 @@ public enum WatchAction: String {
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
-    return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName
+    return lhs.uuid == rhs.uuid // return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName
 }
 
 public struct WatchModel: DictionaryConvertible, Equatable {
@@ -27,11 +27,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         public static let currentIndexKey = "currentIndex"
     }
     
-    public var hashValue: Int {
-        return Int(urlString.hashValue + displayName.hashValue)
-    }
+    public let uuid: String
     
     public let urlString: String
+    public let displayUrlString: String
     
     // Holds the friendly site name.
     public let displayName: String
@@ -58,6 +57,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     // Delta between readings. Provided by the server. Color coded based on server provided thresholds.
     public let deltaString: String
     public let deltaStringShort: String
+    public let delta: Double
+    public let units: String
     
     public let deltaColor: String
     
@@ -65,6 +66,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let isArrowVisible : Bool
     public let isDoubleUp : Bool
     public let angle: CGFloat
+    public private(set) var direction: String
     
     // Is data stale? Find out with this flags.
     public let urgent: Bool
@@ -74,6 +76,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         let d = fromDictionary
         self.urlString = d["urlString"] as! String
+        self.displayUrlString = d["displayUrlString"] as? String ?? "not set"
+
         self.urgent = d["urgent"] as! Bool
         self.warn = d["warn"] as! Bool
         
@@ -97,13 +101,18 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         self.deltaString = d["deltaString"] as! String
         self.deltaStringShort = d["deltaStringShort"] as! String
+        self.delta = d["delta"] as? Double ?? 0
+        self.units = d["units"] as? String ?? "--"
         
         self.deltaColor = d["deltaColor"] as! String
         
         self.isArrowVisible =  d["isArrowVisible"] as! Bool
         self.isDoubleUp = d["isDoubleUp"] as! Bool
         self.angle = d["angle"] as! CGFloat
+        self.direction = d["direction"] as? String ?? "--"
         
+        self.uuid = d["uuid"] as! String
+
     }
     
     public init?(fromSite site: Site) {
@@ -118,6 +127,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             #endif
             
             self.urlString = site.url.absoluteString
+            self.displayUrlString = site.url.host ?? site.url.absoluteString
             
             return nil
         }
@@ -127,7 +137,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         // Custom name or Nightscout
         let displayName: String = configuration.displayName
-        
+        let displayUrlString = site.url.host ?? site.url.absoluteString
+
         // Calculate if the lastest watch entry we got from the server is stale.
         let timeAgo = watchEntry.date.timeIntervalSinceNow
         let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
@@ -139,6 +150,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             #endif
             
             self.urlString = site.url.absoluteString
+            self.displayUrlString = site.url.host ?? site.url.absoluteString
+            
             self.displayName = displayName
             
             return nil
@@ -184,6 +197,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         var isArrowVisible = true
         var isDoubleUp = false
         var angle: CGFloat = 0
+        
+        self.direction = sgvValue.direction.description
         
         switch sgvValue.direction {
         case .None:
@@ -252,6 +267,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         }
         
         self.urlString = site.url.absoluteString
+        self.displayUrlString = displayUrlString
+
         self.urgent = isStaleData.urgent
         self.warn = isStaleData.warn
         
@@ -277,10 +294,18 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         self.deltaStringShort = deltaStringShort
         self.deltaColor = sgvColor.toHexString()
         
+        self.delta = watchEntry.bgdelta
+        self.units = configuration.displayUnits.description
+        
         self.isArrowVisible = isArrowVisible
         self.isDoubleUp = isDoubleUp
         self.angle = angle
+        
+        self.uuid = site.uuid.UUIDString // NSUUID().UUIDString
     }
     
-    
+    func generateSite() -> Site {
+        let url = NSURL(string: urlString)!
+        return Site(url: url, apiSecret: nil)!
+    }
 }

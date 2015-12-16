@@ -10,12 +10,12 @@ import UIKit
 import NightscouterKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     var window: UIWindow?
     
     var sites: [Site] {
-        return AppDataManager.sharedInstance.sites
+        return AppDataManageriOS.sharedInstance.sites
     }
     
     var timer: NSTimer?
@@ -99,7 +99,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                         site.configuration = configuration
                         site.watchEntry = watchEntry
-                        AppDataManager.sharedInstance.updateSite(site)
+                        AppDataManageriOS.sharedInstance.updateSite(site)
                         
                         self.scheduleLocalNotification(site)
                     })
@@ -118,7 +118,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print(">>> Entering \(__FUNCTION__) <<<")
             print("Recieved URL: \(url) with options: \(options)")
         #endif
-        let schemes = AppDataManager.sharedInstance.supportedSchemes!
+        let schemes = supportedSchemes!
         if (!schemes.contains((url.scheme))) { // If the incoming scheme is not contained within the array of supported schemes return false.
             return false
         }
@@ -155,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
                     if let siteIndex = sites.indexOf(site) { // Use the site object to get its index position in the array.
                         
-                        AppDataManager.sharedInstance.currentSiteIndex = siteIndex
+                        AppDataManageriOS.sharedInstance.currentSiteIndex = siteIndex
                         
                         #if DEDBUG
                             println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
@@ -277,4 +277,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIApplication.sharedApplication().applicationIconBadgeNumber = 0
         UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
+    
+    
+    
+    var supportedSchemes: [String]? {
+        if let info = infoDictionary {
+            var schemes = [String]() // Create an empty array we can later set append available schemes.
+            if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
+                for (index, _) in bundleURLTypes.enumerate() {
+                    if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
+                        if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
+                            schemes += urlScheme // We've found the supported schemes appending to the array.
+                            return schemes
+                        }
+                    }
+                }
+            }
+        }
+        return nil
+    }
+
 }

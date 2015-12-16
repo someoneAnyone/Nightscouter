@@ -14,15 +14,15 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     var pageViewController: UIPageViewController?
     
     var sites: [Site] {
-        return AppDataManager.sharedInstance.sites
+        return AppDataManageriOS.sharedInstance.sites
     }
     
     var currentIndex: Int {
         set {
-            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
         }
         get {
-            return AppDataManager.sharedInstance.currentSiteIndex
+            return AppDataManageriOS.sharedInstance.currentSiteIndex
         }
     }
     

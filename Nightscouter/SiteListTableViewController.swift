@@ -11,14 +11,14 @@ import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController, NightscoutAPIClientDelegate {
+class SiteListTableViewController: UITableViewController {
     
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
     var sites: [Site] {
-        editButtonItem().enabled = !AppDataManager.sharedInstance.sites.isEmpty
-        return AppDataManager.sharedInstance.sites
+        editButtonItem().enabled = !AppDataManageriOS.sharedInstance.sites.isEmpty
+        return AppDataManageriOS.sharedInstance.sites
     }
     
     // Whenever this changes, it updates the attributed title of the refresh control.
@@ -62,7 +62,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         shouldIShowNewSiteForm()
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
-        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -102,15 +102,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
-            
-//            let site = sites[indexPath.row]
-            
-//            for notification in site.notifications {
-//                UIApplication.sharedApplication().cancelLocalNotification(notification)
-//            }
-            
-            AppDataManager.sharedInstance.deleteSiteAtIndex(indexPath.row)
-        
+            AppDataManageriOS.sharedInstance.deleteSiteAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Automatic)
             shouldIShowNewSiteForm()
         } else if editingStyle == .Insert {
@@ -123,8 +115,8 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
     override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
         // update the item in my data source by first removing at the from index, then inserting at the to index.
         let site = sites[fromIndexPath.row]
-        AppDataManager.sharedInstance.deleteSiteAtIndex(fromIndexPath.row)
-        AppDataManager.sharedInstance.addSite(site, index: toIndexPath.row)
+        AppDataManageriOS.sharedInstance.deleteSiteAtIndex(fromIndexPath.row)
+        AppDataManageriOS.sharedInstance.addSite(site, index: toIndexPath.row)
     }
     
     // Override to support conditional rearranging of the table view.
@@ -203,16 +195,16 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 }
                 
             case .ShowPageView:
-//                let siteListPageViewController = segue.destinationViewController as! SiteListPageViewController
+                // let siteListPageViewController = segue.destinationViewController as! SiteListPageViewController
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPathForCell(selectedSiteCell)!
-                    AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
+                    AppDataManageriOS.sharedInstance.currentSiteIndex = indexPath.row
                 }
                 
                 if let incomingSite = sender as? Site{
                     if let indexOfSite = sites.indexOf(incomingSite) {
-                        AppDataManager.sharedInstance.currentSiteIndex = indexOfSite
+                        AppDataManageriOS.sharedInstance.currentSiteIndex = indexOfSite
                     }
                 }
                 
@@ -242,14 +234,14 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
             // This segue is triggered when we "save" or "next" out of the url form.
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
-                AppDataManager.sharedInstance.updateSite(site)
+                AppDataManageriOS.sharedInstance.updateSite(site)
                 tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
                 editing = false
                 let newIndexPath = NSIndexPath(forRow: 0, inSection: 0)
-                AppDataManager.sharedInstance.addSite(site, index: newIndexPath.row)
+                AppDataManageriOS.sharedInstance.addSite(site, index: newIndexPath.row)
                 tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Automatic)
                 accessoryIndexPath = nil
             }
@@ -283,9 +275,9 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         setupNotifications()
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
-        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = false
         
-        startUserActivity()
+        // startUserActivity()
     }
     
     func setupNotifications() {
@@ -301,7 +293,7 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
             // No configuration was there... go get some.
             // println("Attempting to get configuration data from site...")
-            loadDataFor(site, index: indexPath.row)
+            refreshDataFor(site, index: indexPath.row)
         }
     }
     
@@ -324,54 +316,42 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
                 refreshControl?.beginRefreshing()
                 tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
-            for site in sites {
-                loadDataFor(site, index: sites.indexOf(site)!)
+            for (index, site) in sites.enumerate() {
+                refreshDataFor(site, index: index)
             }
+            
         } else {
             // No data in the sites array. Cancel the refreshing!
             refreshControl?.endRefreshing()
         }
     }
     
-    func loadDataFor(site: Site, index: Int){
-        // Start up the API
-        let nsApi = NightscoutAPIClient(url: site.url)
-        nsApi.delegate = self
-        //TODO: 1. There should be reachabiltiy checks before doing anything.
-        //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
-        //TODO: 3. Probably need to move this code to the application delegate?
+    func refreshDataFor(site: Site, index: Int){
         
-        // Get settings for a given site.
-        print("Loading data for \(site.url!)")
-        nsApi.fetchServerConfiguration { (result) -> Void in
-            switch (result) {
-            case let .Error(error):
-                // display error message
+        UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+        
+       loadDataFor(site, index: index) { (returnedModel, updatedSite, returnedIndex, error) -> Void in
+
+            defer {
+                print("setting networkActivityIndicatorVisible: false and stopping animation.")
+                AppDataManageriOS.sharedInstance.updateSite(updatedSite!)
+                UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
-                // println("loadUpData ERROR recieved: \(error)")
+                if (self.refreshControl?.refreshing != nil) {
+                    self.refreshControl?.endRefreshing()
+                }
+
+            }
+
+            if let error = error {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    site.disabled = true
                     self.presentAlertDialog(site.url, index: index, error: error)
                 })
                 
-            case let .Value(boxedConfiguration):
-                let configuration:ServerConfiguration = boxedConfiguration.value
-                // do something with user
-                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                    // Get back on the main queue to update the user interface
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        site.configuration = configuration
-                        site.watchEntry = watchEntry
-                        AppDataManager.sharedInstance.updateSite(site)
-                        
-                        self.lastUpdatedTime = NSDate()
-                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                        
-                        if (self.refreshControl?.refreshing != nil) {
-                            self.refreshControl?.endRefreshing()
-                        }
-                    })
-                })
+                
+            } else {
+                self.lastUpdatedTime = updatedSite!.lastConnectedDate
+                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
             }
         }
     }
@@ -389,9 +369,9 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         
         let retryAction = UIAlertAction(title: Constants.LocalizedString.generalRetryLabel.localized, style: .Default) { (action) in
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
-            let site = AppDataManager.sharedInstance.sites[indexPath.row]
+            let site = AppDataManageriOS.sharedInstance.sites[indexPath.row]
             site.disabled = false
-            AppDataManager.sharedInstance.updateSite(site)
+            AppDataManageriOS.sharedInstance.updateSite(site)
             
             self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
@@ -407,16 +387,16 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         
         let removeAction = UIAlertAction(title: Constants.LocalizedString.tableViewCellRemove.localized, style: .Destructive) { (action) in
             self.tableView.beginUpdates()
-            AppDataManager.sharedInstance.deleteSiteAtIndex(index)
+            AppDataManageriOS.sharedInstance.deleteSiteAtIndex(index)
             self.tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
             self.tableView.endUpdates()
         }
         alertController.addAction(removeAction)
         
         alertController.view.tintColor = NSAssetKit.darkNavColor
-
+        
         self.view.window?.tintColor = nil
-
+        
         self.navigationController?.popToRootViewControllerAnimated(true)
         
         self.presentViewController(alertController, animated: true) {
@@ -425,26 +405,5 @@ class SiteListTableViewController: UITableViewController, NightscoutAPIClientDel
         }
     }
     
-    // MARK: Handoff
     
-    func startUserActivity() {
-        let activity = NSUserActivity(activityType: Constants.ActivityType.sites.absoluteString)
-        activity.title = "Viewing Nightscout List of Sites"
-        activity.userInfo = [Constants.ActivityKey.SitesKey: sites]
-        userActivity = activity
-        userActivity?.becomeCurrent()
-    }
-    
-    override func updateUserActivityState(activity: NSUserActivity) {
-        activity.addUserInfoEntriesFromDictionary([Constants.ActivityKey.SitesKey: sites])
-        super.updateUserActivityState(activity)
-    }
-    
-    func stopUserActivity() {
-        userActivity?.invalidate()
-    }
-    
-    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) {
-        UIApplication.sharedApplication().networkActivityIndicatorVisible = usingNetwork
-    }
 }

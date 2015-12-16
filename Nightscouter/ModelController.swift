@@ -24,7 +24,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     var sites: [Site]
     var currentIndex: Int {
         didSet{
-            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
         }
     }
     

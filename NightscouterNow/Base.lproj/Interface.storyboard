@@ -10,7 +10,7 @@
             <objects>
                 <controller identifier="SitesTableInterfaceController" title="Nightscouter" hidesWhenLoading="NO" alwaysBounce="YES" id="GKK-vj-5UX" customClass="SitesTableInterfaceController" customModule="NightscouterNow_Extension">
                     <items>
-                        <table alignment="left" id="aSP-OI-u6m" userLabel="Sites List">
+                        <table alignment="center" id="aSP-OI-u6m" userLabel="Sites List">
                             <items>
                                 <tableRow identifier="SiteRowController" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="e1q-GZ-XQa">
@@ -33,7 +33,11 @@
                                                                 <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
-                                                            <label alignment="left" verticalAlignment="center" text="-- --- --" id="udH-4h-ZJu">
+                                                            <timer width="35.5" alignment="left" verticalAlignment="center" enabled="YES" format="short" id="gsk-IY-9L0">
+                                                                <fontDescription key="font" type="system" pointSize="11"/>
+                                                                <calendarUnit key="units" day="YES" hour="YES" minute="YES"/>
+                                                            </timer>
+                                                            <label alignment="left" verticalAlignment="center" hidden="YES" text="-- --- --" id="udH-4h-ZJu">
                                                                 <fontDescription key="font" type="system" pointSize="11"/>
                                                             </label>
                                                         </items>
@@ -84,6 +88,7 @@
                                         <outlet property="siteRawHeader" destination="XwO-b7-cwc" id="IE2-yJ-nkN"/>
                                         <outlet property="siteRawLabel" destination="rlM-jC-3gb" id="ugV-ez-ECT"/>
                                         <outlet property="siteSgvLabel" destination="r4d-0W-AgY" id="mi7-7E-WjQ"/>
+                                        <outlet property="siteUpdateTimer" destination="gsk-IY-9L0" id="snh-Nk-xwO"/>
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="SiteEmptyRowController" selectable="NO" id="S77-fP-8yz" customClass="SiteEmptyRowController" customModule="NightscouterNow_Extension">
@@ -105,7 +110,7 @@
                         <items>
                             <menuItem title="Update" image="RefreshIcon" id="p4e-ZI-aoE">
                                 <connections>
-                                    <action selector="updateButton" destination="GKK-vj-5UX" id="MfZ-a0-7ap"/>
+                                    <action selector="updateButton" destination="GKK-vj-5UX" id="WMW-Q0-kdn"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -224,13 +229,17 @@
                             <items>
                                 <group alignment="left" layout="vertical" spacing="0.0" id="RTL-DC-Ar5">
                                     <items>
-                                        <label alignment="left" text="UPDATED" id="hR9-AL-08K">
+                                        <label alignment="left" text="LAST READING" id="hR9-AL-08K">
                                             <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                             <fontDescription key="font" type="system" pointSize="8"/>
                                         </label>
-                                        <label alignment="left" text="- ---" id="JRe-kw-DOn">
+                                        <label alignment="left" hidden="YES" text="- ---" id="JRe-kw-DOn">
                                             <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                         </label>
+                                        <timer alignment="left" enabled="YES" format="short" id="41y-Iv-Xap">
+                                            <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                            <calendarUnit key="units" day="YES" hour="YES" minute="YES"/>
+                                        </timer>
                                     </items>
                                 </group>
                                 <group alignment="right" layout="vertical" spacing="0.0" id="F4f-Bs-kBz">
@@ -265,6 +274,7 @@
                         <outlet property="detailGroup" destination="KK0-PA-ZWg" id="ygk-JR-IBe"/>
                         <outlet property="lastUpdateHeader" destination="hR9-AL-08K" id="8O7-6i-6X8"/>
                         <outlet property="lastUpdateLabel" destination="JRe-kw-DOn" id="AdH-yg-UTG"/>
+                        <outlet property="siteUpdateTimer" destination="41y-Iv-Xap" id="wjD-Mn-Avb"/>
                     </connections>
                 </controller>
             </objects>

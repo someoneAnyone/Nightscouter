@@ -7,13 +7,7 @@
 //
 import Foundation
 
-public class AppDataManager: NSObject, BundleRepresentable {
-    
-    //    public struct SavedPropertyKey {
-    //        public static let sitesArrayObjectsKey = "userSitesData"
-    //        static let currentSiteIndexKey = "currentSiteIndex"
-    //        static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
-    //    }
+public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public struct SharedAppGroupKey {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
@@ -82,13 +76,13 @@ public class AppDataManager: NSObject, BundleRepresentable {
         }
     }
     
-    public class var sharedInstance: AppDataManager {
+    public class var sharedInstance: AppDataManageriOS {
         struct Static {
             static var onceToken: dispatch_once_t = 0
-            static var instance: AppDataManager? = nil
+            static var instance: AppDataManageriOS? = nil
         }
         dispatch_once(&Static.onceToken) {
-            Static.instance = AppDataManager()
+            Static.instance = AppDataManageriOS()
         }
         return Static.instance!
     }
@@ -132,7 +126,8 @@ public class AppDataManager: NSObject, BundleRepresentable {
     
     public func deleteSiteAtIndex(index: Int) {
         
-        updateWatch(withAction: .Delete, withSites: [sites[index]])
+        let siteToBeRemoved = sites[index]
+        updateWatch(withAction: .Delete, withSites: [siteToBeRemoved])
         
         sites.removeAtIndex(index)
     }
@@ -166,9 +161,6 @@ public class AppDataManager: NSObject, BundleRepresentable {
         return nil
     }
     
-}
-
-extension AppDataManager {
     public func updateWatch(withAction action: WatchAction, withSites sites: [Site]) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
@@ -183,7 +175,7 @@ extension AppDataManager {
         context[WatchModel.PropertyKey.actionKey] = action.rawValue
         
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        let modelDictionaries:[[String: AnyObject]] = models.map( { $0.dictionary } )// sites.flatMap( { WatchModel(fromSite: $0)?.dictionary })
+        let modelDictionaries:[[String: AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0)?.dictionary }) // models.map( { $0.dictionary } )//
         context[WatchModel.PropertyKey.modelsKey] = modelDictionaries
         
         // Send over the current index.
@@ -213,58 +205,5 @@ extension AppDataManager {
             
         }
     }
-}
 
-extension AppDataManager {
-    
-    public func loadDataFor(site: Site, index: Int?, withChart: Bool = false, completetion:(returnedModel: WatchModel?, returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
-        // Start up the API
-        let nsApi = NightscoutAPIClient(url: site.url)
-        //TODO: 1. There should be reachabiltiy checks before doing anything.
-        //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
-        //TODO: 3. Probably need to move this code to the application delegate?
-        
-        // Get settings for a given site.
-        print("Loading data for \(site.url)")
-        nsApi.fetchServerConfiguration { (result) -> Void in
-            switch (result) {
-            case let .Error(error):
-                // display error message
-                print("loadUpData ERROR recieved: \(error)")
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    site.disabled = true
-                    completetion(returnedModel: nil, returnedSite: nil, returnedIndex: index, returnedError: error)
-                })
-                
-            case let .Value(boxedConfiguration):
-                let configuration:ServerConfiguration = boxedConfiguration.value
-                // do something with user
-                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                    // Get back on the main queue to update the user interface
-                    site.configuration = configuration
-                    site.watchEntry = watchEntry
-                    
-                    if !withChart {
-                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                            self.updateSite(site)
-                            completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
-                        })
-                    } else {
-                        
-                        nsApi.fetchDataForEntries(Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
-                            if let entries = entries {
-                                site.entries = entries
-                                
-                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                    self.updateSite(site)
-                                    completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
-                                })
-                            }
-                        }
-                    }
-                })
-            }
-        }
-        
-    }
 }

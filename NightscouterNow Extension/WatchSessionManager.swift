@@ -17,9 +17,10 @@ public protocol DataSourceChangedDelegate {
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
 }
 
-public protocol ModelDataSourceChangedDelegate {
-    func dataSourceDidChange(withAction action: WatchAction, forModel model: WatchModel, atIndex index: Int)
-}
+// might replace old protocol with this...
+// public protocol ModelDataSourceChangedDelegate {
+//    func dataSourceDidChange(withAction action: WatchAction, forModel model: WatchModel)
+// }
 
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
@@ -31,11 +32,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
             #endif
             
-            sharedDefaults?.setInteger(newValue, forKey: AppDataManager.SavedPropertyKey.currentSiteIndexKey)
-            sharedDefaults?.synchronize()
+            sharedDefaults?.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
+            // sharedDefaults?.synchronize()
         }
         get {
-            return (sharedDefaults?.integerForKey(AppDataManager.SavedPropertyKey.currentSiteIndexKey))!
+            return (sharedDefaults?.integerForKey(DefaultKey.currentSiteIndexKey))!
         }
     }
     
@@ -45,7 +46,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private override init() {
         super.init()
         
-        if let dictArray = sharedDefaults?.objectForKey(WatchModel.PropertyKey.modelsKey) as? [[String: AnyObject]] {
+        if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
             print("Loading models from default.")
             models = dictArray.map({ WatchModel(fromDictionary: $0)! })
         }
@@ -67,20 +68,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         }
     }
     
-    
     public func startSession() {
         if WCSession.isSupported() {
             session.delegate = self
             session.activateSession()
         }
-        
-        /*
-        let complicationServer = CLKComplicationServer.sharedInstance()
-        for complication in complicationServer.activeComplications {
-        complicationServer.reloadTimelineForComplication(complication)
-        }
-        */
-        
+
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -166,9 +159,10 @@ extension WatchSessionManager {
             self.currentSiteIndex = currentSiteIndex
         }
         
+        
         switch action {
             
-        case .Update:
+        case .Update, .Create:
             print("update on watch framework")
             
             if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
@@ -183,8 +177,9 @@ extension WatchSessionManager {
                             
                         } else {
                             models.append(model)
+                            
                             dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model, atIndex: self!.models.count)}
+                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model, atIndex: self!.models.count - 1)}
                             }
                             
                         }
@@ -204,7 +199,7 @@ extension WatchSessionManager {
                     }
                 }
             }
-        case .AppContext:
+        case .AppContext, .UserInfo, .Read:
             if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]] {
                 models.removeAll()
                 for modelDict in modelArray {
@@ -216,12 +211,62 @@ extension WatchSessionManager {
                 }
             }
             
-            
-        default:
-            break
         }
         
         return true
+    }
+    
+}
+
+
+extension WatchSessionManager {
+    
+    public func modelForComplication() -> WatchModel? {
+        
+        if currentSiteIndex >= models.count {
+            return nil
+        }
+        return models[currentSiteIndex]
+    }
+    
+    
+    public func timelineDataForComplication() -> Site? {
+        
+        if let model = modelForComplication() {
+            
+            let url = NSURL(string: model.urlString)!
+            let site = Site(url: url, apiSecret: nil)!
+            let nsApi = NightscoutAPIClient(url: site.url)
+            
+            //        if (model.lastReadingDate.timeIntervalSinceNow > 120) {
+            
+            // Get settings for a given site.
+            // print("Loading data for \(site.url!)")
+            nsApi.fetchServerConfiguration { (result) -> Void in
+                switch (result) {
+                case let .Error(error):
+                    // display error message
+                    print("\(__FUNCTION__) ERROR recieved: \(error)")
+                case let .Value(boxedConfiguration):
+                    let configuration:ServerConfiguration = boxedConfiguration.value
+                    site.configuration = configuration
+                    
+                    
+                    nsApi.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
+                        
+                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                            print(entries)
+                        })
+                    })
+                    
+                }
+                //            }
+                
+            }
+        }
+        
+        
+        return nil
     }
     
 }

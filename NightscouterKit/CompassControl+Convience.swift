@@ -10,30 +10,20 @@ import UIKit
 
 public extension CompassControl {
     
- func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
+    func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
         self.delta = "\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    public func configureWith(site: Site){
-        if let configuration: ServerConfiguration = site.configuration,  watch: WatchEntry = site.watchEntry,  sgv: SensorGlucoseValue = watch.sgv {
-          
-            var boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv)
-           
-            let units: Units = configuration.displayUnits
-            if units == .Mmol {
-                boundedColor = configuration.boundedColorForGlucoseValue(sgv.sgv.toMgdl)
-            }
-            
-            let color = colorForDesiredColorState(boundedColor)
-            
-            configure(sgv.sgvString(forUnits: units), color: color, direction: sgv.direction, bgdelta: watch.bgdelta, units: units.description)
-        }
+    public func configureWith(model: WatchModel){
+        
+        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.stringByReplacingOccurrencesOfString(" ", withString: "")), bgdelta: model.delta, units: model.units)
+        self.shouldLookStale(look: model.warn)
     }
     
-    public func shouldLookStale(look stale: Bool) {
+    public func shouldLookStale(look stale: Bool = true) {
         if stale {
             let compass = CompassControl()
             self.alpha = 0.5
@@ -45,5 +35,5 @@ public extension CompassControl {
             self.alpha = 1.0
         }
     }
-
+    
 }

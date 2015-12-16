@@ -54,7 +54,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         
         observeKeyboard()
         
-        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
+        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = false
     }
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {

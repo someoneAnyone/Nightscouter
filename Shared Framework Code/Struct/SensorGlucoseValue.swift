@@ -46,7 +46,7 @@ public enum Direction : String, CustomStringConvertible {
         }
     }
     
-    public func directionForString(directionString: String) -> Direction {
+   static public func directionForString(directionString: String) -> Direction {
         switch directionString {
         case "None": return .None
         case "DoubleUp": return .DoubleUp
@@ -56,7 +56,7 @@ public enum Direction : String, CustomStringConvertible {
         case "FortyFiveDown": return .FortyFiveDown
         case "SingleDown": return .SingleDown
         case "DoubleDown": return .DoubleDown
-        case "NOT COMPUTABLE": return .NotComputable
+        case "NOT COMPUTABLE", "NOT_COMPUTABLE": return .NotComputable
         case "RateOutOfRange": return .RateOutOfRange
         default: return .None
         }
@@ -128,7 +128,7 @@ public struct SensorGlucoseValue: DictionaryConvertible {
             }
         }
         if sgv >= 30 && sgv < 40 {
-            return NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to indicate a very low blood sugar.")
+            return  NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Low", comment: "Label used to indicate a very low blood sugar.")
         }
         return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
     }

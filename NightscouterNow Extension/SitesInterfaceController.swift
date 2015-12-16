@@ -45,8 +45,8 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         print(">>> Entering \(__FUNCTION__) <<<")
         if !WatchSessionManager.sharedManager.requestLatestAppContext() {
             for model in models {
-                AppDataManager.sharedInstance.loadDataFor(model, replyHandler: { (model) -> Void in
-                    //..
+                loadDataFor(model, replyHandler: { (model) -> Void in
+//                    //..
                 })
             }
         }
