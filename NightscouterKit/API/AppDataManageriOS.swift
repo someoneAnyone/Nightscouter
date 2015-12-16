@@ -7,13 +7,13 @@
 //
 import Foundation
 
-public class AppDataManager: NSObject {
+public class AppDataManager: NSObject, BundleRepresentable {
     
-    public struct SavedPropertyKey {
-        public static let sitesArrayObjectsKey = "userSites"
-        static let currentSiteIndexKey = "currentSiteIndex"
-        static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
-    }
+    //    public struct SavedPropertyKey {
+    //        public static let sitesArrayObjectsKey = "userSitesData"
+    //        static let currentSiteIndexKey = "currentSiteIndex"
+    //        static let shouldDisableIdleTimerKey = "shouldDisableIdleTimer"
+    //    }
     
     public struct SharedAppGroupKey {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
@@ -21,17 +21,31 @@ public class AppDataManager: NSObject {
     
     public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
-    public var sites: [Site] = [Site]() {
+    // models are light-weight struct that have display worthy information.
+    public var models: [WatchModel] = [] {
         didSet {
-            
+            #if DEBUG
+                // print("sites has been set with: \(models)")
+            #endif
+            let dictArray = models.map( { $0.dictionary } )
+            defaults.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
+            // defaults.synchronize()
+        }
+    }
+    
+    // Sites are containers of raw data...
+    public var sites: [Site] = [] {
+        didSet {
             #if DEBUG
                 // print("sites has been set with: \(sites)")
             #endif
             
-            let data =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            // old data...
+            let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+            // defaults.synchronize()
             
-            defaults.setObject(data, forKey: SavedPropertyKey.sitesArrayObjectsKey)
-            defaults.synchronize()
+            models = sites.flatMap( { WatchModel(fromSite: $0) } )
         }
     }
     
@@ -39,14 +53,17 @@ public class AppDataManager: NSObject {
         set {
             
             #if DEBUG
-               // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
+                // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
             #endif
             
-            defaults.setInteger(newValue, forKey: SavedPropertyKey.currentSiteIndexKey)
-            defaults.synchronize()
+            defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
+            // defaults.synchronize()
+            
+            updateWatch(withAction: .UserInfo, withSites: sites)
+            
         }
         get {
-            return defaults.integerForKey(SavedPropertyKey.currentSiteIndexKey)
+            return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
         }
     }
     
@@ -54,17 +71,16 @@ public class AppDataManager: NSObject {
         set {
             
             #if DEBUG
-               // print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
+                // print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
             #endif
             
-            defaults.setBool(newValue, forKey: SavedPropertyKey.shouldDisableIdleTimerKey)
-            defaults.synchronize()
+            defaults.setBool(newValue, forKey: DefaultKey.shouldDisableIdleTimerKey)
+            // defaults.synchronize()
         }
         get {
-            return defaults.boolForKey(SavedPropertyKey.shouldDisableIdleTimerKey)
+            return defaults.boolForKey(DefaultKey.shouldDisableIdleTimerKey)
         }
     }
-    
     
     public class var sharedInstance: AppDataManager {
         struct Static {
@@ -84,13 +100,11 @@ public class AppDataManager: NSObject {
             WatchSessionManager.sharedManager.startSession()
         }
         
-        if let  sitesData = defaults.dataForKey(SavedPropertyKey.sitesArrayObjectsKey) {
-            if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
-                sites = sitesArray
-            }
+        if let models = defaults.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+            sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
         
-         updateWatch(withAction: .UserInfo, withSite: sites)
+        updateWatch(withAction: .UserInfo, withSites: sites)
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -102,13 +116,13 @@ public class AppDataManager: NSObject {
             sites.append(site)
         }
         
-        updateWatch(withAction:.Create, withSite: [site])
+        updateWatch(withAction:.Create, withSites: [site])
     }
     
     public func updateSite(site: Site)  ->  Bool {
-        if let index = AppDataManager.sharedInstance.sites.indexOf(site) {
-            self.sites[index] = site
-            updateWatch(withAction: .Update, withSite: [site])
+        if let index = sites.indexOf(site) {
+            sites[index] = site
+            updateWatch(withAction: .Update, withSites: [site])
             
             return true
         }
@@ -118,7 +132,7 @@ public class AppDataManager: NSObject {
     
     public func deleteSiteAtIndex(index: Int) {
         
-        updateWatch(withAction: .Delete, withSite: [sites[index]])
+        updateWatch(withAction: .Delete, withSites: [sites[index]])
         
         sites.removeAtIndex(index)
     }
@@ -134,20 +148,6 @@ public class AppDataManager: NSObject {
     }
     
     // MARK: Extras
-    
-    public var sharedGroupIdentifier: String {
-        let group = NSURL(string: "group")
-        
-        return (group?.URLByAppendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
-    }
-    
-    public var infoDictionary: [String: AnyObject]? {
-        return NSBundle.mainBundle().infoDictionary as [String : AnyObject]? // Grab the info.plist dictionary from the main bundle.
-    }
-    
-    public var bundleIdentifier: NSURL? {
-        return NSURL(string: NSBundle.mainBundle().bundleIdentifier!)
-    }
     
     public var supportedSchemes: [String]? {
         if let info = infoDictionary {
@@ -169,23 +169,24 @@ public class AppDataManager: NSObject {
 }
 
 extension AppDataManager {
-    public func updateWatch(withAction action: WatchAction, withSite sites: [Site]) {
+    public func updateWatch(withAction action: WatchAction, withSites sites: [Site]) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
             // print("Please \(action) the watch with the \(sites)")
         #endif
         
+        // Create a generic context to transfer to the watch.
         var context = [String: AnyObject]()
+        
+        // Tag the context with an action so that the watch can handle it if needed.
+        // ["action" : "WatchAction.Create"] for example...
         context[WatchModel.PropertyKey.actionKey] = action.rawValue
-        var models:[[String: AnyObject]] = []
         
-        for site in sites {
-            if let watchModel = WatchModel(fromSite: site) {
-                models.append(watchModel.dictionary)
-            }
-        }
-        context[WatchModel.PropertyKey.modelsKey] = models
+        // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
+        let modelDictionaries:[[String: AnyObject]] = models.map( { $0.dictionary } )// sites.flatMap( { WatchModel(fromSite: $0)?.dictionary })
+        context[WatchModel.PropertyKey.modelsKey] = modelDictionaries
         
+        // Send over the current index.
         context[WatchModel.PropertyKey.currentIndexKey] = currentSiteIndex
         
         if #available(iOSApplicationExtension 9.0, *) {
@@ -211,5 +212,59 @@ extension AppDataManager {
             }
             
         }
+    }
+}
+
+extension AppDataManager {
+    
+    public func loadDataFor(site: Site, index: Int?, withChart: Bool = false, completetion:(returnedModel: WatchModel?, returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
+        // Start up the API
+        let nsApi = NightscoutAPIClient(url: site.url)
+        //TODO: 1. There should be reachabiltiy checks before doing anything.
+        //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
+        //TODO: 3. Probably need to move this code to the application delegate?
+        
+        // Get settings for a given site.
+        print("Loading data for \(site.url)")
+        nsApi.fetchServerConfiguration { (result) -> Void in
+            switch (result) {
+            case let .Error(error):
+                // display error message
+                print("loadUpData ERROR recieved: \(error)")
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    site.disabled = true
+                    completetion(returnedModel: nil, returnedSite: nil, returnedIndex: index, returnedError: error)
+                })
+                
+            case let .Value(boxedConfiguration):
+                let configuration:ServerConfiguration = boxedConfiguration.value
+                // do something with user
+                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
+                    // Get back on the main queue to update the user interface
+                    site.configuration = configuration
+                    site.watchEntry = watchEntry
+                    
+                    if !withChart {
+                        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                            self.updateSite(site)
+                            completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
+                        })
+                    } else {
+                        
+                        nsApi.fetchDataForEntries(Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
+                            if let entries = entries {
+                                site.entries = entries
+                                
+                                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                    self.updateSite(site)
+                                    completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
+                                })
+                            }
+                        }
+                    }
+                })
+            }
+        }
+        
     }
 }
