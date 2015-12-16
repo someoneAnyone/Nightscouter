@@ -128,14 +128,17 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         
         loadDataFor(site, index: index) { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
             
-
             if let error = returnedError {
-            print("\(__FUNCTION__) ERROR recieved: \(error)")
+                print("\(__FUNCTION__) ERROR recieved: \(error)")
                 
             } else {
-                self.lastUpdatedTime = returnedSite!.lastConnectedDate
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
-                AppDataManageriOS.sharedInstance.updateSite(returnedSite!)
+                if let returnedSite = returnedSite, returnedIndex = returnedIndex {
+                    
+                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex, inSection: 0)], withRowAnimation: .Automatic)
+                    
+                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                }
             }
         }
     }

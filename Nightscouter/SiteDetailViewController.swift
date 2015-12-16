@@ -127,8 +127,11 @@ extension SiteDetailViewController {
                 
                 defer {
                     print("setting networkActivityIndicatorVisible: false and stopping animation.")
-                    AppDataManageriOS.sharedInstance.updateSite(updatedSite!)
-
+                    
+                    if let updatedSite = updatedSite {
+                        AppDataManageriOS.sharedInstance.updateSite(updatedSite)
+                    }
+                    
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         self.siteActivityView?.stopAnimating()
@@ -204,11 +207,15 @@ extension SiteDetailViewController {
     }
     
     func updateScreenOverride(shouldOverride: Bool) {
-        self.site!.overrideScreenLock = shouldOverride
-        
-        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
-        AppDataManageriOS.sharedInstance.updateSite(site!)
-        UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
+        if let site = self.site {
+            site.overrideScreenLock = shouldOverride
+            
+            
+            AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = site.overrideScreenLock
+            AppDataManageriOS.sharedInstance.updateSite(site)
+            UIApplication.sharedApplication().idleTimerDisabled = site.overrideScreenLock
+            
+        }
         
         #if DEBUG
             print("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManageriOS.shouldDisableIdleTimer:\(AppDataManageriOS.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
@@ -228,7 +235,7 @@ extension SiteDetailViewController {
         
         let checkEmoji = "✓ "
         var yesString = "   "
-        if site!.overrideScreenLock == true {
+        if site?.overrideScreenLock == true {
             yesString = checkEmoji
         }
         

@@ -330,19 +330,22 @@ class SiteListTableViewController: UITableViewController {
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-       loadDataFor(site, index: index) { (returnedModel, updatedSite, returnedIndex, error) -> Void in
-
+        loadDataFor(site, index: index) { (returnedModel, updatedSite, returnedIndex, error) -> Void in
+            
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
-                AppDataManageriOS.sharedInstance.updateSite(updatedSite!)
+                
+                if let updatedSite = updatedSite {
+                    AppDataManageriOS.sharedInstance.updateSite(updatedSite)
+                }
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
                 if (self.refreshControl?.refreshing != nil) {
                     self.refreshControl?.endRefreshing()
                 }
-
+                
             }
-
+            
             if let error = error {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.presentAlertDialog(site.url, index: index, error: error)
