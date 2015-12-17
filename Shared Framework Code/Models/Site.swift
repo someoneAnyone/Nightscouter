@@ -72,6 +72,10 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         return dict
     }
     
+    public var viewModel: WatchModel? {
+        return WatchModel(fromSite: self)
+    }
+    
     // MARK: Initialization
     public init?(url: NSURL, apiSecret: String?) {
         // Initialize stored properties.
