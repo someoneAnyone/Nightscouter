@@ -115,14 +115,14 @@ extension SiteDetailViewController {
             switch (result) {
             case let .Error(error):
                 // display error message
-                 print("error: \(error)")
+                print("error: \(error)")
                 self.navigationController?.popViewControllerAnimated(true)
                 
             case let .Value(boxedConfiguration):
                 let configuration:ServerConfiguration = boxedConfiguration.value
                 // Get back on the main queue to update the user interface
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-
+                    
                     self.updateTitles(configuration.displayName)
                     
                     if let enabledOptions = configuration.enabledOptions {
@@ -166,17 +166,23 @@ extension SiteDetailViewController {
                         self.siteLastReadingLabel?.text = watchEntry.dateTimeAgoString
                         self.siteLastReadingLabel?.textColor = self.defaultTextColor
                         
-                        // Raw label
-                        if let rawValue = watchEntry.raw {
-                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                            
-                            var raw = "\(rawValue.formattedForMgdl)"
-                            if configuration.displayUnits == .Mmol {
-                                raw = rawValue.formattedForMmol
+                        
+                        if configuration.displayRawData {
+                            // Raw label
+                            if let rawValue = watchEntry.raw {
+                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                                
+                                var raw = "\(rawValue.formattedForMgdl)"
+                                if configuration.displayUnits == .Mmol {
+                                    raw = rawValue.formattedForMmol
+                                }
+                                
+                                self.siteRawLabel?.textColor = color
+                                self.siteRawLabel?.text = "\(raw) : \(sgv.noise)"
                             }
-
-                            self.siteRawLabel?.textColor = color
-                            self.siteRawLabel?.text = "\(raw) : \(sgv.noise)"
+                        } else {
+                            self.siteRawHeader?.hidden = true
+                            self.siteRawLabel?.hidden = true
                         }
                         
                         let timeAgo = watchEntry.date.timeIntervalSinceNow
@@ -249,7 +255,7 @@ extension SiteDetailViewController {
         AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
         AppDataManager.sharedInstance.updateSite(site!)
         UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
-
+        
         #if DEBUG
             print("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
@@ -281,7 +287,7 @@ extension SiteDetailViewController {
         }
         
         alertController.addAction(yesAction)
-
+        
         if #available(iOS 9.0, *) {
             alertController.preferredAction = yesAction
         }
@@ -299,7 +305,7 @@ extension SiteDetailViewController {
             #endif
         }
         alertController.addAction(noAction)
-
+        
         alertController.view.tintColor = NSAssetKit.darkNavColor
         
         self.view.window?.tintColor = nil
@@ -309,7 +315,7 @@ extension SiteDetailViewController {
         if let popoverController = alertController.popoverPresentationController {
             popoverController.barButtonItem = sender
         }
-
+        
         self.presentViewController(alertController, animated: true) {
             #if DEBUG
                 print("presentViewController: \(alertController.debugDescription)")
