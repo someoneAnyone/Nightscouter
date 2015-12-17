@@ -36,7 +36,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         WatchSessionManager.sharedManager.requestLatestAppContext()
-        WatchSessionManager.sharedManager.timelineDataForComplication()
         
         setupNotifications()
     }
@@ -110,6 +109,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         //        }
         
         models[index] = model
+        
+        ComplicationController.reloadComplications()
     }
     
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
@@ -151,6 +152,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
+
         for (index, model) in models.enumerate() {
             loadDataFor(model, replyHandler: { (model) -> Void in
                 self.dataSourceDidUpdateSiteModel(model, atIndex: index)

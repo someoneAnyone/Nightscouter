@@ -11,8 +11,6 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    var watchData : WatchModel?
-    
     let requestedUpdateDate: NSDate = NSDate(timeIntervalSinceNow: 30)
     
     // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
@@ -31,6 +29,10 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     }
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+        #endif
+        
         let today: NSDate = NSDate()
         let daysToAdd:Int = -1
         
@@ -46,6 +48,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     }
     
     func getTimelineEndDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
+
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+        #endif
+
         var date: NSDate? = nil
         let site = WatchSessionManager.sharedManager.timelineDataForComplication()
         
@@ -85,7 +92,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                 
             }
         }
-        
+        print("timelineEntry: \(timelineEntry)")
+
         
         handler(timelineEntry)
         
@@ -94,7 +102,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEntriesForComplication(complication: CLKComplication, beforeDate date: NSDate, limit: Int, withHandler handler: ([CLKComplicationTimelineEntry]?) -> Void) {
         // Call the handler with the timeline entries prior to the given date
-        
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+            
+        #endif
+   
         var timelineEntries = [CLKComplicationTimelineEntry]()
         
         let site = WatchSessionManager.sharedManager.timelineDataForComplication()
@@ -122,7 +134,10 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEntriesForComplication(complication: CLKComplication, afterDate date: NSDate, limit: Int, withHandler handler: (([CLKComplicationTimelineEntry]?) -> Void)) {
         // Call the handler with the timeline entries after to the given date
-        
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+        #endif
+   
         var timelineEntries = [CLKComplicationTimelineEntry]()
         
         let site = WatchSessionManager.sharedManager.timelineDataForComplication()
@@ -152,10 +167,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getNextRequestedUpdateDateWithHandler(handler: (NSDate?) -> Void) {
         // Call the handler with the date when you would next like to be given the opportunity to update your complication content
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+        #endif
+
         handler(requestedUpdateDate);
     }
-    
-    static func requestedUpdateDidBegin() {
+  
+   static func reloadComplications() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
@@ -165,6 +184,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                 complicationServer.reloadTimelineForComplication(complication)
             }
         }
+    }
+    
+    func requestedUpdateDidBegin() {
+        #if DEBUG
+            print(">>> Entering \(__FUNCTION__) <<<")
+        #endif
     }
     
     func requestedUpdateBudgetExhausted() {
@@ -230,67 +255,26 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         handler(template)
     }
     
-    
-    //
-    // MARK: - DataSourceChangedDelegate
-    
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-    }
-    
-    func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        
-        if (index == 0) {
-            watchData = model
-        }
-        
-        let complicationServer = CLKComplicationServer.sharedInstance()
-        for complication in complicationServer.activeComplications {
-            complicationServer.reloadTimelineForComplication(complication)
-        }
-    }
-    
-    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
-        
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        
-    }
-    
-    func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-    }
-    
-    
     private func templateForComplication(complication: CLKComplication, site: Site) -> CLKComplicationTemplate? {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        if let model = WatchModel(fromSite: site) {
             var template: CLKComplicationTemplate
             
-            let displayName = model.displayName
-            let sgv = model.sgvStringWithEmoji
-            let tintString = model.sgvColor
+            let displayName = "DISPLAY" //model.displayName
+            let sgv = "000 >"// model.sgvStringWithEmoji
+            let tintString = UIColor.redColor().toHexString() //model.sgvColor
             
-            let delta = model.deltaString
-            let deltaShort = model.deltaStringShort
+            let delta = "DEL" // model.deltaString
+            let deltaShort = "DE" // model.deltaStringShort
             var raw =  ""
             var rawShort = ""
             
-            if model.rawVisible {
-                raw = model.rawString // only if available.
-                rawShort = model.rawString
-            }
+//            if model.rawVisible {
+//                raw = model.rawString // only if available.
+//                rawShort = model.rawString
+//            }
             let utilLargeSting = sgv + " [" + delta + " " + raw
             let utilLargeStingShort = sgv + " [" + deltaShort + "] " + rawShort
             
@@ -338,10 +322,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             
             return template
             
-        } else {
-            //            handler(nil)
-            return nil
-        }
+    
         
     }
     

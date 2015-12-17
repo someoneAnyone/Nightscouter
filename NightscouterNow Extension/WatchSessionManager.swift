@@ -73,7 +73,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             session.delegate = self
             session.activateSession()
         }
-
+        
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -222,50 +222,27 @@ extension WatchSessionManager {
 extension WatchSessionManager {
     
     public func modelForComplication() -> WatchModel? {
-        
-        if currentSiteIndex >= models.count {
-            return nil
+        if models.count >= currentSiteIndex && !models.isEmpty {
+            return self.models[self.currentSiteIndex]
         }
-        return models[currentSiteIndex]
+        return nil
     }
-    
-    
+
     public func timelineDataForComplication() -> Site? {
-        
         if let model = modelForComplication() {
-            
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
-            let nsApi = NightscoutAPIClient(url: site.url)
             
-            //        if (model.lastReadingDate.timeIntervalSinceNow > 120) {
-            
-            // Get settings for a given site.
-            // print("Loading data for \(site.url!)")
-            nsApi.fetchServerConfiguration { (result) -> Void in
-                switch (result) {
-                case let .Error(error):
-                    // display error message
-                    print("\(__FUNCTION__) ERROR recieved: \(error)")
-                case let .Value(boxedConfiguration):
-                    let configuration:ServerConfiguration = boxedConfiguration.value
-                    site.configuration = configuration
-                    
-                    
-                    nsApi.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
-                        
-                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                            print(entries)
-                        })
-                    })
-                    
-                }
-                //            }
+            loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
                 
-            }
+                
+                dispatch_async(dispatch_get_main_queue()) {
+                    return returnedSite
+                }
+                
+
+            })
         }
-        
-        
         return nil
     }
     

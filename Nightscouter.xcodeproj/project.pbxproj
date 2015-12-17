@@ -10,6 +10,7 @@
 		170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E61B2CBABB00304F8F /* AppDelegate.swift */; };
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
+		170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */; };
 		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
 		1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172033091C19D073005208F6 /* Settings-Watch.bundle */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
@@ -86,7 +87,6 @@
 		83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */; };
 		83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */; };
 		83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
-		83883D901BC1F7E900BD1A9C /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */; };
 		83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D911BC1F7E900BD1A9C /* Assets.xcassets */; };
 		83883D961BC1F7E900BD1A9C /* NightscouterNow.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 83883D741BC1F7E800BD1A9C /* NightscouterNow.app */; };
 		83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */; };
@@ -377,10 +377,10 @@
 		170825E51B2CBABB00304F8F /* iOS App */ = {
 			isa = PBXGroup;
 			children = (
-				17ECEA5A1BF6F46C00733588 /* App */,
-				170825F21B2CBABB00304F8F /* Info.plist */,
-				1771B0431B75235B006C1F5E /* iOS Framework */,
 				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
+				170825F21B2CBABB00304F8F /* Info.plist */,
+				17ECEA5A1BF6F46C00733588 /* App */,
+				1771B0431B75235B006C1F5E /* iOS Framework */,
 				83F4C57A1B7C201800C74285 /* Today Widget */,
 			);
 			name = "iOS App";
@@ -1113,11 +1113,11 @@
 				83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */,
 				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
 				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
-				83883D901BC1F7E900BD1A9C /* ComplicationController.swift in Sources */,
 				83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */,
 				178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */,
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
 				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
+				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
 				83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */,
 			);
