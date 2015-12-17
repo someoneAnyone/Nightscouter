@@ -71,26 +71,25 @@ class SiteTableViewCell: UITableViewCell {
                     
                     siteColorBlockView.backgroundColor = color
                     
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if rawEnabled {
-                            if let rawValue = watchEntry.raw {
-                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                                
-                                var raw = "\(rawValue.formattedForMgdl)"
-                                if configuration.displayUnits == .Mmol {
-                                    raw = rawValue.formattedForMmol
-                                }
-                                
-                                siteRawLabel?.textColor = color
-                                siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
-                            }
-                        } else {
-                            siteRawHeader.hidden = true
-                            siteRawLabel.hidden = true
-                        }
-                    }
                     
+                    if configuration.displayRawData {
+                        // Raw label
+                        if let rawValue = watchEntry.raw {
+                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
+                            
+                            var raw = "\(rawValue.formattedForMgdl)"
+                            if configuration.displayUnits == .Mmol {
+                                raw = rawValue.formattedForMmol
+                            }
+                            
+                            self.siteRawLabel?.textColor = color
+                            self.siteRawLabel?.text = "\(raw) : \(sgvValue.noise)"
+                        }
+                    } else {
+                        self.siteRawHeader?.hidden = true
+                        self.siteRawLabel?.hidden = true
+                    }
+
                     let timeAgo = watchEntry.date.timeIntervalSinceNow
                     let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
                     siteCompassControl.shouldLookStale(look: isStaleData.warn)
