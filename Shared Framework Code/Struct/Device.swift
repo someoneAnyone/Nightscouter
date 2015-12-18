@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum Device: String, CustomStringConvertible {
+public enum Device: String, DictionaryConvertible, CustomStringConvertible {
     case Unknown = "unknown", Dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", WatchFace = "watchFace", Share2 = "share2"
     
     public var description: String {

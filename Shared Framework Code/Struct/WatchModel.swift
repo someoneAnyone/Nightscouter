@@ -13,7 +13,7 @@ public enum WatchAction: String {
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
-    return lhs.uuid == rhs.uuid // return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName
+ return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName && lhs.lastReadingDate == rhs.lastReadingDate //lhs.uuid == rhs.uuid //
 }
 
 public struct WatchModel: DictionaryConvertible, Equatable {

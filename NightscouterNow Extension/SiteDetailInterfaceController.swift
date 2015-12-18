@@ -10,9 +10,9 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-//protocol SiteDetailViewDidUpdateItemDelegate {
-//    func didUpdateItem(model: WatchModel)
-//}
+protocol SiteDetailViewDidUpdateItemDelegate {
+    func didUpdateItem(model: WatchModel)
+}
 
 class SiteDetailInterfaceController: WKInterfaceController {
     
@@ -31,7 +31,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
     
     var isActive: Bool = false
     
-//    var delegate: SiteDetailViewDidUpdateItemDelegate?
+    var delegate: SiteDetailViewDidUpdateItemDelegate?
     
     var model: WatchModel? {
         didSet {
@@ -41,14 +41,14 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 
                 self.configureView(model)
                 
-                if self.lastUpdatedTime == nil {
+                if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime) {
                     updateData()
                 }
                 
             }
         }
     }
-    var lastUpdatedTime: NSDate?
+    // var lastUpdatedTime: NSDate?
     
     override func willActivate() {
         super.willActivate()
@@ -57,11 +57,8 @@ class SiteDetailInterfaceController: WKInterfaceController {
         let image = NSAssetKitWatchOS.imageOfWatchFace()
         compassImage.setImage(image)
         
-        self.isActive = true
-        
         if let model = model {
             self.configureView(model)
-            
         }
         
         setupNotifications()
@@ -77,13 +74,16 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 t.cancel()
             }
         }
+        
+        // Remove this class from the observer list. Was listening for a global update timer.
+        NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
         if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], model = WatchModel(fromDictionary: modelDict) { self.model = model }
-// if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
         
     }
     
@@ -92,21 +92,16 @@ class SiteDetailInterfaceController: WKInterfaceController {
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
-    deinit {
-        // Remove this class from the observer list. Was listening for a global update timer.
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    
     func updateData(){
-        
+        self.isActive = true
         if let model = model {
             loadDataFor(model) { (model) -> Void in
+                self.isActive = false
                 self.model = model
-
-//                dispatch_async(dispatch_get_main_queue()) { [weak self] in
-//                    self?.delegate?.didUpdateItem(model)
-//                }
+                
+                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                    self?.delegate?.didUpdateItem(model)
+                }
                 
             }
         }
@@ -146,7 +141,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
             self.siteUpdateTimer.setDate(model.lastReadingDate)
             self.siteUpdateTimer.setTextColor(lastReadingColor)
             
-            self.lastUpdatedTime = model.lastReadingDate
+            // self.lastUpdatedTime = model.lastReadingDate
         }
     }
     

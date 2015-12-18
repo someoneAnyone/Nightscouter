@@ -8,6 +8,7 @@
 
 import WatchConnectivity
 import ClockKit
+import NightscouterWatchOSKit
 
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
@@ -51,7 +52,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             models = dictArray.map({ WatchModel(fromDictionary: $0)! })
         }
         
-        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
+//        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
         
     }
     
@@ -65,6 +66,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             let dictArray = models.map({ $0.dictionary })
             sharedDefaults?.setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
             sharedDefaults?.synchronize()
+    
         }
     }
     
@@ -102,13 +104,13 @@ extension WatchSessionManager {
     }
     
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-        print("didReceiveUserInfo: \(userInfo)")
+        // print("didReceiveUserInfo: \(userInfo)")
         processApplicationContext(userInfo)
     }
     
     // Receiver
     public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
-        print("didReceiveApplicationContext: \(applicationContext)")
+        // print("didReceiveApplicationContext: \(applicationContext)")
         processApplicationContext(applicationContext)
     }
     
@@ -130,7 +132,7 @@ extension WatchSessionManager {
         session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
             
-            print("recievedMessageReply: \(context)")
+            // print("recievedMessageReply: \(context)")
             returnBool = self.processApplicationContext(context)
             
             }, errorHandler: {(error ) -> Void in
@@ -159,7 +161,7 @@ extension WatchSessionManager {
             self.currentSiteIndex = currentSiteIndex
         }
         
-        
+        generateTimelineData()
         switch action {
             
         case .Update, .Create:
@@ -212,13 +214,29 @@ extension WatchSessionManager {
             }
             
         }
-        
+
         return true
     }
     
 }
 
-
+public struct ComplicationModel: DictionaryConvertible {
+    
+    public let displayName: String
+    public let date: NSDate
+    public let sgv: String// = "000 >"// model.sgvStringWithEmoji
+    public let sgvEmoji: String
+    public let tintString: String//  = UIColor.redColor().toHexString() //model.sgvColor
+    
+    public let delta: String//  = "DEL" // model.deltaString
+    public let deltaShort: String//  = "DE" // model.deltaStringShort
+    public var raw: String?//  =  ""
+    public var rawShort: String?//  = ""
+    public var rawVisible: Bool {
+        return (raw != nil)
+    }
+    
+}
 extension WatchSessionManager {
     
     public func modelForComplication() -> WatchModel? {
@@ -227,8 +245,10 @@ extension WatchSessionManager {
         }
         return nil
     }
+    
+    
 
-    public func timelineDataForComplication() -> Site? {
+    public func generateTimelineData() -> Void {
         if let model = modelForComplication() {
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
@@ -236,13 +256,69 @@ extension WatchSessionManager {
             loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
                 
                 
-                dispatch_async(dispatch_get_main_queue()) {
-                    return returnedSite
+                
+                guard let configuration = returnedSite?.configuration, displayName = returnedSite?.configuration?.displayName, entries = returnedSite?.entries else {
+                    return
                 }
                 
+                
+                
+                
+                var cmodels: [[String: AnyObject]] = []
+                for entry in entries {
+                    
+                    if let sgvValue = entry.sgv {
+                        
+                        
+                        
+                        // Convert units.
+                        var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
+                        if configuration.displayUnits == .Mmol {
+                            boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
+                        }
+                        
+                        let sgvString =  "\(sgvValue.sgvString(forUnits: configuration.displayUnits))"
+                        let sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
+                        let sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
+                        
+                        let  deltaString = "\("TBD") \(configuration.displayUnits.description)"
+                        let deltaStringShort = "\("TBD") Δ"
+                        
+                        let sgvColor = colorForDesiredColorState(boundedColor)
+                        let raw  =  "??"
+                        let rawShort  = "??"
 
+                        cmodels.append( ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort).dictionary)
+                        
+                    }
+                    
+                }
+                
+                
+                self.sharedDefaults?.setObject(cmodels, forKey: "cModels")
+                self.sharedDefaults?.synchronize()
+                ComplicationController.reloadComplications()
             })
         }
+    }
+    
+    
+    
+    public func timelineDataForComplication() -> [ComplicationModel]? {
+        if let dicts = sharedDefaults?.arrayForKey("cModels") as? [[String : AnyObject]]{
+
+            var cModels = [ComplicationModel]()
+            for d in dicts {
+            
+                guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String else {
+                    return nil
+                }
+
+                cModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: nil, rawShort: nil))
+            }
+            return cModels
+        }
+        
         return nil
     }
     

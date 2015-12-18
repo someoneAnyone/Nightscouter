@@ -28,6 +28,7 @@
 		1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */; };
 		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
+		177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
 		178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
@@ -54,7 +55,6 @@
 		17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */; };
 		17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C301BF0ED410014EE38 /* NSAssetKit+Helpers.swift */; };
 		17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */; };
-		17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
 		17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
 		17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
@@ -284,7 +284,7 @@
 		83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterNow.entitlements; sourceTree = "<group>"; };
 		83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesTableInterfaceController.swift; sourceTree = "<group>"; };
 		83883DAB1BC2089000BD1A9C /* SiteRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteRowController.swift; sourceTree = "<group>"; };
-		8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchSessionManager.swift; path = "../NightscouterNow Extension/WatchSessionManager.swift"; sourceTree = "<group>"; };
+		8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		839DBD081BC0170300691B75 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
@@ -520,6 +520,7 @@
 		178AACCD1BEFE76C00B0DEBC /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
 				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
 				178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */,
 				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
@@ -614,7 +615,6 @@
 				17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */,
 				17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */,
 				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
-				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
 			);
 			name = "Watch Framework";
 			path = ../NightscouterWatchOSKit;
@@ -1093,7 +1093,6 @@
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
-				17BD1C381BF0F0900014EE38 /* WatchSessionManager.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */,
 				17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */,
@@ -1118,6 +1117,7 @@
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
 				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
 				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,
+				177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
 				83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */,
 			);

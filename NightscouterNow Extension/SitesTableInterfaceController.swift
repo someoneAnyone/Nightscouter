@@ -9,35 +9,50 @@
 import WatchKit
 import NightscouterWatchOSKit
 
-class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate { //, SiteDetailViewDidUpdateItemDelegate {
+class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate, SiteDetailViewDidUpdateItemDelegate {
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
     var models = [WatchModel]() {
         didSet {
             updateTableData()
-            if !models.isEmpty && (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds) {
-                updateData()
+            
+            if !models.isEmpty { updateData(forceRefresh: false) }
+        }
+    }
+    
+    var delayTimer = NSTimer()
+    var delayRequestForNow: Bool = false {
+        didSet {
+            delayTimer.invalidate()
+            if delayRequestForNow {
+                delayTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: "timer", repeats: true)
             }
         }
     }
     
-    var lastUpdatedTime: NSDate?
+    
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
+        
     }
-    
     
     override func willActivate() {
         super.willActivate()
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        WatchSessionManager.sharedManager.requestLatestAppContext()
+        print(">>> Entering \(__FUNCTION__) <<<")
         
         setupNotifications()
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        let appContext = WatchSessionManager.sharedManager.requestLatestAppContext()
+        
+        if !appContext {
+            updateData()
+        }
+        
     }
     
     override func didDeactivate() {
@@ -56,7 +71,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataStaleUpdate:"), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
     
@@ -92,7 +107,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 self.sitesTable.setNumberOfRows(self.models.count, withRowType: rowTypeIdentifier)
                 for (index, model) in self.models.enumerate() {
                     if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                        self.lastUpdatedTime = model.lastReadingDate
                         row.model = model
                     }
                 }
@@ -104,13 +118,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        //        if let modelIndex = models.indexOf(model){
-        //            models[modelIndex] = model
-        //        }
         
-        models[index] = model
+        self.delayRequestForNow = model.warn
         
         ComplicationController.reloadComplications()
+
+        models[index] = model
     }
     
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
@@ -121,8 +134,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         } else {
             fatalError()
         }
-        
-        //        updateTableData()
     }
     
     func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
@@ -139,25 +150,40 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         self.models = models
     }
     
-//    func didUpdateItem(model: WatchModel) {
-//        
-//        print(">>> Entering \(__FUNCTION__) <<<")
-//        
-//        if let index = models.indexOf(model) {
-//            self.models[index] = model
-//        } else {
-//            print("Did not update table view with recent item")
-//        }
-//    }
-    
-    func updateData() {
+    func didUpdateItem(model: WatchModel) {
+        
         print(">>> Entering \(__FUNCTION__) <<<")
-
+        
+        if let index = models.indexOf(model) {
+            self.models[index] = model
+        } else {
+            print("Did not update table view with recent item")
+        }
+    }
+    
+    func dataStaleUpdate(notif: NSNotification) {
+        updateData(forceRefresh: true)
+    }
+    
+    func updateData(forceRefresh refresh: Bool = true) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
         for (index, model) in models.enumerate() {
-            loadDataFor(model, replyHandler: { (model) -> Void in
-                self.dataSourceDidUpdateSiteModel(model, atIndex: index)
-                //                self.updateTableData()
-            })
+            print("models.isEmpty")
+            print(models.isEmpty)
+        
+            print("models.count")
+            print(models.count)
+            print("lastUpdatedTime?.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime")
+            print("\(model.lastReadingDate.timeIntervalSinceNow) <  \(-Constants.NotableTime.StandardRefreshTime)")
+            print("delayRequestForNow")
+            print(delayRequestForNow)
+            
+            if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || refresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
+                loadDataFor(model, replyHandler: { (model) -> Void in
+                    self.dataSourceDidUpdateSiteModel(model, atIndex: index)
+                })
+            }
         }
     }
     
