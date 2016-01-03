@@ -53,27 +53,27 @@ public class WatchEntry: Entry, CustomStringConvertible {
         return nil
     }
     
-    public var dictionaryRep: [String : AnyObject] {
-        
-        var dict: [String : AnyObject] = ["now" : now, "bgdelta" : bgdelta, "battery" : battery, "batteryString" :batteryString, "batteryColorState" : batteryColorState.description]
-        
-        if let raw = raw {
-            dict["raw"] = raw
-        }
-        
-        if let sgv = sgv {
-            dict["sgv"] = String(sgv)
-        }
-        
-        if let cal = cal {
-            dict["cal"] = String(cal)
-        }
-        
-        return dict
-    }
+//    public var dictionaryRep: [String : AnyObject] {
+//        
+//        var dict: [String : AnyObject] = ["now" : now, "bgdelta" : bgdelta, "battery" : battery, "batteryString" :batteryString, "batteryColorState" : batteryColorState.description]
+//        
+//        if let raw = raw {
+//            dict["raw"] = raw
+//        }
+//        
+//        if let sgv = sgv {
+//            dict["sgv"] = String(sgv)
+//        }
+//        
+//        if let cal = cal {
+//            dict["cal"] = String(cal)
+//        }
+//        
+//        return dict
+//    }
     
     public var description: String {
-        return "WatchEntry: { \(dictionaryRep) }"
+        return "WatchEntry: { \(dictionary.description) }"
     }
     
     public init(identifier: String, date: NSDate, device: Device, now: NSDate, bgdelta: Double, battery: Int) {

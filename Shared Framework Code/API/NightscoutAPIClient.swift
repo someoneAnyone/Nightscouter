@@ -115,29 +115,27 @@ extension NightscoutAPIClient {
             }
         })
     }
-    
-//    public func fetchDataForWatchEntries(count: Int = 1, completetion:(watchEntries: [WatchEntry]?, errorCode: NightscoutAPIError) -> Void) {
-//        // let watchEntryUrl = self.urlForWatchEntry
-//        
-//        let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
-//        
-//        let urlComponents = NSURLComponents(URL: self.urlForWatchEntry, resolvingAgainstBaseURL: true)
-//        urlComponents?.queryItems = [queryItemCount]
-//        
-//        self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
-//            
-//            if let watchEntries = result as? JSONDictionary {
-//                var finalArray = Array<WatchEntry>()
-//                for jsonDictionary: JSONDictionary in watchEntries {
-//                    let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
-//                    finalArray.append(watchEntry)
-//                }
-//                completetion(watchEntries: finalArray, errorCode: errorCode)
-//            }
-//            completetion(watchEntries: nil, errorCode: errorCode)
-//            
-//        })
-//    }
+    /*
+    public func fetchDataForWatchEntries(count: Int = 1, completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
+        // let watchEntryUrl = self.urlForWatchEntry
+        
+        let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
+        
+        let urlComponents = NSURLComponents(URL: self.urlForWatchEntry, resolvingAgainstBaseURL: true)
+        urlComponents?.queryItems = [queryItemCount]
+        
+        self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
+            
+            if let jsonDictionary = result as? JSONDictionary {
+                let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
+                completetion(watchEntry: watchEntry, errorCode: errorCode)
+            } else {
+                completetion(watchEntry: nil, errorCode: errorCode)
+            }
+            
+        })
+    }
+    */
     
     public func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
@@ -152,7 +150,7 @@ extension NightscoutAPIClient {
     }
     
     
-    public func fetchCalibrations(count: Int = 1, completetion:(calibrations: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchCalibrations(count: Int = 1, completetion:(calibrations: [Entry]?, errorCode: NightscoutAPIError) -> Void) {
         //find[type]=cal&count=1
         let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
         

@@ -52,7 +52,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             models = dictArray.map({ WatchModel(fromDictionary: $0)! })
         }
         
-//        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
+        //        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
         
     }
     
@@ -66,9 +66,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             let dictArray = models.map({ $0.dictionary })
             sharedDefaults?.setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
             sharedDefaults?.synchronize()
-    
+            
         }
     }
+    
+    private var calibrations: [Entry] = []
+    
     
     public func startSession() {
         if WCSession.isSupported() {
@@ -214,7 +217,7 @@ extension WatchSessionManager {
             }
             
         }
-
+        
         return true
     }
     
@@ -247,11 +250,31 @@ extension WatchSessionManager {
     }
     
     
-
+    
     public func generateTimelineData() -> Void {
         if let model = modelForComplication() {
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
+            let nsApi = NightscoutAPIClient(url: site.url)
+            
+            nsApi.fetchCalibrations(4, completetion: { (calibrations, errorCode) -> Void in
+                
+                var calModels: [[String: AnyObject]] = []
+                
+                if let cals = calibrations {
+                    for cal in cals {
+                        if let dict = cal.cal?.dictionary {
+                            calModels.append(dict)
+                        }
+                    }
+                    
+                    self.calibrations = cals
+                }
+                
+                self.sharedDefaults?.setObject(calModels, forKey: "calibrations")
+                self.sharedDefaults?.synchronize()
+                
+            })
             
             loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
                 
@@ -265,11 +288,11 @@ extension WatchSessionManager {
                 
                 
                 var cmodels: [[String: AnyObject]] = []
-                for entry in entries {
+                
+
+                for (index, entry) in entries.enumerate() {
                     
                     if let sgvValue = entry.sgv {
-                        
-                        
                         
                         // Convert units.
                         var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
@@ -281,13 +304,31 @@ extension WatchSessionManager {
                         let sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
                         let sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
                         
-                        let  deltaString = "\("TBD") \(configuration.displayUnits.description)"
-                        let deltaStringShort = "\("TBD") Δ"
+                        
+                        
+                        
+                        
+                        var delta: Double = 0
+                        if index == entries.count - 1 {
+
+                            delta = (entries[index - 1].sgv?.sgv)! - (entry.sgv?.sgv)!
+
+                        }
+                        
+                        let  deltaString = "\(delta) \(configuration.displayUnits.description)"
+                        let deltaStringShort = "\(delta) Δ"
                         
                         let sgvColor = colorForDesiredColorState(boundedColor)
-                        let raw  =  "??"
-                        let rawShort  = "??"
-
+                
+                        var raw  = ""
+                        var rawShort  = ""
+                        
+                        
+                        if let cal = self.nearestCalibration(forDate: entry.date) {
+                            raw = "\(sgvValue.rawIsigToRawBg(cal)) : \(sgvValue.noise.description)"
+                            rawShort = "\(sgvValue.rawIsigToRawBg(cal)) : \(sgvValue.noise.description)"
+                        }
+                        
                         cmodels.append( ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort).dictionary)
                         
                     }
@@ -306,14 +347,14 @@ extension WatchSessionManager {
     
     public func timelineDataForComplication() -> [ComplicationModel]? {
         if let dicts = sharedDefaults?.arrayForKey("cModels") as? [[String : AnyObject]]{
-
+            
             var cModels = [ComplicationModel]()
             for d in dicts {
-            
+                
                 guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String else {
                     return nil
                 }
-
+                
                 cModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: nil, rawShort: nil))
             }
             return cModels
@@ -321,5 +362,44 @@ extension WatchSessionManager {
         
         return nil
     }
+    
+    
+    
+    
+    public func nearestCalibration(forDate date: NSDate) -> Calibration? {
+        
+        
+//        let greaterThan = NSPredicate(format:"startDate <= %@", date.timeIntervalSinceNow)
+//        let lessThan = NSPredicate(format:"endDate >= %@", date.timeIntervalSinceNow)
+//        let between = NSCompoundPredicate(andPredicateWithSubpredicates: [greaterThan, lessThan])
+        
+        
+        var desiredIndex: Int?
+        
+        var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
+        
+        for (index, entry) in calibrations.enumerate() {
+            
+            let dateInterval = fabs(entry.date.timeIntervalSinceDate(date))
+            
+            let compared = minDate < dateInterval
+            // print("Testing: \(minDate) < \(dateInterval) = \(compared)")
+            
+            if compared {
+                minDate = dateInterval
+                desiredIndex = index
+                
+            }
+        }
+        
+        guard let index = desiredIndex else {
+            print("no valid index was found... return last calibration")
+            return calibrations.first?.cal
+        }
+        
+        // print("incoming date: \(closestDate.timeIntervalSinceNow) returning date: \(calibrations[index].date.timeIntervalSinceNow)")
+        return calibrations[index].cal
+    }
+    
     
 }

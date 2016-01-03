@@ -49,7 +49,6 @@ import Foundation
 
 
 
-
 public func loadDataFor(model: WatchModel, replyHandler:(model: WatchModel) -> Void) {
     print(">>> Entering \(__FUNCTION__) <<<")
     
@@ -107,7 +106,6 @@ public func loadDataFor(site: Site, index: Int?, withChart: Bool = false, comple
                             site.entries = entries
                             
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                // self.updateSite(site)
                                 completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
                             })
                         }
