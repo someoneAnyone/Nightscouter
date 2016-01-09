@@ -36,6 +36,8 @@
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
 		17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
 		17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
+		17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */; };
+		17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */; };
 		17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
 		17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
 		17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */; };
@@ -236,6 +238,7 @@
 		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
 		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Array+Extensions.swift"; path = "Shared Framework Code/Extensions/Array+Extensions.swift"; sourceTree = SOURCE_ROOT; };
 		17BD1C141BF0EC1D0014EE38 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = "Shared Framework Code/Models/Entry.swift"; sourceTree = SOURCE_ROOT; };
 		17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerConfiguration.swift; path = "Shared Framework Code/Models/ServerConfiguration.swift"; sourceTree = SOURCE_ROOT; };
 		17BD1C161BF0EC1D0014EE38 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Site.swift; path = "Shared Framework Code/Models/Site.swift"; sourceTree = SOURCE_ROOT; };
@@ -552,6 +555,7 @@
 				17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */,
 				17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */,
 				17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */,
+				17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -1049,6 +1053,7 @@
 			files = (
 				17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */,
 				17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
+				17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */,
 				17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */,
 				17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */,
 				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
@@ -1092,6 +1097,7 @@
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
+				17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */,

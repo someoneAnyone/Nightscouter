@@ -17,7 +17,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         didSet {
             updateTableData()
             
-            if !models.isEmpty { updateData(forceRefresh: false) }
+            if !models.isEmpty { updateData(false) }
         }
     }
     
@@ -30,7 +30,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             }
         }
     }
-    
     
     var nsApi: [NightscoutAPIClient]?
     
@@ -45,6 +44,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         setupNotifications()
+        models = WatchSessionManager.sharedManager.models
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         let appContext = WatchSessionManager.sharedManager.requestLatestAppContext()
@@ -116,13 +116,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         }
     }
     
+    
     func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
         self.delayRequestForNow = model.warn
         
         ComplicationController.reloadComplications()
-
+        
         models[index] = model
     }
     
@@ -132,9 +133,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         if let realIndex = models.indexOf(model) {
             models.removeAtIndex(realIndex)
         } else {
-            fatalError()
+            WatchSessionManager.sharedManager.requestLatestAppContext()
         }
     }
+    
     
     func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
         print(">>> Entering \(__FUNCTION__) <<<")
@@ -162,16 +164,16 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataStaleUpdate(notif: NSNotification) {
-        updateData(forceRefresh: true)
+        updateData(true)
     }
     
-    func updateData(forceRefresh refresh: Bool = true) {
+    func updateData(forceRefresh: Bool = true) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
         for (index, model) in models.enumerate() {
             print("models.isEmpty")
             print(models.isEmpty)
-        
+            
             print("models.count")
             print(models.count)
             print("lastUpdatedTime?.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime")
@@ -179,7 +181,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             print("delayRequestForNow")
             print(delayRequestForNow)
             
-            if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || refresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
+            if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || forceRefresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
                 loadDataFor(model, replyHandler: { (model) -> Void in
                     self.dataSourceDidUpdateSiteModel(model, atIndex: index)
                 })

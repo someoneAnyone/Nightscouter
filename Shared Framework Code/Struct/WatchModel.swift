@@ -13,7 +13,18 @@ public enum WatchAction: String {
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
- return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName && lhs.lastReadingDate == rhs.lastReadingDate //lhs.uuid == rhs.uuid //
+    // return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName && lhs.lastReadingDate == rhs.lastReadingDate //lhs.uuid == rhs.uuid //
+    return lhs.uuid == rhs.uuid
+}
+// TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
+public struct PlaceHolderStrings {
+    public static let displayName: String = "Nightscouter"
+    public static let sgv: String = "---"
+    public static let delta: String = "- --/--"
+    public static let deltaShort: String = "-"
+    public static let raw: String = "--- : ---"
+    public static let rawShort: String = "--- : -"
+    public static let battery: String = "---%"
 }
 
 public struct WatchModel: DictionaryConvertible, Equatable {
@@ -77,7 +88,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         let d = fromDictionary
         self.urlString = d["urlString"] as! String
         self.displayUrlString = d["displayUrlString"] as? String ?? "not set"
-
+        
         self.urgent = d["urgent"] as! Bool
         self.warn = d["warn"] as! Bool
         
@@ -112,10 +123,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         self.direction = d["direction"] as? String ?? "--"
         
         self.uuid = d["uuid"] as! String
-
+        
     }
     
-    public init?(fromSite site: Site) {
+    public init(fromSite site: Site) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
@@ -129,7 +140,42 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.urlString = site.url.absoluteString
             self.displayUrlString = site.url.host ?? site.url.absoluteString
             
-            return nil
+            self.urgent = false
+            self.warn = false
+            
+            self.displayName = PlaceHolderStrings.sgv
+            
+            self.lastReadingDate = NSDate()
+            
+            self.lastReadingColor = ""
+            
+            self.batteryColor = ""
+            self.batteryString = PlaceHolderStrings.battery
+            
+            self.rawVisible = true
+            self.rawString = PlaceHolderStrings.raw
+            self.rawColor = ""
+            
+            self.sgvString = PlaceHolderStrings.sgv
+            self.sgvEmoji = ""
+            self.sgvStringWithEmoji = ""
+            self.sgvColor = ""
+            
+            self.deltaString = PlaceHolderStrings.delta
+            self.deltaStringShort = ""
+            self.deltaColor = ""
+            
+            self.delta = Double.infinity
+            self.units = ""
+            
+            self.isArrowVisible = false
+            self.isDoubleUp = false
+            self.angle = 0
+            
+            self.uuid = site.uuid.UUIDString
+            self.direction = ""
+            
+            return
         }
         
         // Get prefered Units. mmol/L or mg/dL
@@ -138,7 +184,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         // Custom name or Nightscout
         let displayName: String = configuration.displayName
         let displayUrlString = site.url.host ?? site.url.absoluteString
-
+        
         // Calculate if the lastest watch entry we got from the server is stale.
         let timeAgo = watchEntry.date.timeIntervalSinceNow
         let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
@@ -154,7 +200,40 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             self.displayName = displayName
             
-            return nil
+            self.urgent = false
+            self.warn = false
+            
+            self.lastReadingDate = NSDate()
+            
+            self.lastReadingColor = ""
+            
+            self.batteryColor = ""
+            self.batteryString = ""
+            
+            self.rawVisible = false
+            self.rawString = ""
+            self.rawColor = ""
+            
+            self.sgvString = ""
+            self.sgvEmoji = ""
+            self.sgvStringWithEmoji = ""
+            self.sgvColor = ""
+            
+            self.deltaString = ""
+            self.deltaStringShort = ""
+            self.deltaColor = ""
+            
+            self.delta = Double.infinity
+            self.units = ""
+            
+            self.isArrowVisible = false
+            self.isDoubleUp = false
+            self.angle = 0
+            self.direction = ""
+            
+            self.uuid = site.uuid.UUIDString
+            
+            return
         }
         
         // Get theme color for normal text should look like.
@@ -240,16 +319,16 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         
         if isStaleData.warn {
-            batteryString = ("---%")
+            batteryString = PlaceHolderStrings.battery
             batteryColor = defaultTextColor
             
-            rawString = "--- : ---"
+            rawString = PlaceHolderStrings.raw
             rawColor = defaultTextColor
             
-            deltaString = "- --/--"
-            deltaStringShort = "-"
+            deltaString = PlaceHolderStrings.delta
+            deltaStringShort = PlaceHolderStrings.delta
             
-            sgvString = "---"
+            sgvString = PlaceHolderStrings.sgv
             sgvStringWithEmoji = sgvString
             sgvEmoji = sgvString
             
@@ -268,7 +347,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         self.urlString = site.url.absoluteString
         self.displayUrlString = displayUrlString
-
+        
         self.urgent = isStaleData.urgent
         self.warn = isStaleData.warn
         
@@ -301,7 +380,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         self.isDoubleUp = isDoubleUp
         self.angle = angle
         
-        self.uuid = site.uuid.UUIDString // NSUUID().UUIDString
+        self.uuid = site.uuid.UUIDString
     }
     
     func generateSite() -> Site {

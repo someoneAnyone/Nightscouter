@@ -11,16 +11,8 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    let requestedUpdateDate: NSDate = NSDate(timeIntervalSinceNow: Constants.NotableTime.StandardRefreshTime)
     
-    // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
-    struct PlaceHolderStrings {
-        static let displayName: String = "Nightscouter"
-        static let sgv: String = "---"
-        static let delta: String = "- --/--"
-        static let raw: String = "--- : ---"
-        static let rawShort: String = "--- : -"
-    }
+
     
     override init() {
         WatchSessionManager.sharedManager.generateTimelineData()
@@ -108,18 +100,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             }
         }
         
-        //        if let entries = entries {
-        //            for entry in entries {
-        //                let entryDate = entry.date
-        //                print("model \(entry.date.timeIntervalSinceNow) + date \(alittleWhileAgo.timeIntervalSinceNow)")
-        //                if  (entryDate.timeIntervalSinceNow < alittleWhileAgo.timeIntervalSinceNow && entryDate.timeIntervalSinceNow > -Constants.NotableTime.StandardRefreshTime) {
-        //                    if let template = templateForComplication(complication, model: entry) {
-        //                        timelineEntry = CLKComplicationTimelineEntry(date: entryDate, complicationTemplate: template)
-        //                    }
-        //                }
-        //
-        //            }
-        //        }
         print("timelineEntry: \(timelineEntry)")
         
         
@@ -199,7 +179,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        handler(requestedUpdateDate);
+        handler(NSDate(timeIntervalSinceNow: Constants.NotableTime.StandardRefreshTime));
     }
     
     static func reloadComplications() {
@@ -326,7 +306,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             modularLarge.headerTextProvider = CLKSimpleTextProvider(text: displayName + " " + sgv)
             modularLarge.body1TextProvider = CLKSimpleTextProvider(text: delta, shortText: deltaShort)
             modularLarge.body2TextProvider = CLKSimpleTextProvider(text: raw, shortText: rawShort)
-            
+            modularLarge.tintColor = UIColor(hexString: tintString)
             // Set the template
             template = modularLarge
         case .UtilitarianSmall:

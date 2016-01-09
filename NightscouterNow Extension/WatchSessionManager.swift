@@ -44,16 +44,15 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private let sharedDefaults = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")
     
     public static let sharedManager = WatchSessionManager()
+    
     private override init() {
         super.init()
-        
         if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
             print("Loading models from default.")
             models = dictArray.map({ WatchModel(fromDictionary: $0)! })
         }
         
-        //        print("shared defaults: \(sharedDefaults?.dictionaryRepresentation())")
-        
+        // generateTimelineData()
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
@@ -61,17 +60,32 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     private let session: WCSession = WCSession.defaultSession()
     
     private var sites: [Site] = []
-    private var models: [WatchModel] = [] {
-        didSet {
+    
+    public var models: [WatchModel] = [] {
+        didSet{
             let dictArray = models.map({ $0.dictionary })
-            sharedDefaults?.setObject(dictArray, forKey: WatchModel.PropertyKey.modelsKey)
-            sharedDefaults?.synchronize()
+            sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
             
+            generateTimelineData()
         }
     }
+    //    public var models: [WatchModel] {
+    //        set{
+    //            let dictArray = models.map({ $0.dictionary })
+    //            sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
+    //            // sharedDefaults?.synchronize()
+    //        }
+    //        get{
+    //            if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
+    //                print("Loading models from default.")
+    //                return dictArray.map({ WatchModel(fromDictionary: $0)! })
+    //            } else {
+    //                return []
+    //            }
+    //        }
+    //    }
     
     private var calibrations: [Entry] = []
-    
     
     public func startSession() {
         if WCSession.isSupported() {
@@ -119,8 +133,8 @@ extension WatchSessionManager {
     
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         
-        let success =   processApplicationContext(message)
-        replyHandler(["response" : "The message was procssed correctly: \(success)"])
+        let success =  processApplicationContext(message)
+        replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
     }
     
 }
@@ -164,7 +178,6 @@ extension WatchSessionManager {
             self.currentSiteIndex = currentSiteIndex
         }
         
-        generateTimelineData()
         switch action {
             
         case .Update, .Create:
@@ -192,7 +205,7 @@ extension WatchSessionManager {
                 }
             }
         case .Delete:
-            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
+            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{
                 for modelDict in modelArray {
                     let model = WatchModel(fromDictionary: modelDict)!
                     
@@ -257,18 +270,23 @@ extension WatchSessionManager {
             let site = Site(url: url, apiSecret: nil)!
             let nsApi = NightscoutAPIClient(url: site.url)
             
-            nsApi.fetchCalibrations(4, completetion: { (calibrations, errorCode) -> Void in
+            nsApi.fetchCalibrations(12, completetion: { (calibrations, errorCode) -> Void in
                 
                 var calModels: [[String: AnyObject]] = []
                 
+                
                 if let cals = calibrations {
+                    
+                    self.calibrations = cals.sort{(item1:Entry, item2:Entry) -> Bool in
+                        item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+                    }
+                    
                     for cal in cals {
                         if let dict = cal.cal?.dictionary {
                             calModels.append(dict)
                         }
                     }
                     
-                    self.calibrations = cals
                 }
                 
                 self.sharedDefaults?.setObject(calModels, forKey: "calibrations")
@@ -278,18 +296,13 @@ extension WatchSessionManager {
             
             loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
                 
-                
-                
                 guard let configuration = returnedSite?.configuration, displayName = returnedSite?.configuration?.displayName, entries = returnedSite?.entries else {
                     return
                 }
                 
-                
-                
-                
                 var cmodels: [[String: AnyObject]] = []
                 
-
+                
                 for (index, entry) in entries.enumerate() {
                     
                     if let sgvValue = entry.sgv {
@@ -304,25 +317,24 @@ extension WatchSessionManager {
                         let sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
                         let sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
                         
-                        
-                        
-                        
-                        
                         var delta: Double = 0
-                        if index == entries.count - 1 {
-
-                            delta = (entries[index - 1].sgv?.sgv)! - (entry.sgv?.sgv)!
-
+                        
+                        let nextIndex: Int = index + 1
+                        
+                        if nextIndex < entries.count {
+                            let previousSgv = entries[nextIndex]
+                            if sgvValue.isSGVOk {
+                                delta = (entry.sgv?.sgv)! - (previousSgv.sgv?.sgv)!
+                            }
                         }
                         
-                        let  deltaString = "\(delta) \(configuration.displayUnits.description)"
-                        let deltaStringShort = "\(delta) Δ"
+                        let deltaString = "\(delta.formattedForBGDelta) \(configuration.displayUnits.description)"
+                        let deltaStringShort = "\(delta.formattedForBGDelta) Δ"
                         
                         let sgvColor = colorForDesiredColorState(boundedColor)
-                
-                        var raw  = ""
-                        var rawShort  = ""
                         
+                        var raw = ""
+                        var rawShort = ""
                         
                         if let cal = self.nearestCalibration(forDate: entry.date) {
                             raw = "\(sgvValue.rawIsigToRawBg(cal)) : \(sgvValue.noise.description)"
@@ -369,9 +381,9 @@ extension WatchSessionManager {
     public func nearestCalibration(forDate date: NSDate) -> Calibration? {
         
         
-//        let greaterThan = NSPredicate(format:"startDate <= %@", date.timeIntervalSinceNow)
-//        let lessThan = NSPredicate(format:"endDate >= %@", date.timeIntervalSinceNow)
-//        let between = NSCompoundPredicate(andPredicateWithSubpredicates: [greaterThan, lessThan])
+        //        let greaterThan = NSPredicate(format:"startDate <= %@", date.timeIntervalSinceNow)
+        //        let lessThan = NSPredicate(format:"endDate >= %@", date.timeIntervalSinceNow)
+        //        let between = NSCompoundPredicate(andPredicateWithSubpredicates: [greaterThan, lessThan])
         
         
         var desiredIndex: Int?

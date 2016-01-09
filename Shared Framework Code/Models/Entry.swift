@@ -201,7 +201,7 @@ public extension Entry {
                     break
             }
             
-            calValue = Calibration(slope: slope, scale: scale, intercept: intercept)
+            calValue = Calibration(slope: slope, scale: scale, intercept: intercept, date:  date)
 
         default:
             let errorString: String = "JSON: \(stringForType) has unknown type:\(type)"

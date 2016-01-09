@@ -15,18 +15,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
-    // models are light-weight struct that have display worthy information.
-    public var models: [WatchModel] = [] {
-        didSet {
-            #if DEBUG
-                // print("sites has been set with: \(models)")
-            #endif
-            let dictArray = models.map( { $0.dictionary } )
-            defaults.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
-            // defaults.synchronize()
-        }
-    }
-    
     // Sites are containers of raw data...
     public var sites: [Site] = [] {
         didSet {
@@ -34,12 +22,12 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 // print("sites has been set with: \(sites)")
             #endif
             
-            // old data...
+            // Create NSData and store it to nsdefaults.
             let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
             defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
-            // defaults.synchronize()
             
-            models = sites.flatMap( { WatchModel(fromSite: $0) } )
+            let models: [[String : AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary } )
+            defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
         }
     }
     
@@ -51,7 +39,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             #endif
             
             defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
-            // defaults.synchronize()
             
             updateWatch(withAction: .UserInfo, withSites: sites)
             
@@ -69,7 +56,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             #endif
             
             defaults.setBool(newValue, forKey: DefaultKey.shouldDisableIdleTimerKey)
-            // defaults.synchronize()
+            
+            updateWatch(withAction: .UserInfo, withSites: sites)
         }
         get {
             return defaults.boolForKey(DefaultKey.shouldDisableIdleTimerKey)
@@ -87,7 +75,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         return Static.instance!
     }
     
-    internal override init() {
+    private override init() {
         super.init()
         
         if #available(iOSApplicationExtension 9.0, *) {
@@ -130,6 +118,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         updateWatch(withAction: .Delete, withSites: [siteToBeRemoved])
         
         sites.removeAtIndex(index)
+        
+        if sites.isEmpty {
+            currentSiteIndex = 0
+            shouldDisableIdleTimer = false
+        }
     }
     
     public func loadSampleSites() -> Void {
@@ -175,7 +168,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         context[WatchModel.PropertyKey.actionKey] = action.rawValue
         
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        let modelDictionaries:[[String: AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0)?.dictionary }) // models.map( { $0.dictionary } )//
+        let modelDictionaries:[[String: AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary })
         context[WatchModel.PropertyKey.modelsKey] = modelDictionaries
         
         // Send over the current index.

@@ -51,7 +51,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print("Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) Notification at \(NSDate())")
         #endif
         
-        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        }
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()

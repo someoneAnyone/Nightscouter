@@ -15,8 +15,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     private override init() {
         super.init()
-        
-// startSession()
+        // startSession()
     }
     
     private let session: WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
@@ -182,6 +181,7 @@ extension WatchSessionManager {
                 print("appContext")
                 dispatch_async(dispatch_get_main_queue()) {
                 AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withSites: AppDataManageriOS.sharedInstance.sites)
+
                 }
 
             default:

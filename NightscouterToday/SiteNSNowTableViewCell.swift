@@ -41,8 +41,9 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     func configureCell(site: Site) {
         
-        if let model = WatchModel(fromSite: site) {
-            
+        let model = WatchModel(fromSite: site)
+//        if let model = WatchModel(fromSite: site) {
+        
             let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
             siteLastReadingLabel.text = date
@@ -66,7 +67,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
             
             siteDirectionLabel.text = model.deltaString
             siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
-        }
+        //}
 
     }
   

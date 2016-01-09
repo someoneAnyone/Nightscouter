@@ -13,4 +13,5 @@ public struct Calibration: DictionaryConvertible {
     public let slope: Double
     public let scale: Double
     public let intercept: Double
+    public let date: NSDate
 }

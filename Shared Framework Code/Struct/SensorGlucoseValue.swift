@@ -85,9 +85,20 @@ public enum Noise : Int, CustomStringConvertible {
     }
 }
 
+public protocol GlucoseValueHolder {
+    var sgv: Double { get set }
+    var isSGVOk: Bool { get }
+}
+
+public extension GlucoseValueHolder {
+    var isSGVOk: Bool {
+        return sgv >= 13
+    }
+}
+
 // type = Sgv
-public struct SensorGlucoseValue: DictionaryConvertible {
-    public let sgv: Double
+public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
+    public var sgv: Double
     public let direction: Direction
     public let filtered: Int
     public let unfiltered: Int

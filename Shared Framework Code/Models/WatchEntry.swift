@@ -195,7 +195,7 @@ public extension WatchEntry {
         
         self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: device, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
         self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
-        self.cal = Calibration(slope: slope, scale: scale, intercept: intercept)
+        self.cal = Calibration(slope: slope, scale: scale, intercept: intercept, date: date)
         
         
     }
