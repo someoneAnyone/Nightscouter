@@ -141,7 +141,7 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
         if sgv >= 30 && sgv < 40 {
             return  NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Low", comment: "Label used to indicate a very low blood sugar.")
         }
-        return NSNumberFormatter.localizedStringFromNumber(self.sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
+        return NSNumberFormatter.localizedStringFromNumber(sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
     }
     
     @available(*, deprecated=1.0, message="Please use func func sgvString(forUnits units: Units) -> String")

@@ -15,7 +15,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
 
     
     override init() {
-        WatchSessionManager.sharedManager.generateTimelineData()
+        //WatchSessionManager.sharedManager.generateTimelineData()
         
     }
     
@@ -30,7 +30,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         
         let today: NSDate = NSDate()
-        let hoursToAdd:Int = -8
+        let hoursToAdd:Int = -2
         
         // Set up date components
         let dateComponents: NSDateComponents = NSDateComponents()

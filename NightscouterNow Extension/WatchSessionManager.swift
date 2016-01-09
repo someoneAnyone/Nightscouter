@@ -18,11 +18,6 @@ public protocol DataSourceChangedDelegate {
     func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
 }
 
-// might replace old protocol with this...
-// public protocol ModelDataSourceChangedDelegate {
-//    func dataSourceDidChange(withAction action: WatchAction, forModel model: WatchModel)
-// }
-
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
     
@@ -322,9 +317,10 @@ extension WatchSessionManager {
                         let nextIndex: Int = index + 1
                         
                         if nextIndex < entries.count {
-                            let previousSgv = entries[nextIndex]
-                            if sgvValue.isSGVOk {
-                                delta = (entry.sgv?.sgv)! - (previousSgv.sgv?.sgv)!
+                            if let previousSgv = entries[nextIndex].sgv {
+                                if sgvValue.isSGVOk && previousSgv.isSGVOk {
+                                    delta = sgvValue.sgv - previousSgv.sgv
+                                }
                             }
                         }
                         

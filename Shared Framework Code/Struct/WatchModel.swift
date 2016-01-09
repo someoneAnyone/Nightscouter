@@ -147,23 +147,23 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             self.lastReadingDate = NSDate()
             
-            self.lastReadingColor = ""
+            self.lastReadingColor = colorForDesiredColorState(.Neutral).toHexString()
             
-            self.batteryColor = ""
+            self.batteryColor = colorForDesiredColorState(.Neutral).toHexString()
             self.batteryString = PlaceHolderStrings.battery
             
             self.rawVisible = true
             self.rawString = PlaceHolderStrings.raw
-            self.rawColor = ""
+            self.rawColor = colorForDesiredColorState(.Neutral).toHexString()
             
             self.sgvString = PlaceHolderStrings.sgv
             self.sgvEmoji = ""
             self.sgvStringWithEmoji = ""
-            self.sgvColor = ""
+            self.sgvColor = colorForDesiredColorState(.Neutral).toHexString()
             
             self.deltaString = PlaceHolderStrings.delta
-            self.deltaStringShort = ""
-            self.deltaColor = ""
+            self.deltaStringShort = PlaceHolderStrings.delta
+            self.deltaColor = colorForDesiredColorState(.Neutral).toHexString()
             
             self.delta = Double.infinity
             self.units = ""
@@ -205,23 +205,23 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             self.lastReadingDate = NSDate()
             
-            self.lastReadingColor = ""
+            self.lastReadingColor = colorForDesiredColorState(.Neutral).toHexString()
             
-            self.batteryColor = ""
-            self.batteryString = ""
+            self.batteryColor = colorForDesiredColorState(.Neutral).toHexString()
+            self.batteryString = PlaceHolderStrings.battery
             
-            self.rawVisible = false
-            self.rawString = ""
-            self.rawColor = ""
+            self.rawVisible = true
+            self.rawString = PlaceHolderStrings.raw
+            self.rawColor = colorForDesiredColorState(.Neutral).toHexString()
             
-            self.sgvString = ""
+            self.sgvString = PlaceHolderStrings.sgv
             self.sgvEmoji = ""
             self.sgvStringWithEmoji = ""
-            self.sgvColor = ""
+            self.sgvColor = colorForDesiredColorState(.Neutral).toHexString()
             
-            self.deltaString = ""
-            self.deltaStringShort = ""
-            self.deltaColor = ""
+            self.deltaString = PlaceHolderStrings.delta
+            self.deltaStringShort = PlaceHolderStrings.delta
+            self.deltaColor = colorForDesiredColorState(.Neutral).toHexString()
             
             self.delta = Double.infinity
             self.units = ""
@@ -229,10 +229,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.isArrowVisible = false
             self.isDoubleUp = false
             self.angle = 0
-            self.direction = ""
             
             self.uuid = site.uuid.UUIDString
-            
+            self.direction = ""
+ 
             return
         }
         
