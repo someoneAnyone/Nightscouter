@@ -353,11 +353,11 @@ extension WatchSessionManager {
             var cModels = [ComplicationModel]()
             for d in dicts {
                 
-                guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String else {
+                guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String, raw = d["raw"] as? String, rawShort = d["rawShort"] as? String else {
                     return nil
                 }
                 
-                cModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: nil, rawShort: nil))
+                cModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: raw, rawShort: rawShort))
             }
             return cModels
         }

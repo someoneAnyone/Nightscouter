@@ -266,7 +266,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         
         var template: CLKComplicationTemplate
-        let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.date)
+        let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.date)
         
         
         let displayName = model.displayName
@@ -274,19 +274,18 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let tintString = model.tintString
         
         let delta = model.delta
-        let deltaShort = model.deltaShort
-        var raw = date
-        var rawShort = ""
+        let deltaShort = model.deltaShort  + " " + dateString
         
+        var raw = PlaceHolderStrings.rawShort
+        var rawShort = PlaceHolderStrings.rawShort
         
         if let rawLong = model.raw, rawShor = model.rawShort {
             raw = rawLong // only if available.
             rawShort = rawShor
         }
         
-        let utilLargeSting = sgv + " [" + delta + " " + raw
+        let utilLargeSting = sgv + " [" + delta + "] " + raw
         let utilLargeStingShort = sgv + " [" + deltaShort + "] " + rawShort
-        
         
         switch complication.family {
         case .ModularSmall:
