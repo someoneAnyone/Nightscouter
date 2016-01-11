@@ -36,7 +36,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
     }
     
     override func willActivate() {
@@ -74,7 +73,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataStaleUpdate:"), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
-    
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
@@ -88,13 +86,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             
-            
             print(">>> Entering \(__FUNCTION__) <<<")
             
             let rowTypeIdentifier: String = "SiteRowController"
             print("models.count = \(self.models.count)")
             
-            self.sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
+            //self.sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
             
             if self.models.isEmpty {
                 self.sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")

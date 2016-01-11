@@ -30,6 +30,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             
             sharedDefaults?.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
             // sharedDefaults?.synchronize()
+            generateTimelineData()
         }
         get {
             return (sharedDefaults?.integerForKey(DefaultKey.currentSiteIndexKey))!
@@ -61,24 +62,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             let dictArray = models.map({ $0.dictionary })
             sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
             
-            generateTimelineData()
+            // generateTimelineData()
         }
     }
-    //    public var models: [WatchModel] {
-    //        set{
-    //            let dictArray = models.map({ $0.dictionary })
-    //            sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
-    //            // sharedDefaults?.synchronize()
-    //        }
-    //        get{
-    //            if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
-    //                print("Loading models from default.")
-    //                return dictArray.map({ WatchModel(fromDictionary: $0)! })
-    //            } else {
-    //                return []
-    //            }
-    //        }
-    //    }
     
     private var calibrations: [Entry] = []
     
@@ -173,6 +159,10 @@ extension WatchSessionManager {
             self.currentSiteIndex = currentSiteIndex
         }
         
+        defer {
+            generateTimelineData()
+        }
+        
         switch action {
             
         case .Update, .Create:
@@ -257,15 +247,13 @@ extension WatchSessionManager {
         return nil
     }
     
-    
-    
     public func generateTimelineData() -> Void {
         if let model = modelForComplication() {
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
             let nsApi = NightscoutAPIClient(url: site.url)
             
-            nsApi.fetchCalibrations(12, completetion: { (calibrations, errorCode) -> Void in
+            nsApi.fetchCalibrations(4, completetion: { (calibrations, errorCode) -> Void in
                 
                 var calModels: [[String: AnyObject]] = []
                 
@@ -298,17 +286,22 @@ extension WatchSessionManager {
                 var cmodels: [[String: AnyObject]] = []
                 
                 
+                // Get prefered Units. mmol/L or mg/dL
+                let configUnits: Units = configuration.displayUnits
+                
                 for (index, entry) in entries.enumerate() {
                     
                     if let sgvValue = entry.sgv {
                         
                         // Convert units.
                         var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-                        if configuration.displayUnits == .Mmol {
+                        // Convert units.
+                        
+                        if configUnits == .Mmol {
                             boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
                         }
                         
-                        let sgvString =  "\(sgvValue.sgvString(forUnits: configuration.displayUnits))"
+                        let sgvString =  "\(sgvValue.sgvString(forUnits: configUnits))"
                         let sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
                         let sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
                         
@@ -345,7 +338,8 @@ extension WatchSessionManager {
                 
                 
                 self.sharedDefaults?.setObject(cmodels, forKey: "cModels")
-                self.sharedDefaults?.synchronize()
+                // self.sharedDefaults?.synchronize()
+                
                 ComplicationController.reloadComplications()
             })
         }

@@ -11,17 +11,13 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    
-
-    
     override init() {
         //WatchSessionManager.sharedManager.generateTimelineData()
-        
     }
     
     // MARK: - Timeline Configuration
     func getSupportedTimeTravelDirectionsForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([.None])//[.Forward, .Backward])
+        handler([.Backward])//[.Forward, .Backward])
     }
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
