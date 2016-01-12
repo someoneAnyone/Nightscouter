@@ -326,8 +326,14 @@ extension WatchSessionManager {
                         var rawShort = ""
                         
                         if let cal = self.nearestCalibration(forDate: entry.date) {
-                            raw = "\(sgvValue.rawIsigToRawBg(cal)) : \(sgvValue.noise.description)"
-                            rawShort = "\(sgvValue.rawIsigToRawBg(cal)) : \(sgvValue.noise.description)"
+                            
+                            var convertedRawValue: String = sgvValue.rawIsigToRawBg(cal).formattedForMgdl
+                            if configuration.displayUnits == .Mmol {
+                                convertedRawValue = sgvValue.rawIsigToRawBg(cal).formattedForMmol
+                            }
+
+                            raw = "\(convertedRawValue) : \(sgvValue.noise.description)"
+                            rawShort = "\(convertedRawValue) : \(sgvValue.noise.description[sgvValue.noise.description.startIndex])"
                         }
                         
                         cmodels.append( ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort).dictionary)

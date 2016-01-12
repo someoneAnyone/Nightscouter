@@ -273,8 +273,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let sgv = model.sgv
         let tintString = model.tintString
         
-        let delta = model.delta
-        let deltaShort = model.deltaShort  + " " + dateString
+        
+        var shortDate = dateString.characters.split{ $0 == " " }.map(String.init)
+
+        let delta = model.delta  + "(" + shortDate[0] + " " + shortDate[1] + ")"
+        let deltaShort = model.deltaShort
         
         var raw = PlaceHolderStrings.rawShort
         var rawShort = PlaceHolderStrings.rawShort

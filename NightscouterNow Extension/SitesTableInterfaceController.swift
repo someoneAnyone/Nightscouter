@@ -168,16 +168,16 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         for (index, model) in models.enumerate() {
-            print("models.isEmpty")
-            print(models.isEmpty)
-            
-            print("models.count")
-            print(models.count)
-            print("lastUpdatedTime?.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime")
-            print("\(model.lastReadingDate.timeIntervalSinceNow) <  \(-Constants.NotableTime.StandardRefreshTime)")
-            print("delayRequestForNow")
-            print(delayRequestForNow)
-            
+//            print("models.isEmpty")
+//            print(models.isEmpty)
+//            
+//            print("models.count")
+//            print(models.count)
+//            print("lastUpdatedTime?.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime")
+//            print("\(model.lastReadingDate.timeIntervalSinceNow) <  \(-Constants.NotableTime.StandardRefreshTime)")
+//            print("delayRequestForNow")
+//            print(delayRequestForNow)
+//            
             if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || forceRefresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
                 loadDataFor(model, replyHandler: { (model) -> Void in
                     self.dataSourceDidUpdateSiteModel(model, atIndex: index)
