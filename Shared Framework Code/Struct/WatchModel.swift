@@ -16,20 +16,19 @@ public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
     // return lhs.urlString == rhs.urlString && lhs.displayName == rhs.displayName && lhs.lastReadingDate == rhs.lastReadingDate //lhs.uuid == rhs.uuid //
     return lhs.uuid == rhs.uuid
 }
+
 // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
 public struct PlaceHolderStrings {
     public static let displayName: String = "----"
     public static let sgv: String = "---"
     public static let date: String = "-- --- --"
-    
     public static let delta: String = "- --/--"
     public static let deltaShort: String = "-"
     public static let raw: String = "--- : ---"
     public static let rawShort: String = "--- : -"
     public static let battery: String = "--%"
     public static let units: String = "--"
-    
-    public static let defaultColor: String = colorForDesiredColorState(.Neutral).toHexString()
+    public static let defaultColor: String = "#d9d9d9"
 }
 
 public struct WatchModel: DictionaryConvertible, Equatable {
