@@ -35,7 +35,6 @@ class SiteTableViewCell: UITableViewCell {
     
     func configureCell(site: Site) {
         
-//        if let model = WatchModel(fromSite: site) {
       let model = WatchModel(fromSite: site)
 
             let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
@@ -60,7 +59,6 @@ class SiteTableViewCell: UITableViewCell {
             
             siteCompassControl.configureWith(model)
 
-//        }
     }
     
     override func setSelected(selected: Bool, animated: Bool) {

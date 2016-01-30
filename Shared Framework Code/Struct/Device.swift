@@ -9,7 +9,7 @@
 import Foundation
 
 public enum Device: String, DictionaryConvertible, CustomStringConvertible {
-    case Unknown = "unknown", Dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", WatchFace = "watchFace", Share2 = "share2"
+    case Unknown = "unknown", Dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", WatchFace = "watchFace", Share2 = "share2", Paradigm = "connect://paradigm"
     
     public var description: String {
         return self.rawValue

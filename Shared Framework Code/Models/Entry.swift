@@ -150,7 +150,7 @@ public extension Entry {
                 return
         }
 
-        let device: Device = Device(rawValue: deviceString)!
+        let device: Device = Device(rawValue: deviceString) ?? .Unknown
         let date = rawEpoch.toDateUsingSeconds()
         
         let dateString = dict[EntryPropertyKey.dateStringKey] as? String
