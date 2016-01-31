@@ -329,7 +329,7 @@
                     </connections>
                 </glanceController>
             </objects>
-            <point key="canvasLocation" x="393" y="-108"/>
+            <point key="canvasLocation" x="403" y="-103"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="calibratedRGB"/>

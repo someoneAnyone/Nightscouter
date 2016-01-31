@@ -150,7 +150,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
     }
     
     @IBAction func setAsDefaultSite(){
-        
+        if let model = self.model {
+            WatchSessionManager.sharedManager.defaultSite = NSUUID(UUIDString: (model.uuid))
+        }
     }
 }
 

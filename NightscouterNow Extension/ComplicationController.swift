@@ -185,7 +185,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         if let complicationServer = CLKComplicationServer.sharedInstance() {
             for complication in complicationServer.activeComplications {
-                complicationServer.reloadTimelineForComplication(complication)
+                // complicationServer.reloadTimelineForComplication(complication)
+                complicationServer.extendTimelineForComplication(complication)
             }
         }
     }

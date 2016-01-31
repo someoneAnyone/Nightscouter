@@ -13,6 +13,7 @@ public struct DefaultKey {
     public static let currentSiteIndexKey = "currentSiteIndexInt"
     public static let shouldDisableIdleTimerKey = "shouldDisableIdleTimerBool"
     public static let modelArrayObjectsKey = "siteModelsArray"
+    public static let defaultSiteKey = "defaultSiteKey"
 }
 
 public struct Constants {

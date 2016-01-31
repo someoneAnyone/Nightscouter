@@ -66,6 +66,10 @@ class GlanceController: WKInterfaceController {
     func configureView() {
         
         guard let model = self.model else {
+
+            self.siteDeltaLabel.setText("Launch Nightscouter")
+            self.siteRawLabel.setText("and add a site.")
+            
             return
         }
         

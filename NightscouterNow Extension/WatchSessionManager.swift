@@ -21,6 +21,23 @@ public protocol DataSourceChangedDelegate {
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
     
+    public var defaultSite: NSUUID? {
+        set {
+            sharedDefaults?.setObject(newValue, forKey: DefaultKey.defaultSiteKey)
+        }
+        get {
+            
+            guard let uuid = sharedDefaults?.objectForKey(DefaultKey.defaultSiteKey) as? NSUUID else {
+                if let firstModel = models.first {
+                    return NSUUID(UUIDString: firstModel.uuid)
+                }
+                return nil
+            }
+
+            return uuid
+        }
+    }
+    
     public var currentSiteIndex: Int {
         set {
             
@@ -194,8 +211,12 @@ extension WatchSessionManager {
                 for modelDict in modelArray {
                     let model = WatchModel(fromDictionary: modelDict)!
                     
+                    
                     if let pos = models.indexOf(model){
                         models.removeAtIndex(pos)
+                        if defaultSite?.UUIDString == model.uuid {
+                            defaultSite = nil
+                        }
                         dispatch_async(dispatch_get_main_queue()) { [weak self] in
                             self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidDeleteSiteModel(model, atIndex: pos) }
                         }
@@ -224,10 +245,11 @@ extension WatchSessionManager {
 extension WatchSessionManager {
     
     public func modelForComplication() -> WatchModel? {
-        if models.count >= currentSiteIndex && !models.isEmpty {
-            return self.models[self.currentSiteIndex]
-        }
-        return nil
+        if models.isEmpty { return nil }
+        
+        return self.models.filter({ (model) -> Bool in
+            return model.uuid == defaultSite?.UUIDString
+        }).first
     }
     
     public func generateTimelineData() -> Void {

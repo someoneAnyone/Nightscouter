@@ -33,6 +33,7 @@
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
 		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
+		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
@@ -90,7 +91,6 @@
 		83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */; };
 		83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */; };
 		83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */; };
-		83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D911BC1F7E900BD1A9C /* Assets.xcassets */; };
 		83883D961BC1F7E900BD1A9C /* NightscouterNow.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 83883D741BC1F7E800BD1A9C /* NightscouterNow.app */; };
 		83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */; };
@@ -1123,6 +1123,7 @@
 			files = (
 				83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */,
 				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
+				179620261C5DBF2800617898 /* GlanceController.swift in Sources */,
 				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
 				83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */,
 				178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */,
@@ -1131,7 +1132,6 @@
 				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,
 				177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
-				83883D8E1BC1F7E900BD1A9C /* GlanceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
