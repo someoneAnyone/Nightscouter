@@ -77,6 +77,10 @@ public extension WatchSessionManager {
 @available(iOSApplicationExtension 9.0, *)
 extension WatchSessionManager {
     
+    public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+        return validSession?.transferCurrentComplicationUserInfo(userInfo)
+    }
+    
     // Sender
     public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG

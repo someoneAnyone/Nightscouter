@@ -168,16 +168,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         for (index, model) in models.enumerate() {
-//            print("models.isEmpty")
-//            print(models.isEmpty)
-//            
-//            print("models.count")
-//            print(models.count)
-//            print("lastUpdatedTime?.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime")
-//            print("\(model.lastReadingDate.timeIntervalSinceNow) <  \(-Constants.NotableTime.StandardRefreshTime)")
-//            print("delayRequestForNow")
-//            print(delayRequestForNow)
-//            
             if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || forceRefresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
                 loadDataFor(model, replyHandler: { (model) -> Void in
                     self.dataSourceDidUpdateSiteModel(model, atIndex: index)
@@ -188,6 +178,17 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBAction func updateButton() {
         updateData()
+    }
+    
+    override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        guard let dict = userInfo?["model"] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+            return
+        }
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
+        }
     }
 }
 

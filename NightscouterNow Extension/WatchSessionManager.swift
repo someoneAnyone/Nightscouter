@@ -221,23 +221,6 @@ extension WatchSessionManager {
     
 }
 
-public struct ComplicationModel: DictionaryConvertible {
-    
-    public let displayName: String
-    public let date: NSDate
-    public let sgv: String// = "000 >"// model.sgvStringWithEmoji
-    public let sgvEmoji: String
-    public let tintString: String//  = UIColor.redColor().toHexString() //model.sgvColor
-    
-    public let delta: String//  = "DEL" // model.deltaString
-    public let deltaShort: String//  = "DE" // model.deltaStringShort
-    public var raw: String?//  =  ""
-    public var rawShort: String?//  = ""
-    public var rawVisible: Bool {
-        return (raw != nil)
-    }
-    
-}
 extension WatchSessionManager {
     
     public func modelForComplication() -> WatchModel? {
@@ -331,7 +314,7 @@ extension WatchSessionManager {
                             if configuration.displayUnits == .Mmol {
                                 convertedRawValue = sgvValue.rawIsigToRawBg(cal).formattedForMmol
                             }
-
+                            
                             raw = "\(convertedRawValue) : \(sgvValue.noise.description)"
                             rawShort = "\(convertedRawValue) : \(sgvValue.noise.description[sgvValue.noise.description.startIndex])"
                         }

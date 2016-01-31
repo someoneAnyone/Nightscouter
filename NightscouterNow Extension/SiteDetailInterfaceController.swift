@@ -148,5 +148,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
     @IBAction func updateButton() {
         updateData()
     }
+    
+    @IBAction func setAsDefaultSite(){
+        
+    }
 }
 

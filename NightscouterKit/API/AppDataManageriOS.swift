@@ -184,8 +184,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 } catch let error{
                     print("updateContextError: \(error)")
                 }
-                
-            case .UserInfo:
+            case .Update, .UserInfo:
+                WatchSessionManager.sharedManager.transferUserInfo(context)
                 WatchSessionManager.sharedManager.transferUserInfo(context)
             default:
                 WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in

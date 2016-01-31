@@ -31,6 +31,8 @@
 		177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
 		178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
+		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
+		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
@@ -234,6 +236,7 @@
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
 		178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesInterfaceController.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
+		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
 		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; };
 		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
 		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
@@ -497,6 +500,7 @@
 				17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */,
 				17BD1C161BF0EC1D0014EE38 /* Site.swift */,
 				17BD1C171BF0EC1D0014EE38 /* WatchEntry.swift */,
+				17961F911C5D99BF00617898 /* ComplicationModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -1056,6 +1060,7 @@
 				17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */,
 				17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */,
 				17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */,
+				17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
 				1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */,
 				17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */,
@@ -1094,6 +1099,7 @@
 				17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C1D1BF0EC1D0014EE38 /* Site.swift in Sources */,
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
+				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
