@@ -244,9 +244,7 @@ extension WatchSessionManager {
 
 extension WatchSessionManager {
     
-    public func modelForComplication() -> WatchModel? {
-        if models.isEmpty { return nil }
-        
+    public func modelForComplication() -> WatchModel? {        
         return self.models.filter({ (model) -> Bool in
             return model.uuid == defaultSite?.UUIDString
         }).first
