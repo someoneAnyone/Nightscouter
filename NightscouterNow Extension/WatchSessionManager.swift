@@ -13,9 +13,6 @@ import NightscouterWatchOSKit
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
     func dataSourceDidUpdateAppContext(models: [WatchModel])
-    func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int)
-    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int)
-    func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int)
 }
 
 @available(watchOS 2.0, *)
@@ -23,34 +20,26 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public var defaultSite: NSUUID? {
         set {
-            sharedDefaults?.setObject(newValue, forKey: DefaultKey.defaultSiteKey)
+            sharedDefaults?.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         }
         get {
-            
-            guard let uuid = sharedDefaults?.objectForKey(DefaultKey.defaultSiteKey) as? NSUUID else {
+            guard let uuidString = sharedDefaults?.objectForKey(DefaultKey.defaultSiteKey) as? String else {
                 if let firstModel = models.first {
                     return NSUUID(UUIDString: firstModel.uuid)
                 }
                 return nil
             }
-
-            return uuid
+            
+            return NSUUID(UUIDString: uuidString)
         }
     }
     
     public var currentSiteIndex: Int {
         set {
-            
-            #if DEBUG
-                // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
-            #endif
-            
             sharedDefaults?.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
-            // sharedDefaults?.synchronize()
-            generateTimelineData()
         }
         get {
-            return (sharedDefaults?.integerForKey(DefaultKey.currentSiteIndexKey))!
+            return sharedDefaults?.integerForKey(DefaultKey.currentSiteIndexKey) ?? 0
         }
     }
     
@@ -60,26 +49,38 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     private override init() {
         super.init()
-        if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
-            print("Loading models from default.")
-            models = dictArray.map({ WatchModel(fromDictionary: $0)! })
-        }
         
-        // generateTimelineData()
+//        if let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String: AnyObject]] {
+//            print("Loading models from default.")
+//            models = dictArray.map({ WatchModel(fromDictionary: $0)! })
+//        }
+//        if let item = session.outstandingUserInfoTransfers.first {
+//            processApplicationContext(item.userInfo)
+//        }
+        
+        sharedDefaults?.setObject("watchOS", forKey: "osPlatform")
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
     
     private let session: WCSession = WCSession.defaultSession()
     
-    private var sites: [Site] = []
+    // private var sites: [Site] = []
     
-    public var models: [WatchModel] = [] {
-        didSet{
-            let dictArray = models.map({ $0.dictionary })
+    public var models: [WatchModel] {
+        set{
+            let dictArray = models.map{ $0.dictionary }
             sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
+
+            self.createComplicationData()
             
-            // generateTimelineData()
+            
+        }
+        get {
+            guard let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? Array<[String: AnyObject]> else {
+                return []
+            }
+            return dictArray.flatMap{ WatchModel(fromDictionary: $0) }
         }
     }
     
@@ -89,8 +90,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         if WCSession.isSupported() {
             session.delegate = self
             session.activateSession()
+            
+            requestLatestAppContext()
         }
-        
     }
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -130,7 +132,6 @@ extension WatchSessionManager {
     }
     
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
-        
         let success =  processApplicationContext(message)
         replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
     }
@@ -138,6 +139,7 @@ extension WatchSessionManager {
 }
 
 extension WatchSessionManager {
+    
     public func requestLatestAppContext() -> Bool {
         print("requestLatestAppContext")
         let applicationData = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
@@ -172,85 +174,35 @@ extension WatchSessionManager {
             return false
         }
         
+        print("Action recieved: \(action)")
         if let currentSiteIndex = context[WatchModel.PropertyKey.currentIndexKey] as? Int {
             self.currentSiteIndex = currentSiteIndex
         }
         
-        defer {
-            generateTimelineData()
+        if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]] {
+            sharedDefaults?.setObject(modelArray, forKey: DefaultKey.modelArrayObjectsKey)
+
         }
-        
-        switch action {
-            
-        case .Update, .Create:
-            print("update on watch framework")
-            
-            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{//, model = WatchModel(fromDictionary: modelDict) {
-                for modelDict in modelArray {
-                    
-                    if let model = WatchModel(fromDictionary: modelDict) {
-                        if let pos = models.indexOf(model){
-                            models[pos] = model
-                            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateSiteModel(model, atIndex: pos) }
-                            }
-                            
-                        } else {
-                            models.append(model)
-                            
-                            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidAddSiteModel(model, atIndex: self!.models.count - 1)}
-                            }
-                            
-                        }
-                    }
-                }
-            }
-        case .Delete:
-            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]]{
-                for modelDict in modelArray {
-                    let model = WatchModel(fromDictionary: modelDict)!
-                    
-                    
-                    if let pos = models.indexOf(model){
-                        models.removeAtIndex(pos)
-                        if defaultSite?.UUIDString == model.uuid {
-                            defaultSite = nil
-                        }
-                        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidDeleteSiteModel(model, atIndex: pos) }
-                        }
-                    }
-                }
-            }
-        case .AppContext, .UserInfo, .Read:
-            if let modelArray = context[WatchModel.PropertyKey.modelsKey] as? [[String: AnyObject]] {
-                models.removeAll()
-                for modelDict in modelArray {
-                    let model = WatchModel(fromDictionary: modelDict)!
-                    models.append(model)
-                }
-                dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                    self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
-                }
-            }
-            
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
         }
-        
         return true
     }
-    
 }
 
 extension WatchSessionManager {
+    public func complicationRequestedUpdateBudgetExhausted() {
+        sharedDefaults?.setObject(NSDate(), forKey: "requestedUpdateBudgetExhausted")
+        self.createComplicationData()
+    }
     
-    public func modelForComplication() -> WatchModel? {        
+    public func modelForComplication() -> WatchModel? {
         return self.models.filter({ (model) -> Bool in
             return model.uuid == defaultSite?.UUIDString
         }).first
     }
     
-    public func generateTimelineData() -> Void {
+    public func createComplicationData() -> Void {
         if let model = modelForComplication() {
             let url = NSURL(string: model.urlString)!
             let site = Site(url: url, apiSecret: nil)!
@@ -286,11 +238,10 @@ extension WatchSessionManager {
                     return
                 }
                 
-                var cmodels: [[String: AnyObject]] = []
-                
+                var cmodels: [ComplicationModel] = []
                 
                 // Get prefered Units. mmol/L or mg/dL
-                let configUnits: Units = configuration.displayUnits
+                let units: Units = configuration.displayUnits
                 
                 for (index, entry) in entries.enumerate() {
                     
@@ -298,13 +249,17 @@ extension WatchSessionManager {
                         
                         // Convert units.
                         var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-                        // Convert units.
-                        
-                        if configUnits == .Mmol {
-                            boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
+                        if units == .Mmol {
+                            boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
                         }
                         
-                        let sgvString =  "\(sgvValue.sgvString(forUnits: configUnits))"
+                        
+                        var sgvString = "\(sgvValue.sgv.formattedForMgdl)"
+                        if configuration.displayUnits == .Mmol {
+                            sgvString = sgvValue.sgv.formattedForMmol
+                        }
+
+                        sgvString =  "\(sgvValue.sgvString(forUnits: units))"
                         let sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
                         let sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
                         
@@ -318,6 +273,10 @@ extension WatchSessionManager {
                                     delta = sgvValue.sgv - previousSgv.sgv
                                 }
                             }
+                        }
+                        
+                        if configuration.displayUnits == .Mmol {
+                            delta = delta.toMmol
                         }
                         
                         let deltaString = "\(delta.formattedForBGDelta) \(configuration.displayUnits.description)"
@@ -339,67 +298,57 @@ extension WatchSessionManager {
                             rawShort = "\(convertedRawValue) : \(sgvValue.noise.description[sgvValue.noise.description.startIndex])"
                         }
                         
-                        cmodels.append( ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort).dictionary)
+                        let model = ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort)
+                        
+                        cmodels.append( model)
                         
                     }
                     
                 }
-                
-                
-                self.sharedDefaults?.setObject(cmodels, forKey: "cModels")
-                // self.sharedDefaults?.synchronize()
-                
-                ComplicationController.reloadComplications()
+                self.complicationDataDictoinary = cmodels.flatMap { $0.dictionary }
             })
         }
     }
     
-    
-    
-    public func timelineDataForComplication() -> [ComplicationModel]? {
-        if let dicts = sharedDefaults?.arrayForKey("cModels") as? [[String : AnyObject]]{
+    public var complicationDataFromDefaults: [ComplicationModel] {
+        
+        var complicationModels = [ComplicationModel]()
+        for d in complicationDataDictoinary {
             
-            var cModels = [ComplicationModel]()
-            for d in dicts {
-                
-                guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String, raw = d["raw"] as? String, rawShort = d["rawShort"] as? String else {
-                    return nil
-                }
-                
-                cModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: raw, rawShort: rawShort))
+            guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String, raw = d["raw"] as? String, rawShort = d["rawShort"] as? String else {
+                return []
             }
-            return cModels
+            
+            complicationModels.append(ComplicationModel(displayName: displayName, date: date, sgv: sgv, sgvEmoji: sgvEmoji, tintString: tintString, delta: delta, deltaShort: deltaShort, raw: raw, rawShort: rawShort))
         }
         
-        return nil
+        return complicationModels
     }
     
-    
-    
+    public var complicationDataDictoinary: [[String: AnyObject]] {
+        set{
+            sharedDefaults?.setObject(newValue, forKey: "cModels")
+            sharedDefaults?.setObject(NSDate(), forKey: "complicationTimeStamp")
+            ComplicationController.reloadComplications()
+        }
+        get {
+            guard let complicationDictArray = sharedDefaults?.arrayForKey("cModels") as? [[String : AnyObject]] else {
+                return []
+            }
+            return complicationDictArray
+        }
+    }
     
     public func nearestCalibration(forDate date: NSDate) -> Calibration? {
-        
-        
-        //        let greaterThan = NSPredicate(format:"startDate <= %@", date.timeIntervalSinceNow)
-        //        let lessThan = NSPredicate(format:"endDate >= %@", date.timeIntervalSinceNow)
-        //        let between = NSCompoundPredicate(andPredicateWithSubpredicates: [greaterThan, lessThan])
-        
-        
         var desiredIndex: Int?
-        
         var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
-        
         for (index, entry) in calibrations.enumerate() {
-            
             let dateInterval = fabs(entry.date.timeIntervalSinceDate(date))
-            
             let compared = minDate < dateInterval
             // print("Testing: \(minDate) < \(dateInterval) = \(compared)")
-            
             if compared {
                 minDate = dateInterval
                 desiredIndex = index
-                
             }
         }
         
@@ -411,6 +360,5 @@ extension WatchSessionManager {
         // print("incoming date: \(closestDate.timeIntervalSinceNow) returning date: \(calibrations[index].date.timeIntervalSinceNow)")
         return calibrations[index].cal
     }
-    
     
 }

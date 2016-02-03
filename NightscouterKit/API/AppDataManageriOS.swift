@@ -28,6 +28,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             
             let models: [[String : AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary } )
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+            
+            updateWatch(withAction: .UpdateComplication, withSites: self.sites)
         }
     }
     
@@ -85,6 +87,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         if let models = defaults.objectForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
             sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
+        defaults.setObject("iOS", forKey: "osPlatform")
         
         updateWatch(withAction: .UserInfo, withSites: sites)
     }
@@ -176,17 +179,22 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         if #available(iOSApplicationExtension 9.0, *) {
             
-            switch action {
-            case .AppContext:
-                do {
-                    // print("sending context: \(context)")
-                    try WatchSessionManager.sharedManager.updateApplicationContext(context)
-                } catch let error{
-                    print("updateContextError: \(error)")
+            
+            if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
+                WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
+                    print("recieved reply: \(reply)")
+                    }) { (error) -> Void in
+                        print("recieved an error: \(error)")
+                        WatchSessionManager.sharedManager.transferUserInfo(context)
                 }
-            case .Update, .UserInfo:
+            } else {
                 WatchSessionManager.sharedManager.transferUserInfo(context)
-                WatchSessionManager.sharedManager.transferUserInfo(context)
+            }
+            
+            
+            switch action {
+            case .UpdateComplication:
+                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(context)
             default:
                 WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
                     print("recieved reply: \(reply)")

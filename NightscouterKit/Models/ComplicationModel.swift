@@ -33,6 +33,6 @@ public struct ComplicationModel: DictionaryConvertible {
         self.delta = delta
         self.deltaShort = deltaShort
         self.raw = raw
-        self.raw = rawShort
+        self.rawShort = rawShort
     }
 }

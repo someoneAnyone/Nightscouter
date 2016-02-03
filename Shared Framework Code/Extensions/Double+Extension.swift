@@ -91,6 +91,9 @@ public extension Double {
         numberFormat.numberStyle = .DecimalStyle
         numberFormat.positivePrefix = numberFormat.plusSign
         numberFormat.negativePrefix = numberFormat.minusSign
+        numberFormat.minimumFractionDigits = 1
+        numberFormat.maximumFractionDigits = 1
+        numberFormat.secondaryGroupingSize = 1
         
         return numberFormat
     }

@@ -16,8 +16,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     var models = [WatchModel]() {
         didSet {
             updateTableData()
+            if !models.isEmpty {
+                updateData(false)
+                //WKInterfaceDevice.currentDevice().playHaptic(.Success)
+            }
             
-            if !models.isEmpty { updateData(false) }
         }
     }
     
@@ -46,12 +49,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         models = WatchSessionManager.sharedManager.models
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        let appContext = WatchSessionManager.sharedManager.requestLatestAppContext()
-        
-        if !appContext {
-            updateData()
-        }
-        
     }
     
     override func didDeactivate() {
@@ -61,11 +58,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
         NSNotificationCenter.defaultCenter().removeObserver(self)
-    }
-    
-    override func willDisappear() {
-        super.willDisappear()
-        print(">>> Entering \(__FUNCTION__) <<<")
     }
     
     func setupNotifications() {
@@ -90,8 +82,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             
             let rowTypeIdentifier: String = "SiteRowController"
             print("models.count = \(self.models.count)")
-            
-            //self.sitesTable.setNumberOfRows(0, withRowType: rowTypeIdentifier)
             
             if self.models.isEmpty {
                 self.sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")
@@ -123,34 +113,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         models[index] = model
     }
-    
-    func dataSourceDidDeleteSiteModel(model: WatchModel, atIndex index: Int) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        if let realIndex = models.indexOf(model) {
-            models.removeAtIndex(realIndex)
-        } else {
-            WatchSessionManager.sharedManager.requestLatestAppContext()
-        }
-    }
-    
-    
-    func dataSourceDidAddSiteModel(model: WatchModel, atIndex index: Int) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        if let modelIndex = models.indexOf(model){
-            models[modelIndex] = model
-        } else {
-            models.insert(model, atIndex: 0)//(model)
-        }
-    }
-    
+
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         self.models = models
     }
     
     func didUpdateItem(model: WatchModel) {
-        
         print(">>> Entering \(__FUNCTION__) <<<")
         
         if let index = models.indexOf(model) {
@@ -168,7 +136,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         for (index, model) in models.enumerate() {
-            if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime && !delayRequestForNow) || forceRefresh {// && lastUpdatedTime == nil && !models.isEmpty )  {
+            if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast && !delayRequestForNow) || forceRefresh {
                 loadDataFor(model, replyHandler: { (model) -> Void in
                     self.dataSourceDidUpdateSiteModel(model, atIndex: index)
                 })

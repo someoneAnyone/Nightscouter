@@ -183,10 +183,9 @@ extension WatchSessionManager {
             switch action {
             case .AppContext:
                 print("appContext")
-                dispatch_async(dispatch_get_main_queue()) {
+//                dispatch_async(dispatch_get_main_queue()) {
                 AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withSites: AppDataManageriOS.sharedInstance.sites)
-
-                }
+//                }
 
             default:
                 print("default")

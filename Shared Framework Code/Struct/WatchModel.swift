@@ -9,7 +9,7 @@
 import UIKit
 
 public enum WatchAction: String {
-    case Create, Read, Update, Delete, AppContext, UserInfo
+    case Create, Read, Update, Delete, AppContext, UserInfo, UpdateComplication
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
