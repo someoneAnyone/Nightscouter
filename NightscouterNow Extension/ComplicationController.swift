@@ -56,7 +56,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         var timelineEntry : CLKComplicationTimelineEntry? = nil
         
         let today: NSDate = NSDate()
-        let minutesToRemove = NSTimeInterval(400).inThePast
+        let minutesToRemove = NSTimeInterval(4).inThePast
         // Set up date components
         let dateComponents: NSDateComponents = NSDateComponents()
         dateComponents.minute = Int(minutesToRemove)
