@@ -14,7 +14,7 @@ public extension CompassControl {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
-        self.delta = "\(bgdelta.formattedForBGDelta) \(units)"
+        self.delta = bgdelta.formattedBGDelta(forUnits: Units(string: units))//"\(bgdelta.formattedForBGDelta) \(units)"
     }
     
     public func configureWith(model: WatchModel){

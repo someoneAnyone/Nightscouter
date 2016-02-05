@@ -69,7 +69,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         // application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
-        
+        //WatchSessionManager.sharedManager.startSession()
+
         updateDataNotification(nil)
     }
     
@@ -254,7 +255,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             
             let units = config.displayUnits
             if let watch: WatchEntry = site.watchEntry {
-                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString(forUnits: units)) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedForBGDelta) \(config.displayUnits) Battery: \(watch.batteryString)%"
+                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString(forUnits: units)) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedBGDelta(forUnits: units)) Battery: \(watch.batteryString)%"
             }
         }
         

@@ -35,4 +35,19 @@ public struct ComplicationModel: DictionaryConvertible {
         self.raw = raw
         self.rawShort = rawShort
     }
+    
+    public init?(fromDictionary d:[String : AnyObject]) {
+        guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String, raw = d["raw"] as? String, rawShort = d["rawShort"] as? String else {
+            return nil
+        }
+        self.displayName = displayName
+        self.date = date
+        self.sgv = sgv
+        self.sgvEmoji = sgvEmoji
+        self.tintString = tintString
+        self.delta = delta
+        self.deltaShort = deltaShort
+        self.raw = raw
+        self.rawShort = rawShort
+    }
 }
