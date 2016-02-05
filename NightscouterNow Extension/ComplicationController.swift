@@ -11,10 +11,9 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    
     // MARK: - Timeline Configuration
     func getSupportedTimeTravelDirectionsForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([.Backward])//[.Forward, .Backward])
+        handler([.Backward])
     }
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
@@ -25,7 +24,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         var date: NSDate? = nil
         
         let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.last
-        date = model?.date
+        date = model?.date ?? nil
         handler(date)
     }
     
@@ -37,7 +36,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         var date: NSDate? = nil
         let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.first
-        date = model?.date
+        date = model?.date ?? nil
         handler(date)
     }
     
@@ -65,20 +64,18 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let gregorianCalendar: NSCalendar = NSCalendar(identifier: NSCalendarIdentifierGregorian)!
         let fourMinsAgo: NSDate = gregorianCalendar.dateByAddingComponents(dateComponents, toDate: today, options:NSCalendarOptions(rawValue: 0))!
         
-        
         guard let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.first else {
             handler(nil)
             return
         }
         
-        let dateCompare = model.date.compare(fourMinsAgo)
+        let dateCompare: NSComparisonResult = model.date.compare(fourMinsAgo)
         
-        if let template = templateForComplication(complication, model: model) where dateCompare == .OrderedDescending {
+        if let template = templateForComplication(complication, model: model) where dateCompare == NSComparisonResult.OrderedAscending {
             timelineEntry = CLKComplicationTimelineEntry(date: model.date, complicationTemplate: template)
         }
         
         handler(timelineEntry)
-        
     }
     
     
@@ -86,7 +83,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         // Call the handler with the timeline entries prior to the given date
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
-            
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -105,9 +101,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                     }
                 }
             }
-            
         }
-        
         
         handler(timelineEntries)
     }
@@ -137,7 +131,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             
         }
         
-        
         handler(timelineEntries)
     }
     
@@ -149,7 +142,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        handler(NSDate().dateByAddingTimeInterval(250))
+        let fourMinsInFuture: NSDate = NSDate(timeIntervalSinceNow: 60 * 4)
+        
+        #if DEBUG
+            print("Next Requested Update Date is:\(fourMinsInFuture)")
+        #endif
+        
+        handler(fourMinsInFuture)
     }
     
     static func reloadComplications() {
@@ -165,25 +164,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         }
     }
     
-    static func extendComplications() {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        
-        let complicationServer = CLKComplicationServer.sharedInstance()
-        if let activeComplications = complicationServer.activeComplications {
-            for complication in activeComplications {
-                //complicationServer.reloadTimelineForComplication(complication)
-                complicationServer.extendTimelineForComplication(complication)
-            }
-        }
-    }
-    
     func requestedUpdateDidBegin() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        WatchSessionManager.sharedManager.createComplicationData()
+        WatchSessionManager.sharedManager.createComplicationData { (reloaded) -> Void in
+            if reloaded {
+                ComplicationController.reloadComplications()
+            }
+        }
     }
     
     func requestedUpdateBudgetExhausted() {
@@ -199,8 +188,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getPlaceholderTemplateForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
         #if DEBUG
-           // print(">>> Entering \(__FUNCTION__) <<<")
-           // print("complication family: \(complication.family)")
+             print(">>> Entering \(__FUNCTION__) <<<")
+             print("complication family: \(complication.family)")
         #endif
         
         var template: CLKComplicationTemplate
@@ -253,7 +242,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     private func templateForComplication(complication: CLKComplication, model: ComplicationModel) -> CLKComplicationTemplate? {
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         var template: CLKComplicationTemplate
@@ -306,7 +295,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             let utilitarianLarge = CLKComplicationTemplateUtilitarianLargeFlat()
             utilitarianLarge.textProvider = CLKSimpleTextProvider(text: utilLargeSting, shortText: utilLargeStingShort)
             utilitarianLarge.tintColor = UIColor(hexString: tintString)
-
+            
             // Set the template
             template = utilitarianLarge
         case .CircularSmall:
@@ -314,13 +303,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             circularSmall.line1TextProvider = CLKSimpleTextProvider(text: sgv)
             circularSmall.line2TextProvider = CLKSimpleTextProvider(text: delta, shortText: deltaShort)
             circularSmall.tintColor = UIColor(hexString: tintString)
-
+            
             // Set the template
             template = circularSmall
         }
         
         return template
-        
     }
-    
 }
