@@ -61,8 +61,6 @@ class SiteListTableViewController: UITableViewController {
         // Check if we should display a form.
         shouldIShowNewSiteForm()
         
-        // Make sure the idle screen timer is turned back to normal. Screen will time out.
-        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -275,7 +273,7 @@ class SiteListTableViewController: UITableViewController {
         setupNotifications()
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
-        AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = false
+        UIApplication.sharedApplication().idleTimerDisabled = false
         
         // startUserActivity()
     }
