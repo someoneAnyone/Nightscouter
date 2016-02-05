@@ -91,16 +91,34 @@ public extension Double {
         numberFormat.numberStyle = .DecimalStyle
         numberFormat.positivePrefix = numberFormat.plusSign
         numberFormat.negativePrefix = numberFormat.minusSign
-        numberFormat.minimumFractionDigits = 1
-        numberFormat.maximumFractionDigits = 1
-        numberFormat.secondaryGroupingSize = 1
         
         return numberFormat
     }
     
-    public var formattedForBGDelta: String {
-        return self.bgDeltaFormatter.stringFromNumber(self)!
+    public func formattedBGDelta(forUnits units: Units, appendString: String? = nil) -> String {
+        var formattedNumber: String = ""
+        switch units {
+        case .Mmol:
+            let numberFormat = bgDeltaFormatter
+            numberFormat.minimumFractionDigits = 1
+            numberFormat.maximumFractionDigits = 1
+            numberFormat.secondaryGroupingSize = 1
+           formattedNumber = numberFormat.stringFromNumber(self) ?? "?"
+            
+        case .Mgdl:
+           formattedNumber = self.bgDeltaFormatter.stringFromNumber(self) ?? "?"
+        }
+        
+        var unitMarker: String = units.description
+        if let appendString = appendString {
+            unitMarker = appendString
+        }
+        return formattedNumber + " " + unitMarker
     }
+    
+//    public var formattedForBGDelta: String {
+//        return self.bgDeltaFormatter.stringFromNumber(self)!
+//    }
 }
 
 public extension Double {
