@@ -94,6 +94,26 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
             return nil
         }
     }
+   
+    // MARK: Initialization
+    public init?(url: NSURL, apiSecret: String?, uuid: NSUUID) {
+        // Initialize stored properties.
+        self.url = url
+        self.apiSecret = apiSecret
+        
+        self.uuid = uuid
+        self.overrideScreenLock = false
+        self.disabled = false
+        self.allowNotifications = true
+        
+        super.init()
+        
+        // Initialization should fail if there is no name.
+        if url.absoluteString.isEmpty {
+            return nil
+        }
+    }
+
     
     // MARK: NSCoding
     public func encodeWithCoder(aCoder: NSCoder) {
