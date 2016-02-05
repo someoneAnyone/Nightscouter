@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
                         site.watchEntry = watchEntry
                         AppDataManageriOS.sharedInstance.updateSite(site)
                         
-                        self.scheduleLocalNotification(site)
+                        // self.scheduleLocalNotification(site)
                     })
                 }
             }
