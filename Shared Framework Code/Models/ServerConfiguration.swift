@@ -39,6 +39,15 @@ public enum Units: String, CustomStringConvertible {
         self = .Mgdl
     }
     
+    public init(string: String) {
+        switch string {
+        case Mmol.description:
+            self = .Mmol
+        default:
+        self = .Mgdl
+        }
+    }
+    
     public var description: String {
         switch self {
         case .Mgdl:
