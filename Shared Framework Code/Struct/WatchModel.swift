@@ -178,8 +178,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
             sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
             
-            deltaString = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
-            deltaStringShort = "\(watchEntry.bgdelta.formattedForBGDelta) Δ"
+            deltaString = watchEntry.bgdelta.formattedBGDelta(forUnits: units) //"\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
+            deltaStringShort = "\(watchEntry.bgdelta.formattedBGDelta(forUnits: units, appendString: "∆"))"
             
             sgvColor = colorForDesiredColorState(boundedColor)
             
@@ -333,6 +333,6 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     
     func generateSite() -> Site {
         let url = NSURL(string: urlString)!
-        return Site(url: url, apiSecret: nil)!
+        return Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: self.uuid)!)!
     }
 }
