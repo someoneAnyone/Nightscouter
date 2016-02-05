@@ -50,6 +50,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -99,7 +100,7 @@ extension SiteDetailViewController {
         
         if let siteOptional = site {
             nsApi = NightscoutAPIClient(url:siteOptional.url)
-            AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = siteOptional.overrideScreenLock
+            UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
             
             updateData()
@@ -210,15 +211,13 @@ extension SiteDetailViewController {
         if let site = self.site {
             site.overrideScreenLock = shouldOverride
             
-            
-            AppDataManageriOS.sharedInstance.shouldDisableIdleTimer = site.overrideScreenLock
             AppDataManageriOS.sharedInstance.updateSite(site)
             UIApplication.sharedApplication().idleTimerDisabled = site.overrideScreenLock
             
         }
         
         #if DEBUG
-            print("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManageriOS.shouldDisableIdleTimer:\(AppDataManageriOS.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+            print("{site.overrideScreenLock:\(site?.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
     }
     
