@@ -29,7 +29,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             let models: [[String : AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary } )
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
             
-            updateWatch(withAction: .UpdateComplication, withSites: self.sites)
+            updateWatch(withAction: .UserInfo, withSites: self.sites)
+            
+            
         }
     }
     
@@ -37,45 +39,34 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         set {
             
             #if DEBUG
-                // print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
+                print("currentSiteIndex is: \(currentSiteIndex) and is changing to \(newValue)")
             #endif
             
             defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
-            
-            updateWatch(withAction: .UserInfo, withSites: sites)
-            
         }
         get {
             return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
         }
     }
     
-    public var shouldDisableIdleTimer: Bool {
+    public var defaultSite: NSUUID? {
         set {
-            
-            #if DEBUG
-                // print("shouldDisableIdleTimer currently is: \(shouldDisableIdleTimer) and is changing to \(newValue)")
-            #endif
-            
-            defaults.setBool(newValue, forKey: DefaultKey.shouldDisableIdleTimerKey)
-            
-            updateWatch(withAction: .UserInfo, withSites: sites)
+            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            createComplicationData()
         }
         get {
-            return defaults.boolForKey(DefaultKey.shouldDisableIdleTimerKey)
+            guard let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String else {
+                if let firstModel = sites.first {
+                    return firstModel.uuid
+                }
+                return nil
+            }
+            
+            return NSUUID(UUIDString: uuidString)
         }
     }
     
-    public class var sharedInstance: AppDataManageriOS {
-        struct Static {
-            static var onceToken: dispatch_once_t = 0
-            static var instance: AppDataManageriOS? = nil
-        }
-        dispatch_once(&Static.onceToken) {
-            Static.instance = AppDataManageriOS()
-        }
-        return Static.instance!
-    }
+    public static let sharedInstance = AppDataManageriOS()
     
     private override init() {
         super.init()
@@ -93,6 +84,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     }
     
     public func addSite(site: Site, index: Int?) {
+    
+        if sites.isEmpty {
+            defaultSite = site.uuid
+        }
+        
         if let indexOptional = index {
             if (sites.count >= indexOptional) {
                 sites.insert(site, atIndex: indexOptional )
@@ -100,15 +96,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }else {
             sites.append(site)
         }
-        
-        updateWatch(withAction:.Create, withSites: [site])
     }
     
     public func updateSite(site: Site)  ->  Bool {
         if let index = sites.indexOf(site) {
             sites[index] = site
-            updateWatch(withAction: .Update, withSites: [site])
-            
             return true
         }
         
@@ -118,17 +110,19 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public func deleteSiteAtIndex(index: Int) {
         
         let siteToBeRemoved = sites[index]
-        updateWatch(withAction: .Delete, withSites: [siteToBeRemoved])
         
-        sites.removeAtIndex(index)
+        if siteToBeRemoved.uuid == defaultSite {
+            defaultSite = nil
+        }
         
         if sites.isEmpty {
             currentSiteIndex = 0
-            shouldDisableIdleTimer = false
         }
+        
+        sites.removeAtIndex(index)
     }
     
-    public func loadSampleSites() -> Void {
+    private func loadSampleSites() -> Void {
         // Create a site URL.
         let demoSiteURL = NSURL(string: "https://nscgm.herokuapp.com")!
         // Create a site.
@@ -177,34 +171,111 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         // Send over the current index.
         context[WatchModel.PropertyKey.currentIndexKey] = currentSiteIndex
         
+        //context["cModels"] = complicationDataDictoinary
+        
+        context["defaultSite"] = defaultSite?.UUIDString
+        
         if #available(iOSApplicationExtension 9.0, *) {
-            
-            
-            if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
-                WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
-                    print("recieved reply: \(reply)")
-                    }) { (error) -> Void in
-                        print("recieved an error: \(error)")
-                        WatchSessionManager.sharedManager.transferUserInfo(context)
-                }
-            } else {
-                WatchSessionManager.sharedManager.transferUserInfo(context)
-            }
-            
-            
             switch action {
             case .UpdateComplication:
                 WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(context)
             default:
-                WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
-                    print("recieved reply: \(reply)")
-                    }) { (error) -> Void in
-                        print("recieved an error: \(error)")
-                        WatchSessionManager.sharedManager.transferUserInfo(context)
+                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
+                    WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
+                        print("recieved reply: \(reply)")
+                        }) { (error) -> Void in
+                            print("recieved an error: \(error)")
+                            WatchSessionManager.sharedManager.transferUserInfo(context)
+                    }
+                } else {
+                    WatchSessionManager.sharedManager.transferUserInfo(context)
                 }
             }
             
         }
     }
+    
+    public func siteForComplication() -> Site? {
+        return self.sites.filter({ (model) -> Bool in
+            return model.uuid == defaultSite
+        }).first
+    }
+    
+    public func createComplicationData() -> Void {
+        if let site = siteForComplication() {
+            let nsApi = NightscoutAPIClient(url: site.url)
+            
+            loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+                
+                
+                guard let newSite = returnedSite else {
+                    return
+                }
+                
+                nsApi.fetchCalibrations(10, completetion: { (calibrations, errorCode) -> Void in
+                    
+                    self.updateSite(newSite)
+                    
+                    
+                    let models = generateComplicationModels(forSite: site, calibrations: calibrations?.flatMap{ $0.cal } ?? [])
+                    
+                    var calModels: [[String: AnyObject]] = []
+                    if let cals = calibrations {
+                        
+                        let calibrations = cals.sort{(item1:Entry, item2:Entry) -> Bool in
+                            item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+                        }
+                        
+                        calModels = calibrations.flatMap { $0.cal?.dictionary }
+                    }
+                    
+                    self.defaults.setObject(calModels, forKey: "calibrations")
+                    self.complicationDataDictoinary = models.flatMap { $0.dictionary }
+                    
+                })
+            })
+            
+        }
+    }
+    
+    public var complicationDataFromDefaults: [ComplicationModel] {
+        
+        var complicationModels = [ComplicationModel]()
+        for d in complicationDataDictoinary {
+            
+            if let complication = ComplicationModel(fromDictionary: d) {
+                complicationModels.append(complication)
+            }
+        }
+        
+        return complicationModels
+    }
+    
+    public var complicationDataDictoinary: [[String: AnyObject]] {
+        set{
+            defaults.setObject(newValue, forKey: "cModels")
+            
+            let now = NSDate()
+            
+            if let lastUpdateDate = defaults.objectForKey("complicationTimeStamp") as? NSDate {
+                
+                if lastUpdateDate.timeIntervalSinceDate(now) < -400 {
+                    updateWatch(withAction: .UpdateComplication, withSites: sites)
+                    
+                }
+                defaults.setObject(now, forKey: "complicationTimeStamp")
 
+            }
+            
+            
+            
+            
+        }
+        get {
+            guard let complicationDictArray = defaults.arrayForKey("cModels") as? [[String : AnyObject]] else {
+                return []
+            }
+            return complicationDictArray
+        }
+    }
 }
