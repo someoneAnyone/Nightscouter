@@ -253,6 +253,7 @@ class SiteListTableViewController: UITableViewController {
         shouldIShowNewSiteForm()
     }
     
+    var timer: NSTimer?
     // MARK: Private Methods
     func configureView() -> Void {
         // The following line displys an Edit button in the navigation bar for this view controller.
@@ -275,7 +276,13 @@ class SiteListTableViewController: UITableViewController {
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.sharedApplication().idleTimerDisabled = false
         
+        timer = NSTimer(timeInterval: 60.0, target: self, selector: Selector("updateUI"), userInfo: nil, repeats: true)
+        
         // startUserActivity()
+    }
+    
+    func updateUI() {
+        self.tableView.reloadData()
     }
     
     func setupNotifications() {

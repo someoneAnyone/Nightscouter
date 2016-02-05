@@ -24,6 +24,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         }
     }
     
+    var updateUITimer: NSTimer?
+    
     var delayTimer = NSTimer()
     var delayRequestForNow: Bool = false {
         didSet {
@@ -48,7 +50,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         setupNotifications()
         models = WatchSessionManager.sharedManager.models
         
+        
+        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 * 5, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
+        
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+    
+    func updateDataNotification(timer: NSTimer?) -> Void {
+        updateTableData()
     }
     
     override func didDeactivate() {
@@ -108,9 +117,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         self.delayRequestForNow = model.warn
-        
-        ComplicationController.reloadComplications()
-        
+                
         models[index] = model
     }
 

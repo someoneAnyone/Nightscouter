@@ -78,7 +78,8 @@ public extension WatchSessionManager {
 extension WatchSessionManager {
     
     public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
-        return validSession?.transferCurrentComplicationUserInfo(userInfo)
+        
+        return validSession?.complicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : nil
     }
     
     // Sender
@@ -86,6 +87,8 @@ extension WatchSessionManager {
         #if DEBUG
             print("transferUserInfo: \(userInfo)")
         #endif
+        let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
+
         return validSession?.transferUserInfo(userInfo)
     }
     

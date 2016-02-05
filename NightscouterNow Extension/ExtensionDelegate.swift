@@ -19,6 +19,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         // Perform any final initialization of your application.
         // WatchSessionManager.sharedManager.startSession()
+        updateDataNotification(nil)
     }
     
     func applicationDidBecomeActive() {
@@ -26,7 +27,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        updateDataNotification(nil)
         WatchSessionManager.sharedManager.startSession()
 
     }

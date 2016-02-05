@@ -12,7 +12,6 @@
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
 		170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */; };
 		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
-		1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 172033091C19D073005208F6 /* Settings-Watch.bundle */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
@@ -217,7 +216,6 @@
 		170825EB1B2CBABB00304F8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		170825F21B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1713D5A61C11388700A52345 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
-		172033091C19D073005208F6 /* Settings-Watch.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = "Settings-Watch.bundle"; path = "Nightscouter/Settings-Watch.bundle"; sourceTree = SOURCE_ROOT; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
@@ -433,7 +431,6 @@
 		1739B1BC1B3113B500C22762 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				172033091C19D073005208F6 /* Settings-Watch.bundle */,
 				17E1B47A1B62DB3E0047D594 /* Settings.bundle */,
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
 				1739B1BD1B31141000C22762 /* html */,
@@ -926,7 +923,6 @@
 			files = (
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
-				1720330A1C19D073005208F6 /* Settings-Watch.bundle in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				1713D5A71C11388700A52345 /* LICENSE in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,

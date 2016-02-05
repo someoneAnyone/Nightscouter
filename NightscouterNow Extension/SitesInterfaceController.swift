@@ -27,7 +27,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         setupNotifications()
         
-        WatchSessionManager.sharedManager.requestLatestAppContext()
+        //WatchSessionManager.sharedManager.requestLatestAppContext()
         updatePages()
     }
     

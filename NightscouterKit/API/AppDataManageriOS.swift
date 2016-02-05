@@ -175,6 +175,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         context["defaultSite"] = defaultSite?.UUIDString
         
+
         if #available(iOSApplicationExtension 9.0, *) {
             switch action {
             case .UpdateComplication:

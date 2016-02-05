@@ -22,7 +22,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         set {
             sharedDefaults?.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
             
-            //self.createComplicationData()
+            self.createComplicationData { (reloaded) -> Void in
+                //..
+            }
         }
         get {
             guard let uuidString = sharedDefaults?.objectForKey(DefaultKey.defaultSiteKey) as? String else {
@@ -60,7 +62,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             processApplicationContext(item.userInfo)
         }
         
-        sharedDefaults?.setObject("watchOS", forKey: "osPlatform")
+        sharedDefaults?.setObject("watchOS", forKey: DefaultKey.osPlatform)
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
@@ -74,7 +76,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
             
             self.createComplicationData { (reloaded) -> Void in
-                
+                if reloaded {
+                    ComplicationController.reloadComplications()
+                }
             }
         }
         get {
@@ -92,7 +96,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             session.delegate = self
             session.activateSession()
             
-            requestLatestAppContext()
+            if models.isEmpty {
+                requestLatestAppContext()
+            }
         }
     }
     
@@ -203,6 +209,7 @@ extension WatchSessionManager {
     public func complicationRequestedUpdateBudgetExhausted() {
         sharedDefaults?.setObject(NSDate(), forKey: "requestedUpdateBudgetExhausted")
         self.createComplicationData { (reloaded) -> Void in
+            //
         }
     }
     
@@ -212,15 +219,41 @@ extension WatchSessionManager {
         }).first
     }
     
+    public var nextUpdateDate: NSDate {
+        if let date = sharedDefaults?.objectForKey(DefaultKey.complicationLastUpdateDidChangeComplicationDate) as? NSDate {
+            return date.dateByAddingTimeInterval( 60.0 * 4.0)
+        }
+        
+        return NSDate(timeIntervalSinceNow: 60.0 * 4.0)
+    }
+    
     public func createComplicationData(handler:(reloaded: Bool) -> Void) -> Void {
+        sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationLastUpdateStartDate)
+        
+        
         if let model = modelForComplication() {
+            
+            
+            if let date = sharedDefaults?.objectForKey(DefaultKey.complicationUpdateEndDate) as? NSDate {
+                
+            
+            
+            if date.compare(nextUpdateDate) == .OrderedAscending {
+                self.sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationUpdateEndDate)
+                handler(reloaded: false)
+                return
+                }
+            }
+            
             let url = NSURL(string: model.urlString)!
-            let site = Site(url: url, apiSecret: nil)!
+            let site = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
             let nsApi = NightscoutAPIClient(url: site.url)
             
             loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
                 
                 guard let site = returnedSite, model = returnedModel else {
+                    self.sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationUpdateEndDate)
+                    
                     handler(reloaded: false)
                     return
                 }
@@ -243,13 +276,19 @@ extension WatchSessionManager {
                         calModels = self.calibrations.flatMap { $0.cal?.dictionary }
                     }
                     
-                    self.sharedDefaults?.setObject(calModels, forKey: "calibrations")
+                    self.sharedDefaults?.setObject(calModels, forKey: DefaultKey.calibrations)
                     self.complicationDataDictoinary = models.flatMap { $0.dictionary }
-                  handler(reloaded: true)
+                    self.sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationUpdateEndDate)
+                    
+                    handler(reloaded: true)
+                    return
                 })
             })
         }
+        self.sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationUpdateEndDate)
+        
         handler(reloaded: false)
+        
     }
     
     public var complicationDataFromDefaults: [ComplicationModel] {
@@ -261,18 +300,18 @@ extension WatchSessionManager {
                 complicationModels.append(complication)
             }
         }
+        complicationModels.sortInPlace{ $0.date.compare($1.date) == NSComparisonResult.OrderedDescending }
         
         return complicationModels
     }
     
     public var complicationDataDictoinary: [[String: AnyObject]] {
         set{
-            sharedDefaults?.setObject(newValue, forKey: "cModels")
-            sharedDefaults?.setObject(NSDate(), forKey: "complicationTimeStamp")
-            ComplicationController.reloadComplications()
+            sharedDefaults?.setObject(newValue, forKey: DefaultKey.complicationModels)
+            sharedDefaults?.setObject(NSDate(), forKey: DefaultKey.complicationLastUpdateDidChangeComplicationDate)
         }
         get {
-            guard let complicationDictArray = sharedDefaults?.arrayForKey("cModels") as? [[String : AnyObject]] else {
+            guard let complicationDictArray = sharedDefaults?.arrayForKey(DefaultKey.complicationModels) as? [[String : AnyObject]] else {
                 return []
             }
             return complicationDictArray

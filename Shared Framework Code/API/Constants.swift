@@ -14,6 +14,16 @@ public struct DefaultKey {
     public static let shouldDisableIdleTimerKey = "shouldDisableIdleTimerBool"
     public static let modelArrayObjectsKey = "siteModelsArray"
     public static let defaultSiteKey = "defaultSiteKey"
+    
+    public static let calibrations = "calibrations"
+    public static let complicationModels = "complicationModels"
+    public static let complicationLastUpdateStartDate = "lastUpdateStartDate"
+    public static let complicationLastUpdateDidChangeComplicationDate = "lastUpdateDidChangeDate"
+    public static let complicationNextRequestedStartDate = "nextRequestedStartDate"
+    public static let complicationRequestedUpdateBudgetExhaustedDate = "requestedUpdateBudgetExhaustedDate"
+    public static let complicationUpdateEndDate = "complicationEndDate"
+    
+    public static let osPlatform = "osPlatform"
 }
 
 public struct Constants {
