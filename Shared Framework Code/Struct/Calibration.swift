@@ -15,3 +15,20 @@ public struct Calibration: DictionaryConvertible {
     public let intercept: Double
     public let date: NSDate
 }
+
+extension Calibration {
+    public init?(jsonDictionary: [String: AnyObject]){
+        
+        guard let slope = jsonDictionary["slope"] as? Double,
+        scale = jsonDictionary["scale"] as? Double,
+        intercept = jsonDictionary["intercept"] as? Double,
+            date = jsonDictionary["date"] as? NSDate else {
+                return nil
+        }
+        
+        self.slope = slope
+        self.scale = scale
+        self.intercept = intercept
+        self.date = date
+    }
+}

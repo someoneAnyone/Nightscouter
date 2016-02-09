@@ -267,10 +267,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 defaults.setObject(now, forKey: "complicationTimeStamp")
 
             }
-            
-            
-            
-            
         }
         get {
             guard let complicationDictArray = defaults.arrayForKey("cModels") as? [[String : AnyObject]] else {

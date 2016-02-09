@@ -144,7 +144,7 @@ extension WatchSessionManager {
 
 // MARK: Interactive Messaging
 @available(iOSApplicationExtension 9.0, *)
-extension WatchSessionManager {
+public extension WatchSessionManager {
     
     // Live messaging! App has to be reachable
     public var validReachableSession: WCSession? {
@@ -181,14 +181,11 @@ extension WatchSessionManager {
             print("No action was found, didReceiveMessage: \(message)")
             return
         }
-       
             // make sure to put on the main queue to update UI!
             switch action {
             case .AppContext:
                 print("appContext")
-//                dispatch_async(dispatch_get_main_queue()) {
                 AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withSites: AppDataManageriOS.sharedInstance.sites)
-//                }
 
             default:
                 print("default")
