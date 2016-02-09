@@ -12,6 +12,7 @@ import NightscouterWatchOSKit
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
     // MARK: - Timeline Configuration
+    
     func getSupportedTimeTravelDirectionsForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTimeTravelDirections) -> Void) {
         handler([.Backward])
     }
@@ -20,21 +21,17 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        
-        var date: NSDate? = nil
-        
+        var date: NSDate?
         let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.last
         date = model?.date
         handler(date)
     }
     
     func getTimelineEndDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
-        
         #if DEBUG
-           // print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        
-        var date: NSDate? = nil
+        var date: NSDate?
         let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.first
         date = model?.date.dateByAddingTimeInterval(60.0 * 5)
         handler(date)
@@ -50,19 +47,17 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         // Call the handler with the current timeline entry
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
-            //print("complication family: \(complication.family)")
         #endif
-
+        
         getTimelineEntriesForComplication(complication, beforeDate: NSDate(), limit: 1) { (timelineEntries) -> Void in
             handler(timelineEntries?.first)
         }
     }
     
-    
     func getTimelineEntriesForComplication(complication: CLKComplication, beforeDate date: NSDate, limit: Int, withHandler handler: ([CLKComplicationTimelineEntry]?) -> Void) {
         // Call the handler with the timeline entries prior to the given date
         #if DEBUG
-            //print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -88,7 +83,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getTimelineEntriesForComplication(complication: CLKComplication, afterDate date: NSDate, limit: Int, withHandler handler: (([CLKComplicationTimelineEntry]?) -> Void)) {
         // Call the handler with the timeline entries after to the given date
         #if DEBUG
-            //print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -154,17 +149,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             }
         }
     }
-
     
     func requestedUpdateDidBegin() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        
         WatchSessionManager.sharedManager.requestLatestAppContext()
-
-//        WatchSessionManager.sharedManager.createComplication()
         ComplicationController.reloadComplications()
     }
     
@@ -181,7 +172,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getPlaceholderTemplateForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
         #if DEBUG
-             print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(__FUNCTION__) <<<")
             // print("complication family: \(complication.family)")
         #endif
         
@@ -243,10 +234,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let displayName = model.displayName
         let sgv = model.sgv
         let tintString = model.tintString
-        
         let delta = model.delta
         let deltaShort = model.deltaShort
-        
         var raw = PlaceHolderStrings.rawShort
         var rawShort = PlaceHolderStrings.rawShort
         
