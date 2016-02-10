@@ -169,16 +169,33 @@ public extension Entry {
         
         switch type {
         case .Sgv:
+            
+            var sgvDouble: Double = 0
+            if let sgv = dict[EntryPropertyKey.sgvKey] as? Double {
+                sgvDouble = sgv
+            } else if let sgv = dict[EntryPropertyKey.sgvKey] as? String {
+                sgvDouble = sgv.toDouble!
+            }
+
             guard let directionString = dict[EntryPropertyKey.directionKey] as? String,
-                direction = Direction(rawValue: directionString),
-                sgv = dict[EntryPropertyKey.sgvKey] as? Double,
-                filtered = dict[EntryPropertyKey.filteredKey] as? Int,
-                unfiltlered = dict[EntryPropertyKey.unfilteredKey] as? Int,
-                rssi = dict[EntryPropertyKey.rssiKey] as? Int else {
-                    
+                direction = Direction(rawValue: directionString) else {
+            
                     break
             }
-            
+        
+            var filtered: Int = 0
+            var unfiltlered: Int = 0
+            var rssi: Int = 0
+        if let  filt = dict[EntryPropertyKey.filteredKey] as? Int,
+            unfilt = dict[EntryPropertyKey.unfilteredKey] as? Int,
+            rss = dict[EntryPropertyKey.rssiKey] as? Int {
+
+                filtered = filt
+                unfiltlered = unfilt
+                rssi = rss
+        }
+        
+        
             var noise = Noise.None
             if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
                 noiseType = Noise(rawValue: noiseInt) {
@@ -186,7 +203,7 @@ public extension Entry {
                     noise = noiseType
             }
             
-            sgValue = SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
+            sgValue = SensorGlucoseValue(sgv: sgvDouble, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: rssi, noise: noise)
             
         case .Mbg:
             guard let mbg = dict[EntryPropertyKey.mgbKey] as? Int else {

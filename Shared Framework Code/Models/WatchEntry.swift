@@ -38,7 +38,7 @@ public class WatchEntry: Entry, CustomStringConvertible {
     public var batteryColorState: DesiredColorState {
         if battery < 50 && battery > 20 {
             return DesiredColorState.Warning
-        } else if battery <= 20 {
+        } else if battery <= 20 && battery > 1 {
             return DesiredColorState.Alert
         }
         return DesiredColorState.Neutral
@@ -52,25 +52,6 @@ public class WatchEntry: Entry, CustomStringConvertible {
         }
         return nil
     }
-    
-//    public var dictionaryRep: [String : AnyObject] {
-//        
-//        var dict: [String : AnyObject] = ["now" : now, "bgdelta" : bgdelta, "battery" : battery, "batteryString" :batteryString, "batteryColorState" : batteryColorState.description]
-//        
-//        if let raw = raw {
-//            dict["raw"] = raw
-//        }
-//        
-//        if let sgv = sgv {
-//            dict["sgv"] = String(sgv)
-//        }
-//        
-//        if let cal = cal {
-//            dict["cal"] = String(cal)
-//        }
-//        
-//        return dict
-//    }
     
     public var description: String {
         return "WatchEntry: { \(dictionary.description) }"
