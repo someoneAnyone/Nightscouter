@@ -1,3 +1,4 @@
+
 //
 //  ComplicationController.swift
 //  NightscouterNow Extension
@@ -9,7 +10,21 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource {
+class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
+    
+    override init() {
+        super.init()
+        WatchSessionManager.sharedManager.startSession()
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+    
+    deinit {
+        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+    }
+    
+    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        ComplicationController.reloadComplications()
+    }
     
     // MARK: - Timeline Configuration
     
@@ -22,8 +37,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
-        let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.last
+        let model = WatchSessionManager.sharedManager.complicationData.last
         date = model?.date
+        
+        
+        #if DEBUG
+            print("getTimelineEndDateForComplication:\(date)")
+        #endif
+        
         handler(date)
     }
     
@@ -32,8 +53,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
-        let model = WatchSessionManager.sharedManager.complicationDataFromDefaults.first
+        let model = WatchSessionManager.sharedManager.complicationData.first
         date = model?.date.dateByAddingTimeInterval(60.0 * 5)
+        
+        #if DEBUG
+            print("getTimelineEndDateForComplication:\(date)")
+        #endif
         handler(date)
     }
     
@@ -62,7 +87,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
         
-        let entries = WatchSessionManager.sharedManager.complicationDataFromDefaults
+        let entries = WatchSessionManager.sharedManager.complicationData
         
         for entry in entries {
             let entryDate = entry.date
@@ -88,8 +113,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
         
-        let entries = WatchSessionManager.sharedManager.complicationDataFromDefaults
-        
+        let entries = WatchSessionManager.sharedManager.complicationData
+    
         for entry in entries {
             let entryDate = entry.date
             if date.compare(entryDate) == .OrderedAscending {
@@ -155,8 +180,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        WatchSessionManager.sharedManager.requestLatestAppContext()
-        ComplicationController.reloadComplications()
+        if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: WatchAction.UpdateComplication) {
+        } else {
+            WatchSessionManager.sharedManager.updateComplication()
+        }
+        
     }
     
     func requestedUpdateBudgetExhausted() {
@@ -260,7 +288,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             let modularLarge = CLKComplicationTemplateModularLargeTable()
             modularLarge.headerTextProvider = CLKSimpleTextProvider(text: sgv + " (" + delta + ")", shortText: sgv + " (" + deltaShort + ")")
             modularLarge.row1Column1TextProvider = CLKSimpleTextProvider(text: displayName)
-            modularLarge.row1Column2TextProvider = CLKRelativeDateTextProvider(date: model.date, style: .Natural, units: [.Second, .Minute, .Hour, .Day])
+            modularLarge.row1Column2TextProvider = CLKRelativeDateTextProvider(date: model.date, style: .Natural, units: [.Minute, .Hour, .Day])
             modularLarge.row2Column1TextProvider = CLKSimpleTextProvider(text:  raw, shortText: rawShort)
             modularLarge.row2Column2TextProvider = CLKSimpleTextProvider(text: "")
             

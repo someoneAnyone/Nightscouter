@@ -29,9 +29,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             let models: [[String : AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary } )
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
             
-            updateWatch(withAction: .UserInfo, withSites: self.sites)
+            // createComplication()
             
-            
+            //updateWatch(withAction: .UserInfo, withSites: self.sites)
         }
     }
     
@@ -52,7 +52,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public var defaultSite: NSUUID? {
         set {
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
-            createComplicationData()
+            // createComplication()
         }
         get {
             guard let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String else {
@@ -80,11 +80,20 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         defaults.setObject("iOS", forKey: "osPlatform")
         
-        updateWatch(withAction: .UserInfo, withSites: sites)
+        // updateWatch(withAction: .UserInfo, withSites: sites)
+        
+        
+        // Register for settings changes as store might have changed
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: Selector("userDefaultsDidChange:"),
+            name: NSUserDefaultsDidChangeNotification,
+            object: nil)
+        
+        
     }
     
     public func addSite(site: Site, index: Int?) {
-    
+        
         if sites.isEmpty {
             defaultSite = site.uuid
         }
@@ -151,49 +160,75 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         return nil
     }
     
-    public func updateWatch(withAction action: WatchAction, withSites sites: [Site]) {
+    
+    func processApplicationContext(context: [String : AnyObject]) -> Bool {
+        print("processApplicationContext \(context)")
+        
+        guard let _ = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
+            print("No action was found, didReceiveMessage: \(context)")
+            return false
+        }
+        
+        guard let payload = context[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
+            print("No payload was found.")
+            
+            print(context)
+            return false
+            
+        }
+        
+        if let defaultSiteString = payload[DefaultKey.defaultSiteKey] as? String, uuid = NSUUID(UUIDString: defaultSiteString)  {
+            defaultSite = uuid
+        }
+        
+        if let currentIndex = payload[DefaultKey.currentSiteIndexKey] as? Int {
+            currentSiteIndex = currentIndex
+        }
+        
+        if let siteArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
+            sites = siteArray.flatMap{ WatchModel(fromDictionary: $0)?.generateSite() }
+        }
+        
+        return true
+    }
+
+    public func updateWatch(withAction action: WatchAction, withContext context:[String: AnyObject]? = nil) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
             // print("Please \(action) the watch with the \(sites)")
         #endif
         
         // Create a generic context to transfer to the watch.
-        var context = [String: AnyObject]()
+        var payload = [String: AnyObject]()
         
         // Tag the context with an action so that the watch can handle it if needed.
         // ["action" : "WatchAction.Create"] for example...
-        context[WatchModel.PropertyKey.actionKey] = action.rawValue
+        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
         
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        let modelDictionaries:[[String: AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary })
-        context[WatchModel.PropertyKey.modelsKey] = modelDictionaries
-        
-        // Send over the current index.
-        context[WatchModel.PropertyKey.currentIndexKey] = currentSiteIndex
-        
-        //context["cModels"] = complicationDataDictoinary
-        
-        context["defaultSite"] = defaultSite?.UUIDString
-        
-
+        payload[WatchModel.PropertyKey.contextKey] = context ?? defaults.dictionaryRepresentation()
+    
         if #available(iOSApplicationExtension 9.0, *) {
-            switch action {
-            case .UpdateComplication:
-                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(context)
-            default:
-                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
-                    WatchSessionManager.sharedManager.sendMessage(context, replyHandler: { (reply) -> Void in
-                        print("recieved reply: \(reply)")
-                        }) { (error) -> Void in
-                            print("recieved an error: \(error)")
-                            WatchSessionManager.sharedManager.transferUserInfo(context)
-                    }
-                } else {
-                    WatchSessionManager.sharedManager.transferUserInfo(context)
-                }
-            }
-            
+            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
         }
+        
+//        if #available(iOSApplicationExtension 9.0, *) {
+//            switch action {
+//                
+//            default:
+//                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
+//                    WatchSessionManager.sharedManager.sendMessage(payload, replyHandler: { (reply) -> Void in
+//                        print("recieved reply: \(reply)")
+//                        }) { (error) -> Void in
+//                            print("recieved an error: \(error)")
+//                            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+//                    }
+//                } else {
+//                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+//                }
+//            }
+//            
+//        }
     }
     
     public func siteForComplication() -> Site? {
@@ -202,77 +237,22 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }).first
     }
     
-    public func createComplicationData() -> Void {
-        if let site = siteForComplication() {
-            let nsApi = NightscoutAPIClient(url: site.url)
+    public func generateDataForAllSites() -> Void {
+        
+        for siteToLoad in sites {
             
-            loadDataFor(site, index: nil, withChart: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
-                
-                
-                guard let newSite = returnedSite else {
-                    return
-                }
-                
-                nsApi.fetchCalibrations(10, completetion: { (calibrations, errorCode) -> Void in
-                    
-                    self.updateSite(newSite)
-                    
-                    
-                    let models = generateComplicationModels(forSite: site, calibrations: calibrations?.flatMap{ $0.cal } ?? [])
-                    
-                    var calModels: [[String: AnyObject]] = []
-                    if let cals = calibrations {
-                        
-                        let calibrations = cals.sort{(item1:Entry, item2:Entry) -> Bool in
-                            item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
-                        }
-                        
-                        calModels = calibrations.flatMap { $0.cal?.dictionary }
-                    }
-                    
-                    self.defaults.setObject(calModels, forKey: "calibrations")
-                    self.complicationDataDictoinary = models.flatMap { $0.dictionary }
-                    
-                })
+            fetchSiteData(forSite: siteToLoad, forceRefresh: true, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                self.updateSite(returnedSite)
+                return
             })
-            
         }
     }
     
-    public var complicationDataFromDefaults: [ComplicationModel] {
-        
-        var complicationModels = [ComplicationModel]()
-        for d in complicationDataDictoinary {
-            
-            if let complication = ComplicationModel(fromDictionary: d) {
-                complicationModels.append(complication)
-            }
+    func userDefaultsDidChange(notification: NSNotification) {
+        if let defaultObject = notification.object as? NSUserDefaults {
+            print("Defaults Changed")
+            updateWatch(withAction: WatchAction.UserInfo, withContext: defaultObject.dictionaryRepresentation())
         }
-        
-        return complicationModels
     }
     
-    public var complicationDataDictoinary: [[String: AnyObject]] {
-        set{
-            defaults.setObject(newValue, forKey: "cModels")
-            
-            let now = NSDate()
-            
-            if let lastUpdateDate = defaults.objectForKey("complicationTimeStamp") as? NSDate {
-                
-                if lastUpdateDate.timeIntervalSinceDate(now) < -400 {
-                    updateWatch(withAction: .UpdateComplication, withSites: sites)
-                    
-                }
-                defaults.setObject(now, forKey: "complicationTimeStamp")
-
-            }
-        }
-        get {
-            guard let complicationDictArray = defaults.arrayForKey("cModels") as? [[String : AnyObject]] else {
-                return []
-            }
-            return complicationDictArray
-        }
-    }
 }

@@ -8,12 +8,94 @@
 
 import Foundation
 
+let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
 
-public func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
+
+public func fetchSiteData(forSite site: Site, index: Int? = nil, forceRefresh: Bool = false, handler:(reloaded: Bool, returnedSite: Site, returnedIndex: Int?, returnedError: NSError?) -> Void) -> Void {
+    
+    var siteToReturn: Site = site
+    let indexToReturn: Int? = index
+    var errorToReturn: NSError? = nil
+    var successfullyReloaded: Bool = false
+
+    
+//    defer {
+//        print("returning Handler")
+//        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+//            handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
+//        })
+//    }
+    
+    // Don't fetch data if its within the standard refresh time frame.
+    // This can be orrvidden by the forceRefresh param.
+    if let lastConnectedDate = site.lastConnectedDate  where forceRefresh == false {
+        let nextUpdateDate = NSDate(timeIntervalSinceNow: updateInterval)
+        
+        if lastConnectedDate.compare(nextUpdateDate) == .OrderedAscending {
+            errorToReturn = NSError(domain: "Attemping to update site data too soon.", code: 0, userInfo: nil)
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
+            })
+            return
+        }
+    }
+    
+    
+    // Get the HTTP Client.
+    let nsApi = NightscoutAPIClient(url: site.url)
+    
+    // get site data that incluldes chart data.
+    loadDataFor(site, index: index, withEntries: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+        
+        errorToReturn = returnedError
+        guard let site = returnedSite else {
+            
+            successfullyReloaded = true
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
+            })
+            return
+        }
+        
+        let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12
+        
+        nsApi.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
+
+            guard let calibrations = calibrations else {
+                errorToReturn = NSError(domain: "No calibrations were found", code: 0, userInfo: nil)
+                return
+            }
+
+            let models = generateComplicationModels(forSite: site, calibrations: calibrations.flatMap{ $0.cal } ?? [])
+            
+            let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
+                item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+                }.flatMap { $0.cal }
+
+            returnedSite?.complicationModels = models
+            returnedSite?.calibrations = cals
+            
+            successfullyReloaded = true
+            siteToReturn = returnedSite ?? site
+            errorToReturn = returnedError
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
+            })
+            
+            return
+        })
+    })
+}
+
+
+
+
+private func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
     
     let cals = calibrations.sort{(item1: Calibration, item2: Calibration) -> Bool in
         item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
-        }
+    }
     
     guard let configuration = site.configuration, displayName = site.configuration?.displayName, entries = site.entries else {
         return []
@@ -89,28 +171,28 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
 }
 
 
-public func nearestCalibration(calibrations cals:[Calibration], calibrationsforDate date: NSDate) -> Calibration? {
-        var desiredIndex: Int?
-        var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
+private func nearestCalibration(calibrations cals:[Calibration], calibrationsforDate date: NSDate) -> Calibration? {
+    var desiredIndex: Int?
+    var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
     
-        for (index, entry) in cals.enumerate() {
-            let dateInterval = fabs(entry.date.timeIntervalSinceDate(date))
-            let compared = minDate < dateInterval
-            // print("Testing: \(minDate) < \(dateInterval) = \(compared)")
-            if compared {
-                minDate = dateInterval
-                desiredIndex = index
-            }
+    for (index, entry) in cals.enumerate() {
+        let dateInterval = fabs(entry.date.timeIntervalSinceDate(date))
+        let compared = minDate < dateInterval
+        // print("Testing: \(minDate) < \(dateInterval) = \(compared)")
+        if compared {
+            minDate = dateInterval
+            desiredIndex = index
         }
-        
-        guard let index = desiredIndex else {
-            print("no valid index was found... return last calibration")
-            return cals.first
-        }
-        
-        // print("incoming date: \(closestDate.timeIntervalSinceNow) returning date: \(calibrations[index].date.timeIntervalSinceNow)")
-        return cals[index]
     }
+    
+    guard let index = desiredIndex else {
+        print("no valid index was found... return last calibration")
+        return cals.first
+    }
+    
+    // print("incoming date: \(closestDate.timeIntervalSinceNow) returning date: \(calibrations[index].date.timeIntervalSinceNow)")
+    return cals[index]
+}
 
 
 public func loadDataFor(model: WatchModel, replyHandler:(model: WatchModel) -> Void) {
@@ -131,7 +213,7 @@ public func loadDataFor(model: WatchModel, replyHandler:(model: WatchModel) -> V
 }
 
 
-public func loadDataFor(site: Site, index: Int?, withChart: Bool = false, completetion:(returnedModel: WatchModel?, returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
+private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, completetion:(returnedModel: WatchModel?, returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
     // Start up the API
     let nsApi = NightscoutAPIClient(url: site.url)
     //TODO: 1. There should be reachabiltiy checks before doing anything.
@@ -158,7 +240,7 @@ public func loadDataFor(site: Site, index: Int?, withChart: Bool = false, comple
                 site.configuration = configuration
                 site.watchEntry = watchEntry
                 
-                if !withChart {
+                if !withEntries {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                         completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
                     })

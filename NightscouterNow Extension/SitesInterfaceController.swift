@@ -43,7 +43,7 @@ class SitesInterfaceController: WKInterfaceController, DataSourceChangedDelegate
     
     func updateData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-        if !WatchSessionManager.sharedManager.requestLatestAppContext() {
+        if !WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
             for model in models {
                 loadDataFor(model, replyHandler: { (model) -> Void in
 //                    //..

@@ -85,7 +85,7 @@ extension WatchSessionManager {
     // Sender
     public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
-            print("transferUserInfo: \(userInfo)")
+            //print("transferUserInfo: \(userInfo)")
         #endif
         let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
 
@@ -183,12 +183,24 @@ public extension WatchSessionManager {
         }
             // make sure to put on the main queue to update UI!
             switch action {
+
+            case .UpdateComplication:
+                AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication, withContext: nil)
             case .AppContext:
                 print("appContext")
-                AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withSites: AppDataManageriOS.sharedInstance.sites)
+                AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
 
             default:
                 print("default")
+                guard let payload = message[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
+                    print("No payload was found.")
+                    
+                    print(message)
+                    break
+                }
+                
+                AppDataManageriOS.sharedInstance.processApplicationContext(payload)
+
                 break
         }
         

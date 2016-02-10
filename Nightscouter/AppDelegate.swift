@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         // application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
         //WatchSessionManager.sharedManager.startSession()
-
+        
         updateDataNotification(nil)
     }
     
@@ -88,24 +88,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #endif
         for site in sites {
             // Get settings for a given site.
-            let nsApi = NightscoutAPIClient(url: site.url)
-            nsApi.fetchServerConfiguration { (result) -> Void in
-                switch (result) {
-                case let .Error(error):
-                    // display error message
-                    print("error: \(error)")
-                    break
-                case let .Value(boxedConfiguration):
-                    let configuration:ServerConfiguration = boxedConfiguration.value
-                    nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
-                        site.configuration = configuration
-                        site.watchEntry = watchEntry
-                        AppDataManageriOS.sharedInstance.updateSite(site)
-                        
-                        // self.scheduleLocalNotification(site)
-                    })
-                }
+            if site.uuid == AppDataManageriOS.sharedInstance.defaultSite {
+                fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                    self.scheduleLocalNotification(returnedSite
+                    
+                    )
+
+                })
             }
+//            } else {
+//                
+//                let nsApi = NightscoutAPIClient(url: site.url)
+//                nsApi.fetchServerConfiguration { (result) -> Void in
+//                    switch (result) {
+//                    case let .Error(error):
+//                        // display error message
+//                        print("error: \(error)")
+//                        break
+//                    case let .Value(boxedConfiguration):
+//                        let configuration:ServerConfiguration = boxedConfiguration.value
+//                        nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
+//                            site.configuration = configuration
+//                            site.watchEntry = watchEntry
+//                            AppDataManageriOS.sharedInstance.updateSite(site)
+//                            
+//                            // self.scheduleLocalNotification(site)
+//                        })
+//                    }
+//                }
+//            }
         }
         
         // Always return NewData.
@@ -297,5 +309,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         }
         return nil
     }
-
+    
+    
 }

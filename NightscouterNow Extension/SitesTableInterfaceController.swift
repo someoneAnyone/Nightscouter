@@ -16,13 +16,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     var models = [WatchModel]() {
         didSet {
             updateTableData()
-            if !models.isEmpty {
-                updateData(false)
-                //WKInterfaceDevice.currentDevice().playHaptic(.Success)
-            }
-            
         }
     }
+    
     
     var updateUITimer: NSTimer?
     
@@ -49,11 +45,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         setupNotifications()
         models = WatchSessionManager.sharedManager.models
-        
-        
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 * 5, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+
+        updateData(forceRefresh: false)
     }
     
     func updateDataNotification(timer: NSTimer?) -> Void {
@@ -117,42 +113,43 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         self.delayRequestForNow = model.warn
-                
+        
         models[index] = model
     }
-
+    
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         self.models = models
     }
     
     func didUpdateItem(model: WatchModel) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        if let index = models.indexOf(model) {
-            self.models[index] = model
-        } else {
-            print("Did not update table view with recent item")
-        }
+        WatchSessionManager.sharedManager.updateModel(model)
     }
     
     func dataStaleUpdate(notif: NSNotification) {
-        updateData(true)
+        updateData(forceRefresh: false)
     }
     
-    func updateData(forceRefresh: Bool = true) {
+    func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        for (index, model) in models.enumerate() {
-            if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast && !delayRequestForNow) || forceRefresh {
-                loadDataFor(model, replyHandler: { (model) -> Void in
-                    self.dataSourceDidUpdateSiteModel(model, atIndex: index)
-                })
-            }
+        for (index, model) in models.enumerate() where !delayRequestForNow {
+            
+            let url = NSURL(string: model.urlString)!
+            let siteToLoad = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
+            
+            fetchSiteData(forSite: siteToLoad, index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                
+                let updatedModel = WatchModel(fromSite: returnedSite)
+                self.dataSourceDidUpdateSiteModel(updatedModel, atIndex: index)
+                WatchSessionManager.sharedManager.updateModel(updatedModel)
+            })
         }
     }
     
+    
     @IBAction func updateButton() {
-        updateData()
+        updateData(forceRefresh: true)
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {

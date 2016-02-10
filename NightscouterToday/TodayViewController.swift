@@ -125,14 +125,13 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     func refreshDataFor(site: Site, index: Int){
         // Start up the API
         
-        
-        loadDataFor(site, index: index) { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+        fetchSiteData(forSite: site, index: index, forceRefresh: true, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
             
             if let error = returnedError {
                 print("\(__FUNCTION__) ERROR recieved: \(error)")
                 
             } else {
-                if let returnedSite = returnedSite, returnedIndex = returnedIndex {
+                if let returnedIndex = returnedIndex {
                     
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex, inSection: 0)], withRowAnimation: .Automatic)
@@ -140,7 +139,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                 }
             }
-        }
+        })
     }
     
     func openApp(with indexPath: NSIndexPath) {

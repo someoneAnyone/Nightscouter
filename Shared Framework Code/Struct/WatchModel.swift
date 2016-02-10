@@ -37,9 +37,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         public static let contextKey = "context"
         public static let actionKey = "action"
         public static let modelKey = "siteModel"
-        public static let modelsKey = "siteModels"
         public static let delegateKey = "delegate"
-        public static let currentIndexKey = "currentIndex"
     }
     
     public let uuid: String
@@ -87,6 +85,9 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let urgent: Bool
     public let warn: Bool
     
+    public var calibrations: [[String : AnyObject]] = []
+    public var complicationModels: [[String : AnyObject]] = []
+    
     public init?(fromDictionary: [String : AnyObject]) {
         
         let d = fromDictionary
@@ -127,6 +128,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         self.direction = d["direction"] as! String
         
         self.uuid = d["uuid"] as! String
+        
+        self.complicationModels = d["complicationModels"] as? [[String: AnyObject]] ?? []
+        
+        self.calibrations = d["calibrations"] as? [[String: AnyObject]] ?? []
         
     }
     
@@ -251,6 +256,16 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             if isStaleData.urgent{
                 lastUpdatedColor = colorForDesiredColorState(.Alert)
+            }
+            
+            
+            
+            for cal in site.calibrations {
+                self.calibrations.append(cal.dictionary)
+            }
+            
+            for cal in site.complicationModels {
+                self.complicationModels.append(cal.dictionary)
             }
             
             self.urlString = site.url.absoluteString

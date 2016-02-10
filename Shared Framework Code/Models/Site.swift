@@ -50,6 +50,9 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
     public var allowNotifications: Bool
     public var overrideScreenLock: Bool
     
+    public var complicationModels: [ComplicationModel] = []
+    public var calibrations: [Calibration] = []
+    
     public var disabled: Bool
     
     public private(set) var uuid: NSUUID

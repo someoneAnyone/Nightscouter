@@ -322,7 +322,7 @@ class SiteListTableViewController: UITableViewController {
                 tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
             for (index, site) in sites.enumerate() {
-                refreshDataFor(site, index: index)
+                refreshDataFor(site, index: index, force:  true)
             }
             
         } else {
@@ -331,18 +331,16 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
-    func refreshDataFor(site: Site, index: Int){
+    func refreshDataFor(site: Site, index: Int, force: Bool = false){
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
-        loadDataFor(site, index: index) { (returnedModel, updatedSite, returnedIndex, error) -> Void in
-            
+        
+        fetchSiteData(forSite: site, index: index, forceRefresh: force, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
                 
-                if let updatedSite = updatedSite {
-                    AppDataManageriOS.sharedInstance.updateSite(updatedSite)
-                }
+                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
                 if (self.refreshControl?.refreshing != nil) {
@@ -351,17 +349,17 @@ class SiteListTableViewController: UITableViewController {
                 
             }
             
-            if let error = error {
+            if let error = returnedError {
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.presentAlertDialog(site.url, index: index, error: error)
                 })
                 
                 
             } else {
-                self.lastUpdatedTime = updatedSite!.lastConnectedDate
+                self.lastUpdatedTime = returnedSite.lastConnectedDate
                 self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
             }
-        }
+        })
     }
     
     

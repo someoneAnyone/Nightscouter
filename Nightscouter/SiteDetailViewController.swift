@@ -89,6 +89,10 @@ extension SiteDetailViewController {
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
         webView.hidden = false
+        
+        if let configuration = self.site?.configuration {
+            updateTitles(configuration.displayName)
+        }
     }
 }
 
@@ -124,14 +128,15 @@ extension SiteDetailViewController {
             self.siteActivityView?.startAnimating()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
-            loadDataFor(site, index: nil, withChart: true) { (returnedModel, updatedSite, returnedIndex, error) -> Void in
+            
+            fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                
+                
                 
                 defer {
                     print("setting networkActivityIndicatorVisible: false and stopping animation.")
                     
-                    if let updatedSite = updatedSite {
-                        AppDataManageriOS.sharedInstance.updateSite(updatedSite)
-                    }
+                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                     
                     UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
@@ -139,53 +144,58 @@ extension SiteDetailViewController {
                     })
                 }
                 
-                if let error = error {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        print("error: \(error)")
-                        self.navigationController?.popViewControllerAnimated(true)
-                    })
-                    
-                } else if let model = returnedModel {
-                    if let entries = site.entries {
-                        for entry in entries {
-                            if let sgv = entry.sgv {
-                                if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
-                                    self.data.append(entry.jsonForChart)
-                                }
+                
+                if let entries = site.entries {
+                    for entry in entries {
+                        if let sgv = entry.sgv {
+                            if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
+                                self.data.append(entry.jsonForChart)
                             }
                         }
                     }
-                    
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        
-                        // Configure the Compass
-                        self.siteCompassControl?.configureWith(model)
-                        
-                        // Battery label
-                        self.siteBatteryLabel?.text = model.batteryString
-                        self.siteBatteryLabel?.textColor = UIColor(hexString: model.batteryColor)
-                        
-                        // Get date object as string.
-                        let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-                        
-                        // Last reading label
-                        self.siteLastReadingLabel?.text = dateString
-                        self.siteLastReadingLabel?.textColor = UIColor(hexString: model.lastReadingColor)
-                        
-                        self.siteRawLabel?.hidden = !model.rawVisible
-                        self.siteRawHeader?.hidden = !model.rawVisible
-                        
-                        self.siteRawLabel?.text = model.rawString
-                        self.siteRawLabel?.textColor = UIColor(hexString: model.rawColor)
-                        
-                        self.updateTitles(model.displayName)
-                        
-                        // Reload the webview.
-                        self.siteWebView?.reload()
-                    })
                 }
-            }
+                
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    let model = WatchModel(fromSite: site)
+                    
+                    // Configure the Compass
+                    self.siteCompassControl?.configureWith(model)
+                    
+                    // Battery label
+                    self.siteBatteryLabel?.text = model.batteryString
+                    self.siteBatteryLabel?.textColor = UIColor(hexString: model.batteryColor)
+                    
+                    // Get date object as string.
+                    let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+                    
+                    // Last reading label
+                    self.siteLastReadingLabel?.text = dateString
+                    self.siteLastReadingLabel?.textColor = UIColor(hexString: model.lastReadingColor)
+                    
+                    self.siteRawLabel?.hidden = !model.rawVisible
+                    self.siteRawHeader?.hidden = !model.rawVisible
+                    
+                    self.siteRawLabel?.text = model.rawString
+                    self.siteRawLabel?.textColor = UIColor(hexString: model.rawColor)
+                    
+                    self.updateTitles(model.displayName)
+                    
+                    // Reload the webview.
+                    self.siteWebView?.reload()
+                })
+                
+                
+                //                if let error = returnedError {
+                ////                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                //                        print("error: \(error)")
+                //                        self.navigationController?.popViewControllerAnimated(true)
+                ////                    })
+                //
+                //                }
+            })
         }
+        
     }
     
     func loadWebView () {

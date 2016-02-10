@@ -41,9 +41,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
                 
                 self.configureView(model)
                 
-                if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime) {
+//                if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime) {
                     updateData()
-                }
+//                }
                 
             }
         }
@@ -95,7 +95,10 @@ class SiteDetailInterfaceController: WKInterfaceController {
     func updateData(){
         self.isActive = true
         if let model = model {
-            loadDataFor(model) { (model) -> Void in
+            let url = NSURL(string: model.urlString)!
+            let siteToLoad = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
+            
+            fetchSiteData(forSite: siteToLoad, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
                 self.isActive = false
                 self.model = model
                 
@@ -103,7 +106,8 @@ class SiteDetailInterfaceController: WKInterfaceController {
                     self?.delegate?.didUpdateItem(model)
                 }
                 
-            }
+            })
+            
         }
     }
     
