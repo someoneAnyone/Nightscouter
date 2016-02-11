@@ -158,5 +158,19 @@ class SiteDetailInterfaceController: WKInterfaceController {
             WatchSessionManager.sharedManager.defaultSite = NSUUID(UUIDString: (model.uuid))
         }
     }
+    
+    override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+            return
+        }
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+            let modelDict = incomingModel.dictionary
+            self.awakeWithContext(modelDict)
+        }
+    }
+
 }
 

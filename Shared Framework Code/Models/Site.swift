@@ -75,7 +75,7 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         return dict
     }
     
-    public var viewModel: WatchModel? {
+    public var viewModel: WatchModel {
         return WatchModel(fromSite: self)
     }
     

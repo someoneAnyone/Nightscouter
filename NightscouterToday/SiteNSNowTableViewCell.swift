@@ -41,8 +41,8 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     func configureCell(site: Site) {
         
-        let model = WatchModel(fromSite: site)
-//        if let model = WatchModel(fromSite: site) {
+        let model = site.viewModel
+        //        if let model = WatchModel(fromSite: site) {
         
             let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             

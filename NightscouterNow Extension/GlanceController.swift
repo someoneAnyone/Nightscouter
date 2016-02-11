@@ -34,6 +34,8 @@ class GlanceController: WKInterfaceController {
     }
     
     override func willActivate() {
+        super.willActivate()
+        
         // This method is called when watch view controller is about to be visible to user
         self.model = WatchSessionManager.sharedManager.modelForComplication()
         
@@ -41,9 +43,6 @@ class GlanceController: WKInterfaceController {
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
         
         modelUpdateTimer?.fire()
-        
-        
-        super.willActivate()
     }
     
     override func didDeactivate() {
@@ -58,7 +57,7 @@ class GlanceController: WKInterfaceController {
         if let safemodel = model {
             loadDataFor(safemodel, replyHandler: { (returnedModel) -> Void in
                 self.model = returnedModel
-                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: ["model":returnedModel.dictionary], webpageURL: nil)
+                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: returnedModel.dictionary], webpageURL: NSURL(string: returnedModel.urlString)!)
             })
         }
     }
@@ -66,7 +65,7 @@ class GlanceController: WKInterfaceController {
     func configureView() {
         
         guard let model = self.model else {
-
+            
             self.siteDeltaLabel.setText("Launch Nightscouter")
             self.siteRawLabel.setText("and add a site.")
             

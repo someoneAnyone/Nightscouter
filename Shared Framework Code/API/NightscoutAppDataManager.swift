@@ -18,19 +18,10 @@ public func fetchSiteData(forSite site: Site, index: Int? = nil, forceRefresh: B
     var errorToReturn: NSError? = nil
     var successfullyReloaded: Bool = false
 
-    
-//    defer {
-//        print("returning Handler")
-//        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//            handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
-//        })
-//    }
-    
     // Don't fetch data if its within the standard refresh time frame.
     // This can be orrvidden by the forceRefresh param.
     if let lastConnectedDate = site.lastConnectedDate  where forceRefresh == false {
         let nextUpdateDate = NSDate(timeIntervalSinceNow: updateInterval)
-        
         if lastConnectedDate.compare(nextUpdateDate) == .OrderedAscending {
             errorToReturn = NSError(domain: "Attemping to update site data too soon.", code: 0, userInfo: nil)
             
@@ -41,12 +32,11 @@ public func fetchSiteData(forSite site: Site, index: Int? = nil, forceRefresh: B
         }
     }
     
-    
     // Get the HTTP Client.
     let nsApi = NightscoutAPIClient(url: site.url)
     
     // get site data that incluldes chart data.
-    loadDataFor(site, index: index, withEntries: true, completetion: { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+    loadDataFor(site, index: index, withEntries: true, completetion: { (returnedSite, returnedIndex, returnedError) -> Void in
         
         errorToReturn = returnedError
         guard let site = returnedSite else {
@@ -202,18 +192,18 @@ public func loadDataFor(model: WatchModel, replyHandler:(model: WatchModel) -> V
     let url = NSURL(string: model.urlString)!
     let site = Site(url: url, apiSecret: nil)!
     
-    loadDataFor(site, index: nil) { (returnedModel, returnedSite, returnedIndex, returnedError) -> Void in
+    loadDataFor(site, index: nil) { (returnedSite, returnedIndex, returnedError) -> Void in
         
-        guard let model = returnedModel else {
+        guard let site = returnedSite else {
             return
         }
         
-        replyHandler(model: model)
+        replyHandler(model: site.viewModel)
     }
 }
 
 
-private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, completetion:(returnedModel: WatchModel?, returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
+private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, completetion:(returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
     // Start up the API
     let nsApi = NightscoutAPIClient(url: site.url)
     //TODO: 1. There should be reachabiltiy checks before doing anything.
@@ -229,7 +219,7 @@ private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, com
             print("loadUpData ERROR recieved: \(error)")
             dispatch_async(dispatch_get_main_queue(), { () -> Void in
                 site.disabled = true
-                completetion(returnedModel: nil, returnedSite: nil, returnedIndex: index, returnedError: error)
+                completetion(returnedSite: nil, returnedIndex: index, returnedError: error)
             })
             
         case let .Value(boxedConfiguration):
@@ -242,7 +232,7 @@ private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, com
                 
                 if !withEntries {
                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
+                        completetion(returnedSite: site, returnedIndex: index, returnedError: nil)
                     })
                 } else {
                     
@@ -251,7 +241,7 @@ private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, com
                             site.entries = entries
                             
                             dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                completetion(returnedModel: WatchModel(fromSite: site), returnedSite: site, returnedIndex: index, returnedError: nil)
+                                completetion(returnedSite: site, returnedIndex: index, returnedError: nil)
                             })
                         }
                     }

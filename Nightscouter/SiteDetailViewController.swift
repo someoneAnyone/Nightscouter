@@ -157,7 +157,7 @@ extension SiteDetailViewController {
                 
                 
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    let model = WatchModel(fromSite: site)
+                    let model = site.viewModel
                     
                     // Configure the Compass
                     self.siteCompassControl?.configureWith(model)
