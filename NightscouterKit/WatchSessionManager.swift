@@ -188,7 +188,14 @@ public extension WatchSessionManager {
                 AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication, withContext: nil)
             case .AppContext:
                 print("appContext")
-                AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
+                
+                for site in AppDataManageriOS.sharedInstance.sites {
+                    fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                        AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                    })
+                }
+                
+                // AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
 
             default:
                 print("default")
@@ -203,7 +210,6 @@ public extension WatchSessionManager {
 
                 break
         }
-        
     }
     
     public func session(session: WCSession, didReceiveMessageData messageData: NSData, replyHandler: (NSData) -> Void) {

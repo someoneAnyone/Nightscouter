@@ -1,4 +1,4 @@
-//
+ //
 //  File.swift
 //  Nightscouter
 //
@@ -346,8 +346,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         }
     }
     
-    func generateSite() -> Site {
+    public func generateSite() -> Site {
         let url = NSURL(string: urlString)!
-        return Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: self.uuid)!)!
+        let site = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: self.uuid)!)!
+        
+        return site
     }
 }

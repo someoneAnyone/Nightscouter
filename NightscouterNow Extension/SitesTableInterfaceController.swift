@@ -13,30 +13,15 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
-    var models = [WatchModel]() {
-        didSet {
-            updateTableData()
-        }
-    }
-    
-    
-    var updateUITimer: NSTimer?
-    
-    var delayTimer = NSTimer()
-    var delayRequestForNow: Bool = false {
-        didSet {
-            delayTimer.invalidate()
-            if delayRequestForNow {
-                delayTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateData"), userInfo: "timer", repeats: true)
-            }
-        }
-    }
+    var models: [WatchModel] = WatchSessionManager.sharedManager.models
     
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
@@ -44,15 +29,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         setupNotifications()
-        models = WatchSessionManager.sharedManager.models
-        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 * 5, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-
-        updateData(forceRefresh: false)
-    }
-    
-    func updateDataNotification(timer: NSTimer?) -> Void {
         updateTableData()
     }
     
@@ -80,45 +56,32 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     private func updateTableData() {
-        
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            
             print(">>> Entering \(__FUNCTION__) <<<")
             
-            let rowTypeIdentifier: String = "SiteRowController"
-            print("models.count = \(self.models.count)")
+            let rowSiteTypeIdentifier: String = "SiteRowController"
+            let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
             
             if self.models.isEmpty {
-                self.sitesTable.setNumberOfRows(1, withRowType: "SiteEmptyRowController")
+                self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
                 let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
                 if let row = row {
                     row.messageLabel.setText("No sites availble.")
                 }
                 
             } else {
-                self.sitesTable.setNumberOfRows(self.models.count, withRowType: rowTypeIdentifier)
+                self.sitesTable.setNumberOfRows(self.models.count, withRowType: rowSiteTypeIdentifier)
                 for (index, model) in self.models.enumerate() {
                     if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
                         row.model = model
                     }
                 }
-                
             }
-            
         }
     }
     
-    
-    func dataSourceDidUpdateSiteModel(model: WatchModel, atIndex index: Int) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        self.delayRequestForNow = model.warn
-        
-        models[index] = model
-    }
-    
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        self.models = models
+        updateTableData()
     }
     
     func didUpdateItem(model: WatchModel) {
@@ -133,20 +96,26 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        for (index, model) in models.enumerate() where !delayRequestForNow {
-            
-            let url = NSURL(string: model.urlString)!
-            let siteToLoad = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
-            
-            fetchSiteData(forSite: siteToLoad, index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                
-                let updatedModel = WatchModel(fromSite: returnedSite)
-                self.dataSourceDidUpdateSiteModel(updatedModel, atIndex: index)
-                WatchSessionManager.sharedManager.updateModel(updatedModel)
-            })
+        var sessionReachable :Bool = false
+        
+        if #available(iOSApplicationExtension 9.0, *) {
+            sessionReachable = WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext)
+        }
+        
+        if !sessionReachable {
+            for (index, model) in models.enumerate() {
+                if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast) || refresh {
+                    fetchSiteData(forSite: model.generateSite(), index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                        
+                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                            let updatedModel = returnedSite.viewModel
+                            WatchSessionManager.sharedManager.updateModel(updatedModel)
+                        })
+                    })
+                }
+            }
         }
     }
-    
     
     @IBAction func updateButton() {
         updateData(forceRefresh: true)
@@ -155,10 +124,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        guard let dict = userInfo?["model"] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+        guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
             return
         }
+        
         NSOperationQueue.mainQueue().addOperationWithBlock {
+            self.dismissController()
             self.pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
         }
     }

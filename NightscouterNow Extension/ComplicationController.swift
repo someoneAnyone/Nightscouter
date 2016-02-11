@@ -10,21 +10,21 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
+class ComplicationController: NSObject, CLKComplicationDataSource {//, DataSourceChangedDelegate {
     
-    override init() {
-        super.init()
-        WatchSessionManager.sharedManager.startSession()
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-    }
+//    override init() {
+//        super.init()
+//        WatchSessionManager.sharedManager.startSession()
+//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+//    }
+//    
+//    deinit {
+//        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+//    }
     
-    deinit {
-        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-    }
-    
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        ComplicationController.reloadComplications()
-    }
+//    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+//        // ComplicationController.reloadComplications()
+//    }
     
     // MARK: - Timeline Configuration
     
@@ -82,7 +82,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     func getTimelineEntriesForComplication(complication: CLKComplication, beforeDate date: NSDate, limit: Int, withHandler handler: ([CLKComplicationTimelineEntry]?) -> Void) {
         // Call the handler with the timeline entries prior to the given date
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print("complication: \(complication.family)")
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -108,7 +109,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     func getTimelineEntriesForComplication(complication: CLKComplication, afterDate date: NSDate, limit: Int, withHandler handler: (([CLKComplicationTimelineEntry]?) -> Void)) {
         // Call the handler with the timeline entries after to the given date
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -185,6 +186,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             WatchSessionManager.sharedManager.updateComplication()
         }
         
+        ComplicationController.reloadComplications()
     }
     
     func requestedUpdateBudgetExhausted() {
@@ -200,7 +202,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     func getPlaceholderTemplateForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
             // print("complication family: \(complication.family)")
         #endif
         

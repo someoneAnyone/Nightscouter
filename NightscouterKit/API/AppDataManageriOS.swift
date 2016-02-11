@@ -23,10 +23,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             #endif
             
             // Create NSData and store it to nsdefaults.
-            let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+            // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+            // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
             
-            let models: [[String : AnyObject]] = sites.flatMap( { WatchModel(fromSite: $0).dictionary } )
+            let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
             
             // createComplication()
@@ -191,13 +191,14 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         return true
     }
-
+    
     public func updateWatch(withAction action: WatchAction, withContext context:[String: AnyObject]? = nil) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
             // print("Please \(action) the watch with the \(sites)")
         #endif
         
+      
         // Create a generic context to transfer to the watch.
         var payload = [String: AnyObject]()
         
@@ -207,28 +208,28 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
         payload[WatchModel.PropertyKey.contextKey] = context ?? defaults.dictionaryRepresentation()
-    
+        
         if #available(iOSApplicationExtension 9.0, *) {
             WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
         }
         
-//        if #available(iOSApplicationExtension 9.0, *) {
-//            switch action {
-//                
-//            default:
-//                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
-//                    WatchSessionManager.sharedManager.sendMessage(payload, replyHandler: { (reply) -> Void in
-//                        print("recieved reply: \(reply)")
-//                        }) { (error) -> Void in
-//                            print("recieved an error: \(error)")
-//                            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-//                    }
-//                } else {
-//                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-//                }
-//            }
-//            
-//        }
+        //        if #available(iOSApplicationExtension 9.0, *) {
+        //            switch action {
+        //
+        //            default:
+        //                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
+        //                    WatchSessionManager.sharedManager.sendMessage(payload, replyHandler: { (reply) -> Void in
+        //                        print("recieved reply: \(reply)")
+        //                        }) { (error) -> Void in
+        //                            print("recieved an error: \(error)")
+        //                            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+        //                    }
+        //                } else {
+        //                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+        //                }
+        //            }
+        //
+        //        }
     }
     
     public func siteForComplication() -> Site? {
