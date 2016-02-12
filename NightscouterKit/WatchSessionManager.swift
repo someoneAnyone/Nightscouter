@@ -12,10 +12,8 @@ import WatchConnectivity
 public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public static let sharedManager = WatchSessionManager()
-    
     private override init() {
         super.init()
-        // startSession()
     }
     
     private let session: WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
@@ -78,17 +76,22 @@ public extension WatchSessionManager {
 extension WatchSessionManager {
     
     public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
-        
-        return validSession?.complicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : nil
+        #if DEBUG
+            print("transferCurrentComplicationUserInfo")
+            // print("transferUserInfo: \(userInfo)")
+        #endif
+        let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
+        return validSession?.transferCurrentComplicationUserInfo(userInfo)
     }
     
     // Sender
     public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
+            print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
         #endif
         let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
-
+        
         return validSession?.transferUserInfo(userInfo)
     }
     
@@ -181,39 +184,34 @@ public extension WatchSessionManager {
             print("No action was found, didReceiveMessage: \(message)")
             return
         }
-            // make sure to put on the main queue to update UI!
-            switch action {
-
-            case .UpdateComplication:
-                AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication, withContext: nil)
-            case .AppContext:
-                print("appContext")
+        // make sure to put on the main queue to update UI!
+        switch action {
+            
+        case .UpdateComplication:
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication, withContext: nil)
+        case .AppContext:
+            print("appContext")
+            
+            
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
+            
+        default:
+            print("default")
+            guard let payload = message[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
+                print("No payload was found.")
                 
-                for site in AppDataManageriOS.sharedInstance.sites {
-                    fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                        AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                    })
-                }
-                
-                // AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
-
-            default:
-                print("default")
-                guard let payload = message[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
-                    print("No payload was found.")
-                    
-                    print(message)
-                    break
-                }
-                
-                AppDataManageriOS.sharedInstance.processApplicationContext(payload)
-
+                print(message)
                 break
+            }
+            
+            AppDataManageriOS.sharedInstance.processApplicationContext(payload)
+            
+            break
         }
     }
     
     public func session(session: WCSession, didReceiveMessageData messageData: NSData, replyHandler: (NSData) -> Void) {
-
+        
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
             print("session: \(session), messageData: \(messageData)")

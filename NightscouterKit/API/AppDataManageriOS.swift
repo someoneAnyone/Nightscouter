@@ -23,15 +23,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             #endif
             
             // Create NSData and store it to nsdefaults.
-            // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-            // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+             let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+             defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
             
             let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
-            
-            // createComplication()
-            
-            //updateWatch(withAction: .UserInfo, withSites: self.sites)
         }
     }
     
@@ -52,7 +48,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public var defaultSite: NSUUID? {
         set {
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
-            // createComplication()
         }
         get {
             guard let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String else {
@@ -80,16 +75,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         defaults.setObject("iOS", forKey: "osPlatform")
         
-        // updateWatch(withAction: .UserInfo, withSites: sites)
-        
-        
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: Selector("userDefaultsDidChange:"),
             name: NSUserDefaultsDidChangeNotification,
             object: nil)
-        
-        
     }
     
     public func addSite(site: Site, index: Int?) {
@@ -198,7 +188,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             // print("Please \(action) the watch with the \(sites)")
         #endif
         
-      
         // Create a generic context to transfer to the watch.
         var payload = [String: AnyObject]()
         
@@ -210,26 +199,23 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         payload[WatchModel.PropertyKey.contextKey] = context ?? defaults.dictionaryRepresentation()
         
         if #available(iOSApplicationExtension 9.0, *) {
-            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+            
+            switch action {
+            case .AppContext:
+                WatchSessionManager.sharedManager.sendMessage(payload, replyHandler: { (reply) -> Void in
+                    print("recieved reply: \(reply)")
+                    }) { (error) -> Void in
+                        print("recieved an error: \(error)")
+                        
+                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+                }
+                
+            default:
+                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
+                lastWatchUpdateDate = NSDate()
+            }
         }
         
-        //        if #available(iOSApplicationExtension 9.0, *) {
-        //            switch action {
-        //
-        //            default:
-        //                if WatchSessionManager.sharedManager.validReachableSession?.reachable == true {
-        //                    WatchSessionManager.sharedManager.sendMessage(payload, replyHandler: { (reply) -> Void in
-        //                        print("recieved reply: \(reply)")
-        //                        }) { (error) -> Void in
-        //                            print("recieved an error: \(error)")
-        //                            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-        //                    }
-        //                } else {
-        //                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-        //                }
-        //            }
-        //
-        //        }
     }
     
     public func siteForComplication() -> Site? {
@@ -247,6 +233,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 return
             })
         }
+    }
+    
+    var lastWatchUpdateDate: NSDate = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime.inThePast)
+    var nextWatchUpdateDate: NSDate {
+        return lastWatchUpdateDate.dateByAddingTimeInterval(60.0 * 1)
     }
     
     func userDefaultsDidChange(notification: NSNotification) {

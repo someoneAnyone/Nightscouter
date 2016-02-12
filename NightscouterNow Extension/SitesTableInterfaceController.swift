@@ -13,23 +13,25 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
-    var models: [WatchModel] = WatchSessionManager.sharedManager.models
+    var models: [WatchModel] = []
     
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
         
+        models = WatchSessionManager.sharedManager.models
+        
         setupNotifications()
         updateTableData()
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func didDeactivate() {
@@ -81,6 +83,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        self.models = models
         updateTableData()
     }
     
@@ -96,23 +99,13 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        var sessionReachable :Bool = false
-        
-        if #available(iOSApplicationExtension 9.0, *) {
-            sessionReachable = WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext)
-        }
-        
-        if !sessionReachable {
-            for (index, model) in models.enumerate() {
-                if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast) || refresh {
-                    fetchSiteData(forSite: model.generateSite(), index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                        
-                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                            let updatedModel = returnedSite.viewModel
-                            WatchSessionManager.sharedManager.updateModel(updatedModel)
-                        })
-                    })
-                }
+        for (index, model) in models.enumerate() {
+            
+            if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast) || refresh {
+                fetchSiteData(forSite: model.generateSite(), index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+                    let updatedModel = returnedSite.viewModel
+                    WatchSessionManager.sharedManager.updateModel(updatedModel)
+                })
             }
         }
     }
@@ -125,6 +118,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+            
             return
         }
         

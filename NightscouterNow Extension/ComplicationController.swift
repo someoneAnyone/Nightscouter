@@ -10,21 +10,21 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource {//, DataSourceChangedDelegate {
+class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
     
-//    override init() {
-//        super.init()
-//        WatchSessionManager.sharedManager.startSession()
-//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-//    }
-//    
-//    deinit {
-//        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-//    }
+    override init() {
+        super.init()
+        WatchSessionManager.sharedManager.startSession()
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+
+    deinit {
+        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+    }
     
-//    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-//        // ComplicationController.reloadComplications()
-//    }
+    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        ComplicationController.reloadComplications()
+    }
     
     // MARK: - Timeline Configuration
     
@@ -53,8 +53,16 @@ class ComplicationController: NSObject, CLKComplicationDataSource {//, DataSourc
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
-        let model = WatchSessionManager.sharedManager.complicationData.first
-        date = model?.date.dateByAddingTimeInterval(60.0 * 5)
+        
+        guard let model = WatchSessionManager.sharedManager.complicationData.first else {
+            handler(date)
+            return
+        }
+        
+        let fiveMinFromLastUpdate = model.date.dateByAddingTimeInterval(60.0 * 5)
+        if fiveMinFromLastUpdate.compare(NSDate()) == .OrderedDescending {
+            date = fiveMinFromLastUpdate
+        }
         
         #if DEBUG
             print("getTimelineEndDateForComplication:\(date)")
@@ -181,12 +189,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {//, DataSourc
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: WatchAction.UpdateComplication) {
-        } else {
-            WatchSessionManager.sharedManager.updateComplication()
-        }
-        
-        ComplicationController.reloadComplications()
+       WatchSessionManager.sharedManager.updateComplication()
     }
     
     func requestedUpdateBudgetExhausted() {
@@ -253,6 +256,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {//, DataSourc
         
         handler(template)
     }
+    
+    // MARK: Create Complication Templates
     
     private func templateForComplication(complication: CLKComplication, model: ComplicationModel) -> CLKComplicationTemplate? {
         #if DEBUG
