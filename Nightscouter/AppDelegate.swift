@@ -55,31 +55,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     }
     
-    func applicationWillEnterForeground(application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        
-        // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    }
-    
     func applicationDidBecomeActive(application: UIApplication) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        // application.idleTimerDisabled = AppDataManager.sharedInstance.shouldDisableIdleTimer
         //WatchSessionManager.sharedManager.startSession()
         
         updateDataNotification(nil)
     }
     
-    func applicationWillTerminate(application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
     
     // MARK: Background Fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
@@ -91,33 +76,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             if site.uuid == AppDataManageriOS.sharedInstance.defaultSite {
                 fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                    self.scheduleLocalNotification(returnedSite
-                    
-                    )
-
+                    // self.scheduleLocalNotification(returnedSite)
                 })
             }
-//            } else {
-//                
-//                let nsApi = NightscoutAPIClient(url: site.url)
-//                nsApi.fetchServerConfiguration { (result) -> Void in
-//                    switch (result) {
-//                    case let .Error(error):
-//                        // display error message
-//                        print("error: \(error)")
-//                        break
-//                    case let .Value(boxedConfiguration):
-//                        let configuration:ServerConfiguration = boxedConfiguration.value
-//                        nsApi.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
-//                            site.configuration = configuration
-//                            site.watchEntry = watchEntry
-//                            AppDataManageriOS.sharedInstance.updateSite(site)
-//                            
-//                            // self.scheduleLocalNotification(site)
-//                        })
-//                    }
-//                }
-//            }
         }
         
         // Always return NewData.
@@ -149,13 +110,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         processLocalNotification(notification)
     }
-    
-    
-    
-    
-    
-    
-    
     
     
     // MARK: Custom Methods
@@ -226,6 +180,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func createUpdateTimer() -> NSTimer {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
+        
         return localTimer
     }
     
@@ -291,8 +246,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         UIApplication.sharedApplication().cancelAllLocalNotifications()
     }
     
-    
-    
     var supportedSchemes: [String]? {
         if let info = infoDictionary {
             var schemes = [String]() // Create an empty array we can later set append available schemes.
@@ -307,8 +260,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
                 }
             }
         }
+        
         return nil
     }
-    
-    
 }

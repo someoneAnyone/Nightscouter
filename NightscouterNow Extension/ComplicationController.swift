@@ -59,9 +59,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             return
         }
         
-        let fiveMinFromLastUpdate = model.date.dateByAddingTimeInterval(60.0 * 5)
-        if fiveMinFromLastUpdate.compare(NSDate()) == .OrderedDescending {
-            date = fiveMinFromLastUpdate
+        let staleDate = model.date.dateByAddingTimeInterval(60.0 * 15)
+        if staleDate.compare(NSDate()) == .OrderedDescending {
+            date = staleDate
         }
         
         #if DEBUG
