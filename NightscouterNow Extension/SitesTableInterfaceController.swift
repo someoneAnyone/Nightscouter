@@ -31,6 +31,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
                 
         setupNotifications()
+        
         updateTableData()
     }
     
@@ -52,6 +53,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         // create object.
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
+    
         let model = models[rowIndex]
         
         pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
@@ -77,13 +79,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                     if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
                         row.model = model
                     }
+                    self.updateData([model], forceRefresh: false)
                 }
             }
         }
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        // self.models = models
+
         updateTableData()
     }
     
@@ -97,13 +100,13 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataStaleUpdate(notif: NSNotification) {
-        updateData(forceRefresh: false)
+        updateData(self.models, forceRefresh: true)
     }
     
-    func updateData(forceRefresh refresh: Bool) {
+    func updateData(models: [WatchModel], forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
         for model in models {
-            if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending || refresh {
+            if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                     WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                     self.updateTableData()
@@ -113,7 +116,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     @IBAction func updateButton() {
-        updateData(forceRefresh: true)
+        updateData(self.models, forceRefresh: true)
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {

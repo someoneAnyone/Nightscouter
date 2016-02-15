@@ -40,7 +40,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
             if let model = model {
                 print("didSet WatchModel in SiteDetailInterfaceController")
                 print("lastReadingDate: " + model.lastReadingDate.description)
-                if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending {
+                if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
                     print("time to update")
                     updateData()
                 }

@@ -16,8 +16,8 @@ public protocol DataSourceChangedDelegate {
 
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
+ 
     public var sites: [Site] = []
-    
     
     public var models: [WatchModel] = [] {
         didSet{
@@ -29,7 +29,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 defaultSiteUUID = NSUUID(UUIDString: (models.first?.uuid)!)
             }
             
-            
             dispatch_async(dispatch_get_main_queue()) { [weak self] in
                 self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
             }
@@ -37,6 +36,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             saveData()
         }
     }
+    
     public var currentSiteIndex: Int = 0
     
     public var defaultSiteUUID: NSUUID? {
@@ -281,12 +281,6 @@ extension WatchSessionManager {
         return NSDate(timeIntervalSinceNow: updateInterval)
     }
     
-    public var nextRefreshDate: NSDate {
-        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime.inThePast)
-        print("nextRefreshDate: " + date.description)
-        return date
-    }
-    
     public var complicationData: [ComplicationModel] {
         get {
             return self.defaultModel()?.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) } ?? []
@@ -296,7 +290,7 @@ extension WatchSessionManager {
     public func updateComplication() {
         print("updateComplication")
         if let model = self.defaultModel() {
-            if model.lastReadingDate.compare(nextRefreshDate) == .OrderedAscending {
+            if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                         self.updateModel(returnedSite.viewModel)
                         ComplicationController.reloadComplications()

@@ -53,6 +53,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let lastReadingDate: NSDate
     public let lastReadingColor: String
     
+    public var nextReadingDate: NSDate {
+        return  lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
+    }
+    
     // Battery in precentage, for example 1% - 100%. Will change color once below 20%.
     public let batteryString: String
     public let batteryColor: String

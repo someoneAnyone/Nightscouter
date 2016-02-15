@@ -172,7 +172,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         // WatchSessionManager.sharedManager.updateComplication()
         if let model = WatchSessionManager.sharedManager.defaultModel() {
-            if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending {
+            if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                     WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                     ComplicationController.reloadComplications()
