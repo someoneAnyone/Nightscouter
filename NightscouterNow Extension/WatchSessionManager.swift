@@ -148,6 +148,8 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             if models.isEmpty {
                 requestLatestAppContext(watchAction: .AppContext)
             }
+            
+            //updateComplication()
         }
     }
     

@@ -288,7 +288,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 }
                 
                 if key == DefaultKey.currentSiteIndexKey {
-                    
                     currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as! Int
                 }
             }
