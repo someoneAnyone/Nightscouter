@@ -46,15 +46,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         self.timer?.invalidate()
     }
     
-    func applicationDidEnterBackground(application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-        #endif
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
-    }
-    
     func applicationDidBecomeActive(application: UIApplication) {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
@@ -120,12 +111,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     // AppDataManagerNotificationDidChange Handler
     func dataManagerDidChange(notification: NSNotification) {
-        guard let currentUserNotificationSettings =  UIApplication.sharedApplication().currentUserNotificationSettings() where !sites.isEmpty else {
+        guard let _ =  UIApplication.sharedApplication().currentUserNotificationSettings() where !sites.isEmpty else {
             setupNotificationSettings()
+            
             return
         }
         
-        print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
+        // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
     
     // MARK: Custom Methods

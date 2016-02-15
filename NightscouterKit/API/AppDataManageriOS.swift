@@ -56,6 +56,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
+    public var nextRefreshDate: NSDate {
+        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime.inThePast)
+        print("nextRefreshDate: " + date.description)
+        return date
+    }
     
     // MARK: Save and Load Data
     public func saveData() {

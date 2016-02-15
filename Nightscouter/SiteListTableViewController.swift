@@ -233,7 +233,7 @@ class SiteListTableViewController: UITableViewController {
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
                 AppDataManageriOS.sharedInstance.updateSite(site)
-                self.refreshDataFor(site, index: selectedIndexPath.row, force: true)
+                self.refreshDataFor(site, index: selectedIndexPath.row)
                 //tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
@@ -296,7 +296,9 @@ class SiteListTableViewController: UITableViewController {
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
+        if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || lastUpdatedTime == nil || site.configuration == nil) {
+//
+//        if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
             // No configuration was there... go get some.
             // println("Attempting to get configuration data from site...")
             refreshDataFor(site, index: indexPath.row)
@@ -323,7 +325,7 @@ class SiteListTableViewController: UITableViewController {
                 tableView.setContentOffset(CGPointMake(0, tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
             for (index, site) in sites.enumerate() {
-                refreshDataFor(site, index: index, force:  true)
+                refreshDataFor(site, index: index)
             }
             
         } else {
@@ -332,10 +334,9 @@ class SiteListTableViewController: UITableViewController {
         }
     }
     
-    func refreshDataFor(site: Site, index: Int, force: Bool = false){
+    func refreshDataFor(site: Site, index: Int){
         
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
-        
         
         fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             defer {
@@ -352,8 +353,12 @@ class SiteListTableViewController: UITableViewController {
             
             switch error {
             case .NoError:
-                self.lastUpdatedTime = returnedSite.lastConnectedDate
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    
+                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                    
+                })
                 return
                 
             default:
@@ -362,16 +367,7 @@ class SiteListTableViewController: UITableViewController {
                     self.presentAlertDialog(site.url, index: index, error: err.description)
                 })
             }
-            //            if let errorTy = error where errorTy != .NoError {
-            //                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-            //                    self.presentAlertDialog(site.url, index: index, error: error)
-            //                })
-            //
-            //
-            //            } else {
-            //                self.lastUpdatedTime = returnedSite.lastConnectedDate
-            //                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
-            //            }
+        
         }
     }
     
@@ -392,7 +388,7 @@ class SiteListTableViewController: UITableViewController {
             site.disabled = false
             AppDataManageriOS.sharedInstance.updateSite(site)
             
-            self.refreshDataFor(site, index: indexPath.row, force: true)
+            self.refreshDataFor(site, index: indexPath.row)
             // self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         alertController.addAction(retryAction)

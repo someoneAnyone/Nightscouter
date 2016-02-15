@@ -125,6 +125,7 @@ extension SiteDetailViewController {
     func updateData() {
         
         if let site = self.site {
+            
             self.siteActivityView?.startAnimating()
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
@@ -182,18 +183,8 @@ extension SiteDetailViewController {
                     // Reload the webview.
                     self.siteWebView?.reload()
                 })
-                
-                
-                //                if let error = returnedError {
-                ////                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                //                        print("error: \(error)")
-                //                        self.navigationController?.popViewControllerAnimated(true)
-                ////                    })
-                //
-                //                }
             })
         }
-        
     }
     
     func loadWebView () {
