@@ -9,9 +9,10 @@
 import Foundation
 
 let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
+let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
 
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
-    dispatch_async(dispatch_get_global_queue(Int(0), 0)) {
+    dispatch_async(queue) {
         print(">>> Entering \(__FUNCTION__) <<<")
         print("Loading all site data for site: \(site.url)")
         let group: dispatch_group_t = dispatch_group_create()
@@ -72,13 +73,18 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
             
         }
         
-        dispatch_group_notify(group, dispatch_get_main_queue()) {
-            print("All network operations are complete.")
-            
+        let group2: dispatch_group_t = dispatch_group_create()
+        dispatch_group_enter(group2)
+        dispatch_group_notify(group, queue) {
             print("Generate Timeline data for Complication")
             let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
             site.complicationModels = complicationModels
+            dispatch_group_leave(group2)
 
+        }
+        
+        dispatch_group_notify(group2, dispatch_get_main_queue()) {
+            print("All network operations are complete.")
             handler(returnedSite: site, error: errorToReturn)
         }
     }

@@ -1,3 +1,5 @@
+
+
 //
 //  SitesTableInterfaceController.swift
 //  Nightscouter
@@ -60,6 +62,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     private func updateTableData() {
+        print(">>> Entering \(__FUNCTION__) <<<")
+
+        
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             print(">>> Entering \(__FUNCTION__) <<<")
             
@@ -108,8 +113,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         for model in models {
             if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+
                     WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                    self.updateTableData()
+//                    self.updateTableData()
+                    }
                 })
             }
         }
