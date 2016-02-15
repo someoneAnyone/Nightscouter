@@ -29,17 +29,12 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view from its nib.
-        // tableView.rowHeight = UITableViewAutomaticDimension
+
         tableView.backgroundColor = UIColor.clearColor()
         
-        if let  sitesData = AppDataManageriOS.sharedInstance.defaults.dataForKey(DefaultKey.sitesArrayObjectsKey) {
-            if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
-                sites = sitesArray
-            }
+        if let models = AppDataManageriOS.sharedInstance.defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+            sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
-        
-        // sites = AppDataManager.sharedInstance.sites
         
         let itemCount = sites.isEmpty ? 1 : sites.count
         
@@ -93,7 +88,10 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             let site = sites[indexPath.row]
             
             contentCell.configureCell(site)
-            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
+            
+            if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || lastUpdatedTime == nil || site.configuration == nil) {
+
+//            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
                 // No configuration was there... go get some.
                 // println("Attempting to get configuration data from site...")
                 refreshDataFor(site, index: indexPath.row)
@@ -117,8 +115,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             for (index, site) in sites.enumerate() {
                 refreshDataFor(site, index: index)
             }
-        } else {
-            // No data in the sites array. Cancel the refreshing!
         }
     }
     
@@ -130,10 +126,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             switch error {
                 
             case .NoError :
-                self.lastUpdatedTime = returnedSite.lastConnectedDate
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
                 
-                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                    
+                    AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
+                })
+                
+                AppDataManageriOS.sharedInstance.saveData()
                 
             default:
                 print("\(__FUNCTION__) ERROR recieved: \(error.description)")
