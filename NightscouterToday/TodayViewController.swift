@@ -125,21 +125,20 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     func refreshDataFor(site: Site, index: Int){
         // Start up the API
         
-        fetchSiteData(forSite: site, index: index, forceRefresh: true, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             
-            if let error = returnedError {
-                print("\(__FUNCTION__) ERROR recieved: \(error)")
+            switch error {
                 
-            } else {
-                if let returnedIndex = returnedIndex {
-                    
-                    self.lastUpdatedTime = returnedSite.lastConnectedDate
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex, inSection: 0)], withRowAnimation: .Automatic)
-                    
-                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                }
+            case .NoError :
+                self.lastUpdatedTime = returnedSite.lastConnectedDate
+                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                
+                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                
+            default:
+                print("\(__FUNCTION__) ERROR recieved: \(error.description)")
             }
-        })
+        }
     }
     
     func openApp(with indexPath: NSIndexPath) {

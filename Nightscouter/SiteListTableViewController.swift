@@ -233,7 +233,8 @@ class SiteListTableViewController: UITableViewController {
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
                 AppDataManageriOS.sharedInstance.updateSite(site)
-                tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
+                self.refreshDataFor(site, index: selectedIndexPath.row, force: true)
+                //tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
@@ -336,7 +337,7 @@ class SiteListTableViewController: UITableViewController {
         UIApplication.sharedApplication().networkActivityIndicatorVisible = true
         
         
-        fetchSiteData(forSite: site, index: index, forceRefresh: force, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
+        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
                 
@@ -349,24 +350,36 @@ class SiteListTableViewController: UITableViewController {
                 
             }
             
-            if let error = returnedError {
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    self.presentAlertDialog(site.url, index: index, error: error)
-                })
-                
-                
-            } else {
+            switch error {
+            case .NoError:
                 self.lastUpdatedTime = returnedSite.lastConnectedDate
-                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
+                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                return
+                
+            default:
+                let err = error
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    self.presentAlertDialog(site.url, index: index, error: err.description)
+                })
             }
-        })
+            //            if let errorTy = error where errorTy != .NoError {
+            //                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            //                    self.presentAlertDialog(site.url, index: index, error: error)
+            //                })
+            //
+            //
+            //            } else {
+            //                self.lastUpdatedTime = returnedSite.lastConnectedDate
+            //                self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: returnedIndex!, inSection: 0)], withRowAnimation: .Automatic)
+            //            }
+        }
     }
     
     
     // Attempt to handle an error.
-    func presentAlertDialog(siteURL:NSURL, index: Int, error: NSError) {
+    func presentAlertDialog(siteURL:NSURL, index: Int, error: String) {
         
-        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: Constants.LocalizedString.uiAlertBadSiteMessage.localized, siteURL, error.localizedDescription), preferredStyle: .Alert)
+        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: Constants.LocalizedString.uiAlertBadSiteMessage.localized, siteURL, error), preferredStyle: .Alert)
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
             // ...
@@ -379,7 +392,8 @@ class SiteListTableViewController: UITableViewController {
             site.disabled = false
             AppDataManageriOS.sharedInstance.updateSite(site)
             
-            self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.refreshDataFor(site, index: indexPath.row, force: true)
+            // self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         alertController.addAction(retryAction)
         

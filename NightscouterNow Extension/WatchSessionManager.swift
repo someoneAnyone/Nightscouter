@@ -16,77 +16,128 @@ public protocol DataSourceChangedDelegate {
 
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
+    public var sites: [Site] = []
     
-    private let sharedDefaults = NSUserDefaults(suiteName: "group.com.nothingonline.nightscouter")
+    
+    public var models: [WatchModel] = [] {
+        didSet{
+            
+            if models.isEmpty {
+                defaultSiteUUID = nil
+                currentSiteIndex = 0
+            } else if defaultSiteUUID == nil {
+                defaultSiteUUID = NSUUID(UUIDString: (models.first?.uuid)!)
+            }
+            
+            
+            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+            }
+            
+            saveData()
+        }
+    }
+    public var currentSiteIndex: Int = 0
+    
+    public var defaultSiteUUID: NSUUID? {
+        didSet{
+            updateComplication()
+        }
+    }
+    
+    public func defaultModel() -> WatchModel? {
+        
+        let uuidString = defaultSiteUUID?.UUIDString
+        let matched = self.models.filter({ (model) -> Bool in
+            return model.uuid == uuidString
+        })
+        
+        return matched.first ?? models.first
+    }
     
     public static let sharedManager = WatchSessionManager()
     
     private override init() {
         super.init()
-        sharedDefaults?.setObject("watchOS", forKey: DefaultKey.osPlatform)
         
-        // Register for settings changes as store might have changed
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("userDefaultsDidChange:"), name: NSUserDefaultsDidChangeNotification, object: nil)
+        loadData()
     }
     
     deinit {
+        saveData()
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func userDefaultsDidChange(notification: NSNotification) {
-        if let _ = notification.object as? NSUserDefaults {
-            print("Defaults Changed update delegates")
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
-            }
-        }
+    private struct SharedAppGroupKey {
+        static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
     
-    public var models: [WatchModel] {
-        set{
-            let dictArray = newValue.map{ $0.dictionary }
-            sharedDefaults?.setObject(dictArray, forKey: DefaultKey.modelArrayObjectsKey)
-        }
-        get {
-            guard let dictArray = sharedDefaults?.objectForKey(DefaultKey.modelArrayObjectsKey) as? Array<[String: AnyObject]> else {
-                
-                return []
-            }
-            
-            return dictArray.flatMap{ WatchModel(fromDictionary: $0) }
-        }
+    public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
+    
+    public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
+    
+    // MARK: Save and Load Data
+    private func saveData() {
+        
+        let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+        defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        
+        let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
+        
+        defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
+        defaults.setObject("watchOS", forKey: DefaultKey.osPlatform)
+        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        
+        // Save To iCloud
+        iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
+        iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
+        iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        iCloudKeyStore.synchronize()
+        
     }
     
-    public var defaultSite: NSUUID? {
-        set {
-            sharedDefaults?.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
-            updateComplication()
+    public func loadData() {
+        
+        currentSiteIndex = defaults.integerForKey(DefaultKey.currentSiteIndexKey)
+        
+        if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+            self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
-        get {
-            guard let uuidString = sharedDefaults?.objectForKey(DefaultKey.defaultSiteKey) as? String else {
-                if let firstModel = models.first {
-                    let newUUID = firstModel.uuid
-                    sharedDefaults?.setObject(newUUID, forKey: DefaultKey.defaultSiteKey)
-                    
-                    return  NSUUID(UUIDString: newUUID)
-                }
-                
-                return nil
-            }
-            
-            return NSUUID(UUIDString: uuidString)
+        
+        if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
+            self.defaultSiteUUID =  NSUUID(UUIDString: uuidString)
+        } else  if let firstModel = sites.first {
+            self.defaultSiteUUID = firstModel.uuid
         }
+        
+        /*
+        // Register for settings changes as store might have changed
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: Selector("userDefaultsDidChange:"),
+            name: NSUserDefaultsDidChangeNotification,
+            object: defaults)
+        */
+        
+        NSNotificationCenter.defaultCenter().addObserver(self,
+            selector: "ubiquitousKeyValueStoreDidChange:",
+            name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
+            object: iCloudKeyStore)
+        
+        iCloudKeyStore.synchronize()
     }
     
     private let session: WCSession = WCSession.defaultSession()
     
-    public func updateModel(site: WatchModel)  ->  Bool {
-        if let index = models.indexOf(site) {
-            models[index] = site
+    public func updateModel(model: WatchModel)  ->  Bool {
+        if let index = models.indexOf(model) {
+            models[index] = model
             return true
         }
         
         return false
+        
     }
     
     public func startSession() {
@@ -98,6 +149,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 requestLatestAppContext(watchAction: .AppContext)
             }
         }
+    }
+    
+    public func endSession() {
+        saveData()
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
@@ -166,10 +221,6 @@ extension WatchSessionManager {
                 print("WatchSession Transfer Error: \(error)")
                 
                 returnBool = false
-                
-                dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                    self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
-                }
         })
         
         return returnBool
@@ -189,7 +240,7 @@ extension WatchSessionManager {
         // Playload holds the default's dictionary from the iOS...
         guard let payload = context[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
             print("No payload was found.")
-            print(context)
+            // print("Incoming context: \(context)")
             
             return false
         }
@@ -204,8 +255,8 @@ extension WatchSessionManager {
         }
         */
         
-        if let siteArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
-            models = siteArray.map({ WatchModel(fromDictionary: $0)! })
+        if let modelArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
+            models = modelArray.map({ WatchModel(fromDictionary: $0)! })
         }
         
         return true
@@ -215,43 +266,83 @@ extension WatchSessionManager {
 extension WatchSessionManager {
     
     public func complicationRequestedUpdateBudgetExhausted() {
-        sharedDefaults?.setObject(NSDate(), forKey: "requestedUpdateBudgetExhausted")
+        defaults.setObject(NSDate(), forKey: "complicationRequestedUpdateBudgetExhausted")
         updateComplication()
     }
     
-    public func modelForComplication() -> WatchModel? {
-        return self.models.filter({ (model) -> Bool in
-            
-            return model.uuid == defaultSite?.UUIDString
-        }).first
-    }
-    
-    public var nextUpdateDate: NSDate {
+    public var nextRequestedComplicationUpdateDate: NSDate {
         let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.TenMinutesInSeconds
-        if let date = modelForComplication()?.lastReadingDate {
+        if let date = defaultModel()?.lastReadingDate {
             return date.dateByAddingTimeInterval( updateInterval )
         }
         
         return NSDate(timeIntervalSinceNow: updateInterval)
     }
     
+    public var nextRefreshDate: NSDate {
+        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime.inThePast)
+        print("nextRefreshDate: " + date.description)
+        return date
+    }
+    
     public var complicationData: [ComplicationModel] {
         get {
-            
-            return self.modelForComplication()?.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) } ?? []
+            return self.defaultModel()?.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) } ?? []
         }
     }
     
     public func updateComplication() {
-        if let model = self.modelForComplication() {
-            if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast) {
-                fetchSiteData(forSite: model.generateSite(), handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                    self.updateModel(returnedSite.viewModel)
-                    
-                    return
+        print("updateComplication")
+        if let model = self.defaultModel() {
+            if model.lastReadingDate.compare(nextRefreshDate) == .OrderedAscending {
+                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                        self.updateModel(returnedSite.viewModel)
+                        ComplicationController.reloadComplications()
                 })
             }
         }
     }
     
+    
+    /*
+    // MARK: Defaults have Changed
+    func userDefaultsDidChange(notification: NSNotification) {
+        print("userDefaultsDidChange:")
+        
+        // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+    }
+    */
+    
+    func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
+        print("ubiquitousKeyValueStoreDidChange:")
+        
+        guard let userInfo = notification.userInfo as? [String: AnyObject], changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
+            return
+        }
+        let reason = changeReason.integerValue
+        
+        if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
+            let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]
+            let store = NSUbiquitousKeyValueStore.defaultStore()
+            
+            for key in changedKeys {
+                
+                // Update Data Source
+                switch key {
+                case DefaultKey.modelArrayObjectsKey:
+                    if let models = store.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+                        self.models = models.flatMap( { WatchModel(fromDictionary: $0) } )
+                    }
+                case DefaultKey.defaultSiteKey:
+                    if let uuidString = store.stringForKey(DefaultKey.defaultSiteKey) {
+                        self.defaultSiteUUID =  NSUUID(UUIDString: uuidString)
+                    }
+                case DefaultKey.currentSiteIndexKey:
+                    currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as? Int ?? 0
+                default:
+                    break
+                }
+            }
+        }
+    }
 }

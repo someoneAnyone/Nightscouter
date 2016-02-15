@@ -12,6 +12,7 @@ import NightscouterWatchOSKit
 
 protocol SiteDetailViewDidUpdateItemDelegate {
     func didUpdateItem(model: WatchModel)
+    func didSetItemAsDefault(model: WatchModel)
 }
 
 class SiteDetailInterfaceController: WKInterfaceController {
@@ -38,13 +39,12 @@ class SiteDetailInterfaceController: WKInterfaceController {
             
             if let model = model {
                 print("didSet WatchModel in SiteDetailInterfaceController")
-                
-                self.configureView(model)
-                
-//                if (model.lastReadingDate.timeIntervalSinceNow < -Constants.NotableTime.StandardRefreshTime) {
+                print("lastReadingDate: " + model.lastReadingDate.description)
+                if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending {
+                    print("time to update")
                     updateData()
-//                }
-                
+                }
+                self.configureView(model)
             }
         }
     }
@@ -98,12 +98,11 @@ class SiteDetailInterfaceController: WKInterfaceController {
             let url = NSURL(string: model.urlString)!
             let siteToLoad = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
             
-            fetchSiteData(forSite: siteToLoad, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                self.isActive = false
-                self.model = model
-                
-                dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                    self?.delegate?.didUpdateItem(model)
+            fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
+             dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                    self?.isActive = false
+                    self?.model = returnedSite.viewModel
+                    self?.delegate?.didUpdateItem(returnedSite.viewModel)
                 }
                 
             })
@@ -124,9 +123,10 @@ class SiteDetailInterfaceController: WKInterfaceController {
         let batteryColor = UIColor(hexString: model.batteryColor)
         let lastReadingColor = UIColor(hexString: model.lastReadingColor)
         
-        let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
-        
         NSOperationQueue.mainQueue().addOperationWithBlock {
+            
+            let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
+            
             self.setTitle(model.displayName)
             
             self.compassImage.setAlpha(compassAlpha)
@@ -155,7 +155,9 @@ class SiteDetailInterfaceController: WKInterfaceController {
     
     @IBAction func setAsDefaultSite(){
         if let model = self.model {
-            WatchSessionManager.sharedManager.defaultSite = NSUUID(UUIDString: (model.uuid))
+            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                self?.delegate?.didSetItemAsDefault(model)
+            }
         }
     }
     
@@ -171,6 +173,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
             self.awakeWithContext(modelDict)
         }
     }
-
+    
 }
 

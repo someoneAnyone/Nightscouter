@@ -129,9 +129,7 @@ extension SiteDetailViewController {
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             
             
-            fetchSiteData(forSite: site, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                
-                
+            fetchSiteData(site, handler: { (returnedSite, error) -> Void in
                 
                 defer {
                     print("setting networkActivityIndicatorVisible: false and stopping animation.")

@@ -37,7 +37,7 @@ class GlanceController: WKInterfaceController {
         super.willActivate()
         
         // This method is called when watch view controller is about to be visible to user
-        self.model = WatchSessionManager.sharedManager.modelForComplication()
+        self.model = WatchSessionManager.sharedManager.defaultModel()
         
         modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateModel", userInfo: nil, repeats: true)
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
@@ -55,9 +55,10 @@ class GlanceController: WKInterfaceController {
     
     func updateModel(){
         if let safemodel = model {
-            loadDataFor(safemodel, replyHandler: { (returnedModel) -> Void in
-                self.model = returnedModel
-                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: returnedModel.dictionary], webpageURL: NSURL(string: returnedModel.urlString)!)
+            fetchSiteData(safemodel.generateSite(), handler: { (returnedSite, error) -> Void in
+                let model = returnedSite.viewModel
+                self.model = model
+                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
             })
         }
     }

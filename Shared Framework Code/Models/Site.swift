@@ -123,7 +123,7 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         aCoder.encodeObject(url, forKey: PropertyKey.urlKey)
         aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
         aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
-        aCoder.encodeObject(uuid, forKey: PropertyKey.uuidKey)
+        aCoder.encodeObject(uuid.UUIDString, forKey: PropertyKey.uuidKey)
         aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
         aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
         aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
@@ -137,8 +137,8 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         let disabledSite = aDecoder.decodeBoolForKey(PropertyKey.disabledKey)
         let lastConnectedDate = aDecoder.decodeObjectForKey(PropertyKey.lastConnectedDateKey) as? NSDate
         
-        if let uuid = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? NSUUID {
-            self.uuid = uuid
+        if let uuidString = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? String {
+            self.uuid = NSUUID(UUIDString: uuidString)!
         } else {
             self.uuid = NSUUID()
         }
@@ -169,7 +169,11 @@ extension Site {
         }
         
         let api = dictionary["apiapiSecret"] as? String
-        
+
         self.init(url: url, apiSecret: api)
+        
+        if let uuidString = dictionary["uuid"] as? String, uuid = NSUUID(UUIDString: uuidString) {
+            self.uuid = uuid
+        }
     }
 }

@@ -28,7 +28,6 @@
 		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
 		177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
-		178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
 		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
@@ -78,6 +77,8 @@
 		17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */; };
 		17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
 		17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
+		17E17C481C6F7E5B00810A4B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E17C471C6F7E5B00810A4B /* HTTPClient.swift */; };
+		17E17C491C6F7E5B00810A4B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E17C471C6F7E5B00810A4B /* HTTPClient.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
 		17EF27731BFCDA5900A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
 		17EF27741BFCDA5A00A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
@@ -87,7 +88,6 @@
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */; };
 		83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */; };
 		83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */; };
 		83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D911BC1F7E900BD1A9C /* Assets.xcassets */; };
@@ -232,7 +232,6 @@
 		1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL-Extensions.swift"; path = "Extensions/NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		1771B0891B75251A006C1F5E /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
-		178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesInterfaceController.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
 		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
 		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; };
@@ -265,6 +264,7 @@
 		17DA13281BF4DF0000A89DA4 /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Device.swift; path = "Shared Framework Code/Struct/Device.swift"; sourceTree = SOURCE_ROOT; };
 		17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MeterBloodGlucose.swift; path = "Shared Framework Code/Struct/MeterBloodGlucose.swift"; sourceTree = SOURCE_ROOT; };
 		17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SensorGlucoseValue.swift; path = "Shared Framework Code/Struct/SensorGlucoseValue.swift"; sourceTree = SOURCE_ROOT; };
+		17E17C471C6F7E5B00810A4B /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPClient.swift; path = "Shared Framework Code/API/HTTPClient.swift"; sourceTree = SOURCE_ROOT; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		17EF27721BFCDA0D00A16136 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = "Shared Framework Code/API/Constants.swift"; sourceTree = SOURCE_ROOT; };
 		17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterWatchOSKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -277,7 +277,6 @@
 		83883D7B1BC1F7E800BD1A9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "NightscouterNow Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
-		83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDetailTextInterfaceController.swift; sourceTree = "<group>"; };
 		83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
 		83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
@@ -478,6 +477,7 @@
 				17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */,
 				17EF27721BFCDA0D00A16136 /* Constants.swift */,
 				17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */,
+				17E17C471C6F7E5B00810A4B /* HTTPClient.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -526,11 +526,9 @@
 			children = (
 				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
 				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
-				178AACCE1BEFE78500B0DEBC /* SitesInterfaceController.swift */,
 				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
 				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
 				83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */,
-				83883D871BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift */,
 				83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */,
 			);
 			name = "View Controllers";
@@ -851,6 +849,9 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					1771B0411B75235B006C1F5E = {
@@ -879,6 +880,9 @@
 							};
 							com.apple.Keychain = {
 								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
 							};
 						};
 					};
@@ -1060,6 +1064,7 @@
 				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
 				1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */,
 				17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */,
+				17E17C481C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
 				17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
@@ -1108,6 +1113,7 @@
 				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
 				17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
+				17E17C491C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
 				17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
 				17BD1C1B1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 			);
@@ -1121,8 +1127,6 @@
 				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
 				179620261C5DBF2800617898 /* GlanceController.swift in Sources */,
 				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
-				83883D881BC1F7E900BD1A9C /* SiteDetailTextInterfaceController.swift in Sources */,
-				178AACCF1BEFE78500B0DEBC /* SitesInterfaceController.swift in Sources */,
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
 				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
 				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,

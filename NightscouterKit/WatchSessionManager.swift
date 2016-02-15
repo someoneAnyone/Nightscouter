@@ -80,8 +80,9 @@ extension WatchSessionManager {
             print("transferCurrentComplicationUserInfo")
             // print("transferUserInfo: \(userInfo)")
         #endif
-        let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
-        return validSession?.transferCurrentComplicationUserInfo(userInfo)
+        // return validSession?.transferCurrentComplicationUserInfo(userInfo)
+        
+        return validSession?.complicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : transferUserInfo(userInfo)
     }
     
     // Sender
@@ -90,7 +91,6 @@ extension WatchSessionManager {
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
         #endif
-        let _ = validSession?.outstandingUserInfoTransfers.map{ $0.cancel() }
         
         return validSession?.transferUserInfo(userInfo)
     }
@@ -98,6 +98,7 @@ extension WatchSessionManager {
     public func session(session: WCSession, didFinishUserInfoTransfer userInfoTransfer: WCSessionUserInfoTransfer, error: NSError?) {
         #if DEBUG
             print("session \(session), didFinishUserInfoTransfer: \(userInfoTransfer), error: \(error)")
+            print("on" + NSDate.description())
         #endif
         // implement this on the sender if you need to confirm that
         // the user info did in fact transfer
@@ -178,35 +179,15 @@ public extension WatchSessionManager {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
             print("session: \(session), didReceiveMessage: \(message)")
+            
         #endif
         
-        guard let action = WatchAction(rawValue: (message[WatchModel.PropertyKey.actionKey] as? String)!) else {
-            print("No action was found, didReceiveMessage: \(message)")
-            return
-        }
-        // make sure to put on the main queue to update UI!
-        switch action {
-            
-        case .UpdateComplication:
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication, withContext: nil)
-        case .AppContext:
-            print("appContext")
-            
-            
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext, withContext: nil)
-            
-        default:
-            print("default")
-            guard let payload = message[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
-                print("No payload was found.")
-                
-                print(message)
-                break
-            }
-            
-            AppDataManageriOS.sharedInstance.processApplicationContext(payload)
-            
-            break
+        
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: { context in
+                replyHandler(context)
+            })
         }
     }
     

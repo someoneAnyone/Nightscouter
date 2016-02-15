@@ -41,11 +41,20 @@ internal struct HeaderPart {
     static let ContentTypeValueApplicationJSON = "application/json"
 }
 
-public enum NightscoutAPIError {
-    case NoErorr
+public enum NightscoutAPIError: CustomStringConvertible {
+    case NoError
     case DownloadErorr(String)
     case DataError(String)
     case JSONParseError(String)
+    
+    public var description: String {
+        switch self {
+        case .NoError: return "No Error"
+        case .DataError(let err): return err
+        case .DownloadErorr(let err): return err
+        case .JSONParseError(let err): return err
+        }
+    }
 }
 
 public struct NightscoutAPIClientNotification {
@@ -115,27 +124,6 @@ extension NightscoutAPIClient {
             }
         })
     }
-    /*
-    public func fetchDataForWatchEntries(count: Int = 1, completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
-    // let watchEntryUrl = self.urlForWatchEntry
-    
-    let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
-    
-    let urlComponents = NSURLComponents(URL: self.urlForWatchEntry, resolvingAgainstBaseURL: true)
-    urlComponents?.queryItems = [queryItemCount]
-    
-    self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
-    
-    if let jsonDictionary = result as? JSONDictionary {
-    let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
-    completetion(watchEntry: watchEntry, errorCode: errorCode)
-    } else {
-    completetion(watchEntry: nil, errorCode: errorCode)
-    }
-    
-    })
-    }
-    */
     
     public func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
@@ -148,7 +136,6 @@ extension NightscoutAPIClient {
             }
         })
     }
-    
     
     public func fetchCalibrations(count: Int = 1, completetion:(calibrations: [Entry]?, errorCode: NightscoutAPIError) -> Void) {
         //find[type]=cal&count=1
@@ -214,11 +201,7 @@ extension NightscoutAPIClient {
         let temp = baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathExtension(URLPart.FileExtension)
         return temp
     }
-    //    func stringForEntriesWithCount(count: Int) -> NSURL {
-    //        let numberOfEntries = "?\(URLPart.CountParameter)=\(count)"
-    //        return NSURL(string:"\(entriesString)\(numberOfEntries)")!
-    //    }
-    
+   
     internal var urlForCalibrations: NSURL {
         return baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathComponent(URLPart.Cals).URLByAppendingPathExtension(URLPart.FileExtension)
     }
@@ -265,7 +248,7 @@ private extension NightscoutAPIClient {
                                     completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
                                     
                                 } else {
-                                    completetion(result: responseObject, errorCode: .NoErorr)
+                                    completetion(result: responseObject, errorCode: .NoError)
                                     
                                     dispatch_async(dispatch_get_main_queue(), { () -> Void in
                                         NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:NightscoutAPIClientNotification.DataUpdateSuccessful, object: self))

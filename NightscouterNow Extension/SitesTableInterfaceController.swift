@@ -13,25 +13,25 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     
-    var models: [WatchModel] = []
+    var models: [WatchModel] {
+        return WatchSessionManager.sharedManager.models
+    }
     
     var nsApi: [NightscoutAPIClient]?
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        models = WatchSessionManager.sharedManager.models
-        
+                
         setupNotifications()
         updateTableData()
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func didDeactivate() {
@@ -83,7 +83,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        self.models = models
+        // self.models = models
         updateTableData()
     }
     
@@ -92,19 +92,21 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         WatchSessionManager.sharedManager.updateModel(model)
     }
     
+    func didSetItemAsDefault(model: WatchModel) {
+        WatchSessionManager.sharedManager.defaultSiteUUID = NSUUID(UUIDString: model.uuid)
+    }
+    
     func dataStaleUpdate(notif: NSNotification) {
         updateData(forceRefresh: false)
     }
     
     func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        
-        for (index, model) in models.enumerate() {
-            
-            if (model.lastReadingDate.timeIntervalSinceNow < Constants.NotableTime.StandardRefreshTime.inThePast) || refresh {
-                fetchSiteData(forSite: model.generateSite(), index: index, forceRefresh: refresh, handler: { (reloaded, returnedSite, returnedIndex, returnedError) -> Void in
-                    let updatedModel = returnedSite.viewModel
-                    WatchSessionManager.sharedManager.updateModel(updatedModel)
+        for model in models {
+            if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending || refresh {
+                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                    self.updateTableData()
                 })
             }
         }

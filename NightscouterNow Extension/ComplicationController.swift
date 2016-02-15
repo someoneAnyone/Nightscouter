@@ -10,21 +10,7 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
-    
-    override init() {
-        super.init()
-        WatchSessionManager.sharedManager.startSession()
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-    }
-
-    deinit {
-        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-    }
-    
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        ComplicationController.reloadComplications()
-    }
+class ComplicationController: NSObject, CLKComplicationDataSource {
     
     // MARK: - Timeline Configuration
     
@@ -40,9 +26,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         let model = WatchSessionManager.sharedManager.complicationData.last
         date = model?.date
         
-        
         #if DEBUG
-            print("getTimelineEndDateForComplication:\(date)")
+            print("getTimelineStartDateForComplication:\(date)")
         #endif
         
         handler(date)
@@ -54,13 +39,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         #endif
         var date: NSDate?
         
-        guard let model = WatchSessionManager.sharedManager.complicationData.first else {
-            handler(date)
-            return
-        }
-        
-        let staleDate = model.date.dateByAddingTimeInterval(60.0 * 15)
-        if staleDate.compare(NSDate()) == .OrderedDescending {
+        let model = WatchSessionManager.sharedManager.complicationData.first
+        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 15)
+        if staleDate?.compare(NSDate()) == .OrderedDescending {
             date = staleDate
         }
         
@@ -123,7 +104,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         var timelineEntries = [CLKComplicationTimelineEntry]()
         
         let entries = WatchSessionManager.sharedManager.complicationData
-    
+        
         for entry in entries {
             let entryDate = entry.date
             if date.compare(entryDate) == .OrderedAscending {
@@ -149,7 +130,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        let nextUpdate = WatchSessionManager.sharedManager.nextUpdateDate
+        let nextUpdate = WatchSessionManager.sharedManager.nextRequestedComplicationUpdateDate
         
         #if DEBUG
             print("Next Requested Update Date is:\(nextUpdate)")
@@ -189,7 +170,16 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-       WatchSessionManager.sharedManager.updateComplication()
+        // WatchSessionManager.sharedManager.updateComplication()
+        if let model = WatchSessionManager.sharedManager.defaultModel() {
+            if model.lastReadingDate.compare(WatchSessionManager.sharedManager.nextRefreshDate) == .OrderedAscending {
+                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                    ComplicationController.reloadComplications()
+                })
+            }
+        }
+
     }
     
     func requestedUpdateBudgetExhausted() {

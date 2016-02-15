@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9532" systemVersion="15C50" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="GKK-vj-5UX">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="GKK-vj-5UX">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="9515"/>
@@ -122,76 +122,6 @@
             </objects>
             <point key="canvasLocation" x="403" y="129"/>
         </scene>
-        <!--SiteDetailText-->
-        <scene sceneID="aou-V4-d1y">
-            <objects>
-                <controller identifier="SiteDetailText" id="AgC-eL-Hgc" customClass="SiteDetailTextInterfaceController" customModule="NightscouterNow_Extension">
-                    <items>
-                        <label alignment="left" text="Test Site" id="XWb-re-l4B">
-                            <fontDescription key="font" style="UICTFontTextStyleTitle1"/>
-                        </label>
-                        <label alignment="left" text="3mins ago" id="ECg-Ah-33R">
-                            <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
-                        </label>
-                        <group width="1" alignment="left" id="VKy-am-dfz">
-                            <items>
-                                <label alignment="left" text="battery" id="W5i-Pf-hA4">
-                                    <color key="textColor" red="0.74644886359999996" green="0.74644886359999996" blue="0.74644886359999996" alpha="1" colorSpace="calibratedRGB"/>
-                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                </label>
-                                <label alignment="left" text="--%" id="ee8-CW-zvK">
-                                    <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
-                                </label>
-                            </items>
-                        </group>
-                        <group width="1" alignment="left" id="Wv9-ui-Rxt">
-                            <items>
-                                <label alignment="left" text="raw" id="Ybe-Mb-nyl">
-                                    <color key="textColor" red="0.74644886359999996" green="0.74644886359999996" blue="0.74644886359999996" alpha="1" colorSpace="calibratedRGB"/>
-                                    <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                                </label>
-                                <label alignment="left" text="-- : ----" id="sdq-lh-bzV">
-                                    <fontDescription key="font" style="UICTFontTextStyleSubhead"/>
-                                </label>
-                            </items>
-                        </group>
-                        <group width="1" alignment="center" verticalAlignment="center" layout="vertical" id="ihL-AX-sBa">
-                            <items>
-                                <group width="36" alignment="center" id="dSG-fo-qZL">
-                                    <items>
-                                        <label alignment="left" text="---" id="Kgp-QT-dnG">
-                                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                        </label>
-                                        <label alignment="left" text="-" id="f6A-p6-imq">
-                                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                        </label>
-                                    </items>
-                                </group>
-                                <group alignment="center" id="Vgr-xF-LMY">
-                                    <items>
-                                        <label alignment="left" text="-- ----/--" id="3yy-pm-uFo">
-                                            <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
-                                        </label>
-                                    </items>
-                                </group>
-                            </items>
-                        </group>
-                    </items>
-                    <connections>
-                        <outlet property="siteBatteryHeader" destination="W5i-Pf-hA4" id="Sfo-7b-GzF"/>
-                        <outlet property="siteBatteryLabel" destination="ee8-CW-zvK" id="qOz-1r-tkG"/>
-                        <outlet property="siteDeltaLabel" destination="3yy-pm-uFo" id="Vr0-pg-3TX"/>
-                        <outlet property="siteDirectionLabel" destination="f6A-p6-imq" id="7au-XA-qdg"/>
-                        <outlet property="siteLastReadingLabel" destination="ECg-Ah-33R" id="M2j-vW-NTm"/>
-                        <outlet property="siteNameLabel" destination="XWb-re-l4B" id="cqW-eb-QIb"/>
-                        <outlet property="siteRawHeader" destination="Ybe-Mb-nyl" id="yyN-DF-GEl"/>
-                        <outlet property="siteRawLabel" destination="sdq-lh-bzV" id="1a3-dq-qbu"/>
-                        <outlet property="siteSgvLabel" destination="Kgp-QT-dnG" id="ycr-Wu-rYm"/>
-                    </connections>
-                </controller>
-            </objects>
-            <point key="canvasLocation" x="580" y="362"/>
-        </scene>
         <!--Static Notification Interface Controller-->
         <scene sceneID="AEw-b0-oYE">
             <objects>
@@ -284,28 +214,6 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="403" y="362"/>
-        </scene>
-        <!--Nightscouter-->
-        <scene sceneID="7Yn-WO-84n">
-            <objects>
-                <controller identifier="SitesPage" title="Nightscouter" id="zQV-gh-g4y" customClass="SitesInterfaceController" customModule="NightscouterNow_Extension">
-                    <items>
-                        <label alignment="center" verticalAlignment="center" text="No Sites Available" id="Wqz-Hb-43b">
-                            <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
-                        </label>
-                    </items>
-                    <menu key="menu" id="t9u-0R-OZI">
-                        <items>
-                            <menuItem title="Update" image="RefreshIcon" id="8Fg-Fp-bKg">
-                                <connections>
-                                    <action selector="updateButton" destination="zQV-gh-g4y" id="IwI-It-prD"/>
-                                </connections>
-                            </menuItem>
-                        </items>
-                    </menu>
-                </controller>
-            </objects>
-            <point key="canvasLocation" x="580" y="129"/>
         </scene>
         <!--Glance-->
         <scene sceneID="Hfq-rq-OqJ">

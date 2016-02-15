@@ -9,7 +9,8 @@
 import UIKit
 
 public enum WatchAction: String {
-    case Create, Read, Update, Delete, AppContext, UserInfo, UpdateComplication
+//    case Create, Read, Update, Delete, AppContext, UserInfo, UpdateComplication
+    case AppContext, UserInfo, UpdateComplication
 }
 
 public func ==(lhs: WatchModel, rhs: WatchModel) -> Bool {
@@ -130,9 +131,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         self.uuid = d["uuid"] as! String
         
         self.complicationModels = d["complicationModels"] as? [[String: AnyObject]] ?? []
-        
         self.calibrations = d["calibrations"] as? [[String: AnyObject]] ?? []
-        
+
     }
     
     public init(fromSite site: Site) {
@@ -183,7 +183,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             sgvEmoji = "\(sgvValue.direction.emojiForDirection)"
             sgvStringWithEmoji = "\(sgvString) \(sgvValue.direction.emojiForDirection)"
             
-            deltaString = watchEntry.bgdelta.formattedBGDelta(forUnits: units) //"\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
+            deltaString = watchEntry.bgdelta.formattedBGDelta(forUnits: units)
             deltaStringShort = "\(watchEntry.bgdelta.formattedBGDelta(forUnits: units, appendString: "∆"))"
             
             sgvColor = colorForDesiredColorState(boundedColor)
@@ -257,17 +257,10 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             if isStaleData.urgent{
                 lastUpdatedColor = colorForDesiredColorState(.Alert)
             }
+
+            self.calibrations = site.calibrations.flatMap{ $0.dictionary }
             
-            
-            
-            for cal in site.calibrations {
-                self.calibrations.append(cal.dictionary)
-            }
-            
-            for cal in site.complicationModels {
-                self.complicationModels.append(cal.dictionary)
-            }
-            
+            self.complicationModels = site.complicationModels.flatMap{ $0.dictionary }
             self.urlString = site.url.absoluteString
             self.displayUrlString = displayUrlString
             self.uuid = site.uuid.UUIDString
@@ -349,7 +342,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public func generateSite() -> Site {
         let url = NSURL(string: urlString)!
         let site = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: self.uuid)!)!
-        
+        site.complicationModels = self.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) }
+        site.calibrations = self.calibrations.flatMap{ Calibration(fromDictionary: $0) }
         return site
     }
 }

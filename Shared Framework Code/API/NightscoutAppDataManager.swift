@@ -10,76 +10,70 @@ import Foundation
 
 let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
 
-
-public func fetchSiteData(forSite site: Site, index: Int? = nil, forceRefresh: Bool = false, handler:(reloaded: Bool, returnedSite: Site, returnedIndex: Int?, returnedError: NSError?) -> Void) -> Void {
-    
-    var siteToReturn: Site = site
-    let indexToReturn: Int? = index
-    var errorToReturn: NSError? = nil
-    var successfullyReloaded: Bool = false
-
-    // Don't fetch data if its within the standard refresh time frame.
-    // This can be orrvidden by the forceRefresh param.
-    if let lastConnectedDate = site.lastConnectedDate  where forceRefresh == false {
-        let nextUpdateDate = NSDate(timeIntervalSinceNow: updateInterval)
-        if lastConnectedDate.compare(nextUpdateDate) == .OrderedAscending {
-            errorToReturn = NSError(domain: "Attemping to update site data too soon.", code: 0, userInfo: nil)
+public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
+    dispatch_async(dispatch_get_global_queue(Int(0), 0)) {
+        let group: dispatch_group_t = dispatch_group_create()
+        
+        let nsAPI = NightscoutAPIClient(url: site.url)
+        
+        var errorToReturn: NightscoutAPIError = .NoError
+        
+        dispatch_group_enter(group)
+        nsAPI.fetchServerConfiguration { (result) -> Void in
+            switch result {
+            case .Error:
+                site.disabled = true
+                errorToReturn = NightscoutAPIError.DownloadErorr("No configuration was found")
+                handler(returnedSite: site, error: errorToReturn)
+            case let .Value(boxedConfiguration):
+                let configuration = boxedConfiguration.value
+                site.configuration = configuration
+            }
             
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
+            dispatch_group_leave(group)
+        }
+        
+        if site.disabled == false {
+            
+            dispatch_group_enter(group)
+            nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
+                site.watchEntry = watchEntry
+                
+                errorToReturn = errorCode
+                dispatch_group_leave(group)
             })
-            return
+            
+            dispatch_group_enter(group)
+            nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
+                site.entries = entries
+                errorToReturn = errorCode
+                dispatch_group_leave(group)
+            })
+            
+            dispatch_group_enter(group)
+            let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
+            nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
+                errorToReturn = errorCode
+                if let calibrations = calibrations {
+                    let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
+                        item1.date.compare(item2.date) == .OrderedDescending
+                        }.flatMap { $0.cal }
+                    
+                    site.calibrations = cals
+                }
+                dispatch_group_leave(group)
+            })
+            
+        }
+        
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
+            site.complicationModels = complicationModels
+
+            handler(returnedSite: site, error: errorToReturn)
         }
     }
-    
-    // Get the HTTP Client.
-    let nsApi = NightscoutAPIClient(url: site.url)
-    
-    // get site data that incluldes chart data.
-    loadDataFor(site, index: index, withEntries: true, completetion: { (returnedSite, returnedIndex, returnedError) -> Void in
-        
-        errorToReturn = returnedError
-        guard let site = returnedSite else {
-            
-            successfullyReloaded = true
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
-            })
-            return
-        }
-        
-        let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12
-        
-        nsApi.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
-
-            guard let calibrations = calibrations else {
-                errorToReturn = NSError(domain: "No calibrations were found", code: 0, userInfo: nil)
-                return
-            }
-
-            let models = generateComplicationModels(forSite: site, calibrations: calibrations.flatMap{ $0.cal } ?? [])
-            
-            let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
-                item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
-                }.flatMap { $0.cal }
-
-            returnedSite?.complicationModels = models
-            returnedSite?.calibrations = cals
-            
-            successfullyReloaded = true
-            siteToReturn = returnedSite ?? site
-            errorToReturn = returnedError
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                handler(reloaded: successfullyReloaded, returnedSite: siteToReturn, returnedIndex: indexToReturn, returnedError: errorToReturn)
-            })
-            
-            return
-        })
-    })
 }
-
-
-
 
 private func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
     
@@ -184,70 +178,3 @@ private func nearestCalibration(calibrations cals:[Calibration], calibrationsfor
     return cals[index]
 }
 
-
-public func loadDataFor(model: WatchModel, replyHandler:(model: WatchModel) -> Void) {
-    print(">>> Entering \(__FUNCTION__) <<<")
-    
-    // Start up the API
-    let url = NSURL(string: model.urlString)!
-    let site = Site(url: url, apiSecret: nil)!
-    
-    loadDataFor(site, index: nil) { (returnedSite, returnedIndex, returnedError) -> Void in
-        
-        guard let site = returnedSite else {
-            return
-        }
-        
-        replyHandler(model: site.viewModel)
-    }
-}
-
-
-private func loadDataFor(site: Site, index: Int?, withEntries: Bool = false, completetion:(returnedSite: Site?, returnedIndex: Int?, returnedError: NSError?) -> Void) {
-    // Start up the API
-    let nsApi = NightscoutAPIClient(url: site.url)
-    //TODO: 1. There should be reachabiltiy checks before doing anything.
-    //TODO: 2. We should fail gracefully if things go wrong. Need to present a UI for reporting errors.
-    //TODO: 3. Probably need to move this code to the application delegate?
-    
-    // Get settings for a given site.
-    print("Loading data for \(site.url)")
-    nsApi.fetchServerConfiguration { (result) -> Void in
-        switch (result) {
-        case let .Error(error):
-            // display error message
-            print("loadUpData ERROR recieved: \(error)")
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                site.disabled = true
-                completetion(returnedSite: nil, returnedIndex: index, returnedError: error)
-            })
-            
-        case let .Value(boxedConfiguration):
-            let configuration:ServerConfiguration = boxedConfiguration.value
-            // do something with user
-            nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                // Get back on the main queue to update the user interface
-                site.configuration = configuration
-                site.watchEntry = watchEntry
-                
-                if !withEntries {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        completetion(returnedSite: site, returnedIndex: index, returnedError: nil)
-                    })
-                } else {
-                    
-                    nsApi.fetchDataForEntries(Constants.EntryCount.NumberForComplication) { (entries, errorCode) -> Void in
-                        if let entries = entries {
-                            site.entries = entries
-                            
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                completetion(returnedSite: site, returnedIndex: index, returnedError: nil)
-                            })
-                        }
-                    }
-                }
-            })
-        }
-    }
-    
-}
