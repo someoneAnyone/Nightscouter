@@ -12,6 +12,8 @@ let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
 
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(dispatch_get_global_queue(Int(0), 0)) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        print("Loading all site data for site: \(site.url)")
         let group: dispatch_group_t = dispatch_group_create()
         
         let nsAPI = NightscoutAPIClient(url: site.url)
@@ -19,6 +21,7 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
         var errorToReturn: NightscoutAPIError = .NoError
         
         dispatch_group_enter(group)
+        print("GET Sever Status/Configuration")
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
             case .Error:
@@ -36,6 +39,7 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
         if site.disabled == false {
             
             dispatch_group_enter(group)
+            print("GET Sever Pebble/Watch")
             nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                 site.watchEntry = watchEntry
                 
@@ -44,6 +48,7 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
             })
             
             dispatch_group_enter(group)
+            print("GET Sever Entries/SGVs")
             nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
                 site.entries = entries
                 errorToReturn = errorCode
@@ -51,6 +56,7 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
             })
             
             dispatch_group_enter(group)
+            print("GET Sever CALs/Calibrations")
             let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
             nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
                 errorToReturn = errorCode
@@ -67,6 +73,9 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
         }
         
         dispatch_group_notify(group, dispatch_get_main_queue()) {
+            print("All network operations are complete.")
+            
+            print("Generate Timeline data for Complication")
             let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
             site.complicationModels = complicationModels
 
