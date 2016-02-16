@@ -135,7 +135,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
                 })
                 
-                AppDataManageriOS.sharedInstance.saveData()
                 
             default:
                 print("\(__FUNCTION__) ERROR recieved: \(error.description)")

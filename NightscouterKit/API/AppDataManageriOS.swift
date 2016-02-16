@@ -23,7 +23,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 currentSiteIndex = 0
             }
             
-            
             updateWatch(withAction: .AppContext, withContext: [DefaultKey.modelArrayObjectsKey : self.sites.map{ $0.viewModel.dictionary }])
             
             saveData()
@@ -48,6 +47,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         loadData()
     }
     
+    deinit {
+        saveData()
+    }
+    
     private struct SharedAppGroupKey {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
@@ -70,7 +73,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
         
-        
         defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
         defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         defaults.setObject("iOS", forKey: DefaultKey.osPlatform)
@@ -81,6 +83,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
         iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        
         iCloudKeyStore.synchronize()
     }
     
@@ -214,7 +217,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             generateDataForAllSites(self.sites, handler: { () -> Void in
                 // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
                 payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
-
+                
                 replyHandler(payload)
             })
             
@@ -226,10 +229,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             generateDataForAllSites([defaultSite], handler: { () -> Void in
                 // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
                 payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
-
+                
                 self.updateWatch(withAction: .UpdateComplication)
             })
-
+            
         case .UserInfo:
             updateWatch(withAction: .UserInfo)
         }
@@ -294,33 +297,24 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     //    }
     
     public func generateDataForAllSites(sites: [Site], handler:()->Void) -> Void {
-        dispatch_async(queue) {
+        for siteToLoad in sites {
+            //            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || siteToLoad.lastConnectedDate == nil || siteToLoad.configuration == nil) {
             
-            let group: dispatch_group_t = dispatch_group_create()
-            dispatch_group_enter(group)
-            
-            for siteToLoad in sites {
-                //            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || siteToLoad.lastConnectedDate == nil || siteToLoad.configuration == nil) {
-                dispatch_group_enter(group)
+            print("fetching for: \(siteToLoad.url)")
+            fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
+                self.updateSite(returnedSite)
                 
-                print("fetching for: \(siteToLoad.url)")
-                fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
-                    self.updateSite(returnedSite)
-                    
-                    
-                    dispatch_group_leave(group)
-                    return
-                })
-                //            }
-            }
-            dispatch_group_leave(group)
-            
-            dispatch_group_notify(group, dispatch_get_main_queue()) {
-                print("generateDataForAllSites complete")
-                
-                handler()
-            }
-        }}
+                return
+            })
+            //            }
+        }
+        
+        
+        print("generateDataForAllSites complete")
+        
+        handler()
+    }
+    
     
     
     public func updateComplication() {

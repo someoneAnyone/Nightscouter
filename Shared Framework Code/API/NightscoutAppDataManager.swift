@@ -9,21 +9,20 @@
 import Foundation
 
 let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
-public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-
+public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
 
 public func quickFetch(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        print("Loading all site data for site: \(site.url)")
-        let group: dispatch_group_t = dispatch_group_create()
+        print("STARTING:    Load all available site data for: \(site.url)")
         
         let nsAPI = NightscoutAPIClient(url: site.url)
-        
         var errorToReturn: NightscoutAPIError = .NoError
         
-        dispatch_group_enter(group)
-        print("GET Sever Status/Configuration")
+        let data_downloader_group: dispatch_group_t = dispatch_group_create()
+        dispatch_group_enter(data_downloader_group)
+        let startDate = NSDate()
+        print("STEP 1:  GET Sever Status/Configuration for site: \(site.url)")
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
             case .Error:
@@ -35,23 +34,26 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
                 site.configuration = configuration
             }
             
-            dispatch_group_leave(group)
+            dispatch_group_leave(data_downloader_group)
         }
         
         if site.disabled == false {
             
-            dispatch_group_enter(group)
-            print("GET Sever Pebble/Watch")
+            dispatch_group_enter(data_downloader_group)
+            print("STEP 2:      GET Sever Pebble/Watch for site: \(site.url)")
             nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                 site.watchEntry = watchEntry
-                
                 errorToReturn = errorCode
-                dispatch_group_leave(group)
+                
+                dispatch_group_leave(data_downloader_group)
             })
+            
         }
-
-        dispatch_group_notify(group, dispatch_get_main_queue()) {
-            print("All network operations are complete.")
+        
+        dispatch_group_notify(data_downloader_group, dispatch_get_main_queue()) {
+            print("COMPLETE:    All network operations are complete for site: \(site.url)")
+            print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+            print("STEP 6:      Return Handler to main thread.")
             handler(returnedSite: site, error: errorToReturn)
         }
     }
@@ -61,15 +63,15 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        print("Loading all site data for site: \(site.url)")
-        let group: dispatch_group_t = dispatch_group_create()
+        print("STARTING:    Load all available site data for: \(site.url)")
         
         let nsAPI = NightscoutAPIClient(url: site.url)
-        
         var errorToReturn: NightscoutAPIError = .NoError
         
-        dispatch_group_enter(group)
-        print("GET Sever Status/Configuration")
+        let data_downloader_group: dispatch_group_t = dispatch_group_create()
+        dispatch_group_enter(data_downloader_group)
+        let startDate = NSDate()
+        print("STEP 1:  GET Sever Status/Configuration for site: \(site.url)")
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
             case .Error:
@@ -81,57 +83,58 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
                 site.configuration = configuration
             }
             
-            dispatch_group_leave(group)
+            dispatch_group_leave(data_downloader_group)
         }
         
         if site.disabled == false {
             
-            dispatch_group_enter(group)
-            print("GET Sever Pebble/Watch")
+            dispatch_group_enter(data_downloader_group)
+            print("STEP 2:      GET Sever Pebble/Watch for site: \(site.url)")
             nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                 site.watchEntry = watchEntry
-                
                 errorToReturn = errorCode
-                dispatch_group_leave(group)
             })
             
-            dispatch_group_enter(group)
-            print("GET Sever Entries/SGVs")
+            print("STEP 3:      GET Sever Entries/SGVs for site: \(site.url)")
             nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
                 site.entries = entries
                 errorToReturn = errorCode
-                dispatch_group_leave(group)
             })
             
-            dispatch_group_enter(group)
-            print("GET Sever CALs/Calibrations")
+            print("STEP 4:      GET Sever CALs/Calibrations for site: \(site.url)")
             let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
             nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
                 errorToReturn = errorCode
-                if let calibrations = calibrations {
-                    let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
-                        item1.date.compare(item2.date) == .OrderedDescending
-                        }.flatMap { $0.cal }
-                    
-                    site.calibrations = cals
+                
+                guard let calibrations = calibrations else {
+                    dispatch_group_leave(data_downloader_group)
+                    return
                 }
-                dispatch_group_leave(group)
+                
+                let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
+                    item1.date.compare(item2.date) == .OrderedDescending
+                    }.flatMap { $0.cal }
+                
+                site.calibrations = cals
+                
+                dispatch_group_leave(data_downloader_group)
             })
             
         }
         
-        let group2: dispatch_group_t = dispatch_group_create()
-        dispatch_group_enter(group2)
-        dispatch_group_notify(group, queue) {
-            print("Generate Timeline data for Complication")
+        let complication_generator_group: dispatch_group_t = dispatch_group_create()
+        dispatch_group_enter(complication_generator_group)
+        dispatch_group_notify(data_downloader_group, queue) {
+            print("STEP 5:      Generate Timeline data for Complication for site: \(site.url)")
             let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
             site.complicationModels = complicationModels
-            dispatch_group_leave(group2)
-
+            dispatch_group_leave(complication_generator_group)
         }
         
-        dispatch_group_notify(group2, dispatch_get_main_queue()) {
-            print("All network operations are complete.")
+        dispatch_group_notify(complication_generator_group, dispatch_get_main_queue()) {
+            print("COMPLETE:    All network operations are complete for site: \(site.url)")
+            print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+            print("STEP 6:      Return Handler to main thread.")
             handler(returnedSite: site, error: errorToReturn)
         }
     }
@@ -143,7 +146,7 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
         item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
     }
     
-    guard let configuration = site.configuration, displayName = site.configuration?.displayName, entries = site.entries else {
+    guard let configuration = site.configuration, entries = site.entries else {
         return []
     }
     
@@ -157,11 +160,10 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
         if let sgvValue = entry.sgv {
             
             // Convert units.
-            var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-            if units == .Mmol {
-                boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-            }
-            
+            let boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
+            //if units == .Mmol {
+            //  boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
+            //}
             
             var sgvString = "\(sgvValue.sgv.formattedForMgdl)"
             if configuration.displayUnits == .Mmol {
@@ -192,8 +194,8 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
             let deltaStringShort = delta.formattedBGDelta(forUnits: units, appendString: "∆")
             let sgvColor = colorForDesiredColorState(boundedColor)
             
-            var raw = ""
-            var rawShort = ""
+            var raw: String?
+            var rawShort: String?
             
             if let cal = nearestCalibration(calibrations: cals, calibrationsforDate: entry.date) {
                 
@@ -206,9 +208,7 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
                 rawShort = "\(convertedRawValue) : \(sgvValue.noise.description[sgvValue.noise.description.startIndex])"
             }
             
-            let model = ComplicationModel(displayName: displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort)
-            
-            cmodels.append( model)
+            cmodels.append(ComplicationModel(displayName: configuration.displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort))
             
         }
         
@@ -232,7 +232,7 @@ private func nearestCalibration(calibrations cals:[Calibration], calibrationsfor
     }
     
     guard let index = desiredIndex else {
-        print("no valid index was found... return last calibration")
+        print("NON-FATAL ERROR: No valid index was found... return last calibration if its there.")
         return cals.first
     }
     

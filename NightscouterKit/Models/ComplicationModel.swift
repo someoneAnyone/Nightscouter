@@ -24,7 +24,7 @@ public struct ComplicationModel: DictionaryConvertible {
         return (raw != nil)
     }
     
-    public init(displayName: String, date: NSDate, sgv: String, sgvEmoji: String, tintString: String, delta: String, deltaShort: String, raw: String, rawShort: String) {
+    public init(displayName: String, date: NSDate, sgv: String, sgvEmoji: String, tintString: String, delta: String, deltaShort: String, raw: String?, rawShort: String?) {
         self.displayName = displayName
         self.date = date
         self.sgv = sgv
