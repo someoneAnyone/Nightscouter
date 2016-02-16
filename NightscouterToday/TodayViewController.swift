@@ -132,7 +132,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
                     
-                    AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
+                    AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
                 })
                 
                 AppDataManageriOS.sharedInstance.saveData()

@@ -182,8 +182,7 @@ public extension WatchSessionManager {
             
         #endif
         
-        
-        
+                
         dispatch_async(dispatch_get_main_queue()) {
             AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: { context in
                 replyHandler(context)

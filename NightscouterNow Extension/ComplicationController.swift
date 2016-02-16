@@ -173,13 +173,17 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         // WatchSessionManager.sharedManager.updateComplication()
         if let model = WatchSessionManager.sharedManager.defaultModel() {
             if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
-                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                    ComplicationController.reloadComplications()
-                })
+                if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .UpdateComplication) {
+                    fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                            ComplicationController.reloadComplications()
+                        }
+                    })
+                }
             }
         }
-
+        
     }
     
     func requestedUpdateBudgetExhausted() {

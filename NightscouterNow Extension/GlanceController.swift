@@ -54,12 +54,16 @@ class GlanceController: WKInterfaceController {
     }
     
     func updateModel(){
-        if let safemodel = model {
-            fetchSiteData(safemodel.generateSite(), handler: { (returnedSite, error) -> Void in
-                let model = returnedSite.viewModel
-                self.model = model
-                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
-            })
+        if let model = model {
+            if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
+                quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                        self.model = returnedSite.viewModel
+                        self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
+                    }
+                })
+            }
         }
     }
     

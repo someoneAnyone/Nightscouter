@@ -214,10 +214,10 @@ extension WatchSessionManager {
         
         session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
-            
+            print(applicationData)
             print("recievedMessageReply from iPhone")
             returnBool = self.processApplicationContext(context)
-            
+            self.updateComplication()
             }, errorHandler: {(error ) -> Void in
                 // catch any errors here
                 print("WatchSession Transfer Error: \(error)")

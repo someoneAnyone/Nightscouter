@@ -25,13 +25,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
-                
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        
         setupNotifications()
         
         updateTableData()
@@ -55,7 +56,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         // create object.
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
-    
+        
         let model = models[rowIndex]
         
         pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
@@ -63,7 +64,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     private func updateTableData() {
         print(">>> Entering \(__FUNCTION__) <<<")
-
+        
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             print(">>> Entering \(__FUNCTION__) <<<")
@@ -91,8 +92,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-
+        
         updateTableData()
+        
     }
     
     func didUpdateItem(model: WatchModel) {
@@ -112,13 +114,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         for model in models {
             if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
-                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-
-                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-//                    self.updateTableData()
-                    }
-                })
+                if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
+                    quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                            self.updateTableData()
+                        }
+                    })
+                }
             }
         }
     }

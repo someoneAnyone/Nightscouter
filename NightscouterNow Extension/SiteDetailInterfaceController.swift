@@ -15,7 +15,7 @@ protocol SiteDetailViewDidUpdateItemDelegate {
     func didSetItemAsDefault(model: WatchModel)
 }
 
-class SiteDetailInterfaceController: WKInterfaceController {
+class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDelegate {
     
     @IBOutlet var compassGroup: WKInterfaceGroup!
     @IBOutlet var detailGroup: WKInterfaceGroup!
@@ -26,11 +26,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
     @IBOutlet var compassImage: WKInterfaceImage!
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
-    var nsApi: NightscoutAPIClient?
-    
-    var task: NSURLSessionDataTask?
-    
-    var isActive: Bool = false
     
     var delegate: SiteDetailViewDidUpdateItemDelegate?
     
@@ -48,12 +43,12 @@ class SiteDetailInterfaceController: WKInterfaceController {
             }
         }
     }
-    // var lastUpdatedTime: NSDate?
     
     override func willActivate() {
         super.willActivate()
         print("willActivate")
-        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+
         let image = NSAssetKitWatchOS.imageOfWatchFace()
         compassImage.setImage(image)
         
@@ -68,15 +63,16 @@ class SiteDetailInterfaceController: WKInterfaceController {
         super.didDeactivate()
         print("didDeactivate \(self)")
         
-        self.isActive = false
-        if let t = self.nsApi?.task {
-            if t.state == NSURLSessionTaskState.Running {
-                t.cancel()
-            }
-        }
-        
         // Remove this class from the observer list. Was listening for a global update timer.
+        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+
         NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        if let model = self.model, index = models.indexOf(model) {
+            self.model = models[index]
+        }
     }
     
     override func awakeWithContext(context: AnyObject?) {
@@ -93,20 +89,15 @@ class SiteDetailInterfaceController: WKInterfaceController {
     }
     
     func updateData(){
-        self.isActive = true
         if let model = model {
-            let url = NSURL(string: model.urlString)!
-            let siteToLoad = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: model.uuid)!)!
-            
-            fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
-             dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                    self?.isActive = false
-                    self?.model = returnedSite.viewModel
-                    self?.delegate?.didUpdateItem(returnedSite.viewModel)
-                }
-                
-            })
-            
+            if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
+                quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                        self.model = returnedSite.viewModel
+                        self.delegate?.didUpdateItem(returnedSite.viewModel)
+                    }
+                })
+            }
         }
     }
     

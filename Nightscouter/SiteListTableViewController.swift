@@ -278,8 +278,6 @@ class SiteListTableViewController: UITableViewController {
         UIApplication.sharedApplication().idleTimerDisabled = false
         
         timer = NSTimer(timeInterval: 60.0, target: self, selector: Selector("updateUI"), userInfo: nil, repeats: true)
-        
-        // startUserActivity()
     }
     
     func updateUI() {

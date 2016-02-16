@@ -9,7 +9,54 @@
 import Foundation
 
 let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
-let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+
+
+public func quickFetch(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
+    dispatch_async(queue) {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        print("Loading all site data for site: \(site.url)")
+        let group: dispatch_group_t = dispatch_group_create()
+        
+        let nsAPI = NightscoutAPIClient(url: site.url)
+        
+        var errorToReturn: NightscoutAPIError = .NoError
+        
+        dispatch_group_enter(group)
+        print("GET Sever Status/Configuration")
+        nsAPI.fetchServerConfiguration { (result) -> Void in
+            switch result {
+            case .Error:
+                site.disabled = true
+                errorToReturn = NightscoutAPIError.DownloadErorr("No configuration was found")
+                handler(returnedSite: site, error: errorToReturn)
+            case let .Value(boxedConfiguration):
+                let configuration = boxedConfiguration.value
+                site.configuration = configuration
+            }
+            
+            dispatch_group_leave(group)
+        }
+        
+        if site.disabled == false {
+            
+            dispatch_group_enter(group)
+            print("GET Sever Pebble/Watch")
+            nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
+                site.watchEntry = watchEntry
+                
+                errorToReturn = errorCode
+                dispatch_group_leave(group)
+            })
+        }
+
+        dispatch_group_notify(group, dispatch_get_main_queue()) {
+            print("All network operations are complete.")
+            handler(returnedSite: site, error: errorToReturn)
+        }
+    }
+}
+
 
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
