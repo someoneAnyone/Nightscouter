@@ -77,7 +77,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
     // MARK: Save and Load Data
-    private func saveData() {
+    public func saveData() {
         
         let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
         defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
@@ -128,10 +128,15 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         iCloudKeyStore.synchronize()
     }
     
-    private let session: WCSession = WCSession.defaultSession()
+    public let session: WCSession = WCSession.defaultSession()
     
     public func updateModel(model: WatchModel)  ->  Bool {
         if let index = models.indexOf(model) {
+            
+            if model == defaultModel() {
+                updateComplication()
+            }
+            
             models[index] = model
             return true
         }
@@ -151,10 +156,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             
             //updateComplication()
         }
-    }
-    
-    public func endSession() {
-        saveData()
     }
     
     private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
