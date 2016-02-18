@@ -48,7 +48,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         print("willActivate")
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-
+        
         let image = NSAssetKitWatchOS.imageOfWatchFace()
         compassImage.setImage(image)
         
@@ -65,7 +65,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         // Remove this class from the observer list. Was listening for a global update timer.
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-
+        
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -89,16 +89,44 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func updateData(){
-        if let model = model {
-            if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
-                quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                        self.model = returnedSite.viewModel
-                        self.delegate?.didUpdateItem(returnedSite.viewModel)
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+            // handle reply from iPhone app here
+            print("recievedMessageReply from iPhone")
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                WatchSessionManager.sharedManager.processApplicationContext(context)
+            })
+            }, errorHandler: {(error: NSError ) -> Void in
+                print("WatchSession Transfer Error: \(error)")
+                self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription, forceRefresh: true)
+        })
+    }
+    
+    func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
+        // catch any errors here
+        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+            
+            let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
+                self.updateData()
+            })
+            
+            let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
+                if let model = self.model {
+                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
+                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                                self.model = returnedSite.viewModel
+                                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)                            }
+                        })
                     }
-                })
-            }
-        }
+                }
+                
+            })
+            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
+        })
     }
     
     func configureView(model: WatchModel){

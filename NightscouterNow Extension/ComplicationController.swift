@@ -170,19 +170,29 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        // WatchSessionManager.sharedManager.updateComplication()
-        if let model = WatchSessionManager.sharedManager.defaultModel() {
-            if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
-                if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .UpdateComplication) {
-                    fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            ComplicationController.reloadComplications()
-                        }
-                    })
-                }
-            }
-        }
+        WatchSessionManager.sharedManager.updateComplication()
+//        if let model = WatchSessionManager.sharedManager.defaultModel() {
+//            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
+//            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+//                // handle reply from iPhone app here
+//                print("recievedMessageReply from iPhone")
+//                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+//                    WatchSessionManager.sharedManager.processApplicationContext(context)
+//                    ComplicationController.reloadComplications()
+//                })
+//                }, errorHandler: {(error: NSError ) -> Void in
+//                    print("WatchSession Transfer Error: \(error)")
+//                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending {
+//                        quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+//                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+//                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+//                                ComplicationController.reloadComplications()
+//                            }
+//                        })
+//                    }
+//                    
+//            })
+//        }
         
     }
     

@@ -60,16 +60,19 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
     public var nextRefreshDate: NSDate {
-        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime.inThePast)
-        print("nextRefreshDate: " + date.description)
+        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
+        print("iOS nextRefreshDate: " + date.description)
         return date
     }
     
     // MARK: Save and Load Data
     public func saveData() {
         
-        let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
+        // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        if let _ = defaults.objectForKey(DefaultKey.sitesArrayObjectsKey) {
+            defaults.setObject(nil, forKey: DefaultKey.sitesArrayObjectsKey)
+        }
         
         let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
         
@@ -79,7 +82,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         
         // Save To iCloud
-        iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        if let _ = iCloudKeyStore.dataForKey(DefaultKey.sitesArrayObjectsKey) {
+            iCloudKeyStore.setData(nil, forKey: DefaultKey.sitesArrayObjectsKey)
+        }
+        // iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
         iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
@@ -129,6 +135,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         if let currentIndex = sites.indexOf(site) {
             sites[currentIndex] = site
             
+            if site == defaultSite() {
+                updateComplication()
+            }
+            
             return true
         }
         
@@ -137,7 +147,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public func deleteSiteAtIndex(index: Int) {
         sites.removeAtIndex(index)
-        
     }
     
     
@@ -181,14 +190,15 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             
             return false
         }
-        //        guard let payload = context[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
-        //            print("No payload was found.")
-        //
-        //            print(context)
-        //            return false
-        //
-        //        }
+        /*
+        guard let payload = context[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
+        print("No payload was found.")
         
+        print(context)
+        return false
+        
+        }
+        */
         
         /*
         if let defaultSiteString = payload[DefaultKey.defaultSiteKey] as? String, uuid = NSUUID(UUIDString: defaultSiteString)  {
@@ -214,7 +224,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         switch action {
         case .AppContext:
-            generateDataForAllSites(self.sites, handler: { () -> Void in
+            generateData(forSites: self.sites, handler: { () -> Void in
                 // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
                 payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
                 
@@ -226,11 +236,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             guard let defaultSite = defaultSite() else {
                 return false
             }
-            generateDataForAllSites([defaultSite], handler: { () -> Void in
+            generateData(forSites: [defaultSite], handler: { () -> Void in
                 // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-                payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
-                
+                //payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
                 self.updateWatch(withAction: .UpdateComplication)
+                replyHandler([WatchModel.PropertyKey.actionKey : WatchAction.UpdateComplication.rawValue])
             })
             
         case .UserInfo:
@@ -279,63 +289,48 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     
     // MARK: Complication Data Methods
-    //    public func generateDataForAllSites() -> Void {
-    //        for siteToLoad in sites {
-    //            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || siteToLoad.lastConnectedDate == nil || siteToLoad.configuration == nil) {
-    //
-    //                fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
-    //                    self.updateSite(returnedSite)
-    //
-    //                    if siteToLoad == self.defaultSite() {
-    //                        self.updateWatch(withAction: .UpdateComplication)
-    //                    }
-    //
-    //                    return
-    //                })
-    //            }
-    //        }
-    //    }
     
-    public func generateDataForAllSites(sites: [Site], handler:()->Void) -> Void {
-        for siteToLoad in sites {
-            //            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || siteToLoad.lastConnectedDate == nil || siteToLoad.configuration == nil) {
-            
+    public func generateData(forSites sites: [Site], handler:()->Void) -> Void {
+        sites.forEach { (siteToLoad) -> () in
             print("fetching for: \(siteToLoad.url)")
             fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
                 self.updateSite(returnedSite)
-                
-                return
             })
-            //            }
         }
         
-        
-        print("generateDataForAllSites complete")
+        print("COMPLETE:   generateDataForAllSites complete")
         
         handler()
     }
     
-    
-    
     public func updateComplication() {
         print("updateComplication")
         if let siteToLoad = self.defaultSite() {
-            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || siteToLoad.lastConnectedDate == nil || siteToLoad.configuration == nil) {
+            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || siteToLoad.configuration == nil) {
+            print("START:   iOS is updating complication data for \(siteToLoad.url)")
                 fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
                     self.updateSite(returnedSite)
                     self.updateWatch(withAction: .UpdateComplication)
+                    print("COMPLETE:   iOS has updated complication data for \(siteToLoad.url)")
+                    return
                 })
             }
         }
     }
     
+    
+    // MARK: Storage Updates
+    
     // MARK: Defaults have Changed
+    
     func userDefaultsDidChange(notification: NSNotification) {
         print("userDefaultsDidChange:")
         
         // guard let defaultObject = notification.object as? NSUserDefaults else { return }
         
     }
+    
+    // MARK: iCloud Key Store Changed
     
     func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
         print("ubiquitousKeyValueStoreDidChange:")

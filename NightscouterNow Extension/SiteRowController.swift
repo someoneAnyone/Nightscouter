@@ -45,6 +45,7 @@ class SiteRowController: NSObject {
                 let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
 
                 
+                
                 // Last reading label
                 siteLastReadingLabel.setText(date)
                 siteLastReadingLabel.setTextColor(lastReadingColor)

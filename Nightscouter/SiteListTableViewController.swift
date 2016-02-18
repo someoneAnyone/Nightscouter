@@ -294,11 +294,7 @@ class SiteListTableViewController: UITableViewController {
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || lastUpdatedTime == nil || site.configuration == nil) {
-//
-//        if (lastUpdatedTime?.timeIntervalSinceNow > Constants.StandardTimeFrame.TwoAndHalfMinutesInSeconds || lastUpdatedTime == nil || site.configuration == nil) {
-            // No configuration was there... go get some.
-            // println("Attempting to get configuration data from site...")
+        if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -352,10 +348,8 @@ class SiteListTableViewController: UITableViewController {
             switch error {
             case .NoError:
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    
                 })
                 return
                 

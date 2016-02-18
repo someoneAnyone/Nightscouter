@@ -40,6 +40,19 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         #endif
     }
     
+    public func sessionReachabilityDidChange(session: WCSession) {
+        print("sessionReachabilityDidChange")
+        print(session)
+    }
+    
+    public func sessionWatchStateDidChange(session: WCSession) {
+        print("sessionWatchStateDidChange")
+        print(session)
+        if session.reachable {
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
+        }
+        
+    }
 }
 
 // MARK: Application Context
@@ -177,12 +190,10 @@ public extension WatchSessionManager {
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         // handle receiving message
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
-            print("session: \(session), didReceiveMessage: \(message)")
-            
+            print(">>> Entering \(__FUNCTION__) <<<")            
         #endif
         
-                
+        
         dispatch_async(dispatch_get_main_queue()) {
             AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: { context in
                 replyHandler(context)

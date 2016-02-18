@@ -89,11 +89,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             contentCell.configureCell(site)
             
-            if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedAscending || lastUpdatedTime == nil || site.configuration == nil) {
-
-//            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
-                // No configuration was there... go get some.
-                // println("Attempting to get configuration data from site...")
+            if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
                 refreshDataFor(site, index: indexPath.row)
             }
             
@@ -131,8 +127,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    
-                    AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
+                    // AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
                 })
                 
                 
@@ -144,9 +139,10 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     func openApp(with indexPath: NSIndexPath) {
         if let context = extensionContext {
-            
+    
             let site = sites[indexPath.row], uuidString = site.uuid.UUIDString
             AppDataManageriOS.sharedInstance.currentSiteIndex = indexPath.row
+            AppDataManageriOS.sharedInstance.saveData()
             
             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
             context.openURL(url!, completionHandler: nil)

@@ -16,7 +16,7 @@ public protocol DataSourceChangedDelegate {
 
 @available(watchOS 2.0, *)
 public class WatchSessionManager: NSObject, WCSessionDelegate {
- 
+    
     public var sites: [Site] = []
     
     public var models: [WatchModel] = [] {
@@ -25,12 +25,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             if models.isEmpty {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
-            } else if defaultSiteUUID == nil {
-                defaultSiteUUID = NSUUID(UUIDString: (models.first?.uuid)!)
             }
             
             dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                print("UPDATING DELEGATES!!!!!")
                 self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+                ComplicationController.reloadComplications()
             }
             
             saveData()
@@ -115,9 +115,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         /*
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: Selector("userDefaultsDidChange:"),
-            name: NSUserDefaultsDidChangeNotification,
-            object: defaults)
+        selector: Selector("userDefaultsDidChange:"),
+        name: NSUserDefaultsDidChangeNotification,
+        object: defaults)
         */
         
         NSNotificationCenter.defaultCenter().addObserver(self,
@@ -126,6 +126,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             object: iCloudKeyStore)
         
         iCloudKeyStore.synchronize()
+        
     }
     
     public let session: WCSession = WCSession.defaultSession()
@@ -139,6 +140,8 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             
             models[index] = model
             return true
+        } else {
+            models.append(model)
         }
         
         return false
@@ -150,11 +153,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             session.delegate = self
             session.activateSession()
             
-            if models.isEmpty {
-                requestLatestAppContext(watchAction: .AppContext)
-            }
-            
-            //updateComplication()
+            #if DEBUG
+                print("WCSession.isSupported: \(WCSession.isSupported()), Paired Phone Reachable: \(session.reachable)")
+            #endif
         }
     }
     
@@ -207,29 +208,7 @@ extension WatchSessionManager {
 
 extension WatchSessionManager {
     
-    public func requestLatestAppContext(watchAction action: WatchAction) -> Bool {
-        print("requestLatestAppContext for watchAction: \(action.rawValue)")
-        
-        let applicationData = [WatchModel.PropertyKey.actionKey: action.rawValue]
-        var returnBool = false
-        
-        session.sendMessage(applicationData, replyHandler: {(context:[String : AnyObject]) -> Void in
-            // handle reply from iPhone app here
-            print(applicationData)
-            print("recievedMessageReply from iPhone")
-            returnBool = self.processApplicationContext(context)
-            self.updateComplication()
-            }, errorHandler: {(error ) -> Void in
-                // catch any errors here
-                print("WatchSession Transfer Error: \(error)")
-                
-                returnBool = false
-        })
-        
-        return returnBool
-    }
-    
-    func processApplicationContext(context: [String : AnyObject]) -> Bool {
+    public func processApplicationContext(context: [String : AnyObject]) -> Bool {
         print("processApplicationContext")
         // print("Incoming context: \(context)")
         
@@ -259,7 +238,9 @@ extension WatchSessionManager {
         */
         
         if let modelArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
+            print("Received new models from iPhone")
             models = modelArray.map({ WatchModel(fromDictionary: $0)! })
+            //            modelArray.forEach{ self.updateModel(WatchModel(fromDictionary: $0)!) }
         }
         
         return true
@@ -274,7 +255,7 @@ extension WatchSessionManager {
     }
     
     public var nextRequestedComplicationUpdateDate: NSDate {
-        let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.TenMinutesInSeconds
+        let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.ThirtyMinutesInSeconds
         if let date = defaultModel()?.lastReadingDate {
             return date.dateByAddingTimeInterval( updateInterval )
         }
@@ -290,11 +271,25 @@ extension WatchSessionManager {
     
     public func updateComplication() {
         print("updateComplication")
-        if let model = self.defaultModel() {
-            if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
-                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                        self.updateModel(returnedSite.viewModel)
-                        ComplicationController.reloadComplications()
+        NSOperationQueue().addOperationWithBlock { () -> Void in
+            if let model = self.defaultModel() {
+                let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
+                WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+                    // handle reply from iPhone app here
+                    print("recievedMessageReply from iPhone")
+                    //NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    //WatchSessionManager.sharedManager.processApplicationContext(context)
+                    //})
+                    }, errorHandler: {(error: NSError ) -> Void in
+                        print("WatchSession Transfer Error: \(error)")
+                        if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending {
+                            quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                                }
+                            })
+                        }
+                        
                 })
             }
         }
@@ -304,9 +299,9 @@ extension WatchSessionManager {
     /*
     // MARK: Defaults have Changed
     func userDefaultsDidChange(notification: NSNotification) {
-        print("userDefaultsDidChange:")
-        
-        // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+    print("userDefaultsDidChange:")
+    
+    // guard let defaultObject = notification.object as? NSUserDefaults else { return }
     }
     */
     

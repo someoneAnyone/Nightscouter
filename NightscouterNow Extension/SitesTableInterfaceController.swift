@@ -24,7 +24,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
     }
     
     override func willActivate() {
@@ -36,6 +35,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         setupNotifications()
         
         updateTableData()
+        updateData(forceRefresh: false)
     }
     
     override func didDeactivate() {
@@ -65,36 +65,35 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     private func updateTableData() {
         print(">>> Entering \(__FUNCTION__) <<<")
         
+        let rowSiteTypeIdentifier: String = "SiteRowController"
+        let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            print(">>> Entering \(__FUNCTION__) <<<")
-            
-            let rowSiteTypeIdentifier: String = "SiteRowController"
-            let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
             
             if self.models.isEmpty {
                 self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
                 let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
                 if let row = row {
+                    
                     row.messageLabel.setText("No sites availble.")
+                    
                 }
-                
             } else {
+                
                 self.sitesTable.setNumberOfRows(self.models.count, withRowType: rowSiteTypeIdentifier)
                 for (index, model) in self.models.enumerate() {
                     if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
                         row.model = model
                     }
-                    self.updateData([model], forceRefresh: false)
                 }
+                
             }
         }
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        
+        print(">>> Entering \(__FUNCTION__) <<<")
         updateTableData()
-        
     }
     
     func didUpdateItem(model: WatchModel) {
@@ -107,27 +106,60 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataStaleUpdate(notif: NSNotification) {
-        updateData(self.models, forceRefresh: true)
+        updateData(forceRefresh: true)
     }
     
-    func updateData(models: [WatchModel], forceRefresh refresh: Bool) {
+    func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        for model in models {
-            if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
-                if WatchSessionManager.sharedManager.requestLatestAppContext(watchAction: .AppContext) {
-                    quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            self.updateTableData()
-                        }
-                    })
-                }
-            }
+        
+        let ok = WKAlertAction(title: "OK", style: .Default) { () -> Void in
+            self.dismissController()
         }
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+        self.presentAlertControllerWithTitle("Loading...", message: "Getting the latest readings your phone.", preferredStyle: WKAlertControllerStyle.Alert, actions: [ok])
+        }
+        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+            // handle reply from iPhone app here
+            print("recievedMessageReply from iPhone")
+            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                WatchSessionManager.sharedManager.processApplicationContext(context)
+                self.updateTableData()
+                self.dismissController()
+            })    
+            }, errorHandler: {(error: NSError ) -> Void in
+                print("WatchSession Transfer Error: \(error)")
+                self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription, forceRefresh: refresh)
+        })
+    }
+    
+    func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
+        // catch any errors here
+        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+            
+            let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
+                self.updateData(forceRefresh: true)
+            })
+            
+            let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
+                for model in self.models {
+                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
+                        quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                                self.updateTableData()
+                            }
+                        })
+                    }
+                }
+                
+            })
+            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
+        })
     }
     
     @IBAction func updateButton() {
-        updateData(self.models, forceRefresh: true)
+        updateData(forceRefresh: true)
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
