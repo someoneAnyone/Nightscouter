@@ -135,10 +135,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         if let currentIndex = sites.indexOf(site) {
             sites[currentIndex] = site
             
-            if site == defaultSite() {
-                updateComplication()
-            }
-            
             return true
         }
         

@@ -18,7 +18,7 @@
                                         <items>
                                             <group width="1" alignment="center" id="46F-G9-p5c">
                                                 <items>
-                                                    <label alignment="left" verticalAlignment="center" text="----" numberOfLines="0" id="KPc-Pc-EYl">
+                                                    <label width="0.59999999999999998" alignment="left" verticalAlignment="center" text="----" numberOfLines="0" id="KPc-Pc-EYl">
                                                         <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                                     </label>
                                                     <label alignment="right" verticalAlignment="center" text="----" id="r4d-0W-AgY">

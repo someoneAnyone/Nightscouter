@@ -156,11 +156,11 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
             cmodels.append(ComplicationModel(displayName: configuration.displayName, date: entry.date, sgv: sgvStringWithEmoji, sgvEmoji: sgvEmoji, tintString: sgvColor.toHexString(), delta: deltaString, deltaShort: deltaStringShort, raw: raw, rawShort: rawShort))
             
         }
-        
-       
     }
-    if let lastModel = cmodels.first {
-        cmodels.append(ComplicationModel(displayName: "No more data to display.", date: lastModel.date.dateByAddingTimeInterval(1), sgv: "", sgvEmoji: "", tintString: colorForDesiredColorState(.Alert).toHexString(), delta: "", deltaShort: "", raw: nil, rawShort: nil))
+    
+    if let model = cmodels.first {
+        let staleDate = model.date.dateByAddingTimeInterval(60.0 * 11)
+        cmodels.append(ComplicationModel(displayName: "No more data to display.", date: staleDate.dateByAddingTimeInterval(60.0 * 10 + 1), sgv: "", sgvEmoji: "", tintString: colorForDesiredColorState(.Alert).toHexString(), delta: "", deltaShort: "", raw: nil, rawShort: nil))
     }
     
     return cmodels

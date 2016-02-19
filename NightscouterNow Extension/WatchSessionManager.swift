@@ -27,12 +27,13 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 currentSiteIndex = 0
             }
             
+            saveData()
+            
             dispatch_async(dispatch_get_main_queue()) { [weak self] in
                 print("UPDATING DELEGATES!!!!!")
                 self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
             }
             
-            saveData()
         }
     }
     
@@ -77,9 +78,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     // MARK: Save and Load Data
     public func saveData() {
-        
-        let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        print("Saving Data")
+
+        // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites
+        // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         
         let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
         
@@ -87,9 +89,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         defaults.setObject("watchOS", forKey: DefaultKey.osPlatform)
         defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        defaults.synchronize()
         
         // Save To iCloud
-        iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
+        // iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
         iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
@@ -282,10 +285,11 @@ extension WatchSessionManager {
                     }, errorHandler: {(error: NSError ) -> Void in
                         print("WatchSession Transfer Error: \(error)")
                         fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                                ComplicationController.reloadComplications()
-                            }
+                            //                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                            
+                            ComplicationController.reloadComplications()
+                            //                            }
                         })
                         
                 })

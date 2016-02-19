@@ -40,11 +40,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         var date: NSDate?
         
         let model = WatchSessionManager.sharedManager.complicationData.first
-//        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 15)
-//        if staleDate?.compare(NSDate()) == .OrderedDescending {
-//            date = staleDate
-//        }
         date = model?.date
+
+        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 10)
+        if staleDate?.compare(NSDate()) == .OrderedDescending {
+            date = staleDate
+        }
         
         #if DEBUG
             print("getTimelineEndDateForComplication:\(date)")

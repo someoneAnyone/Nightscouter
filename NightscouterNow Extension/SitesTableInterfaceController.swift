@@ -87,8 +87,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
         let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
         
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            
+//        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+        
             if self.models.isEmpty {
                 self.sitesLoading.setHidden(true)
                 
@@ -114,7 +114,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 if let updateRow = updateRow {
                     updateRow.siteLastReadingLabel.setText(self.timeStamp)
                 }
-            }
+//            }
         }
     }
     
@@ -133,7 +133,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataStaleUpdate(notif: NSNotification) {
-        updateData(forceRefresh: true)
+        updateData(forceRefresh: false)
     }
     
     func updateData(forceRefresh refresh: Bool) {
@@ -142,13 +142,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let minModel = self.models.minElement { (lModel, rModel) -> Bool in
             return rModel.lastReadingDate < lModel.lastReadingDate
         }
+        
         guard let model = minModel else {
             return
         }
         
         if model.updateNow || refresh {
             
-            print("Updating because: model needs updating: \(model.updateNow) or becasue force refres is set to: \(refresh)")
+            print("Updating because: model needs updating: \(model.updateNow) or becasue force refresh is set to: \(refresh)")
           
             let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
             
@@ -159,7 +160,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                     print("WatchSession success...")
                     
                     WatchSessionManager.sharedManager.processApplicationContext(context)
-                    self.lastUpdatedTime = NSDate()
+                    //self.lastUpdatedTime = NSDate()
                     
                 })
                 }, errorHandler: {(error: NSError ) -> Void in
@@ -176,12 +177,15 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             self.updateData(forceRefresh: true)
         })
         
+        let cancel = WKAlertAction(title: "Cancel", style: .Cancel, handler: { () -> Void in
+            self.dismissController()
+        })
         let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
             for model in self.models {
                 quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
                     NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                         WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                        self.lastUpdatedTime = NSDate()
+                        //self.lastUpdatedTime = NSDate()
                     }
                 })
             }
@@ -189,7 +193,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         })
         
         NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
+            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, cancel, action])
         })
     }
     
