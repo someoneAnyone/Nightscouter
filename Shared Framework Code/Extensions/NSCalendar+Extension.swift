@@ -8,6 +8,15 @@
 
 import Foundation
 
+// MARK: Comparable instance for NSDate
+public func <(a: NSDate, b: NSDate) -> Bool {
+    return a.compare(b) == .OrderedAscending
+}
+
+public func ==(a: NSDate, b: NSDate) -> Bool {
+    return a.compare(b) == .OrderedSame
+}
+
 public extension NSCalendar {
         
     public func stringRepresentationOfElapsedTimeFromDate(startDate: NSDate, endDate: NSDate) -> String {

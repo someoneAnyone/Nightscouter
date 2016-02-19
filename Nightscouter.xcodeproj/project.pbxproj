@@ -85,6 +85,7 @@
 		17F22E5B1BEF9E600041E0B0 /* NightscouterWatchOSKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -270,6 +271,7 @@
 		17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterWatchOSKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
 		17F22E5C1BEF9E600041E0B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteUpdateRowController.swift; sourceTree = "<group>"; };
 		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D771BC1F7E800BD1A9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
@@ -664,6 +666,7 @@
 			children = (
 				83883DAB1BC2089000BD1A9C /* SiteRowController.swift */,
 				17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */,
+				17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -1131,6 +1134,7 @@
 				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
 				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,
 				177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */,
+				17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */,
 				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

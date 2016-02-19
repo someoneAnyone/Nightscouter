@@ -33,9 +33,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         didSet {
             
             if let model = model {
-                print("didSet WatchModel in SiteDetailInterfaceController")
-                print("lastReadingDate: " + model.lastReadingDate.description)
-                if model.nextReadingDate.compare(model.lastReadingDate) == .OrderedAscending {
+                if model.updateNow {
                     print("time to update")
                     updateData()
                 }
@@ -92,39 +90,40 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         print(">>> Entering \(__FUNCTION__) <<<")
         
         let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        
         WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
             // handle reply from iPhone app here
             print("recievedMessageReply from iPhone")
             NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                print("WatchSession success...")                
                 WatchSessionManager.sharedManager.processApplicationContext(context)
             })
             }, errorHandler: {(error: NSError ) -> Void in
                 print("WatchSession Transfer Error: \(error)")
-                self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription, forceRefresh: true)
+                
+                self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
         })
     }
     
     func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
         // catch any errors here
-        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-            
             let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
                 self.updateData()
             })
             
             let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
                 if let model = self.model {
-                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending || refresh {
+                    if model.updateNow || refresh {
                         fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                                 WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                                 self.model = returnedSite.viewModel
-                                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)                            }
+                            }
                         })
                     }
                 }
-                
             })
+        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
             self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
         })
     }

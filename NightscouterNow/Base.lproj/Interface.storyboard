@@ -10,6 +10,7 @@
             <objects>
                 <controller identifier="SitesTableInterfaceController" title="Nightscouter" hidesWhenLoading="NO" alwaysBounce="YES" id="GKK-vj-5UX" customClass="SitesTableInterfaceController" customModule="NightscouterNow_Extension">
                     <items>
+                        <label height="19.5" alignment="center" verticalAlignment="center" text="Loading..." id="BlF-Sv-Zda"/>
                         <table alignment="center" id="aSP-OI-u6m" userLabel="Sites List">
                             <items>
                                 <tableRow identifier="SiteRowController" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
@@ -17,7 +18,7 @@
                                         <items>
                                             <group width="1" alignment="center" id="46F-G9-p5c">
                                                 <items>
-                                                    <label width="66" alignment="left" verticalAlignment="center" text="----" id="KPc-Pc-EYl">
+                                                    <label alignment="left" verticalAlignment="center" text="----" numberOfLines="0" id="KPc-Pc-EYl">
                                                         <fontDescription key="font" style="UICTFontTextStyleHeadline"/>
                                                     </label>
                                                     <label alignment="right" verticalAlignment="center" text="----" id="r4d-0W-AgY">
@@ -103,6 +104,23 @@
                                         <outlet property="messageLabel" destination="udT-as-uND" id="6Ts-pQ-msW"/>
                                     </connections>
                                 </tableRow>
+                                <tableRow identifier="SiteUpdateRowController" selectable="NO" id="uHk-3F-YcL" customClass="SiteUpdateRowController" customModule="NightscouterNow_Extension">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="bDS-bY-6Yc">
+                                        <items>
+                                            <label alignment="center" text="LAST ATTEMPTED UPDATE" id="9Ve-5A-4Ux">
+                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <fontDescription key="font" type="system" pointSize="8"/>
+                                            </label>
+                                            <label alignment="center" text="---" id="IXC-W1-L1r">
+                                                <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
+                                            </label>
+                                        </items>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    </group>
+                                    <connections>
+                                        <outlet property="siteLastReadingLabel" destination="IXC-W1-L1r" id="jms-7A-nyG"/>
+                                    </connections>
+                                </tableRow>
                             </items>
                         </table>
                     </items>
@@ -116,6 +134,7 @@
                         </items>
                     </menu>
                     <connections>
+                        <outlet property="sitesLoading" destination="BlF-Sv-Zda" id="KCN-8V-Pxf"/>
                         <outlet property="sitesTable" destination="aSP-OI-u6m" id="gVB-m3-lIb"/>
                     </connections>
                 </controller>

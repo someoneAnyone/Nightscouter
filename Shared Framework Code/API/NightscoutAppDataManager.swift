@@ -157,7 +157,12 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
             
         }
         
+       
     }
+    if let lastModel = cmodels.first {
+        cmodels.append(ComplicationModel(displayName: "No more data to display.", date: lastModel.date.dateByAddingTimeInterval(1), sgv: "", sgvEmoji: "", tintString: colorForDesiredColorState(.Alert).toHexString(), delta: "", deltaShort: "", raw: nil, rawShort: nil))
+    }
+    
     return cmodels
 }
 

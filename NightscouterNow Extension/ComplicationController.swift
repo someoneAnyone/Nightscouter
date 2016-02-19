@@ -15,7 +15,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Timeline Configuration
     
     func getSupportedTimeTravelDirectionsForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([.Backward])
+        handler([.Backward, .Forward])
     }
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
@@ -40,10 +40,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         var date: NSDate?
         
         let model = WatchSessionManager.sharedManager.complicationData.first
-        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 15)
-        if staleDate?.compare(NSDate()) == .OrderedDescending {
-            date = staleDate
-        }
+//        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 15)
+//        if staleDate?.compare(NSDate()) == .OrderedDescending {
+//            date = staleDate
+//        }
+        date = model?.date
         
         #if DEBUG
             print("getTimelineEndDateForComplication:\(date)")
@@ -171,28 +172,6 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         
         WatchSessionManager.sharedManager.updateComplication()
-//        if let model = WatchSessionManager.sharedManager.defaultModel() {
-//            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
-//            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-//                // handle reply from iPhone app here
-//                print("recievedMessageReply from iPhone")
-//                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-//                    WatchSessionManager.sharedManager.processApplicationContext(context)
-//                    ComplicationController.reloadComplications()
-//                })
-//                }, errorHandler: {(error: NSError ) -> Void in
-//                    print("WatchSession Transfer Error: \(error)")
-//                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending {
-//                        quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
-//                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-//                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-//                                ComplicationController.reloadComplications()
-//                            }
-//                        })
-//                    }
-//                    
-//            })
-//        }
         
     }
     

@@ -25,6 +25,13 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
     var model: WatchModel? {
         didSet{
             self.configureView()
+            
+            guard let model = model else {
+                self.invalidateUserActivity()
+                return
+            }
+            
+            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
         }
     }
     
@@ -35,15 +42,13 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
     
     override func willActivate() {
         super.willActivate()
-        
+        WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         // This method is called when watch view controller is about to be visible to user
         self.model = WatchSessionManager.sharedManager.defaultModel()
         
-        modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateModel", userInfo: nil, repeats: true)
+        modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateData", userInfo: nil, repeats: true)
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
-        
-        modelUpdateTimer?.fire()
     }
     
     override func didDeactivate() {
@@ -60,41 +65,41 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
         self.model = WatchSessionManager.sharedManager.defaultModel()
     }
     
-    func updateModel(){
+    func updateData() {
+        print(">>> Entering \(__FUNCTION__) <<<")
+        
+        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        
         if let model = model {
-            print(">>> Entering \(__FUNCTION__) <<<")
-            
-            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-                // handle reply from iPhone app here
-                print("recievedMessageReply from iPhone")
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    WatchSessionManager.sharedManager.processApplicationContext(context)
-                })
-                }, errorHandler: {(error: NSError ) -> Void in
-                    print("WatchSession Transfer Error: \(error)")
-                    if model.lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime).compare(model.lastReadingDate) == .OrderedAscending {
-                        quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
+            if model.updateNow {
+                WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+                    // handle reply from iPhone app here
+                    print("recievedMessageReply from iPhone")
+                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                        print("WatchSession success...")
+                        WatchSessionManager.sharedManager.processApplicationContext(context)
+                    })
+                    }, errorHandler: {(error: NSError ) -> Void in
+                        print("WatchSession Transfer Error: \(error)")
+                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                                 WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                                self.model = returnedSite.viewModel
-                                self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)                            }
+                            }
                         })
-                    }
-                    
-            })
+                })
+            }
         }
     }
     
     func configureView() {
         
         guard let model = self.model else {
-            
-            self.siteDeltaLabel.setText("Launch Nightscouter")
-            self.siteRawLabel.setText("and add a site.")
-            self.siteNameLabel.setText("")
-            self.siteSgvLabel.setText("")
-            
+            NSOperationQueue.mainQueue().addOperationWithBlock {
+                self.siteDeltaLabel.setText("Launch Nightscouter")
+                self.siteRawLabel.setText("and add a site.")
+                self.siteNameLabel.setText("")
+                self.siteSgvLabel.setText("")
+            }
             return
         }
         
@@ -128,6 +133,7 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
             // Raw
             self.siteRawLabel.setAttributedText(formattedRaw)
             self.siteRawLabel.setHidden(!model.rawVisible)
+            
         }
     }
     

@@ -33,45 +33,46 @@ class SiteRowController: NSObject {
             
             if let model = model {
                 // Site name in row
-                
-                let sgvColor = UIColor(hexString: model.sgvColor)
-                let rawColor = UIColor(hexString: model.rawColor)
-                let batteryColor = UIColor(hexString: model.batteryColor)
-                let lastReadingColor = UIColor(hexString: model.lastReadingColor)
-                
-
-                siteNameLabel.setText(model.displayName)
-                
-                let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-
-                
-                
-                // Last reading label
-                siteLastReadingLabel.setText(date)
-                siteLastReadingLabel.setTextColor(lastReadingColor)
-           
-                siteUpdateTimer.setDate(model.lastReadingDate)
-                siteUpdateTimer.setTextColor(lastReadingColor)
-                
-                // Battery label
-                siteBatteryLabel.setText(model.batteryString)
-                siteBatteryLabel.setTextColor(batteryColor)
-                
-                // Raw data
-                siteRawGroup.setHidden(!model.rawVisible)
-                siteRawLabel.setText(model.rawString)
-                siteRawLabel.setTextColor(rawColor)
-                
-                // SGV formatted value
-                siteSgvLabel.setText(model.sgvStringWithEmoji)
-                siteSgvLabel.setTextColor(sgvColor)
-                
-                // Delta
-                siteDirectionLabel.setText(model.deltaString)
-                siteDirectionLabel.setTextColor(sgvColor)
-                
-                backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    
+                    let sgvColor = UIColor(hexString: model.sgvColor)
+                    let rawColor = UIColor(hexString: model.rawColor)
+                    let batteryColor = UIColor(hexString: model.batteryColor)
+                    let lastReadingColor = UIColor(hexString: model.lastReadingColor)
+                    
+                    
+                    self.siteNameLabel.setText(model.displayName)
+                    
+                    let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+                    
+                    // Last reading label
+                    self.siteLastReadingLabel.setText(date)
+                    self.siteLastReadingLabel.setTextColor(lastReadingColor)
+                    
+                    self.siteUpdateTimer.setDate(model.lastReadingDate)
+                    self.siteUpdateTimer.setTextColor(lastReadingColor)
+                    
+                    // Battery label
+                    self.siteBatteryLabel.setText(model.batteryString)
+                    self.siteBatteryLabel.setTextColor(batteryColor)
+                    
+                    // Raw data
+                    self.siteRawGroup.setHidden(!model.rawVisible)
+                    self.siteRawLabel.setText(model.rawString)
+                    self.siteRawLabel.setTextColor(rawColor)
+                    
+                    // SGV formatted value
+                    self.siteSgvLabel.setText(model.sgvStringWithEmoji)
+                    self.siteSgvLabel.setTextColor(sgvColor)
+                    
+                    // Delta
+                    self.siteDirectionLabel.setText(model.deltaString)
+                    self.siteDirectionLabel.setTextColor(sgvColor)
+                    self.backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
+                    
+                })
             }
+            
         }
     }
     

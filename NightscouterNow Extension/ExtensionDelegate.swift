@@ -20,13 +20,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         // Perform any final initialization of your application.
         
         WatchSessionManager.sharedManager.startSession()
-        updateDataNotification(nil)
-    }
+            }
     
     func applicationDidBecomeActive() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
+        updateDataNotification(nil)
     }
  
     func applicationWillResignActive() {
