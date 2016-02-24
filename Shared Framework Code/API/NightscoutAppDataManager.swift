@@ -135,8 +135,8 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
                 delta = delta.toMmol
             }
             
-            let deltaString = delta.formattedBGDelta(forUnits: units)
-            let deltaStringShort = delta.formattedBGDelta(forUnits: units, appendString: "∆")
+            let deltaString = sgvValue.isSGVOk ? "(" + delta.formattedBGDelta(forUnits: units) + ")" : ""
+            let deltaStringShort = sgvValue.isSGVOk ? "(" + delta.formattedBGDelta(forUnits: units, appendString: "∆") + ")" : ""
             let sgvColor = colorForDesiredColorState(boundedColor)
             
             var raw: String?
@@ -158,10 +158,37 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
         }
     }
     
-    if let model = cmodels.first {
-        let staleDate = model.date.dateByAddingTimeInterval(60.0 * 11)
-        cmodels.append(ComplicationModel(displayName: "No more data to display.", date: staleDate.dateByAddingTimeInterval(60.0 * 10 + 1), sgv: "", sgvEmoji: "", tintString: colorForDesiredColorState(.Alert).toHexString(), delta: "", deltaShort: "", raw: nil, rawShort: nil))
+    
+    /*
+    let minModel = self.models.minElement { (lModel, rModel) -> Bool in
+    return rModel.lastReadingDate < lModel.lastReadingDate
     }
+    
+    guard let model = minModel else {
+    return
+    }
+    */
+    
+    let model = cmodels.maxElement{ (lModel, rModel) -> Bool in
+        return rModel.date.compare(lModel.date) == .OrderedDescending
+    }
+    
+    if let model = model {
+        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 15.0)
+        let warnItem = ComplicationModel(displayName:"Data Missing", date: warningStaleDate, sgv: " ", sgvEmoji: " ", tintString: colorForDesiredColorState(.Warning).toHexString(), delta: "WARNING", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
+        
+        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 30.0)
+        let urgentItem = ComplicationModel(displayName:"Data Missing", date: urgentStaleDate, sgv: " ", sgvEmoji: " ", tintString: colorForDesiredColorState(.Alert).toHexString(), delta: "URGENT", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
+
+        cmodels.append(warnItem)
+        cmodels.append(urgentItem)
+    }
+    
+    
+    cmodels.sortInPlace{(item1: ComplicationModel, item2: ComplicationModel) -> Bool in
+        item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+    }
+    
     
     return cmodels
 }

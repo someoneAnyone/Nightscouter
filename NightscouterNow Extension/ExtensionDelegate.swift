@@ -52,7 +52,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         dispatch_async(dispatch_get_main_queue()) {
             NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
-            ComplicationController.reloadComplications()
             WatchSessionManager.sharedManager.saveData()
         }
         

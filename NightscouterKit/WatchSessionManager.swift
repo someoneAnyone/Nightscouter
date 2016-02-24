@@ -49,7 +49,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         print("sessionWatchStateDidChange")
         print(session)
         if session.reachable {
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
+            //AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
         }
         
     }

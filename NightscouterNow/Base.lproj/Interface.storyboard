@@ -10,7 +10,7 @@
             <objects>
                 <controller identifier="SitesTableInterfaceController" title="Nightscouter" hidesWhenLoading="NO" alwaysBounce="YES" id="GKK-vj-5UX" customClass="SitesTableInterfaceController" customModule="NightscouterNow_Extension">
                     <items>
-                        <label height="19.5" alignment="center" verticalAlignment="center" text="Loading..." id="BlF-Sv-Zda"/>
+                        <label height="19.5" alignment="center" text="Loading..." id="BlF-Sv-Zda"/>
                         <table alignment="center" id="aSP-OI-u6m" userLabel="Sites List">
                             <items>
                                 <tableRow identifier="SiteRowController" id="Xkm-ar-YXY" customClass="SiteRowController" customModule="NightscouterNow_Extension">
@@ -119,6 +119,7 @@
                                     </group>
                                     <connections>
                                         <outlet property="siteLastReadingLabel" destination="IXC-W1-L1r" id="jms-7A-nyG"/>
+                                        <outlet property="siteLastReadingLabelHeader" destination="9Ve-5A-4Ux" id="p4V-i0-3UX"/>
                                     </connections>
                                 </tableRow>
                             </items>

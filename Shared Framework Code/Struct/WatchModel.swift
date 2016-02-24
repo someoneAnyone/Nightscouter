@@ -58,7 +58,11 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     }
     
     public var updateNow: Bool {
-        return nextReadingDate.compare(NSDate()) == NSComparisonResult.OrderedAscending
+        let now = NSDate()
+        let result = nextReadingDate.compare(now) == NSComparisonResult.OrderedAscending
+        print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
+        
+        return result
     }
     
     // Battery in precentage, for example 1% - 100%. Will change color once below 20%.

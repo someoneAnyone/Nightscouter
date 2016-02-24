@@ -11,7 +11,7 @@ import Foundation
 import NightscouterWatchOSKit
 
 protocol SiteDetailViewDidUpdateItemDelegate {
-    func didUpdateItem(model: WatchModel)
+    //func didUpdateItem(model: WatchModel)
     func didSetItemAsDefault(model: WatchModel)
 }
 
@@ -29,30 +29,22 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     var delegate: SiteDetailViewDidUpdateItemDelegate?
     
-    var model: WatchModel? {
-        didSet {
-            
-            if let model = model {
-                if model.updateNow {
-                    print("time to update")
-                    updateData()
-                }
-                self.configureView(model)
-            }
-        }
+    var model: WatchModel {
+        return WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
     }
     
     override func willActivate() {
         super.willActivate()
         print("willActivate")
+        
+        if WatchSessionManager.sharedManager.models.isEmpty { popController() }
+        
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         
         let image = NSAssetKitWatchOS.imageOfWatchFace()
         compassImage.setImage(image)
         
-        if let model = model {
-            self.configureView(model)
-        }
+        self.configureView()
         
         setupNotifications()
     }
@@ -68,67 +60,79 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        if let model = self.model, index = models.indexOf(model) {
-            self.model = models[index]
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            self.configureView()
         }
     }
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], model = WatchModel(fromDictionary: modelDict) { self.model = model }
+        if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], _ = WatchModel(fromDictionary: modelDict) { //self.model = model
+        }
         if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
         
     }
     
-    func setupNotifications() {
-        // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+    
+    func dataStaleUpdate(notif: NSNotification) {
+        updateData(forceRefresh: false)
     }
     
-    func updateData(){
+    
+    func setupNotifications() {
+        // Listen for global update timer.
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataStaleUpdate:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+    }
+    
+    
+    func updateData(forceRefresh force: Bool = false){
         print(">>> Entering \(__FUNCTION__) <<<")
         
         let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
         
-        WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-            // handle reply from iPhone app here
-            print("recievedMessageReply from iPhone")
-            NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                print("WatchSession success...")                
-                WatchSessionManager.sharedManager.processApplicationContext(context)
+        if model.updateNow || force {
+            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+                // handle reply from iPhone app here
+                print("recievedMessageReply from iPhone")
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    print("WatchSession success...")
+                    //WatchSessionManager.sharedManager.processApplicationContext(context, updateDelegates: true)
+        
+                })
+                }, errorHandler: {(error: NSError ) -> Void in
+                    print("WatchSession Transfer Error: \(error)")
+                    
+                    self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
             })
-            }, errorHandler: {(error: NSError ) -> Void in
-                print("WatchSession Transfer Error: \(error)")
-                
-                self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-        })
+        }
     }
     
     func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
         // catch any errors here
-            let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
-                self.updateData()
-            })
-            
-            let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
-                if let model = self.model {
-                    if model.updateNow || refresh {
-                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                                self.model = returnedSite.viewModel
-                            }
-                        })
+        let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
+            self.updateData()
+        })
+        
+        let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
+            if self.model.updateNow || refresh {
+                fetchSiteData(self.model.generateSite(), handler: { (returnedSite, error) -> Void in
+                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                        self.configureView()
+                        //self.model = returnedSite.viewModel
                     }
-                }
-            })
+                })
+            }
+        })
         NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
             self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
         })
     }
     
-    func configureView(model: WatchModel){
+    func configureView(){
+        
+        let model = self.model
         
         let compassAlpha: CGFloat = model.warn ? 0.5 : 1.0
         
@@ -168,14 +172,12 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     @IBAction func updateButton() {
-        updateData()
+        updateData(forceRefresh: true)
     }
     
     @IBAction func setAsDefaultSite(){
-        if let model = self.model {
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                self?.delegate?.didSetItemAsDefault(model)
-            }
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.delegate?.didSetItemAsDefault(self!.model)
         }
     }
     

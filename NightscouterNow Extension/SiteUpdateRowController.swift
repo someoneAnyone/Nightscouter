@@ -9,6 +9,7 @@
 import WatchKit
 
 class SiteUpdateRowController: NSObject {
+    @IBOutlet var siteLastReadingLabelHeader: WKInterfaceLabel!
 
     @IBOutlet var siteLastReadingLabel: WKInterfaceLabel!
 }

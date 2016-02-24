@@ -15,7 +15,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     // MARK: - Timeline Configuration
     
     func getSupportedTimeTravelDirectionsForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([.Backward, .Forward])
+        handler([.Backward])
     }
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
@@ -39,14 +39,13 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         var date: NSDate?
         
+//        let model = WatchSessionManager.sharedManager.complicationData.maxElement{ (lModel, rModel) -> Bool in
+//            return rModel.date.compare(lModel.date) == .OrderedDescending
+//        }
+        
         let model = WatchSessionManager.sharedManager.complicationData.first
         date = model?.date
 
-        let staleDate = model?.date.dateByAddingTimeInterval(60.0 * 10)
-        if staleDate?.compare(NSDate()) == .OrderedDescending {
-            date = staleDate
-        }
-        
         #if DEBUG
             print("getTimelineEndDateForComplication:\(date)")
         #endif
@@ -263,8 +262,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             rawShort = rawShor
         }
         
-        let utilLargeSting = sgv + " (" + delta + ") " + raw
-        let utilLargeStingShort = sgv + " (" + deltaShort + ") " + rawShort
+        let utilLargeSting = sgv + " " + delta + " " + raw
+        let utilLargeStingShort = sgv + " " + deltaShort + " " + rawShort
         
         switch complication.family {
         case .ModularSmall:
@@ -277,7 +276,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             template = modularSmall
         case .ModularLarge:
             let modularLarge = CLKComplicationTemplateModularLargeTable()
-            modularLarge.headerTextProvider = CLKSimpleTextProvider(text: sgv + " (" + delta + ")", shortText: sgv + " (" + deltaShort + ")")
+            modularLarge.headerTextProvider = CLKSimpleTextProvider(text: sgv + " " + delta, shortText: sgv + " " + deltaShort)
             modularLarge.row1Column1TextProvider = CLKSimpleTextProvider(text: displayName)
             modularLarge.row1Column2TextProvider = CLKRelativeDateTextProvider(date: model.date, style: .Natural, units: [.Minute, .Hour, .Day])
             modularLarge.row2Column1TextProvider = CLKSimpleTextProvider(text:  raw, shortText: rawShort)

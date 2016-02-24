@@ -27,32 +27,56 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 currentSiteIndex = 0
             }
             
-            saveData()
-            
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
-                print("UPDATING DELEGATES!!!!!")
-                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
-            }
-            
+            let data: [[String : AnyObject]] = models.flatMap( { $0.dictionary } )
+            defaults.setObject(data, forKey: DefaultKey.modelArrayObjectsKey)
+
         }
     }
     
-    public var currentSiteIndex: Int = 0
+    public var currentSiteIndex: Int = 0 {
+        didSet{
+            defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
+        }
+    }
     
     public var defaultSiteUUID: NSUUID? {
         didSet{
             updateComplication()
+            
+            defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         }
     }
     
     public func defaultModel() -> WatchModel? {
         
         let uuidString = defaultSiteUUID?.UUIDString
+        
         let matched = self.models.filter({ (model) -> Bool in
             return model.uuid == uuidString
         })
         
         return matched.first ?? models.first
+    }
+    
+    public func updateModel(model: WatchModel)  ->  Bool {
+        
+        var success = false
+        
+        if let index = models.indexOf(model) {
+            models[index] = model
+            success = true
+        } else {
+            models.append(model)
+            success = true
+        }
+        
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            print("UPDATING DELEGATES!!!!!")
+            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+        }
+        
+        
+        return success
     }
     
     public static let sharedManager = WatchSessionManager()
@@ -74,12 +98,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
-    public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
+    // public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
     // MARK: Save and Load Data
     public func saveData() {
         print("Saving Data")
-
+        
         // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites
         // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         
@@ -91,13 +115,14 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         defaults.synchronize()
         
+        /*
         // Save To iCloud
         // iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
         iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         iCloudKeyStore.synchronize()
-        
+        */
     }
     
     public func loadData() {
@@ -114,6 +139,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             self.defaultSiteUUID = firstModel.uuid
         }
         
+        
         /*
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
@@ -121,31 +147,18 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         name: NSUserDefaultsDidChangeNotification,
         object: defaults)
         */
-        
+      
+        /*
         NSNotificationCenter.defaultCenter().addObserver(self,
             selector: "ubiquitousKeyValueStoreDidChange:",
             name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
             object: iCloudKeyStore)
         
         iCloudKeyStore.synchronize()
-        
+        */
     }
     
     public let session: WCSession = WCSession.defaultSession()
-    
-    public func updateModel(model: WatchModel)  ->  Bool {
-        if let index = models.indexOf(model) {
-            
-            models[index] = model
-            
-            return true
-        } else {
-            models.append(model)
-        }
-        
-        return false
-        
-    }
     
     public func startSession() {
         if WCSession.isSupported() {
@@ -179,6 +192,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
 // use when your app needs only the latest information
 // if the data was not sent, it will be replaced
 extension WatchSessionManager {
+    
     public func session(session: WCSession, didReceiveFile file: WCSessionFile) {
         // print("didReceiveFile: \(file)")
         dispatch_async(dispatch_get_main_queue()) {
@@ -189,30 +203,39 @@ extension WatchSessionManager {
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
         print("didReceiveUserInfo:")
         // print("\(userInfo)")
-        processApplicationContext(userInfo)
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            self.processApplicationContext(userInfo, updateDelegates:  false)
+        }
+        
     }
     
     // Receiver
     public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
         print("didReceiveApplicationContext")
         // print("received: \(applicationContext)")
-        processApplicationContext(applicationContext)
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            self.processApplicationContext(applicationContext)
+        }
+        
     }
     
-    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
-        let success =  processApplicationContext(message)
-        replyHandler(["response" : "The message was procssed with success: \(success)", "success": success])
-    }
+//    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+//        let success =  processApplicationContext(message)
+//        replyHandler(["response" : "The message was procssed with success: \(success)", "success": success])
+//    }
+    
 }
 
 extension WatchSessionManager {
     
-    public func processApplicationContext(context: [String : AnyObject]) -> Bool {
+    public func processApplicationContext(context: [String : AnyObject], updateDelegates update: Bool = true) -> Bool {
         print("processApplicationContext")
         // print("Incoming context: \(context)")
         
         // Bail out when not watch action isn't recieved.
-        guard let _ = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
+        guard let action = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
             print("No action was found, didReceiveMessage: \(context)")
             
             return false
@@ -238,12 +261,21 @@ extension WatchSessionManager {
         
         if let modelArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
             print("Received new models from iPhone")
-            models = modelArray.map({ WatchModel(fromDictionary: $0)! })
-            // modelArray.forEach{ self.updateModel(WatchModel(fromDictionary: $0)!) }
+            self.models = modelArray.map({ WatchModel(fromDictionary: $0)! })
         }
+        
+        if update {
+            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                print("UPDATING DELEGATES!!!!! for watchAction \(action)")
+                self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+            }
+        }
+        
+        ComplicationController.reloadComplications()
         
         return true
     }
+    
 }
 
 extension WatchSessionManager {
@@ -255,10 +287,6 @@ extension WatchSessionManager {
     
     public var nextRequestedComplicationUpdateDate: NSDate {
         let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.ThirtyMinutesInSeconds
-        //        if let date = defaultModel()?.lastReadingDate {
-        //            return date.dateByAddingTimeInterval( updateInterval )
-        //        }
-        
         return NSDate(timeIntervalSinceNow: updateInterval)
     }
     
@@ -269,50 +297,51 @@ extension WatchSessionManager {
     }
     
     public func updateComplication() {
+        
         startSession()
         
         print("updateComplication")
-        if let model = self.defaultModel() {
-            if model.updateNow {
-                
-                let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
-                WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-                    // handle reply from iPhone app here
-                    print("recievedMessageReply from iPhone")
-                    //NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    //WatchSessionManager.sharedManager.processApplicationContext(context)
-                    //})
-                    }, errorHandler: {(error: NSError ) -> Void in
-                        print("WatchSession Transfer Error: \(error)")
-                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                            //                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            
-                            ComplicationController.reloadComplications()
-                            //                            }
-                        })
-                        
-                })
-            }
+        guard let model = self.defaultModel() else {
+            return
         }
+        
+        if model.updateNow {
+            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
+            
+            session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+                // handle reply from iPhone app here
+                print("recievedMessageReply from iPhone")
+                }, errorHandler: {(error: NSError ) -> Void in
+                    print("WatchSession Transfer Error: \(error)")
+                    fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                        
+                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                        self.saveData()
+                        ComplicationController.reloadComplications()
+                        
+                    })
+            })
+        }
+        
     }
     
+    
+    // MARK: Defaults have Changed
+    
+    func userDefaultsDidChange(notification: NSNotification) {
+        print("userDefaultsDidChange:")
+        
+        // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+    }
     
     /*
-    // MARK: Defaults have Changed
-    func userDefaultsDidChange(notification: NSNotification) {
-    print("userDefaultsDidChange:")
-    
-    // guard let defaultObject = notification.object as? NSUserDefaults else { return }
-    }
-    */
-    
     func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
         print("ubiquitousKeyValueStoreDidChange:")
         
         guard let userInfo = notification.userInfo as? [String: AnyObject], changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
             return
         }
+        
         let reason = changeReason.integerValue
         
         if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
@@ -339,4 +368,6 @@ extension WatchSessionManager {
             }
         }
     }
+    */
+    
 }

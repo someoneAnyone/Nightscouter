@@ -14,18 +14,16 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public var sites: [Site] = [] {
         didSet{
             
-            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
-            }
-            
             if sites.isEmpty {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
             }
             
-            updateWatch(withAction: .AppContext, withContext: [DefaultKey.modelArrayObjectsKey : self.sites.map{ $0.viewModel.dictionary }])
-            
             saveData()
+            
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+            }
         }
     }
     
@@ -117,6 +115,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             object: iCloudKeyStore)
         
         iCloudKeyStore.synchronize()
+        
+        //updateWatch(withAction: .AppContext)
     }
     
     
@@ -129,20 +129,27 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         
         sites.insert(site, atIndex: safeIndex)
+        
+        updateWatch(withAction: .UserInfo)
     }
     
     public func updateSite(site: Site)  ->  Bool {
-        if let currentIndex = sites.indexOf(site) {
-            sites[currentIndex] = site
-            
-            return true
+        
+        var success = false
+        
+        if let index = sites.indexOf(site) {
+            sites[index] = site
+            success = true
         }
         
-        return false
+        updateWatch(withAction: .AppContext)
+        return success
     }
     
     public func deleteSiteAtIndex(index: Int) {
         sites.removeAtIndex(index)
+        
+        updateWatch(withAction: .UserInfo)
     }
     
     

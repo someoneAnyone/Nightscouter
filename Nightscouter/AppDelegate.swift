@@ -111,9 +111,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     // AppDataManagerNotificationDidChange Handler
     func dataManagerDidChange(notification: NSNotification) {
-        guard let _ =  UIApplication.sharedApplication().currentUserNotificationSettings() where !sites.isEmpty else {
+        if UIApplication.sharedApplication().currentUserNotificationSettings()?.types == .None || !sites.isEmpty{
             setupNotificationSettings()
-            
             return
         }
         
@@ -199,6 +198,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #endif
         
         NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        //AppDataManageriOS.sharedInstance.updateWatch(withAction: .UserInfo)
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()

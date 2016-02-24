@@ -131,7 +131,7 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
             case .AbsoluteDeviation:
                 return "?AD"
             case .PowerDeviation:
-                return "?PD"
+                return "???"
             case .BadRF:
                 return "?RF✖"
             case .HupHolland:
