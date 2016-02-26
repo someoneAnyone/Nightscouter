@@ -54,10 +54,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        setupNotifications()
-        
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        updateData(forceRefresh: false)
     }
     
     override func didDeactivate() {
@@ -69,20 +66,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    func setupNotifications() {
-        // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataStaleUpdate:"), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
-    }
-    
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        let model = models[rowIndex]
         WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
         
-        pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: model.dictionary])
+        pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
     }
     
     private func updateTableData() {
@@ -91,37 +82,36 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let rowSiteTypeIdentifier: String = "SiteRowController"
         let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
         let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
-        
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+
+        if self.models.isEmpty {
+            self.sitesLoading.setHidden(true)
             
-            if self.models.isEmpty {
-                self.sitesLoading.setHidden(true)
-                
-                self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
-                let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
-                if let row = row {
-                    row.messageLabel.setText("No sites availble.")
-                }
-            } else {
-                
-                var rowSiteType = self.models.map{ _ in rowSiteTypeIdentifier }
-                rowSiteType.append(rowUpdateTypeIdentifier)
-                
-                self.sitesTable.setRowTypes(rowSiteType)
-                
-                for (index, model) in self.models.enumerate() {
-                    if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                        row.model = model
-                    }
-                }
-                
-                let updateRow = self.sitesTable.rowControllerAtIndex(self.models.count) as? SiteUpdateRowController
-                if let updateRow = updateRow {
-                    updateRow.siteLastReadingLabel.setText(self.timeStamp)
-                    updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
+            self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
+            let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
+            if let row = row {
+                row.messageLabel.setText("No sites availble.")
+            }
+            
+        } else {
+            
+            var rowSiteType = self.models.map{ _ in rowSiteTypeIdentifier }
+            rowSiteType.append(rowUpdateTypeIdentifier)
+            
+            self.sitesTable.setRowTypes(rowSiteType)
+            
+            for (index, model) in self.models.enumerate() {
+                if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+                    row.model = model
                 }
             }
+            
+            let updateRow = self.sitesTable.rowControllerAtIndex(self.models.count) as? SiteUpdateRowController
+            if let updateRow = updateRow {
+                updateRow.siteLastReadingLabel.setText(self.timeStamp)
+                updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
+            }
         }
+
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
@@ -131,56 +121,18 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         }
     }
     
+    func dataSourceCouldNotConnectToPhone(error: NSError) {
+        self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
+    }
+    
     func didSetItemAsDefault(model: WatchModel) {
         WatchSessionManager.sharedManager.defaultSiteUUID = NSUUID(UUIDString: model.uuid)
-        updateTableData()
-    }
-    
-    func dataStaleUpdate(notif: NSNotification) {
-        updateData(forceRefresh: false)
-    }
-    
-    func updateData(forceRefresh refresh: Bool) {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        let minModel = self.models.minElement { (lModel, rModel) -> Bool in
-            return rModel.lastReadingDate < lModel.lastReadingDate
-        }
-        
-        guard let model = minModel else {
-            return
-        }
-        
-        if model.updateNow || refresh && currentlyUpdating == false {
-            
-            self.currentlyUpdating = true
-            
-            print("Updating because: model needs updating: \(model.updateNow) or becasue force refresh is set to: \(refresh)")
-            
-            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-            
-            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-                // handle reply from iPhone app here
-                print("recievedMessageReply from iPhone")
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    print("WatchSession success...")
-                    self.currentlyUpdating = false
-                    WatchSessionManager.sharedManager.processApplicationContext(context)
-                })
-                }, errorHandler: {(error: NSError ) -> Void in
-                    print("WatchSession Transfer Error: \(error)")
-                    
-                    self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-            })
-        } else {
-            self.lastUpdatedTime = NSDate()
-        }
     }
     
     func presentErrorDialog(withTitle title: String, message: String) {
         // catch any errors here
         let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
-            self.updateData(forceRefresh: true)
+            WatchSessionManager.sharedManager.updateData(forceRefresh: true)
         })
         
         let cancel = WKAlertAction(title: "Cancel", style: .Cancel, handler: { () -> Void in
@@ -205,7 +157,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     @IBAction func updateButton() {
-        updateData(forceRefresh: true)
+        WatchSessionManager.sharedManager.updateData(forceRefresh: true)
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
@@ -219,6 +171,11 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         NSOperationQueue.mainQueue().addOperationWithBlock {
             self.popController()
             self.dismissController()
+            
+            if let index = WatchSessionManager.sharedManager.models.indexOf(incomingModel) {
+                WatchSessionManager.sharedManager.currentSiteIndex = index
+            }
+            
             self.pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
         }
     }

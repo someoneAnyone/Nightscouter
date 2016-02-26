@@ -45,8 +45,6 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         compassImage.setImage(image)
         
         self.configureView()
-        
-        setupNotifications()
     }
     
     override func didDeactivate() {
@@ -64,54 +62,21 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             self.configureView()
         }
     }
-    
+ 
+    func dataSourceCouldNotConnectToPhone(error: NSError) {
+        self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
+    }
+
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         
-        if let modelDict = context![WatchModel.PropertyKey.modelKey] as? [String : AnyObject], _ = WatchModel(fromDictionary: modelDict) { //self.model = model
-        }
-        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
-        
-    }
-    
-    
-    func dataStaleUpdate(notif: NSNotification) {
-        updateData(forceRefresh: false)
-    }
-    
-    
-    func setupNotifications() {
-        // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "dataStaleUpdate:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
-    }
-    
-    
-    func updateData(forceRefresh force: Bool = false){
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-        
-        if model.updateNow || force {
-            WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-                // handle reply from iPhone app here
-                print("recievedMessageReply from iPhone")
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    print("WatchSession success...")
-                    //WatchSessionManager.sharedManager.processApplicationContext(context, updateDelegates: true)
-        
-                })
-                }, errorHandler: {(error: NSError ) -> Void in
-                    print("WatchSession Transfer Error: \(error)")
-                    
-                    self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-            })
-        }
+        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }        
     }
     
     func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
         // catch any errors here
         let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
-            self.updateData()
+            WatchSessionManager.sharedManager.updateData(forceRefresh: true)
         })
         
         let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
@@ -120,7 +85,6 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
                     NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                         WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                         self.configureView()
-                        //self.model = returnedSite.viewModel
                     }
                 })
             }
@@ -172,7 +136,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     @IBAction func updateButton() {
-        updateData(forceRefresh: true)
+        WatchSessionManager.sharedManager.updateData(forceRefresh: true)
     }
     
     @IBAction func setAsDefaultSite(){
@@ -186,6 +150,10 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
             return
+        }
+        
+        if let index = WatchSessionManager.sharedManager.models.indexOf(incomingModel) {
+            WatchSessionManager.sharedManager.currentSiteIndex = index
         }
         
         NSOperationQueue.mainQueue().addOperationWithBlock {

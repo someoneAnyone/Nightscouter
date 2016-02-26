@@ -38,6 +38,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         public static let contextKey = "context"
         public static let actionKey = "action"
         public static let modelKey = "siteModel"
+        public static let modelUUIDKey = "uuid"
         public static let delegateKey = "delegate"
     }
     
@@ -54,7 +55,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let lastReadingColor: String
     
     public var nextReadingDate: NSDate {
-        return  lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
+        return lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
     }
     
     public var updateNow: Bool {

@@ -42,12 +42,12 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
     
     override func willActivate() {
         super.willActivate()
-        WatchSessionManager.sharedManager.startSession()
+//        WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         // This method is called when watch view controller is about to be visible to user
         self.model = WatchSessionManager.sharedManager.defaultModel()
         
-        modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateData", userInfo: nil, repeats: true)
+//        modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateData", userInfo: nil, repeats: true)
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
     }
     
@@ -65,29 +65,13 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
         self.model = WatchSessionManager.sharedManager.defaultModel()
     }
     
-    func updateData() {
-        print(">>> Entering \(__FUNCTION__) <<<")
-        
-        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-        
+    func dataSourceCouldNotConnectToPhone(error: NSError) {
         if let model = model {
-            if model.updateNow {
-                WatchSessionManager.sharedManager.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-                    // handle reply from iPhone app here
-                    print("recievedMessageReply from iPhone")
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        print("WatchSession success...")
-                        WatchSessionManager.sharedManager.processApplicationContext(context)
-                    })
-                    }, errorHandler: {(error: NSError ) -> Void in
-                        print("WatchSession Transfer Error: \(error)")
-                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            }
-                        })
-                })
-            }
+            fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                }
+            })
         }
     }
     
