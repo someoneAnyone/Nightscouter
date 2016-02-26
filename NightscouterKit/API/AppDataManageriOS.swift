@@ -274,6 +274,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             switch action {
             case .AppContext:
                 print("Sending application context")
+
                 do {
                     try WatchSessionManager.sharedManager.updateApplicationContext(payload)
                 } catch {
