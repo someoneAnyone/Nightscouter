@@ -35,10 +35,6 @@ public class AppThemeManager: NSObject {
     }
     
     override init() {
-        // UIApplication.sharedApplication().keyWindow?.tintColor = Theme.Color.windowTintColor
-        // UIWindow.appearance().tintColor = UIColor.redColor()
-        // window?.tintColor = NSAssetKit.predefinedNeutralColor
-
         UINavigationBar.appearance().tintColor = Theme.Color.windowTintColor
         // Change the font and size of nav bar text.
         if let navBarFont = Theme.Font.navBarTitleFont {

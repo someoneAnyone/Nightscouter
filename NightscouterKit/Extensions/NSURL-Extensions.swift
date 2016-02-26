@@ -62,7 +62,7 @@ public extension NSURL
             request.HTTPMethod = "HEAD"
             ValidationQueue.queue.cancelAllOperations()
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: ValidationQueue.queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            NSURLConnection.sendAsynchronousRequest(request, queue: ValidationQueue.queue, completionHandler: { (response, data, error) -> Void in
                 let url = request.URL!.absoluteString
                 
                 // URL failed - No Response

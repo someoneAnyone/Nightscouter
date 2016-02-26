@@ -14,15 +14,15 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     var pageViewController: UIPageViewController?
     
     var sites: [Site] {
-        return AppDataManager.sharedInstance.sites
+        return AppDataManageriOS.sharedInstance.sites
     }
     
     var currentIndex: Int {
         set {
-            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
         }
         get {
-            return AppDataManager.sharedInstance.currentSiteIndex
+            return AppDataManageriOS.sharedInstance.currentSiteIndex
         }
     }
     
@@ -56,10 +56,12 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
         view.gestureRecognizers = pageViewController!.gestureRecognizers
         
-        view.bringSubviewToFront(self.goToListButton)
+        // view.bringSubviewToFront(self.goToListButton)
         goToListButton.hidden = true
         
         setupNotifications()
+        updateNavigationController()
+
     }
     
     override func didReceiveMemoryWarning() {
@@ -124,7 +126,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateNavigationController", name: Constants.Notification.DataUpdateSuccessful, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateNavigationController", name: NightscoutAPIClientNotification.DataUpdateSuccessful, object: nil)
     }
     
     func updateNavigationController() {

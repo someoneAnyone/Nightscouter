@@ -57,7 +57,7 @@ public class CompassControl: UIView {
                 configireDrawRect(angle:-180)
             case .DoubleDown:
                 configireDrawRect(true, angle: -180)
-            case .NotComputable:
+            case .NotComputable, .Not_Computable:
                 configireDrawRect(isArrowVisible: false, isUncomputable: true)
             case .RateOutOfRange:
                 configireDrawRect(isArrowVisible: false, isUncomputable: true, sgvText: direction.description)

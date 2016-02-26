@@ -29,16 +29,13 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view from its nib.
-        // tableView.rowHeight = UITableViewAutomaticDimension
+
         tableView.backgroundColor = UIColor.clearColor()
         
-        if let  sitesData = NSKeyedUnarchiver.unarchiveObjectWithFile(AppDataManager.sharedInstance.sitesFileURL.path!) as? NSData {
-            if let sitesArray = NSKeyedUnarchiver.unarchiveObjectWithData(sitesData) as? [Site] {
-                sites = sitesArray
-            }
+        if let models = AppDataManageriOS.sharedInstance.defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+            sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
-
+        
         let itemCount = sites.isEmpty ? 1 : sites.count
         
         preferredContentSize = CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
@@ -81,20 +78,19 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         if sites.isEmpty {
-            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath) 
+            let cell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.message, forIndexPath: indexPath)
             
-            cell.textLabel!.text = NSLocalizedString("No Nighscout sites were found.", comment: "")
+            cell.textLabel!.text = NSLocalizedString("No Nightscout sites were found.", comment: "")
             
             return cell
         } else {
             let contentCell = tableView.dequeueReusableCellWithIdentifier(TableViewConstants.CellIdentifiers.content, forIndexPath: indexPath) as! SiteNSNowTableViewCell
             let site = sites[indexPath.row]
             
-            contentCell.configureCell(site)            
-            if (lastUpdatedTime?.timeIntervalSinceNow > 60 || lastUpdatedTime == nil || site.configuration == nil) {
-                // No configuration was there... go get some.
-                // println("Attempting to get configuration data from site...")
-                loadDataFor(site, index: indexPath.row)
+            contentCell.configureCell(site)
+            
+            if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
+                refreshDataFor(site, index: indexPath.row)
             }
             
             return contentCell
@@ -112,48 +108,41 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
-            for site in sites {
-                loadDataFor(site, index: sites.indexOf(site)!)
+            for (index, site) in sites.enumerate() {
+                refreshDataFor(site, index: index)
             }
-        } else {
-            // No data in the sites array. Cancel the refreshing!
         }
     }
     
-    func loadDataFor(site: Site, index: Int){
+    func refreshDataFor(site: Site, index: Int){
         // Start up the API
-        let nsApi = NightscoutAPIClient(url: site.url)
         
-        // Get settings for a given site.
-        print("Loading data for \(site.url!)")
-        nsApi.fetchServerConfiguration { (result) -> Void in
-            switch (result) {
-            case let .Error(error):
-                // display error message
-                print("\(__FUNCTION__) ERROR recieved: \(error)")
-            case let .Value(boxedConfiguration):
-                let configuration:ServerConfiguration = boxedConfiguration.value
-                // do something with user
-                nsApi.fetchDataForWatchEntry({ (watchEntry, watchEntryErrorCode) -> Void in
-                    // Get back on the main queue to update the user interface
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        site.configuration = configuration
-                        site.watchEntry = watchEntry
-                        AppDataManager.sharedInstance.updateSite(site)
-                        self.lastUpdatedTime = NSDate()
-                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    })
+        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
+            
+            switch error {
+                
+            case .NoError :
+                
+                dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                    // AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
                 })
+                
+                
+            default:
+                print("\(__FUNCTION__) ERROR recieved: \(error.description)")
             }
         }
     }
     
     func openApp(with indexPath: NSIndexPath) {
         if let context = extensionContext {
-            
+    
             let site = sites[indexPath.row], uuidString = site.uuid.UUIDString
-            AppDataManager.sharedInstance.updateSite(site)
-            AppDataManager.sharedInstance.currentSiteIndex = indexPath.row
+            AppDataManageriOS.sharedInstance.currentSiteIndex = indexPath.row
+            AppDataManageriOS.sharedInstance.saveData()
             
             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
             context.openURL(url!, completionHandler: nil)

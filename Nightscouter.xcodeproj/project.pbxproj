@@ -10,43 +10,92 @@
 		170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E61B2CBABB00304F8F /* AppDelegate.swift */; };
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
-		171140EA1B31F7F700AB4335 /* TestHarnessForCompassViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */; };
-		171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */; };
-		171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */; };
-		171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171140ED1B31F85500AB4335 /* Labs.storyboard */; };
-		171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */; };
+		170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */; };
+		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
 		17336D551B42F81B0063FB70 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734544A1B30771300931278 /* SiteListTableViewController.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
 		1739B1BE1B31141000C22762 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 1739B1BD1B31141000C22762 /* html */; };
 		1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */; };
-		176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B05A1B75235C006C1F5E /* NightscouterKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0621B7524AA006C1F5E /* AppDataManager.swift */; };
+		1771B0661B7524AA006C1F5E /* AppDataManageriOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */; };
 		1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0631B7524AA006C1F5E /* AppTheme.swift */; };
-		1771B0681B7524AA006C1F5E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0641B7524AA006C1F5E /* Constants.swift */; };
-		1771B0691B7524AA006C1F5E /* NightscoutAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0651B7524AA006C1F5E /* NightscoutAPIClient.swift */; };
-		1771B0751B7524D5006C1F5E /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06B1B7524D5006C1F5E /* CompassControl+Convience.swift */; };
-		1771B0761B7524D5006C1F5E /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06C1B7524D5006C1F5E /* Double+Extension.swift */; };
-		1771B0781B7524D5006C1F5E /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06E1B7524D5006C1F5E /* NSAssetKit.swift */; };
-		1771B0791B7524D5006C1F5E /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B06F1B7524D5006C1F5E /* NSAssetKit+Helpers.swift */; };
-		1771B07A1B7524D5006C1F5E /* NSCalendar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */; };
+		1771B0681B7524AA006C1F5E /* ConstantsiOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */; };
 		1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */; };
-		1771B07C1B7524D5006C1F5E /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0721B7524D5006C1F5E /* String+Extensions.swift */; };
-		1771B0841B7524FD006C1F5E /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0801B7524FD006C1F5E /* Entry.swift */; };
-		1771B0851B7524FD006C1F5E /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0811B7524FD006C1F5E /* ServerConfiguration.swift */; };
-		1771B0861B7524FD006C1F5E /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0821B7524FD006C1F5E /* Site.swift */; };
-		1771B0871B7524FD006C1F5E /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0831B7524FD006C1F5E /* WatchEntry.swift */; };
 		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
+		177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
+		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
+		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
+		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
+		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
+		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
+		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
+		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
+		17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
+		17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */; };
+		17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */; };
+		17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */; };
+		17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
+		17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C141BF0EC1D0014EE38 /* Entry.swift */; };
+		17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */; };
+		17BD1C1B1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */; };
+		17BD1C1C1BF0EC1D0014EE38 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C161BF0EC1D0014EE38 /* Site.swift */; };
+		17BD1C1D1BF0EC1D0014EE38 /* Site.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C161BF0EC1D0014EE38 /* Site.swift */; };
+		17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C171BF0EC1D0014EE38 /* WatchEntry.swift */; };
+		17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C171BF0EC1D0014EE38 /* WatchEntry.swift */; };
+		17BD1C211BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */; };
+		17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */; };
+		17BD1C261BF0ECE40014EE38 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C231BF0ECE40014EE38 /* Double+Extension.swift */; };
+		17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C231BF0ECE40014EE38 /* Double+Extension.swift */; };
+		17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */; };
+		17BD1C291BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */; };
+		17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */; };
+		17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */; };
+		17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */; };
+		17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C301BF0ED410014EE38 /* NSAssetKit+Helpers.swift */; };
+		17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */; };
+		17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
+		17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */; };
+		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
+		17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */; };
+		17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */; };
+		17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */; };
+		17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
 		17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CC02061B59384400F7DA96 /* BackgroundView.swift */; };
+		17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */; };
+		17DA132B1BF4DF0000A89DA4 /* Calibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13271BF4DF0000A89DA4 /* Calibration.swift */; };
+		17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13271BF4DF0000A89DA4 /* Calibration.swift */; };
+		17DA132D1BF4DF0000A89DA4 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13281BF4DF0000A89DA4 /* Device.swift */; };
+		17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13281BF4DF0000A89DA4 /* Device.swift */; };
+		17DA132F1BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */; };
+		17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */; };
+		17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
+		17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */; };
+		17E17C481C6F7E5B00810A4B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E17C471C6F7E5B00810A4B /* HTTPClient.swift */; };
+		17E17C491C6F7E5B00810A4B /* HTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E17C471C6F7E5B00810A4B /* HTTPClient.swift */; };
 		17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 17E1B47A1B62DB3E0047D594 /* Settings.bundle */; };
-		839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */; };
+		17EF27731BFCDA5900A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
+		17EF27741BFCDA5A00A16136 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17EF27721BFCDA0D00A16136 /* Constants.swift */; };
+		17F22E5B1BEF9E600041E0B0 /* NightscouterWatchOSKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
+		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
+		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
+		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
+		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */; };
+		83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */; };
+		83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D911BC1F7E900BD1A9C /* Assets.xcassets */; };
+		83883D961BC1F7E900BD1A9C /* NightscouterNow.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 83883D741BC1F7E800BD1A9C /* NightscouterNow.app */; };
+		83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */; };
+		83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DAB1BC2089000BD1A9C /* SiteRowController.swift */; };
+		8389AC6B1BEB05B300B81A18 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */; };
 		83F4C5791B7C201800C74285 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1725511D1B75544700AC09E0 /* NotificationCenter.framework */; };
 		83F4C5831B7C201800C74285 /* NightscouterToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83F4C5781B7C201700C74285 /* NightscouterToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		83F4C58C1B7C23F200C74285 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83F4C5891B7C23F200C74285 /* MainInterface.storyboard */; };
@@ -62,6 +111,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1771B0411B75235B006C1F5E;
 			remoteInfo = NightscouterKit;
+		};
+		17F22E5D1BEF9E600041E0B0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 17F22E571BEF9E600041E0B0;
+			remoteInfo = NightscouterWatchOSKit;
+		};
+		83883D821BC1F7E900BD1A9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83883D7F1BC1F7E800BD1A9C;
+			remoteInfo = "NightscouterNow Extension";
+		};
+		83883D941BC1F7E900BD1A9C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 170825DB1B2CBABA00304F8F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 83883D731BC1F7E800BD1A9C;
+			remoteInfo = NightscouterNow;
 		};
 		83F4C5811B7C201800C74285 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -95,6 +165,49 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		17F22E641BEF9E600041E0B0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D9C1BC1F7E900BD1A9C /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D9E1BC1F7E900BD1A9C /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				83883D961BC1F7E900BD1A9C /* NightscouterNow.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883DBF1BC2145A00BD1A9C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -103,47 +216,82 @@
 		170825E81B2CBABB00304F8F /* SiteFormViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteFormViewController.swift; sourceTree = "<group>"; };
 		170825EB1B2CBABB00304F8F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		170825F21B2CBABB00304F8F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForCompassViewController.swift; sourceTree = "<group>"; };
-		171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForLogTableViewController.swift; sourceTree = "<group>"; };
-		171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessForWebSiteViewController.swift; sourceTree = "<group>"; };
-		171140EE1B31F85500AB4335 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Labs.storyboard; sourceTree = "<group>"; };
-		171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessEntryLogTableViewCell.swift; sourceTree = "<group>"; };
+		1713D5A61C11388700A52345 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		17336D541B42F81B0063FB70 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		1734544A1B30771300931278 /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		1734545E1B30A8A200931278 /* SiteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteTableViewCell.swift; sourceTree = "<group>"; };
 		1739B1BD1B31141000C22762 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailViewController.swift; sourceTree = "<group>"; };
-		176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessTableViewController.swift; sourceTree = "<group>"; };
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListPageViewController.swift; sourceTree = "<group>"; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1771B0451B75235B006C1F5E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1771B0621B7524AA006C1F5E /* AppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManager.swift; path = API/AppDataManager.swift; sourceTree = "<group>"; };
+		1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDataManageriOS.swift; path = API/AppDataManageriOS.swift; sourceTree = "<group>"; };
 		1771B0631B7524AA006C1F5E /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppTheme.swift; path = API/AppTheme.swift; sourceTree = "<group>"; };
-		1771B0641B7524AA006C1F5E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = API/Constants.swift; sourceTree = "<group>"; };
-		1771B0651B7524AA006C1F5E /* NightscoutAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NightscoutAPIClient.swift; path = API/NightscoutAPIClient.swift; sourceTree = "<group>"; };
-		1771B06B1B7524D5006C1F5E /* CompassControl+Convience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CompassControl+Convience.swift"; path = "Extensions/CompassControl+Convience.swift"; sourceTree = "<group>"; };
-		1771B06C1B7524D5006C1F5E /* Double+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Double+Extension.swift"; path = "Extensions/Double+Extension.swift"; sourceTree = "<group>"; };
-		1771B06E1B7524D5006C1F5E /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NSAssetKit.swift; path = Extensions/NSAssetKit.swift; sourceTree = "<group>"; };
-		1771B06F1B7524D5006C1F5E /* NSAssetKit+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSAssetKit+Helpers.swift"; path = "Extensions/NSAssetKit+Helpers.swift"; sourceTree = "<group>"; };
-		1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSCalendar+Extension.swift"; path = "Extensions/NSCalendar+Extension.swift"; sourceTree = "<group>"; };
+		1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ConstantsiOS.swift; path = API/ConstantsiOS.swift; sourceTree = "<group>"; };
 		1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL-Extensions.swift"; path = "Extensions/NSURL-Extensions.swift"; sourceTree = "<group>"; };
-		1771B0721B7524D5006C1F5E /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+Extensions.swift"; path = "Extensions/String+Extensions.swift"; sourceTree = "<group>"; };
-		1771B0801B7524FD006C1F5E /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = Models/Entry.swift; sourceTree = "<group>"; };
-		1771B0811B7524FD006C1F5E /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerConfiguration.swift; path = Models/ServerConfiguration.swift; sourceTree = "<group>"; };
-		1771B0821B7524FD006C1F5E /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Site.swift; path = Models/Site.swift; sourceTree = "<group>"; };
-		1771B0831B7524FD006C1F5E /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchEntry.swift; path = Models/WatchEntry.swift; sourceTree = "<group>"; };
 		1771B0891B75251A006C1F5E /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
+		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
+		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
+		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; };
+		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
+		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterAssets.pcvd; sourceTree = SOURCE_ROOT; };
+		17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Array+Extensions.swift"; path = "Shared Framework Code/Extensions/Array+Extensions.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C141BF0EC1D0014EE38 /* Entry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = "Shared Framework Code/Models/Entry.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerConfiguration.swift; path = "Shared Framework Code/Models/ServerConfiguration.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C161BF0EC1D0014EE38 /* Site.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Site.swift; path = "Shared Framework Code/Models/Site.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C171BF0EC1D0014EE38 /* WatchEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchEntry.swift; path = "Shared Framework Code/Models/WatchEntry.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NightscoutAPIClient.swift; path = "Shared Framework Code/API/NightscoutAPIClient.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C231BF0ECE40014EE38 /* Double+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Double+Extension.swift"; path = "Shared Framework Code/Extensions/Double+Extension.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSCalendar+Extension.swift"; path = "Shared Framework Code/Extensions/NSCalendar+Extension.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "String+Extensions.swift"; path = "Shared Framework Code/Extensions/String+Extensions.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKit.swift; sourceTree = "<group>"; };
+		17BD1C301BF0ED410014EE38 /* NSAssetKit+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSAssetKit+Helpers.swift"; sourceTree = "<group>"; };
+		17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CompassControl+Convience.swift"; sourceTree = "<group>"; };
+		17BD1C361BF0EEAB0014EE38 /* NightscouteriOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouteriOSAssets.pcvd; sourceTree = "<group>"; };
+		17BD1C371BF0EEAB0014EE38 /* NightscouterWatchOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterWatchOSAssets.pcvd; sourceTree = "<group>"; };
+		17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIColor+Extension.swift"; path = "Shared Framework Code/Extensions/UIColor+Extension.swift"; sourceTree = SOURCE_ROOT; };
+		17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKitWatchOS.swift; sourceTree = "<group>"; };
+		17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NightscoutAppDataManager.swift; path = "Shared Framework Code/API/NightscoutAppDataManager.swift"; sourceTree = SOURCE_ROOT; };
+		17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BundleRepresntable.swift; path = "Shared Framework Code/Protocols/BundleRepresntable.swift"; sourceTree = SOURCE_ROOT; };
 		17C95CAD1B40AD0B0035922A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		17C95CB41B40AD400035922A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		17CC02061B59384400F7DA96 /* BackgroundView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
+		17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteEmptyRowController.swift; sourceTree = "<group>"; };
+		17DA13271BF4DF0000A89DA4 /* Calibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Calibration.swift; path = "Shared Framework Code/Struct/Calibration.swift"; sourceTree = SOURCE_ROOT; };
+		17DA13281BF4DF0000A89DA4 /* Device.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Device.swift; path = "Shared Framework Code/Struct/Device.swift"; sourceTree = SOURCE_ROOT; };
+		17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MeterBloodGlucose.swift; path = "Shared Framework Code/Struct/MeterBloodGlucose.swift"; sourceTree = SOURCE_ROOT; };
+		17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SensorGlucoseValue.swift; path = "Shared Framework Code/Struct/SensorGlucoseValue.swift"; sourceTree = SOURCE_ROOT; };
+		17E17C471C6F7E5B00810A4B /* HTTPClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPClient.swift; path = "Shared Framework Code/API/HTTPClient.swift"; sourceTree = SOURCE_ROOT; };
 		17E1B47A1B62DB3E0047D594 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
+		17EF27721BFCDA0D00A16136 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = "Shared Framework Code/API/Constants.swift"; sourceTree = SOURCE_ROOT; };
+		17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterWatchOSKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
+		17F22E5C1BEF9E600041E0B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteUpdateRowController.swift; sourceTree = "<group>"; };
+		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		83883D771BC1F7E800BD1A9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		83883D791BC1F7E800BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		83883D7B1BC1F7E800BD1A9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "NightscouterNow Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
+		83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComplicationController.swift; sourceTree = "<group>"; };
+		83883D911BC1F7E900BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		83883D931BC1F7E900BD1A9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		83883D9F1BC1F81A00BD1A9C /* NightscouterNow Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "NightscouterNow Extension.entitlements"; sourceTree = "<group>"; };
+		83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterNow.entitlements; sourceTree = "<group>"; };
+		83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesTableInterfaceController.swift; sourceTree = "<group>"; };
+		83883DAB1BC2089000BD1A9C /* SiteRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteRowController.swift; sourceTree = "<group>"; };
+		8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
+		8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		839DBD081BC0170300691B75 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
-		839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHarnessServerConfigurationViewController.swift; sourceTree = "<group>"; };
 		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
 		83F4C5781B7C201700C74285 /* NightscouterToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NightscouterToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		83F4C57C1B7C201800C74285 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -169,6 +317,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		17F22E541BEF9E600041E0B0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D7D1BC1F7E800BD1A9C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883DBE1BC2145A00BD1A9C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		83F4C5751B7C201700C74285 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -184,13 +354,15 @@
 		170825DA1B2CBABA00304F8F = {
 			isa = PBXGroup;
 			children = (
+				1713D5A61C11388700A52345 /* LICENSE */,
 				839DBD081BC0170300691B75 /* .travis.yml */,
 				17B1E57C1B5A89EF0093BC72 /* README.md */,
-				170825E51B2CBABB00304F8F /* Nightscouter */,
-				1771B0431B75235B006C1F5E /* NightscouterKit */,
-				83F4C57A1B7C201800C74285 /* NightscouterToday */,
-				1725511C1B75544700AC09E0 /* Frameworks */,
+				17BD1C351BF0EEAB0014EE38 /* External Assets */,
+				170825E51B2CBABB00304F8F /* iOS App */,
+				83883D751BC1F7E800BD1A9C /* Watch App */,
+				17BD1C131BF0EBC10014EE38 /* Shared Framework Code */,
 				170825E41B2CBABB00304F8F /* Products */,
+				1725511C1B75544700AC09E0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -200,62 +372,42 @@
 				170825E31B2CBABB00304F8F /* Nightscouter.app */,
 				1771B0421B75235B006C1F5E /* NightscouterKit.framework */,
 				83F4C5781B7C201700C74285 /* NightscouterToday.appex */,
+				83883D741BC1F7E800BD1A9C /* NightscouterNow.app */,
+				83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */,
+				17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		170825E51B2CBABB00304F8F /* Nightscouter */ = {
+		170825E51B2CBABB00304F8F /* iOS App */ = {
 			isa = PBXGroup;
 			children = (
 				83F4C5731B7C176400C74285 /* Nightscouter.entitlements */,
-				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
 				170825F21B2CBABB00304F8F /* Info.plist */,
-				1734545B1B30A11000931278 /* API */,
-				173454541B308F0C00931278 /* Extensions */,
-				173454561B308F2300931278 /* Models */,
-				1739B1BC1B3113B500C22762 /* Resources */,
-				173454551B308F1700931278 /* ViewControllers */,
-				17D5A69E1B30EBDB0043C0D1 /* Views */,
+				17ECEA5A1BF6F46C00733588 /* App */,
+				1771B0431B75235B006C1F5E /* iOS Framework */,
+				83F4C57A1B7C201800C74285 /* Today Widget */,
 			);
+			name = "iOS App";
 			path = Nightscouter;
-			sourceTree = "<group>";
-		};
-		171140E61B31F7DD00AB4335 /* Labs */ = {
-			isa = PBXGroup;
-			children = (
-				171140F01B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift */,
-				171140E71B31F7F700AB4335 /* TestHarnessForCompassViewController.swift */,
-				171140E81B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift */,
-				171140E91B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift */,
-				176B070D1B52115100350C65 /* TestHarnessTableViewController.swift */,
-				839F77911B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift */,
-			);
-			name = Labs;
 			sourceTree = "<group>";
 		};
 		1725511C1B75544700AC09E0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8352A8BD1BC220EB003D7F74 /* UIKit.framework */,
 				1725511D1B75544700AC09E0 /* NotificationCenter.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		173454541B308F0C00931278 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Extensions;
-			sourceTree = "<group>";
-		};
 		173454551B308F1700931278 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				171140E61B31F7DD00AB4335 /* Labs */,
 				1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */,
-				1734544A1B30771300931278 /* SiteListTableViewController.swift */,
-				176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */,
 				170825E81B2CBABB00304F8F /* SiteFormViewController.swift */,
+				176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */,
+				1734544A1B30771300931278 /* SiteListTableViewController.swift */,
 			);
 			name = ViewControllers;
 			sourceTree = "<group>";
@@ -268,17 +420,9 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
-		1734545B1B30A11000931278 /* API */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = API;
-			sourceTree = "<group>";
-		};
 		1739B1BB1B3113AA00C22762 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
-				171140ED1B31F85500AB4335 /* Labs.storyboard */,
 				17C95CB31B40AD400035922A /* LaunchScreen.xib */,
 				170825EA1B2CBABB00304F8F /* Main.storyboard */,
 			);
@@ -296,21 +440,30 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		1771B0431B75235B006C1F5E /* NightscouterKit */ = {
+		175ADA1D1BFA7846002F89F8 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
-				1771B0621B7524AA006C1F5E /* AppDataManager.swift */,
+				17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */,
+				17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */,
+			);
+			name = Protocols;
+			sourceTree = "<group>";
+		};
+		1771B0431B75235B006C1F5E /* iOS Framework */ = {
+			isa = PBXGroup;
+			children = (
+				1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */,
+				8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */,
 				1771B0631B7524AA006C1F5E /* AppTheme.swift */,
-				1771B0641B7524AA006C1F5E /* Constants.swift */,
-				1771B06A1B7524AF006C1F5E /* API */,
+				1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */,
 				1771B07F1B7524E2006C1F5E /* Extensions */,
-				1771B0881B752502006C1F5E /* Models */,
 				1771B0911B7541F3006C1F5E /* Resources */,
 				1771B08D1B75251E006C1F5E /* Views */,
 				1771B0441B75235B006C1F5E /* Supporting Files */,
 			);
+			name = "iOS Framework";
 			path = NightscouterKit;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		1771B0441B75235B006C1F5E /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -323,7 +476,10 @@
 		1771B06A1B7524AF006C1F5E /* API */ = {
 			isa = PBXGroup;
 			children = (
-				1771B0651B7524AA006C1F5E /* NightscoutAPIClient.swift */,
+				17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */,
+				17EF27721BFCDA0D00A16136 /* Constants.swift */,
+				17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */,
+				17E17C471C6F7E5B00810A4B /* HTTPClient.swift */,
 			);
 			name = API;
 			sourceTree = "<group>";
@@ -331,8 +487,7 @@
 		1771B07F1B7524E2006C1F5E /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				1771B08F1B754170006C1F5E /* UIKit */,
-				1771B0901B754199006C1F5E /* Foundation */,
+				1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -340,10 +495,11 @@
 		1771B0881B752502006C1F5E /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				1771B0801B7524FD006C1F5E /* Entry.swift */,
-				1771B0811B7524FD006C1F5E /* ServerConfiguration.swift */,
-				1771B0821B7524FD006C1F5E /* Site.swift */,
-				1771B0831B7524FD006C1F5E /* WatchEntry.swift */,
+				17BD1C141BF0EC1D0014EE38 /* Entry.swift */,
+				17BD1C151BF0EC1D0014EE38 /* ServerConfiguration.swift */,
+				17BD1C161BF0EC1D0014EE38 /* Site.swift */,
+				17BD1C171BF0EC1D0014EE38 /* WatchEntry.swift */,
+				17961F911C5D99BF00617898 /* ComplicationModel.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -351,39 +507,67 @@
 		1771B08D1B75251E006C1F5E /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				17BD1C301BF0ED410014EE38 /* NSAssetKit+Helpers.swift */,
 				1771B0891B75251A006C1F5E /* ColorBlockView.swift */,
+				17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */,
 				1771B08A1B75251A006C1F5E /* CompassControl.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
 		};
-		1771B08F1B754170006C1F5E /* UIKit */ = {
-			isa = PBXGroup;
-			children = (
-				1771B06B1B7524D5006C1F5E /* CompassControl+Convience.swift */,
-				1771B06F1B7524D5006C1F5E /* NSAssetKit+Helpers.swift */,
-			);
-			name = UIKit;
-			sourceTree = "<group>";
-		};
-		1771B0901B754199006C1F5E /* Foundation */ = {
-			isa = PBXGroup;
-			children = (
-				1771B06C1B7524D5006C1F5E /* Double+Extension.swift */,
-				1771B0701B7524D5006C1F5E /* NSCalendar+Extension.swift */,
-				1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */,
-				1771B0721B7524D5006C1F5E /* String+Extensions.swift */,
-			);
-			name = Foundation;
-			sourceTree = "<group>";
-		};
 		1771B0911B7541F3006C1F5E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				17B1E57E1B5A89FD0093BC72 /* NightscouterAssets.pcvd */,
-				1771B06E1B7524D5006C1F5E /* NSAssetKit.swift */,
+				17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		178AACCD1BEFE76C00B0DEBC /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
+				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
+				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
+				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
+				83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */,
+				83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		17BD1C131BF0EBC10014EE38 /* Shared Framework Code */ = {
+			isa = PBXGroup;
+			children = (
+				1771B06A1B7524AF006C1F5E /* API */,
+				17BD1C2C1BF0ECEE0014EE38 /* Extensions */,
+				1771B0881B752502006C1F5E /* Models */,
+				175ADA1D1BFA7846002F89F8 /* Protocols */,
+				17DA13331BF4DF0500A89DA4 /* Structs */,
+			);
+			name = "Shared Framework Code";
+			path = NightscouterKit;
+			sourceTree = "<group>";
+		};
+		17BD1C2C1BF0ECEE0014EE38 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				17BD1C231BF0ECE40014EE38 /* Double+Extension.swift */,
+				17BD1C241BF0ECE40014EE38 /* NSCalendar+Extension.swift */,
+				17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */,
+				17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */,
+				17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		17BD1C351BF0EEAB0014EE38 /* External Assets */ = {
+			isa = PBXGroup;
+			children = (
+				17BD1C361BF0EEAB0014EE38 /* NightscouteriOSAssets.pcvd */,
+				17BD1C371BF0EEAB0014EE38 /* NightscouterWatchOSAssets.pcvd */,
+			);
+			path = "External Assets";
 			sourceTree = "<group>";
 		};
 		17D5A69E1B30EBDB0043C0D1 /* Views */ = {
@@ -396,7 +580,98 @@
 			name = Views;
 			sourceTree = "<group>";
 		};
-		83F4C57A1B7C201800C74285 /* NightscouterToday */ = {
+		17DA13331BF4DF0500A89DA4 /* Structs */ = {
+			isa = PBXGroup;
+			children = (
+				17B07CD21BF590B2001017CE /* WatchModel.swift */,
+				17DA13271BF4DF0000A89DA4 /* Calibration.swift */,
+				17DA13281BF4DF0000A89DA4 /* Device.swift */,
+				17DA13291BF4DF0000A89DA4 /* MeterBloodGlucose.swift */,
+				17DA132A1BF4DF0000A89DA4 /* SensorGlucoseValue.swift */,
+			);
+			name = Structs;
+			sourceTree = "<group>";
+		};
+		17ECEA5A1BF6F46C00733588 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				170825E61B2CBABB00304F8F /* AppDelegate.swift */,
+				173454561B308F2300931278 /* Models */,
+				1739B1BC1B3113B500C22762 /* Resources */,
+				173454551B308F1700931278 /* ViewControllers */,
+				17D5A69E1B30EBDB0043C0D1 /* Views */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		17ECEA5B1BF6F4BB00733588 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				83883D761BC1F7E800BD1A9C /* Interface.storyboard */,
+				83883D791BC1F7E800BD1A9C /* Assets.xcassets */,
+			);
+			name = App;
+			sourceTree = "<group>";
+		};
+		17F22E591BEF9E600041E0B0 /* Watch Framework */ = {
+			isa = PBXGroup;
+			children = (
+				17F22E5C1BEF9E600041E0B0 /* Info.plist */,
+				17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */,
+				17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */,
+				17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */,
+			);
+			name = "Watch Framework";
+			path = ../NightscouterWatchOSKit;
+			sourceTree = "<group>";
+		};
+		83883D751BC1F7E800BD1A9C /* Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */,
+				83883D7B1BC1F7E800BD1A9C /* Info.plist */,
+				17ECEA5B1BF6F4BB00733588 /* App */,
+				83883D841BC1F7E900BD1A9C /* Extension */,
+				17F22E591BEF9E600041E0B0 /* Watch Framework */,
+			);
+			name = "Watch App";
+			path = NightscouterNow;
+			sourceTree = "<group>";
+		};
+		83883D841BC1F7E900BD1A9C /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				83883D9F1BC1F81A00BD1A9C /* NightscouterNow Extension.entitlements */,
+				83883D931BC1F7E900BD1A9C /* Info.plist */,
+				83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */,
+				83883D911BC1F7E900BD1A9C /* Assets.xcassets */,
+				83883D851BC1F7E900BD1A9C /* Supporting Files */,
+				178AACCD1BEFE76C00B0DEBC /* View Controllers */,
+				83F16A171BF1A4A500610E99 /* Views */,
+			);
+			name = Extension;
+			path = "NightscouterNow Extension";
+			sourceTree = SOURCE_ROOT;
+		};
+		83883D851BC1F7E900BD1A9C /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		83F16A171BF1A4A500610E99 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				83883DAB1BC2089000BD1A9C /* SiteRowController.swift */,
+				17DA13241BF4D63700A89DA4 /* SiteEmptyRowController.swift */,
+				17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		83F4C57A1B7C201800C74285 /* Today Widget */ = {
 			isa = PBXGroup;
 			children = (
 				83F4C5871B7C202500C74285 /* NightscouterToday.entitlements */,
@@ -405,8 +680,9 @@
 				83F4C58B1B7C23F200C74285 /* TodayViewController.swift */,
 				83F4C57B1B7C201800C74285 /* Supporting Files */,
 			);
+			name = "Today Widget";
 			path = NightscouterToday;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		83F4C57B1B7C201800C74285 /* Supporting Files */ = {
 			isa = PBXGroup;
@@ -426,6 +702,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		17F22E551BEF9E600041E0B0 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17F22E5B1BEF9E600041E0B0 /* NightscouterWatchOSKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -436,14 +720,17 @@
 				170825DF1B2CBABB00304F8F /* Sources */,
 				170825E01B2CBABB00304F8F /* Frameworks */,
 				170825E11B2CBABB00304F8F /* Resources */,
+				1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 				1771B0601B75235C006C1F5E /* Embed Frameworks */,
 				1725512C1B75544700AC09E0 /* Embed App Extensions */,
+				83883D9E1BC1F7E900BD1A9C /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				1771B0581B75235C006C1F5E /* PBXTargetDependency */,
 				83F4C5821B7C201800C74285 /* PBXTargetDependency */,
+				83883D951BC1F7E900BD1A9C /* PBXTargetDependency */,
 			);
 			name = Nightscouter;
 			productName = Nightscouter;
@@ -468,6 +755,64 @@
 			productReference = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		17F22E571BEF9E600041E0B0 /* NightscouterWatchOSKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 17F22E611BEF9E600041E0B0 /* Build configuration list for PBXNativeTarget "NightscouterWatchOSKit" */;
+			buildPhases = (
+				17F22E531BEF9E600041E0B0 /* Sources */,
+				17F22E541BEF9E600041E0B0 /* Frameworks */,
+				17F22E551BEF9E600041E0B0 /* Headers */,
+				17F22E561BEF9E600041E0B0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NightscouterWatchOSKit;
+			productName = NightscouterWatchOSKit;
+			productReference = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		83883D731BC1F7E800BD1A9C /* NightscouterNow */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83883D9D1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow" */;
+			buildPhases = (
+				83883D721BC1F7E800BD1A9C /* Resources */,
+				175722801C1A129E0015E554 /* Version Tracking */,
+				83883D9C1BC1F7E900BD1A9C /* Embed App Extensions */,
+				83883DBE1BC2145A00BD1A9C /* Frameworks */,
+				83883DBF1BC2145A00BD1A9C /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				83883D831BC1F7E900BD1A9C /* PBXTargetDependency */,
+			);
+			name = NightscouterNow;
+			productName = NightscouterNow;
+			productReference = 83883D741BC1F7E800BD1A9C /* NightscouterNow.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		83883D7F1BC1F7E800BD1A9C /* NightscouterNow Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83883D9B1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow Extension" */;
+			buildPhases = (
+				83883D7C1BC1F7E800BD1A9C /* Sources */,
+				83883D7D1BC1F7E800BD1A9C /* Frameworks */,
+				83883D7E1BC1F7E800BD1A9C /* Resources */,
+				175722801C1A129E0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
+				17F22E641BEF9E600041E0B0 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				17F22E5E1BEF9E600041E0B0 /* PBXTargetDependency */,
+			);
+			name = "NightscouterNow Extension";
+			productName = "NightscouterNow Extension";
+			productReference = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 		83F4C5771B7C201700C74285 /* NightscouterToday */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 83F4C5841B7C201800C74285 /* Build configuration list for PBXNativeTarget "NightscouterToday" */;
@@ -475,6 +820,7 @@
 				83F4C5741B7C201700C74285 /* Sources */,
 				83F4C5751B7C201700C74285 /* Frameworks */,
 				83F4C5761B7C201700C74285 /* Resources */,
+				1757227F1C1A125C0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 			);
 			buildRules = (
 			);
@@ -506,10 +852,42 @@
 							com.apple.BackgroundModes = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = F754VXZDPA;
+					};
+					17F22E571BEF9E600041E0B0 = {
+						CreatedOnToolsVersion = 7.1;
+						DevelopmentTeam = F754VXZDPA;
+					};
+					83883D731BC1F7E800BD1A9C = {
+						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = F754VXZDPA;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+						};
+					};
+					83883D7F1BC1F7E800BD1A9C = {
+						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = F754VXZDPA;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.iOS = {
+								enabled = 1;
+							};
+							com.apple.Keychain = {
+								enabled = 0;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					83F4C5771B7C201700C74285 = {
 						CreatedOnToolsVersion = 6.4;
@@ -538,6 +916,9 @@
 				170825E21B2CBABB00304F8F /* Nightscouter */,
 				1771B0411B75235B006C1F5E /* NightscouterKit */,
 				83F4C5771B7C201700C74285 /* NightscouterToday */,
+				83883D731BC1F7E800BD1A9C /* NightscouterNow */,
+				83883D7F1BC1F7E800BD1A9C /* NightscouterNow Extension */,
+				17F22E571BEF9E600041E0B0 /* NightscouterWatchOSKit */,
 			);
 		};
 /* End PBXProject section */
@@ -548,9 +929,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
-				171140EF1B31F85500AB4335 /* Labs.storyboard in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
+				1713D5A71C11388700A52345 /* LICENSE in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17336D551B42F81B0063FB70 /* Localizable.strings in Resources */,
 				17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */,
@@ -564,6 +945,30 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		17F22E561BEF9E600041E0B0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D721BC1F7E800BD1A9C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */,
+				83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D7E1BC1F7E800BD1A9C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		83F4C5761B7C201700C74285 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -574,23 +979,76 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		1757227F1C1A125C0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		175722801C1A129E0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+		175722801C1A129E0015E554 /* Version Tracking */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Version Tracking";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		170825DF1B2CBABB00304F8F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				176B070E1B52115100350C65 /* TestHarnessTableViewController.swift in Sources */,
 				170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */,
-				171140EB1B31F7F700AB4335 /* TestHarnessForLogTableViewController.swift in Sources */,
-				171140F11B31F96900AB4335 /* TestHarnessEntryLogTableViewCell.swift in Sources */,
 				17CC02071B59384400F7DA96 /* BackgroundView.swift in Sources */,
 				1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */,
 				176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */,
 				176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */,
 				1734544B1B30771300931278 /* SiteListTableViewController.swift in Sources */,
-				171140EA1B31F7F700AB4335 /* TestHarnessForCompassViewController.swift in Sources */,
-				171140EC1B31F7F700AB4335 /* TestHarnessForWebSiteViewController.swift in Sources */,
-				839F77921B54A7C600237418 /* TestHarnessServerConfigurationViewController.swift in Sources */,
 				170825E71B2CBABB00304F8F /* AppDelegate.swift in Sources */,
 				1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */,
 			);
@@ -600,23 +1058,84 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1771B0841B7524FD006C1F5E /* Entry.swift in Sources */,
-				1771B0791B7524D5006C1F5E /* NSAssetKit+Helpers.swift in Sources */,
+				17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */,
+				17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
+				17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */,
+				17BD1C321BF0ED410014EE38 /* NSAssetKit+Helpers.swift in Sources */,
+				17BDE68B1C21C7B30082FC7C /* NightscoutAppDataManager.swift in Sources */,
+				17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */,
+				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
 				1771B07B1B7524D5006C1F5E /* NSURL-Extensions.swift in Sources */,
-				1771B0851B7524FD006C1F5E /* ServerConfiguration.swift in Sources */,
-				1771B0661B7524AA006C1F5E /* AppDataManager.swift in Sources */,
+				17C3F2C11C1E60F900C8B0CA /* BundleRepresntable.swift in Sources */,
+				17E17C481C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
+				17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
+				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
+				17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */,
+				17BD1C261BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
+				1771B0661B7524AA006C1F5E /* AppDataManageriOS.swift in Sources */,
 				1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */,
+				8389AC6B1BEB05B300B81A18 /* WatchSessionManager.swift in Sources */,
+				17DA132D1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17DA132B1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
+				17BD1C211BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
+				17DA13311BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
 				1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */,
-				1771B07A1B7524D5006C1F5E /* NSCalendar+Extension.swift in Sources */,
-				1771B07C1B7524D5006C1F5E /* String+Extensions.swift in Sources */,
-				1771B0861B7524FD006C1F5E /* Site.swift in Sources */,
-				1771B0691B7524AA006C1F5E /* NightscoutAPIClient.swift in Sources */,
-				1771B0761B7524D5006C1F5E /* Double+Extension.swift in Sources */,
-				1771B0751B7524D5006C1F5E /* CompassControl+Convience.swift in Sources */,
-				1771B0781B7524D5006C1F5E /* NSAssetKit.swift in Sources */,
+				17BD1C1C1BF0EC1D0014EE38 /* Site.swift in Sources */,
+				17DA132F1BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
+				17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */,
+				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
-				1771B0871B7524FD006C1F5E /* WatchEntry.swift in Sources */,
-				1771B0681B7524AA006C1F5E /* Constants.swift in Sources */,
+				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
+				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
+				1771B0681B7524AA006C1F5E /* ConstantsiOS.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		17F22E531BEF9E600041E0B0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */,
+				17EF27741BFCDA5A00A16136 /* Constants.swift in Sources */,
+				17BD1C291BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
+				17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */,
+				17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */,
+				17BD1C1D1BF0EC1D0014EE38 /* Site.swift in Sources */,
+				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
+				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
+				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
+				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
+				17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */,
+				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
+				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */,
+				17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */,
+				17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
+				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
+				17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
+				17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
+				17E17C491C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
+				17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,
+				17BD1C1B1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		83883D7C1BC1F7E800BD1A9C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */,
+				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
+				179620261C5DBF2800617898 /* GlanceController.swift in Sources */,
+				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
+				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
+				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
+				170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */,
+				177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */,
+				17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */,
+				83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -637,6 +1156,21 @@
 			target = 1771B0411B75235B006C1F5E /* NightscouterKit */;
 			targetProxy = 1771B0571B75235C006C1F5E /* PBXContainerItemProxy */;
 		};
+		17F22E5E1BEF9E600041E0B0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 17F22E571BEF9E600041E0B0 /* NightscouterWatchOSKit */;
+			targetProxy = 17F22E5D1BEF9E600041E0B0 /* PBXContainerItemProxy */;
+		};
+		83883D831BC1F7E900BD1A9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83883D7F1BC1F7E800BD1A9C /* NightscouterNow Extension */;
+			targetProxy = 83883D821BC1F7E900BD1A9C /* PBXContainerItemProxy */;
+		};
+		83883D951BC1F7E900BD1A9C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 83883D731BC1F7E800BD1A9C /* NightscouterNow */;
+			targetProxy = 83883D941BC1F7E900BD1A9C /* PBXContainerItemProxy */;
+		};
 		83F4C5821B7C201800C74285 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 83F4C5771B7C201700C74285 /* NightscouterToday */;
@@ -653,20 +1187,20 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		171140ED1B31F85500AB4335 /* Labs.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				171140EE1B31F85500AB4335 /* Base */,
-			);
-			name = Labs.storyboard;
-			sourceTree = "<group>";
-		};
 		17C95CB31B40AD400035922A /* LaunchScreen.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				17C95CB41B40AD400035922A /* Base */,
 			);
 			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+		83883D761BC1F7E800BD1A9C /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				83883D771BC1F7E800BD1A9C /* Base */,
+			);
+			name = Interface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -794,6 +1328,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -824,6 +1359,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -837,6 +1373,139 @@
 				SKIP_INSTALL = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		17F22E621BEF9E600041E0B0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NightscouterWatchOSKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterWatchOSKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		17F22E631BEF9E600041E0B0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NightscouterWatchOSKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.NightscouterWatchOSKit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		83883D971BC1F7E900BD1A9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NightscouterNow/NightscouterNow.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				IBSC_MODULE = NightscouterNow_Extension;
+				INFOPLIST_FILE = NightscouterNow/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		83883D981BC1F7E900BD1A9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = NightscouterNow/NightscouterNow.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				IBSC_MODULE = NightscouterNow_Extension;
+				INFOPLIST_FILE = NightscouterNow/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		83883D991BC1F7E900BD1A9C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		83883D9A1BC1F7E900BD1A9C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				PROVISIONING_PROFILE = "";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -905,6 +1574,33 @@
 			buildConfigurations = (
 				1771B05B1B75235C006C1F5E /* Debug */,
 				1771B05C1B75235C006C1F5E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		17F22E611BEF9E600041E0B0 /* Build configuration list for PBXNativeTarget "NightscouterWatchOSKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				17F22E621BEF9E600041E0B0 /* Debug */,
+				17F22E631BEF9E600041E0B0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83883D9B1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83883D991BC1F7E900BD1A9C /* Debug */,
+				83883D9A1BC1F7E900BD1A9C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		83883D9D1BC1F7E900BD1A9C /* Build configuration list for PBXNativeTarget "NightscouterNow" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				83883D971BC1F7E900BD1A9C /* Debug */,
+				83883D981BC1F7E900BD1A9C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
