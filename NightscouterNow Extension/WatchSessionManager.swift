@@ -44,7 +44,8 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public var defaultSiteUUID: NSUUID? {
         set{
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
-            updateComplication()
+            updateComplication { () -> Void in
+            }
         }
         get {
             if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
@@ -277,14 +278,19 @@ extension WatchSessionManager {
     
     func updateDelegates(sender: String) {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            print("UPDATING DELEGATES!!!!!                                  from sender \(sender)")
-            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext((self?.models)!) }
+            guard let items = self?.models else {
+
+                return
+            }
+            print("UPDATING DELEGATES!!!!! ------- from sender \(sender)")
+            self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext(items) }
         }
     }
     
     public func complicationRequestedUpdateBudgetExhausted() {
         defaults.setObject(NSDate(), forKey: "complicationRequestedUpdateBudgetExhausted")
-        updateComplication()
+        updateComplication { () -> Void in
+        }
     }
     
     public var nextRequestedComplicationUpdateDate: NSDate {
@@ -298,7 +304,7 @@ extension WatchSessionManager {
         }
     }
     
-    public func updateComplication() {
+    public func updateComplication(completion: () -> Void) {
         
         startSession()
         

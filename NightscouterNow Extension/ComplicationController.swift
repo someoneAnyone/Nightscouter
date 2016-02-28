@@ -38,11 +38,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
-        
-//        let model = WatchSessionManager.sharedManager.complicationData.maxElement{ (lModel, rModel) -> Bool in
-//            return rModel.date.compare(lModel.date) == .OrderedDescending
-//        }
-        
+
         let model = WatchSessionManager.sharedManager.complicationData.first
         date = model?.date
 
@@ -171,8 +167,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
-        WatchSessionManager.sharedManager.updateComplication()
-        
+        WatchSessionManager.sharedManager.updateComplication { () -> Void in
+            
+        }
     }
     
     func requestedUpdateBudgetExhausted() {

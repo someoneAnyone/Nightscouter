@@ -19,36 +19,26 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     
-    var modelUpdateTimer: NSTimer?
     var updateUITimer: NSTimer?
     
     var model: WatchModel? {
-        didSet{
-            self.configureView()
-            
-            guard let model = model else {
-                self.invalidateUserActivity()
-                return
-            }
-            
-            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
-        }
+        return WatchSessionManager.sharedManager.defaultModel()
     }
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         // Configure interface objects here.
-    }
-    
-    override func willActivate() {
-        super.willActivate()
-//        WatchSessionManager.sharedManager.startSession()
+
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        // This method is called when watch view controller is about to be visible to user
-        self.model = WatchSessionManager.sharedManager.defaultModel()
         
-//        modelUpdateTimer = NSTimer.scheduledTimerWithTimeInterval(250.0 , target: self, selector: "updateData", userInfo: nil, repeats: true)
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
+        
+        self.configureView()
+        
+        beginGlanceUpdates()
+        WatchSessionManager.sharedManager.updateComplication { () -> Void in
+            self.endGlanceUpdates()
+        }
     }
     
     override func didDeactivate() {
@@ -56,23 +46,27 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
         super.didDeactivate()
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-        
-        modelUpdateTimer?.invalidate()
         updateUITimer?.invalidate()
+        
+        self.configureView()
+
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        self.model = WatchSessionManager.sharedManager.defaultModel()
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            self.configureView()
+            self.endGlanceUpdates()
+
+        }
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {
-        if let model = model {
-            fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                }
-            })
-        }
+        guard let model = model else { return }
+        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+            }
+        })
     }
     
     func configureView() {
@@ -84,6 +78,8 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
                 self.siteNameLabel.setText("")
                 self.siteSgvLabel.setText("")
             }
+            
+            self.invalidateUserActivity()
             return
         }
         
@@ -118,6 +114,7 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
             self.siteRawLabel.setAttributedText(formattedRaw)
             self.siteRawLabel.setHidden(!model.rawVisible)
             
+            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
         }
     }
     
