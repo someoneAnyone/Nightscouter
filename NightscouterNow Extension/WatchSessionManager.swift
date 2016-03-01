@@ -44,8 +44,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public var defaultSiteUUID: NSUUID? {
         set{
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
-            updateComplication { () -> Void in
-            }
+            updateComplication { () -> Void in }
         }
         get {
             if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
@@ -114,8 +113,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         updateData(forceRefresh: true)
     }
     
-    // public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
-    
     // MARK: Save and Load Data
     public func saveData() {
         print("Saving Data")
@@ -130,6 +127,13 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         defaults.setObject("watchOS", forKey: DefaultKey.osPlatform)
         defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         defaults.synchronize()
+        
+        iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
+        iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
+        iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        
+        iCloudKeyStore.synchronize()
+
     }
     
     public func loadData() {
@@ -214,12 +218,6 @@ extension WatchSessionManager {
         }
         
     }
-    /*
-    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
-    let success =  processApplicationContext(message)
-    replyHandler(["response" : "The message was procssed with success: \(success)", "success": success])
-    }
-    */
 }
 
 extension WatchSessionManager {
@@ -238,7 +236,7 @@ extension WatchSessionManager {
         // Playload holds the default's dictionary from the iOS...
         guard let payload = context[WatchModel.PropertyKey.contextKey] as? [String: AnyObject] else {
             print("No payload was found.")
-            // print("Incoming context: \(context)")
+            print("Incoming context: \(context)")
             
             return false
         }
@@ -285,6 +283,7 @@ extension WatchSessionManager {
     public func complicationRequestedUpdateBudgetExhausted() {
         defaults.setObject(NSDate(), forKey: "complicationRequestedUpdateBudgetExhausted")
         updateComplication { () -> Void in
+            
         }
     }
     
@@ -316,13 +315,14 @@ extension WatchSessionManager {
             session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
                 // handle reply from iPhone app here
                 print("recievedMessageReply from iPhone")
+                completion()
                 }, errorHandler: {(error: NSError ) -> Void in
                     print("WatchSession Transfer Error: \(error)")
                     fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                        
-                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                         NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                             ComplicationController.reloadComplications()
+                            completion()
                         })
                     })
             })

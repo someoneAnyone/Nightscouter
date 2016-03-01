@@ -174,10 +174,10 @@ private func generateComplicationModels(forSite site: Site, calibrations: [Calib
     }
     
     if let model = model {
-        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 15.0)
+        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 30)
         let warnItem = ComplicationModel(displayName:"Data Missing", date: warningStaleDate, sgv: "WARNING", sgvEmoji: " ", tintString: colorForDesiredColorState(.Warning).toHexString(), delta: " ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
         
-        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 30.0)
+        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 60)
         let urgentItem = ComplicationModel(displayName:"Data Missing", date: urgentStaleDate, sgv: "URGENT", sgvEmoji: " ", tintString: colorForDesiredColorState(.Alert).toHexString(), delta:" ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
 
         cmodels.append(warnItem)
