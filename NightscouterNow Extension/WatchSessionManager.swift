@@ -103,6 +103,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     }
     
     public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
+    public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
     func setupNotifications() {
         // Listen for global update timer.
@@ -138,20 +139,13 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
         
-        //        if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
-        //            self.defaultSiteUUID =  NSUUID(UUIDString: uuidString)
-        //        } else if let firstModel = models.first {
-        //            self.defaultSiteUUID = NSUUID(UUIDString: firstModel.uuid)
-        //        }
-        
-        
-        /*
-        // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
-        selector: Selector("userDefaultsDidChange:"),
-        name: NSUserDefaultsDidChangeNotification,
-        object: defaults)
-        */
+            selector: "ubiquitousKeyValueStoreDidChange:",
+            name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
+            object: iCloudKeyStore)
+        
+        iCloudKeyStore.synchronize()
+        
     }
     
     public let session: WCSession = WCSession.defaultSession()
@@ -265,9 +259,9 @@ extension WatchSessionManager {
         
         if update {
             updateDelegates("processApplicationContext")
+        } else {
+            ComplicationController.reloadComplications()
         }
-        
-        ComplicationController.reloadComplications()
         
         return true
     }
@@ -279,11 +273,12 @@ extension WatchSessionManager {
     func updateDelegates(sender: String) {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             guard let items = self?.models else {
-
+                
                 return
             }
             print("UPDATING DELEGATES!!!!! ------- from sender \(sender)")
             self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext(items) }
+            ComplicationController.reloadComplications()
         }
     }
     
@@ -326,8 +321,9 @@ extension WatchSessionManager {
                     fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                         
                         WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                        
-                        ComplicationController.reloadComplications()
+                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                            ComplicationController.reloadComplications()
+                        })
                     })
             })
         }
@@ -369,11 +365,34 @@ extension WatchSessionManager {
     }
     
     
-    // MARK: Defaults have Changed
+    // MARK: iCloud Key Store Changed
     
-    func userDefaultsDidChange(notification: NSNotification) {
-        print("userDefaultsDidChange:")
+    func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
+        print("ubiquitousKeyValueStoreDidChange:")
         
-        // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+        guard let userInfo = notification.userInfo as? [String: AnyObject], changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
+            return
+        }
+        let reason = changeReason.integerValue
+        
+        if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
+            let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]
+            let store = NSUbiquitousKeyValueStore.defaultStore()
+            
+            for key in changedKeys {
+                
+                // Update Data Source
+                
+                if key == DefaultKey.modelArrayObjectsKey {
+                    if let models = store.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+                        self.models = models.flatMap( { WatchModel(fromDictionary: $0) } )
+                    }
+                }
+                
+                if key == DefaultKey.currentSiteIndexKey {
+                    self.currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as! Int
+                }
+            }
+        }
     }
 }
