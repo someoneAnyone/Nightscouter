@@ -18,7 +18,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     private let session: WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
     
-    private var validSession: WCSession? {
+    public var validSession: WCSession? {
         
         // paired - the user has to have their device paired to the watch
         // watchAppInstalled - the user must have your watch app installed
@@ -48,8 +48,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public func sessionWatchStateDidChange(session: WCSession) {
         print("sessionWatchStateDidChange")
         print(session)
-        if session.reachable {
-            //AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
+        if session.watchAppInstalled == true && validReachableSession == nil {
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.UpdateComplication)
+        } else if validReachableSession != nil {
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
         }
         
     }
@@ -91,7 +93,7 @@ extension WatchSessionManager {
     public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferCurrentComplicationUserInfo")
-            // print("transferUserInfo: \(userInfo)")
+            print("validSession?.complicationEnabled == \(validReachableSession?.complicationEnabled)")
         #endif
         // return validSession?.transferCurrentComplicationUserInfo(userInfo)
         
@@ -190,7 +192,7 @@ public extension WatchSessionManager {
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         // handle receiving message
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")            
+            print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         

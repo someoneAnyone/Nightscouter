@@ -20,14 +20,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
         let model = WatchSessionManager.sharedManager.complicationData.last
         date = model?.date
         
         #if DEBUG
-            print("getTimelineStartDateForComplication:\(date)")
+            // print("getTimelineStartDateForComplication:\(date)")
         #endif
         
         handler(date)
@@ -35,15 +35,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEndDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         var date: NSDate?
-
+        
         let model = WatchSessionManager.sharedManager.complicationData.first
         date = model?.date
-
+        
         #if DEBUG
-            print("getTimelineEndDateForComplication:\(date)")
+            // print("getTimelineEndDateForComplication:\(date)")
         #endif
         handler(date)
     }
@@ -57,7 +57,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getCurrentTimelineEntryForComplication(complication: CLKComplication, withHandler handler: ((CLKComplicationTimelineEntry?) -> Void)) {
         // Call the handler with the current timeline entry
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         getTimelineEntriesForComplication(complication, beforeDate: NSDate(), limit: 1) { (timelineEntries) -> Void in
@@ -142,12 +142,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         
         let complicationServer = CLKComplicationServer.sharedInstance()
-        if let activeComplications = complicationServer.activeComplications {
-            for complication in activeComplications {
-                complicationServer.reloadTimelineForComplication(complication)
+        if complicationServer != nil {
+            if let activeComplications = complicationServer.activeComplications {
+                for complication in activeComplications {
+                    complicationServer.reloadTimelineForComplication(complication)
+                }
             }
         }
     }
+    
     
     static func extendComplications() {
         #if DEBUG
@@ -166,7 +169,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        
+        WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.updateComplication { () -> Void in
             
         }
@@ -191,7 +194,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         var template: CLKComplicationTemplate
         
-        let tintString = NSAssetKitWatchOS.predefinedNeutralColor.toHexString()
+        let tintString = NSAssetKitWatchOS.appLogoTintColor.toHexString()
         
         let utilLargeSting = PlaceHolderStrings.sgv + " " + PlaceHolderStrings.delta + " " + PlaceHolderStrings.raw
         
@@ -206,7 +209,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             template = modularSmall
         case .ModularLarge:
             let modularLarge = CLKComplicationTemplateModularLargeStandardBody()
-            modularLarge.headerTextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.displayName)
+            modularLarge.headerTextProvider = CLKSimpleTextProvider(text: "Nightscouter")
             modularLarge.body1TextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.delta)
             modularLarge.body2TextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.raw)
             modularLarge.tintColor = UIColor(hexString: tintString)

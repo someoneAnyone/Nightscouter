@@ -12,15 +12,20 @@ import NightscouterWatchOSKit
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
     var timer: NSTimer?
     
+    override init() {
+        print(">>> Entering \(__FUNCTION__) <<<")
+
+        super.init()
+    }
+    
     func applicationDidFinishLaunching() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
         // Perform any final initialization of your application.
-        
         WatchSessionManager.sharedManager.startSession()
-            }
+    }
     
     func applicationDidBecomeActive() {
         #if DEBUG
@@ -28,22 +33,22 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #endif
         updateDataNotification(nil)
     }
- 
+    
     func applicationWillResignActive() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-     
+        
         WatchSessionManager.sharedManager.saveData()
         self.timer?.invalidate()
-    
+        
     }
     
     func createUpdateTimer() -> NSTimer {
         let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         return localTimer
     }
-
+    
     func updateDataNotification(timer: NSTimer?) -> Void {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")

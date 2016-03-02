@@ -13,23 +13,76 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public var sites: [Site] = [] {
         didSet{
-            
-            if sites.isEmpty {
+            let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
+            if models.isEmpty {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
+                
+                iCloudKeyStore.resetStorage()
             }
             
-            saveData()
+            defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+            iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
             
-            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
-            }
+            iCloudKeyStore.synchronize()
         }
     }
     
-    public var currentSiteIndex: Int = 0
     
-    public var defaultSiteUUID: NSUUID?
+    //    public var sites: [Site] = [] {
+    //        didSet{
+    //
+    //            if sites.isEmpty {
+    //                defaultSiteUUID = nil
+    //                currentSiteIndex = 0
+    //
+    //                resetStorage(forUbiquitousKeyValueStore: iCloudKeyStore)
+    //            }
+    //
+    //            saveData()
+    //
+    //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+    //                NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+    //            }
+    //        }
+    //    }
+    
+    public var currentSiteIndex: Int {
+        set{
+            defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
+            iCloudKeyStore.setLongLong(Int64(currentSiteIndex), forKey: DefaultKey.currentSiteIndexKey)
+            iCloudKeyStore.synchronize()
+        }
+        get{
+            return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
+        }
+    }
+    
+    //    public var currentSiteIndex: Int = 0 {
+    //        didSet {
+    //            saveData()
+    //        }
+    //    }
+    public var defaultSiteUUID: NSUUID? {
+        set{
+            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            iCloudKeyStore.synchronize()
+            updateComplication()
+        }
+        get {
+            if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
+                return NSUUID(UUIDString: uuidString)
+            }
+            return sites.first?.uuid
+        }
+    }
+    //
+    //    public var defaultSiteUUID: NSUUID? {
+    //        didSet {
+    //            saveData()
+    //        }
+    //    }
     
     public func defaultSite() -> Site? {
         return self.sites.filter({ (site) -> Bool in
@@ -66,12 +119,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     // MARK: Save and Load Data
     public func saveData() {
         
-        // let userSitesData =  NSKeyedArchiver.archivedDataWithRootObject(self.sites)
-        // defaults.setObject(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
-        if let _ = defaults.objectForKey(DefaultKey.sitesArrayObjectsKey) {
-            defaults.setObject(nil, forKey: DefaultKey.sitesArrayObjectsKey)
-        }
-        
         let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
         
         defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
@@ -80,10 +127,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
         
         // Save To iCloud
-        if let _ = iCloudKeyStore.dataForKey(DefaultKey.sitesArrayObjectsKey) {
-            iCloudKeyStore.setData(nil, forKey: DefaultKey.sitesArrayObjectsKey)
-        }
-        // iCloudKeyStore.setData(userSitesData, forKey: DefaultKey.sitesArrayObjectsKey)
         iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
         iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
         iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
@@ -93,15 +136,15 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public func loadData() {
         
-        currentSiteIndex = defaults.integerForKey(DefaultKey.currentSiteIndexKey)
+        //        currentSiteIndex = defaults.integerForKey(DefaultKey.currentSiteIndexKey)
         if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
             sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
-        if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
-            defaultSiteUUID =  NSUUID(UUIDString: uuidString)
-        } else  if let firstModel = sites.first {
-            defaultSiteUUID = firstModel.uuid
-        }
+        //        if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
+        //            defaultSiteUUID =  NSUUID(UUIDString: uuidString)
+        //        } else  if let firstModel = sites.first {
+        //            defaultSiteUUID = firstModel.uuid
+        //        }
         
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
@@ -116,7 +159,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         iCloudKeyStore.synchronize()
         
-        //updateWatch(withAction: .AppContext)
     }
     
     
@@ -129,8 +171,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         
         sites.insert(site, atIndex: safeIndex)
-        
-        updateWatch(withAction: .UserInfo)
+        updateWatch(withAction: .AppContext)
+        //        updateWatch(withAction: .UserInfo)
     }
     
     public func updateSite(site: Site)  ->  Bool {
@@ -143,13 +185,16 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         
         updateWatch(withAction: .AppContext)
+        
+              
         return success
     }
     
     public func deleteSiteAtIndex(index: Int) {
         sites.removeAtIndex(index)
+        updateWatch(withAction: .AppContext)
         
-        updateWatch(withAction: .UserInfo)
+        //        updateWatch(withAction: .UserInfo)
     }
     
     
@@ -236,15 +281,18 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             
             // updateWatch(withAction: .AppContext)
         case .UpdateComplication:
-            guard let defaultSite = defaultSite() else {
-                return false
-            }
-            generateData(forSites: [defaultSite], handler: { () -> Void in
-                // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-                //payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
-                self.updateWatch(withAction: .UpdateComplication)
-                replyHandler([WatchModel.PropertyKey.actionKey : WatchAction.UpdateComplication.rawValue])
-            })
+            //            guard let defaultSite = defaultSite() else {
+            //                return false
+            //            }
+            updateComplication()
+            
+            replyHandler([WatchModel.PropertyKey.actionKey : WatchAction.UpdateComplication.rawValue])
+            //            generateData(forSites: [defaultSite], handler: { () -> Void in
+            //                // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
+            //                //payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
+            //                self.updateWatch(withAction: .UpdateComplication)
+            //                replyHandler([WatchModel.PropertyKey.actionKey : WatchAction.UpdateComplication.rawValue])
+            //            })
             
         case .UserInfo:
             updateWatch(withAction: .UserInfo)
@@ -263,30 +311,37 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         // Create a generic context to transfer to the watch.
         var payload = [String: AnyObject]()
         
-        // Tag the context with an action so that the watch can handle it if needed.
-        // ["action" : "WatchAction.Create"] for example...
-        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
         
-        // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        payload[WatchModel.PropertyKey.contextKey] = context ?? defaults.dictionaryRepresentation()
         
         if #available(iOSApplicationExtension 9.0, *) {
+            
+            // Tag the context with an action so that the watch can handle it if needed.
+            // ["action" : "WatchAction.Create"] for example...
+            payload[WatchModel.PropertyKey.actionKey] = action.rawValue
+            
+            // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
+            payload[WatchModel.PropertyKey.contextKey] = context ?? defaults.dictionaryRepresentation()
+            
+            
+            if WatchSessionManager.sharedManager.validReachableSession == nil {
+                // Tag the context with an action so that the watch can handle it if needed.
+                // ["action" : "WatchAction.Create"] for example...
+                payload[WatchModel.PropertyKey.actionKey] = WatchAction.UpdateComplication.rawValue
+            }
+            
             switch action {
             case .AppContext:
                 print("Sending application context")
-
+                
                 do {
                     try WatchSessionManager.sharedManager.updateApplicationContext(payload)
                 } catch {
-                    print(error)
+                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
                 }
-                
-            case .UpdateComplication:
+
+            case .UpdateComplication, .UserInfo:
                 print("Sending user info with complication data")
                 WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-            case .UserInfo:
-                print("Sending user info")
-                WatchSessionManager.sharedManager.transferUserInfo(payload)
             }
         }
     }
@@ -311,13 +366,15 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         print("updateComplication")
         if let siteToLoad = self.defaultSite() {
             if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || siteToLoad.configuration == nil) {
-            print("START:   iOS is updating complication data for \(siteToLoad.url)")
+                print("START:   iOS is updating complication data for \(siteToLoad.url)")
                 fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
                     self.updateSite(returnedSite)
                     self.updateWatch(withAction: .UpdateComplication)
                     print("COMPLETE:   iOS has updated complication data for \(siteToLoad.url)")
                     return
                 })
+            } else {
+                self.updateWatch(withAction: .UpdateComplication)
             }
         }
     }
@@ -331,6 +388,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         print("userDefaultsDidChange:")
         
         // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+        }
         
     }
     
@@ -359,7 +419,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 }
                 
                 if key == DefaultKey.currentSiteIndexKey {
-                    currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as! Int
+                    currentSiteIndex = Int(store.longLongForKey(DefaultKey.currentSiteIndexKey))
                 }
             }
         }

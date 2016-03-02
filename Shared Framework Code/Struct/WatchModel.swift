@@ -61,7 +61,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public var updateNow: Bool {
         let now = NSDate()
         let result = nextReadingDate.compare(now) == NSComparisonResult.OrderedAscending
-        print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
+        // print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
         
         return result
     }

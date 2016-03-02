@@ -287,6 +287,8 @@ class SiteListTableViewController: UITableViewController {
     func setupNotifications() {
         // Listen for global update timer.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataManagerDidChange:"), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
@@ -305,6 +307,10 @@ class SiteListTableViewController: UITableViewController {
             let vc = storyboard?.instantiateViewControllerWithIdentifier(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
             self.parentViewController!.presentViewController(vc, animated: true, completion: { () -> Void in
                 // println("Finished presenting SiteFormViewController.")
+            })
+        } else {
+            dismissViewControllerAnimated(true, completion: { () -> Void in
+                self.updateData()
             })
         }
     }
@@ -362,7 +368,11 @@ class SiteListTableViewController: UITableViewController {
         
         }
     }
-    
+    // AppDataManagerNotificationDidChange Handler
+    func dataManagerDidChange(notification: NSNotification) {
+        // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
+    }
+
     
     // Attempt to handle an error.
     func presentAlertDialog(siteURL:NSURL, index: Int, error: String) {

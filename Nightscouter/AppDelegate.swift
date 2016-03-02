@@ -68,16 +68,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        for site in sites {
-            // Get settings for a given site.
-            fetchSiteData(site, handler: { (returnedSite, error) -> Void in
-                
-                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                        // self.scheduleLocalNotification(returnedSite)
-            })
+        
+        AppDataManageriOS.sharedInstance.generateData(forSites: sites) { () -> Void in
+            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
         }
         
-        AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
         completionHandler(.NewData)
 
         // Always return NewData.

@@ -32,6 +32,8 @@
 		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
+		17A8A87B1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
+		17A8A87C1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
@@ -235,6 +237,7 @@
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
 		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
+		17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSUbiquitousKeyValueStore+Extensions.swift"; path = "Extensions/NSUbiquitousKeyValueStore+Extensions.swift"; sourceTree = "<group>"; };
 		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; };
 		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
 		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
@@ -557,6 +560,7 @@
 				17BD1C251BF0ECE40014EE38 /* String+Extensions.swift */,
 				17BD1C391BF0F76A0014EE38 /* UIColor+Extension.swift */,
 				17B2DF981C4097F8005FE2D9 /* Array+Extensions.swift */,
+				17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -896,6 +900,9 @@
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 0;
+							};
 						};
 					};
 				};
@@ -1072,6 +1079,7 @@
 				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
 				17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */,
+				17A8A87B1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */,
 				17BD1C261BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
 				1771B0661B7524AA006C1F5E /* AppDataManageriOS.swift in Sources */,
 				1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */,
@@ -1102,6 +1110,7 @@
 				17BD1C191BF0EC1D0014EE38 /* Entry.swift in Sources */,
 				17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C1D1BF0EC1D0014EE38 /* Site.swift in Sources */,
+				17A8A87C1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */,
 				17BD1C3B1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
