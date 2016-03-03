@@ -140,12 +140,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
+        guard let defaultModel = WatchSessionManager.sharedManager.defaultModel() else { return }
         
-        let complicationServer = CLKComplicationServer.sharedInstance()
-        if complicationServer != nil {
-            if let activeComplications = complicationServer.activeComplications {
-                for complication in activeComplications {
-                    complicationServer.reloadTimelineForComplication(complication)
+        if WatchSessionManager.sharedManager.nextRequestedComplicationUpdateDate < defaultModel.lastReadingDate {
+            let complicationServer = CLKComplicationServer.sharedInstance()
+            if complicationServer != nil {
+                if let activeComplications = complicationServer.activeComplications {
+                    for complication in activeComplications {
+                        complicationServer.reloadTimelineForComplication(complication)
+                    }
                 }
             }
         }
@@ -164,12 +167,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             }
         }
     }
-    
     func requestedUpdateDidBegin() {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        WatchSessionManager.sharedManager.startSession()
+        
         WatchSessionManager.sharedManager.updateComplication { () -> Void in
             
         }

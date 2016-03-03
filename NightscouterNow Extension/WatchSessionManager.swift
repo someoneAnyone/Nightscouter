@@ -31,9 +31,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
             }
-            //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            //                ComplicationController.reloadComplications()
-            //            }
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                ComplicationController.reloadComplications()
+            }
+            
+            
         }
     }
     
@@ -225,7 +227,7 @@ extension WatchSessionManager {
         
         dispatch_async(dispatch_get_main_queue()) {
             self.processApplicationContext(userInfo, updateDelegates:  false)
-            ComplicationController.reloadComplications()
+            //            ComplicationController.reloadComplications()
         }
     }
     
@@ -299,7 +301,19 @@ extension WatchSessionManager {
     }
     
     public func complicationRequestedUpdateBudgetExhausted() {
-        defaults.setObject(NSDate(), forKey: "complicationRequestedUpdateBudgetExhausted")
+        
+        let requestReceived = "complicationRequestedUpdateBudgetExhausted"
+        
+        if var updateArray = defaults.arrayForKey(requestReceived) as? [NSDate] {
+            if updateArray.count > 5 {
+                updateArray.removeLast()
+            }
+            updateArray.append(NSDate())
+            defaults.setObject(updateArray, forKey: requestReceived)
+        } else {
+            defaults.setObject([NSDate()], forKey: requestReceived)
+        }
+        
         updateComplication { () -> Void in
             
         }
@@ -307,6 +321,11 @@ extension WatchSessionManager {
     
     public var nextRequestedComplicationUpdateDate: NSDate {
         let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.ThirtyMinutesInSeconds
+        
+        if let defaultModel = defaultModel() {
+            return defaultModel.lastReadingDate.dateByAddingTimeInterval(updateInterval)
+        }
+        
         return NSDate(timeIntervalSinceNow: updateInterval)
     }
     
@@ -347,7 +366,8 @@ extension WatchSessionManager {
                 // handle reply from iPhone app here
                 print("recievedMessageReply from iPhone")
                 NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                    ComplicationController.reloadComplications()
+                    self.processApplicationContext(context, updateDelegates: false)
+                    // ComplicationController.reloadComplications()
                 }
                 
                 completion()
@@ -356,7 +376,7 @@ extension WatchSessionManager {
                     fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                         NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                             WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            ComplicationController.reloadComplications()
+                            // ComplicationController.reloadComplications()
                             
                             completion()
                         })
@@ -423,7 +443,9 @@ extension WatchSessionManager {
     func userDefaultsDidChange(notification: NSNotification) {
         print("userDefaultsDidChange:")
         
-        // guard let defaultObject = notification.object as? NSUserDefaults else { return }
+
+        guard let defaultObject = notification.object as? NSUserDefaults else { return }
+        print(defaultObject.dictionaryRepresentation())
         
     }
     

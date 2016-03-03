@@ -16,6 +16,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         print(">>> Entering \(__FUNCTION__) <<<")
 
         super.init()
+        WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidFinishLaunching() {
@@ -24,7 +25,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #endif
         
         // Perform any final initialization of your application.
-        WatchSessionManager.sharedManager.startSession()
+        // WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidBecomeActive() {

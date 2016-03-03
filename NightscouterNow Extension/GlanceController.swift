@@ -10,7 +10,7 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
+class GlanceController: WKInterfaceController {
     
     @IBOutlet var lastUpdateLabel: WKInterfaceLabel!
     @IBOutlet var batteryLabel: WKInterfaceLabel!
@@ -25,48 +25,30 @@ class GlanceController: WKInterfaceController, DataSourceChangedDelegate {
         return WatchSessionManager.sharedManager.defaultModel()
     }
     
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        // Configure interface objects here.
-
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    override func willActivate() {
         
         updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
         
+        beginGlanceUpdates()
+        
         self.configureView()
         
-        beginGlanceUpdates()
         WatchSessionManager.sharedManager.updateComplication { () -> Void in
+            self.configureView()
             self.endGlanceUpdates()
         }
+    }
+    
+    override func awakeWithContext(context: AnyObject?) {
+        super.awakeWithContext(context)
+        // Configure interface objects here.
     }
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         super.didDeactivate()
         
-        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
         updateUITimer?.invalidate()
-        
-        self.configureView()
-
-    }
-    
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            self.configureView()
-            self.endGlanceUpdates()
-
-        }
-    }
-    
-    func dataSourceCouldNotConnectToPhone(error: NSError) {
-        guard let model = model else { return }
-        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-            }
-        })
     }
     
     func configureView() {
