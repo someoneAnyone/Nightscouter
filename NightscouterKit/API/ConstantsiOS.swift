@@ -41,7 +41,7 @@ extension Constants {
         case SiteFormViewNavigationController = "SiteFormViewNavigationController"
         case SiteFormViewController = "SiteFormViewController"
         
-        public static let deepLinkableStoryboards = [SiteListTableViewController, SiteListPageViewController, SiteFormViewController]
+        public static let deepLinkableStoryboards = [SiteListTableViewController, SiteListPageViewController, SiteFormViewNavigationController, SiteFormViewController]
         
         public var description: String {
             return self.rawValue

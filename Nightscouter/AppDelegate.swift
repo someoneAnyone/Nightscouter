@@ -21,6 +21,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     var timer: NSTimer?
     
     
+    /// Saved shortcut item used as a result of an app launch, used later when app is activated.
+    var launchedShortcutItem: String?
+    
     // MARK: AppDelegate Lifecycle
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
@@ -35,7 +38,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataManagerDidChange:"), name: AppDataManagerDidChangeNotification, object: nil)
         
+        // If a shortcut was launched, display its information and take the appropriate action
+        if #available(iOS 9.0, *) {
+            if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
+                
+                launchedShortcutItem = shortcutItem.type
+                
+            }
+        }
         return true
+        
     }
     
     func applicationWillResignActive(application: UIApplication) {
@@ -74,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         }
         
         completionHandler(.NewData)
-
+        
         // Always return NewData.
         // TODO: Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
     }
@@ -103,14 +115,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         processLocalNotification(notification)
     }
     
+    @available(iOS 9.0, *)
+    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        print(shortcutItem)
+        
+        switch shortcutItem.type {
+        case "com.nothingonline.Nightscouter.AddNew":
+            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteFormViewNavigationController.rawValue)")
+            deepLinkToURL(url!)
+        case "com.nothingonline.Nightscouter.ViewSite":
+            let siteIndex = shortcutItem.userInfo!["siteIndex"] as! Int
+            AppDataManageriOS.sharedInstance.currentSiteIndex = siteIndex
+            
+            #if DEDBUG
+                println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
+            #endif
+            
+            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+            deepLinkToURL(url!)
+        default:
+            completionHandler(false)
+            
+        }
+        
+        completionHandler(true)
+    }
+    
     
     // AppDataManagerNotificationDidChange Handler
     func dataManagerDidChange(notification: NSNotification) {
         if UIApplication.sharedApplication().currentUserNotificationSettings()?.types == .None || !sites.isEmpty{
             setupNotificationSettings()
-            return
         }
         
+        if #available(iOS 9.0, *) {
+            UIApplication.sharedApplication().shortcutItems = nil
+            for (index, site) in AppDataManageriOS.sharedInstance.sites.enumerate() {
+                UIApplication.sharedApplication().shortcutItems?.append(UIApplicationShortcutItem(type: "com.nothingonline.Nightscouter.ViewSite", localizedTitle: site.viewModel.displayName, localizedSubtitle: site.viewModel.displayUrlString, icon: nil, userInfo: ["uuid": site.uuid.UUIDString, "siteIndex": index]))
+            }
+        }
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
     
@@ -165,7 +208,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
                             switch (stor) {
                             case .SiteListPageViewController:
                                 viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
-                            case .SiteFormViewController:
+                            case .SiteFormViewNavigationController, .SiteFormViewController:
                                 navController.presentViewController(newViewController, animated: false, completion: { () -> Void in
                                     // ...
                                 })
@@ -267,3 +310,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         return nil
     }
 }
+

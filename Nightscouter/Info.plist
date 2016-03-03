@@ -76,5 +76,23 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Add New Site</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string></string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>firstShorcutKey1</key>
+				<string>AddNew</string>
+			</dict>
+			<key>UIApplicationShortcutItemType</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).AddNew</string>
+		</dict>
+	</array>
 </dict>
 </plist>
