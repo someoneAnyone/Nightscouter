@@ -50,7 +50,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     // Holds the friendly site name.
     public let displayName: String
     
-    // 3 mins ago... if things get stale then the color will change. Stale timer is based by the server's configuratiojn.
+    // 3 mins ago... if things get stale then the color will change. Stale timer is based by the server's configuration.
     public let lastReadingDate: NSDate
     public let lastReadingColor: String
     

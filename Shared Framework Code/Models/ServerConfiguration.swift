@@ -363,11 +363,12 @@ public extension ServerConfiguration {
             let aHigh = settingsDictionary[ConfigurationPropertyKey.alarmHighKey] as! Bool
             let aLow = settingsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
             let aTAU = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentKey] as! Bool
-            let aTAUMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as! Double
+            let aTAUMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as? Double ?? Double(settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as! String)!
             let aTAUMin: NSTimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
             
             let aTAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnKey] as! Bool
-            let aTAWMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as! Double
+            let aTAWMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as? Double ?? Double(settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as! String)!
+
             let aTAWMin: NSTimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
             let aTUH = settingsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
             let aTUL = settingsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
