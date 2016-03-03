@@ -31,11 +31,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
             }
+           
             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                 ComplicationController.reloadComplications()
             }
-            
-            
+
         }
     }
     
@@ -282,6 +282,11 @@ extension WatchSessionManager {
             updateDelegates("processApplicationContext")
         }
         
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            ComplicationController.reloadComplications()
+        }
+
+        
         return true
     }
     
@@ -444,8 +449,8 @@ extension WatchSessionManager {
         print("userDefaultsDidChange:")
         
 
-        guard let defaultObject = notification.object as? NSUserDefaults else { return }
-        print(defaultObject.dictionaryRepresentation())
+        guard let _ = notification.object as? NSUserDefaults else { return }
+        //print(defaultObject.dictionaryRepresentation())
         
     }
     

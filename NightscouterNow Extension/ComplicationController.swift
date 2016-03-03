@@ -127,6 +127,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         
+        ComplicationController.reloadComplications()
+        
         let nextUpdate = WatchSessionManager.sharedManager.nextRequestedComplicationUpdateDate
         
         #if DEBUG
@@ -140,14 +142,22 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        guard let defaultModel = WatchSessionManager.sharedManager.defaultModel() else { return }
+        // Get the date of last complication timeline entry.
+        let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.last?.date ?? NSDate(timeIntervalSince1970: 0)
+        // Get the date of the last reload of the complication timeline.
+        let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
         
-        if WatchSessionManager.sharedManager.nextRequestedComplicationUpdateDate < defaultModel.lastReadingDate {
+        if lastReloadDate.compare(lastModelUpdate) != .OrderedSame {
+            print(">>> Actually Updating \(__FUNCTION__) <<<")
             let complicationServer = CLKComplicationServer.sharedInstance()
+            // Possible iOS Bug. Sometimes the CLKComplicationServer.sharedInstance() returns a nil object.
             if complicationServer != nil {
                 if let activeComplications = complicationServer.activeComplications {
                     for complication in activeComplications {
+                        // Reload the timeline.
                         complicationServer.reloadTimelineForComplication(complication)
+                        // Set the complication model's date to defaults.
+                        WatchSessionManager.sharedManager.defaults.setObject(lastModelUpdate, forKey: "lastReloadDate")
                     }
                 }
             }
@@ -171,7 +181,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
-        
+        WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.updateComplication { () -> Void in
             
         }
