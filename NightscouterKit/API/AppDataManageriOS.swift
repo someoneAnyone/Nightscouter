@@ -22,6 +22,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             }
             
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+            defaults.synchronize()
+            
             iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
             
             iCloudKeyStore.synchronize()
@@ -285,8 +287,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             //                return false
             //            }
             updateComplication()
-            
-            replyHandler([WatchModel.PropertyKey.actionKey : WatchAction.UpdateComplication.rawValue])
+            payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
+
+            replyHandler(payload)
             //            generateData(forSites: [defaultSite], handler: { () -> Void in
             //                // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
             //                //payload[WatchModel.PropertyKey.contextKey] = self.defaults.dictionaryRepresentation()
