@@ -159,6 +159,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
+        
+        if self.models.isEmpty {
+            updateData(forceRefresh: true)
+        }
         //
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,

@@ -16,9 +16,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     @IBOutlet var sitesTable: WKInterfaceTable!
     @IBOutlet var sitesLoading: WKInterfaceLabel!
     
-    var models: [WatchModel] {
-        return WatchSessionManager.sharedManager.models
-    }
+    var models: [WatchModel] = []
+//        {
+//        return WatchSessionManager.sharedManager.models
+//    }
     
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate? {
@@ -54,6 +55,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.willActivate()
         print(">>> Entering \(__FUNCTION__) <<<")
         
+        self.models = WatchSessionManager.sharedManager.models
+
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
@@ -63,7 +66,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.didDeactivate()
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        // NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
@@ -82,41 +85,44 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let rowSiteTypeIdentifier: String = "SiteRowController"
         let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
         let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
-
-        if self.models.isEmpty {
-            self.sitesLoading.setHidden(true)
+        
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             
-            self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
-            let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
-            if let row = row {
-                row.messageLabel.setText("No sites availble.")
-            }
-            
-        } else {
-            
-            var rowSiteType = self.models.map{ _ in rowSiteTypeIdentifier }
-            rowSiteType.append(rowUpdateTypeIdentifier)
-            
-            self.sitesTable.setRowTypes(rowSiteType)
-            
-            for (index, model) in self.models.enumerate() {
-                if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
-                    row.model = model
+            if self.models.isEmpty {
+                self.sitesLoading.setHidden(true)
+                
+                self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
+                let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
+                if let row = row {
+                    row.messageLabel.setText("No sites availble.")
+                }
+                
+            } else {
+                
+                var rowSiteType = self.models.map{ _ in rowSiteTypeIdentifier }
+                rowSiteType.append(rowUpdateTypeIdentifier)
+                
+                self.sitesTable.setRowTypes(rowSiteType)
+                
+                for (index, model) in self.models.enumerate() {
+                    if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+                        row.model = model
+                    }
+                }
+                
+                let updateRow = self.sitesTable.rowControllerAtIndex(self.models.count) as? SiteUpdateRowController
+                if let updateRow = updateRow {
+                    updateRow.siteLastReadingLabel.setText(self.timeStamp)
+                    updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
                 }
             }
-            
-            let updateRow = self.sitesTable.rowControllerAtIndex(self.models.count) as? SiteUpdateRowController
-            if let updateRow = updateRow {
-                updateRow.siteLastReadingLabel.setText(self.timeStamp)
-                updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
-            }
         }
-
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         print(">>> Entering \(__FUNCTION__) <<<")
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            self.models = models
             self.lastUpdatedTime = NSDate()
         }
     }

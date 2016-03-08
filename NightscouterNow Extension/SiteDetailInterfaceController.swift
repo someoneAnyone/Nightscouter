@@ -29,8 +29,10 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     var delegate: SiteDetailViewDidUpdateItemDelegate?
     
-    var model: WatchModel {
-        return WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
+    var model: WatchModel? {
+        didSet{
+            self.configureView()
+        }
     }
     
     override func willActivate() {
@@ -40,6 +42,8 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         if WatchSessionManager.sharedManager.models.isEmpty { popController() }
         
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        
+        self.model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
         
         let image = NSAssetKitWatchOS.imageOfWatchFace()
         compassImage.setImage(image)
@@ -54,13 +58,11 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         // Remove this class from the observer list. Was listening for a global update timer.
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        // NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            self.configureView()
-        }
+       model = models[WatchSessionManager.sharedManager.currentSiteIndex]
     }
  
     func dataSourceCouldNotConnectToPhone(error: NSError) {
@@ -79,9 +81,13 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             WatchSessionManager.sharedManager.updateData(forceRefresh: true)
         })
         
+        guard let model = model else {
+            return
+        }
+        
         let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
-            if self.model.updateNow || refresh {
-                fetchSiteData(self.model.generateSite(), handler: { (returnedSite, error) -> Void in
+            if model.updateNow || refresh {
+                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                     NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                         WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                         self.configureView()
@@ -96,21 +102,22 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func configureView(){
         
-        let model = self.model
-        
-        let compassAlpha: CGFloat = model.warn ? 0.5 : 1.0
-        
-        let frame = self.contentFrame
-        let smallest = min(min(frame.height, frame.width), 134)
-        let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
-        
-        let sgvColor = UIColor(hexString: model.sgvColor)
-        let rawColor = UIColor(hexString: model.rawColor)
-        let batteryColor = UIColor(hexString: model.batteryColor)
-        let lastReadingColor = UIColor(hexString: model.lastReadingColor)
+        guard let model = self.model else {
+            return
+        }
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
+            let compassAlpha: CGFloat = model.warn ? 0.5 : 1.0
             
+            let frame = self.contentFrame
+            let smallest = min(min(frame.height, frame.width), 134)
+            let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
+            
+            let sgvColor = UIColor(hexString: model.sgvColor)
+            let rawColor = UIColor(hexString: model.rawColor)
+            let batteryColor = UIColor(hexString: model.batteryColor)
+            let lastReadingColor = UIColor(hexString: model.lastReadingColor)
+
             let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
             
             self.setTitle(model.displayName)
@@ -141,7 +148,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBAction func setAsDefaultSite(){
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.delegate?.didSetItemAsDefault(self!.model)
+            self?.delegate?.didSetItemAsDefault(self!.model!)
         }
     }
     
@@ -158,7 +165,8 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         NSOperationQueue.mainQueue().addOperationWithBlock {
             let modelDict = incomingModel.dictionary
-            self.awakeWithContext(modelDict)
+            // self.awakeWithContext(modelDict)
+            self.model = WatchModel(fromDictionary: modelDict)
         }
     }
     

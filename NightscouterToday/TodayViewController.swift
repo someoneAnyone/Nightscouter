@@ -31,10 +31,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         super.viewDidLoad()
 
         tableView.backgroundColor = UIColor.clearColor()
-        
-        if let models = AppDataManageriOS.sharedInstance.defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
-            sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
-        }
+
+        sites = AppDataManageriOS.sharedInstance.sites
         
         let itemCount = sites.isEmpty ? 1 : sites.count
         
@@ -73,7 +71,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             return 1
         }
         
-        return  sites.count
+        return sites.count
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -127,7 +125,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                    // AppDataManageriOS.sharedInstance.updateWatch(withAction: .AppContext)
                 })
                 
                 
