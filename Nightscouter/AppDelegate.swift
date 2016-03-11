@@ -235,9 +235,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print("Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) Notification at \(NSDate())")
         #endif
         
-        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
-        //AppDataManageriOS.sharedInstance.updateWatch(withAction: .UserInfo)
-        
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+            //AppDataManageriOS.sharedInstance.updateWatch(withAction: .UserInfo
+        }
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }

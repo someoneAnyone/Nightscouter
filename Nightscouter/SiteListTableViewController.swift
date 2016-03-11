@@ -296,7 +296,7 @@ class SiteListTableViewController: UITableViewController {
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
+        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -425,3 +425,23 @@ class SiteListTableViewController: UITableViewController {
     
     
 }
+
+
+extension SiteListTableViewController: UpdatableUserInterfaceType {
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        startUpdateUITimer()
+    }
+    
+    func updateUI(notif: NSTimer) {
+        print("updating ui for: \(notif)")
+        self.tableView.reloadData()
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        updateUITimer.invalidate()
+    }
+}
+
+

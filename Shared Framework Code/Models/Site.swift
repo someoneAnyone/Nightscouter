@@ -58,6 +58,16 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
     public private(set) var uuid: NSUUID
     public private(set) var lastConnectedDate: NSDate?
     
+    public var nextRefreshDate: NSDate {
+        let date = lastConnectedDate?.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime) ?? NSDate().dateByAddingTimeInterval(-10)
+        print("iOS nextRefreshDate: " + date.description)
+        return date
+    }
+    
+    public var updateNow: Bool {
+        return self.lastConnectedDate?.compare(self.nextRefreshDate) == .OrderedDescending
+    }
+    
     public override var description: String {
         return dictionary.description
     }

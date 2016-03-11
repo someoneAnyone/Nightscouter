@@ -112,11 +112,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
     
-    public var nextRefreshDate: NSDate {
-        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
-        print("iOS nextRefreshDate: " + date.description)
-        return date
-    }
+//    public var nextRefreshDate: NSDate {
+//        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
+//        print("iOS nextRefreshDate: " + date.description)
+//        return date
+//    }
     
     // MARK: Save and Load Data
     public func saveData() {
@@ -368,7 +368,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public func updateComplication() {
         print("updateComplication")
         if let siteToLoad = self.defaultSite() {
-            if (siteToLoad.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || siteToLoad.configuration == nil) {
+            if (siteToLoad.lastConnectedDate?.compare(siteToLoad.nextRefreshDate) == .OrderedDescending || siteToLoad.configuration == nil) {
                 print("START:   iOS is updating complication data for \(siteToLoad.url)")
                 fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
                     self.updateSite(returnedSite)

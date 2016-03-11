@@ -30,6 +30,9 @@
 		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
 		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
 		177A22091C249F2200912679 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */; };
+		1781AA3D1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */; };
+		1781AA3E1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */; };
+		178257531C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178257521C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
 		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
@@ -238,6 +241,8 @@
 		1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL-Extensions.swift"; path = "Extensions/NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		1771B0891B75251A006C1F5E /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
+		1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpdatableUserInterfaceType.swift; path = "Shared Framework Code/Protocols/UpdatableUserInterfaceType.swift"; sourceTree = SOURCE_ROOT; };
+		178257521C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UpdatableUserInterfaceType-Extensions.swift"; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; };
 		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
 		17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSUbiquitousKeyValueStore+Extensions.swift"; path = "Extensions/NSUbiquitousKeyValueStore+Extensions.swift"; sourceTree = "<group>"; };
@@ -451,6 +456,7 @@
 			children = (
 				17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */,
 				17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */,
+				1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */,
 			);
 			name = Protocols;
 			sourceTree = "<group>";
@@ -494,6 +500,7 @@
 			isa = PBXGroup;
 			children = (
 				1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */,
+				178257521C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -1069,6 +1076,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1781AA3D1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */,
 				17BD1C181BF0EC1D0014EE38 /* Entry.swift in Sources */,
 				17BD1C3A1BF0F76A0014EE38 /* UIColor+Extension.swift in Sources */,
 				17B2DF991C4097F8005FE2D9 /* Array+Extensions.swift in Sources */,
@@ -1098,6 +1106,7 @@
 				17DA132F1BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
 				17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
+				178257531C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
@@ -1121,6 +1130,7 @@
 				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				1781AA3E1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,

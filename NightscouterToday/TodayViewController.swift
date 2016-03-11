@@ -87,7 +87,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             contentCell.configureCell(site)
             
-            if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
+            if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
                 refreshDataFor(site, index: indexPath.row)
             }
             

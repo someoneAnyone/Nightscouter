@@ -31,7 +31,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
             }
         }
     }
-    var nsApi: NightscoutAPIClient?
+    // var nsApi: NightscoutAPIClient?
     var data = [AnyObject]()
     
     // MARK: View Lifecycle
@@ -56,7 +56,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-        nsApi?.task?.cancel()
+        // nsApi?.task?.cancel()
         data.removeAll()
     }
     
@@ -73,6 +73,11 @@ extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
         // print(">>> Entering \(__FUNCTION__) <<<")
         // print("\(segue)")
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
 }
 
@@ -103,7 +108,7 @@ extension SiteDetailViewController {
         self.loadWebView()
         
         if let siteOptional = site {
-            nsApi = NightscoutAPIClient(url:siteOptional.url)
+            // nsApi = NightscoutAPIClient(url:siteOptional.url)
             UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
             NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
             
@@ -122,10 +127,10 @@ extension SiteDetailViewController {
         self.siteNameLabel?.text = title
     }
     
-    func updateData() {
+    func updateData(forceUpdate force: Bool = false) {
         guard let site = self.site else { return }
         
-        if (site.lastConnectedDate?.compare(AppDataManageriOS.sharedInstance.nextRefreshDate) == .OrderedDescending || site.entries == nil || site.configuration == nil) {
+        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || site.entries == nil || site.configuration == nil || force == true) {
             
             UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             self.siteActivityView?.startAnimating()
@@ -142,7 +147,7 @@ extension SiteDetailViewController {
         }
     }
     
-    func updateUI () {
+    func updateUI() {
         defer {
             print("setting networkActivityIndicatorVisible: false and stopping animation.")
             
@@ -218,16 +223,16 @@ extension SiteDetailViewController {
     }
     
     func updateScreenOverride(shouldOverride: Bool) {
-        if let site = self.site {
-            site.overrideScreenLock = shouldOverride
-            
-            AppDataManageriOS.sharedInstance.updateSite(site)
-            UIApplication.sharedApplication().idleTimerDisabled = site.overrideScreenLock
-            
+        guard let site = self.site else {
+            return
         }
+        UIApplication.sharedApplication().idleTimerDisabled = shouldOverride
+        site.overrideScreenLock = shouldOverride
+        AppDataManageriOS.sharedInstance.updateSite(site)
+        
         
         #if DEBUG
-            print("{site.overrideScreenLock:\(site?.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+            print("{site.overrideScreenLock:\(site.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
     }
     
@@ -290,5 +295,22 @@ extension SiteDetailViewController {
             #endif
         }
     }
+}
+
+extension SiteDetailViewController: UpdatableUserInterfaceType {
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        startUpdateUITimer()
+    }
     
+    func updateUI(notif: NSTimer) {
+        
+        print("updating ui for: \(notif)")
+        self.updateData()
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateUITimer.invalidate()
+    }
 }
