@@ -49,9 +49,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         print("sessionWatchStateDidChange")
         print(session)
         if session.watchAppInstalled == true && validReachableSession == nil {
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.UpdateComplication)
+           // AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.UpdateComplication)
         } else if validReachableSession != nil {
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
+            // AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
         }
         
     }
@@ -96,12 +96,17 @@ extension WatchSessionManager {
             print("validSession?.complicationEnabled == \(validReachableSession?.complicationEnabled)")
         #endif
         // return validSession?.transferCurrentComplicationUserInfo(userInfo)
+        cleanUpTransfers()
         
         return validSession?.complicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : transferUserInfo(userInfo)
     }
     
+    func cleanUpTransfers(){
+        validReachableSession?.outstandingFileTransfers.forEach({ $0.cancel() })
+    }
+    
     // Sender
-    public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    private func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
