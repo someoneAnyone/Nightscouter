@@ -28,7 +28,7 @@ public struct DefaultKey {
 public struct Constants {
     
     public struct StandardTimeFrame {
-        public static let OneMinuteInSeconds: NSTimeInterval = 60
+        public static let OneMinuteInSeconds: NSTimeInterval = 60.0
         public static let TwoAndHalfMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 2.5
         public static let FourMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 4
         public static let TenMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 10
