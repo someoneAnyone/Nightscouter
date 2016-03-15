@@ -143,7 +143,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(__FUNCTION__) <<<")
         #endif
         // Get the date of last complication timeline entry.
-        let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.last?.date ?? NSDate(timeIntervalSince1970: 0)
+        let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.first?.date ?? NSDate(timeIntervalSince1970: 0)
         // Get the date of the last reload of the complication timeline.
         let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
         
@@ -161,6 +161,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                     }
                 }
             }
+        } else {
+            print(">>> Not Updating \(__FUNCTION__) <<< because it was too soon. No new entries were found.")
         }
     }
     
