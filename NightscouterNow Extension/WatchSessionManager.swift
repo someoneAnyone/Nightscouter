@@ -31,11 +31,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
             }
-           
+            
             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                 ComplicationController.reloadComplications()
             }
-
+            defaults.synchronize()
         }
     }
     
@@ -56,6 +56,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         set{
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
             iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            
+            iCloudKeyStore.synchronize()
+            
             updateComplication { () -> Void in
                 NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                     ComplicationController.reloadComplications()
@@ -154,7 +157,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public func loadData() {
         
-        updateData(forceRefresh: true)
         
         if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
@@ -175,7 +177,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
             object: iCloudKeyStore)
         
+        
+        
         iCloudKeyStore.synchronize()
+        
+        //updateData(forceRefresh: true)
         
     }
     
@@ -199,7 +205,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         dataSourceChangedDelegates.append(delegate)
         
         updateDelegates("addDataSourceChangedDelegate")
-        
     }
     
     public func removeDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -230,7 +235,7 @@ extension WatchSessionManager {
         // print("\(userInfo)")
         
         dispatch_async(dispatch_get_main_queue()) {
-            self.processApplicationContext(userInfo, updateDelegates:  false)
+            self.processApplicationContext(userInfo, updateDelegates:  true)
             //            ComplicationController.reloadComplications()
         }
     }
@@ -244,6 +249,21 @@ extension WatchSessionManager {
             self.processApplicationContext(applicationContext)
         }
         
+    }
+    
+    public func sessionReachabilityDidChange(session: WCSession) {
+        
+        if session.reachable && models.isEmpty {
+            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+            
+            session.sendMessage(messageToSend, replyHandler: { (context) -> Void in
+                self.processApplicationContext(context, updateDelegates: false)
+                self.updateData(forceRefresh: false)
+                
+                }, errorHandler: { (error) -> Void in
+                    print(error)
+            })
+        }
     }
 }
 
@@ -289,7 +309,7 @@ extension WatchSessionManager {
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             ComplicationController.reloadComplications()
         }
-
+        
         
         return true
     }
@@ -375,7 +395,7 @@ extension WatchSessionManager {
                 // handle reply from iPhone app here
                 print("recievedMessageReply from iPhone")
                 NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                    self.processApplicationContext(context, updateDelegates: false)
+                    self.processApplicationContext(context, updateDelegates: true)
                     // ComplicationController.reloadComplications()
                 }
                 
@@ -392,9 +412,7 @@ extension WatchSessionManager {
                     })
             })
         } else {
-            //                NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            //                    ComplicationController.reloadComplications()
-            //                }
+            updateDelegates(__FUNCTION__)
             completion()
         }
         
@@ -452,7 +470,7 @@ extension WatchSessionManager {
     func userDefaultsDidChange(notification: NSNotification) {
         print("userDefaultsDidChange:")
         
-
+        
         guard let _ = notification.object as? NSUserDefaults else { return }
         //print(defaultObject.dictionaryRepresentation())
         
@@ -490,7 +508,7 @@ extension WatchSessionManager {
                     self.currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as! Int
                 }
                 
-                updateDelegates(__FUNCTION__)
+                // updateDelegates(__FUNCTION__)
             }
         }
     }
