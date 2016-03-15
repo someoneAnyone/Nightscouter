@@ -63,6 +63,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         let result = nextReadingDate.compare(now) == NSComparisonResult.OrderedAscending
         // print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
         
+        
         return result
     }
     
@@ -321,7 +322,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.urgent = false
             self.warn = false
             
-            self.lastReadingDate = NSDate()
+            self.lastReadingDate = NSDate().dateByAddingTimeInterval((60.0 * 10).inThePast)
             
             self.lastReadingColor = PlaceHolderStrings.defaultColor
             
