@@ -30,25 +30,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
     }
     
-    
-    //    public var sites: [Site] = [] {
-    //        didSet{
-    //
-    //            if sites.isEmpty {
-    //                defaultSiteUUID = nil
-    //                currentSiteIndex = 0
-    //
-    //                resetStorage(forUbiquitousKeyValueStore: iCloudKeyStore)
-    //            }
-    //
-    //            saveData()
-    //
-    //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-    //                NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
-    //            }
-    //        }
-    //    }
-    
     public var currentSiteIndex: Int {
         set{
             defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
@@ -59,12 +40,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
         }
     }
-    
-    //    public var currentSiteIndex: Int = 0 {
-    //        didSet {
-    //            saveData()
-    //        }
-    //    }
+
     public var defaultSiteUUID: NSUUID? {
         set{
             defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
@@ -79,13 +55,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             return sites.first?.uuid
         }
     }
-    //
-    //    public var defaultSiteUUID: NSUUID? {
-    //        didSet {
-    //            saveData()
-    //        }
-    //    }
-    
+
     public func defaultSite() -> Site? {
         return self.sites.filter({ (site) -> Bool in
             return site.uuid == defaultSiteUUID
@@ -111,13 +81,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
     public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
-    
-//    public var nextRefreshDate: NSDate {
-//        let date = NSDate().dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
-//        print("iOS nextRefreshDate: " + date.description)
-//        return date
-//    }
-    
+
     // MARK: Save and Load Data
     public func saveData() {
         
@@ -138,15 +102,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     public func loadData() {
         
-        //        currentSiteIndex = defaults.integerForKey(DefaultKey.currentSiteIndexKey)
         if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
             sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
-        //        if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
-        //            defaultSiteUUID =  NSUUID(UUIDString: uuidString)
-        //        } else  if let firstModel = sites.first {
-        //            defaultSiteUUID = firstModel.uuid
-        //        }
         
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
@@ -160,7 +118,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             object: iCloudKeyStore)
         
         iCloudKeyStore.synchronize()
-        
     }
     
     
