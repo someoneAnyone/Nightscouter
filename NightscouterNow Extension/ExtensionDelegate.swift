@@ -14,7 +14,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     override init() {
         print(">>> Entering \(__FUNCTION__) <<<")
-
+        
         super.init()
         WatchSessionManager.sharedManager.startSession()
     }
@@ -42,11 +42,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         
         WatchSessionManager.sharedManager.saveData()
         self.timer?.invalidate()
-        
+        self.timer = nil
     }
     
     func createUpdateTimer() -> NSTimer {
-        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
+        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
         return localTimer
     }
     
@@ -56,14 +56,20 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(NSDate())")
         #endif
         
-        dispatch_async(dispatch_get_main_queue()) {
+        
+        let date = NSDate()
+        let calendar = NSCalendar.currentCalendar()
+        let components = calendar.components([.Second], fromDate: date)
+        let delayedStart:Double=(Double)(60 - components.second)
+        let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(delayedStart * Double(NSEC_PER_SEC)))
+        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
             NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
             WatchSessionManager.sharedManager.saveData()
-        }
-        
-        if (self.timer == nil) {
-            self.timer = createUpdateTimer()
-        }
+            
+            if (self.timer == nil) {
+                self.timer = self.createUpdateTimer()
+            }
+        })
     }
 }
 
