@@ -17,10 +17,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     @IBOutlet var sitesLoading: WKInterfaceLabel!
     
     var models: [WatchModel] = []
-//        {
-//        return WatchSessionManager.sharedManager.models
-//    }
-    
+
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate? {
         didSet{
@@ -48,7 +45,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(__FUNCTION__) <<<")
-        
+//        updateTableData()
+        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
     
     override func willActivate() {
@@ -66,7 +64,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.didDeactivate()
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-        // NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
@@ -82,12 +79,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     private func updateTableData() {
         print(">>> Entering \(__FUNCTION__) <<<")
         
-        let rowSiteTypeIdentifier: String = "SiteRowController"
-        let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
-        let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
-        
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             
+            let rowSiteTypeIdentifier: String = "SiteRowController"
+            let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
+            let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
+
             if self.models.isEmpty {
                 self.sitesLoading.setHidden(true)
                 
@@ -121,10 +118,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         print(">>> Entering \(__FUNCTION__) <<<")
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+//        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             self.models = models
             self.lastUpdatedTime = NSDate()
-        }
+//        }
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {
