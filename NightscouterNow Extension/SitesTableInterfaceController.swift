@@ -44,14 +44,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
 //        updateTableData()
         WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
     
     override func willActivate() {
         super.willActivate()
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         self.models = WatchSessionManager.sharedManager.models
 
@@ -60,7 +60,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         super.didDeactivate()
         
         WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
@@ -69,7 +69,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
         // create object.
         // push controller...
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
         
@@ -77,7 +77,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     private func updateTableData() {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             
@@ -117,7 +117,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
 //        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
             self.models = models
             self.lastUpdatedTime = NSDate()
@@ -164,7 +164,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
             

@@ -13,7 +13,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     var timer: NSTimer?
     
     override init() {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         super.init()
         WatchSessionManager.sharedManager.startSession()
@@ -21,7 +21,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     func applicationDidFinishLaunching() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         // Perform any final initialization of your application.
@@ -30,14 +30,14 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     func applicationDidBecomeActive() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         updateDataNotification(nil)
     }
     
     func applicationWillResignActive() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         WatchSessionManager.sharedManager.saveData()
@@ -46,13 +46,13 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     }
     
     func createUpdateTimer() -> NSTimer {
-        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
+        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
         return localTimer
     }
     
     func updateDataNotification(timer: NSTimer?) -> Void {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
             print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(NSDate())")
         #endif
         

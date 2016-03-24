@@ -277,7 +277,7 @@ class SiteListTableViewController: UITableViewController {
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.sharedApplication().idleTimerDisabled = false
         
-        timer = NSTimer(timeInterval: 60.0, target: self, selector: Selector("updateUI"), userInfo: nil, repeats: true)
+        timer = NSTimer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
     }
     
     func updateUI() {
@@ -286,9 +286,9 @@ class SiteListTableViewController: UITableViewController {
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateData", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataManagerDidChange:"), name: AppDataManagerDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteListTableViewController.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.

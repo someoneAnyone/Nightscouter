@@ -457,7 +457,7 @@ public extension ServerConfiguration {
         let returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
         
         #if DEBUG
-            // print("\(__FUNCTION__): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
+            // print("\(#function): {sinceNow: \(sinceNow), warneValue: \(warnValue), urgentValue: \(urgentValue), fallback:\(-fallback), returning: \(returnValue)}")
         #endif
         
         return returnValue

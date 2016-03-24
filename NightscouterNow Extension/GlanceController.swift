@@ -27,7 +27,7 @@ class GlanceController: WKInterfaceController {
     
     override func willActivate() {
         
-        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: "configureView", userInfo: nil, repeats: true)
+        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: #selector(GlanceController.configureView), userInfo: nil, repeats: true)
         
         beginGlanceUpdates()
         

@@ -197,7 +197,7 @@ public extension WatchSessionManager {
     public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
         // handle receiving message
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function)<<")
         #endif
         
         
@@ -211,7 +211,7 @@ public extension WatchSessionManager {
     public func session(session: WCSession, didReceiveMessageData messageData: NSData, replyHandler: (NSData) -> Void) {
         
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
             print("session: \(session), messageData: \(messageData)")
         #endif
         

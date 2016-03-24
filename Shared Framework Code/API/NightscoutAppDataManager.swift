@@ -13,7 +13,7 @@ public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
 
 public func quickFetch(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         print("STARTING:    Load all available site data for: \(site.url)")
         let nsAPI = NightscoutAPIClient(url: site.url)
         var errorToReturn: NightscoutAPIError = .NoError
@@ -46,7 +46,7 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
 
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         print("STARTING:    Load all available site data for: \(site.url)")
         let nsAPI = NightscoutAPIClient(url: site.url)
         var errorToReturn: NightscoutAPIError = .NoError

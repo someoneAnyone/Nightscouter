@@ -40,13 +40,13 @@ public extension NSCalendar {
                 // Simple date/time
                 if (weeks > 3) {
                     // Almost another month - fuzzy
-                    months++;
+                    months += 1
                 }
                 return "\(months) months ago"
             }
             else if (months == 1) {
                 if (weeks > 3) {
-                    months++;
+                    months += 1;
                     // Almost 2 months
                     return "\(months) months ago"
                 }
@@ -57,13 +57,13 @@ public extension NSCalendar {
                     // Weeks
                     
                     // Almost another month - fuzzy
-                    weeks++;
+                    weeks += 1;
                 }
                 return "\(weeks) weeks ago"
             }
             else if (weeks == 1 || days > 6) {
                 if (days > 6) {
-                    weeks++;
+                    weeks += 1;
                     // Almost 2 weeks
                     return "\(weeks) weeks ago"
                 }
@@ -72,13 +72,13 @@ public extension NSCalendar {
                 // Days
             else if (days > 1) {
                 if (hours > 20) {
-                    days++;
+                    days += 1;
                 }
                 return "\(days) days ago"
             }
             else if (days == 1) {
                 if (hours > 20) {
-                    days++;
+                    days += 1;
                     return "\(days) days ago"
                 }
                 return "1 day ago"
@@ -86,13 +86,13 @@ public extension NSCalendar {
                 // Hours
             else if (hours > 1) {
                 if (minutes > 50) {
-                    hours++;
+                    hours += 1;
                 }
                 return "\(hours) hours ago"
             }
             else if (hours == 1) {
                 if (minutes > 50) {
-                    hours++;
+                    hours += 1;
                     return "\(hours) hours ago"
                 }
                 return "1 hour ago"

@@ -126,7 +126,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataStaleUpdate:"), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WatchSessionManager.dataStaleUpdate(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
     }
     
     func dataStaleUpdate(notif: NSNotification) {
@@ -168,12 +168,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         //
         // Register for settings changes as store might have changed
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: Selector("userDefaultsDidChange:"),
+            selector: #selector(WatchSessionManager.userDefaultsDidChange(_:)),
             name: NSUserDefaultsDidChangeNotification,
             object: defaults)
         
         NSNotificationCenter.defaultCenter().addObserver(self,
-            selector: "ubiquitousKeyValueStoreDidChange:",
+            selector: #selector(WatchSessionManager.ubiquitousKeyValueStoreDidChange(_:)),
             name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
             object: iCloudKeyStore)
         
@@ -412,7 +412,7 @@ extension WatchSessionManager {
                     })
             })
         } else {
-            updateDelegates(__FUNCTION__)
+            updateDelegates(#function)
             completion()
         }
         
@@ -428,7 +428,7 @@ extension WatchSessionManager {
     }
     
     public func updateData(forceRefresh refresh: Bool) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         let minModel = self.models.minElement { (lModel, rModel) -> Bool in
             return rModel.lastReadingDate < lModel.lastReadingDate
@@ -508,7 +508,7 @@ extension WatchSessionManager {
                     self.currentSiteIndex = store.objectForKey(DefaultKey.currentSiteIndexKey) as! Int
                 }
                 
-                // updateDelegates(__FUNCTION__)
+                // updateDelegates(#function)
             }
         }
     }

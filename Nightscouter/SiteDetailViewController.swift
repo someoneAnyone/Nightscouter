@@ -71,7 +71,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
 
 extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
-        // print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(#function) <<<")
         // print("\(segue)")
     }
     
@@ -84,7 +84,7 @@ extension SiteDetailViewController{
 // MARK: WebKit WebView Delegates
 extension SiteDetailViewController {
     func webViewDidFinishLoad(webView: UIWebView) {
-        // print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(#function) <<<")
         let updateData = "updateData(\(self.data))"
         
         if let configuration = site?.configuration {
@@ -110,14 +110,14 @@ extension SiteDetailViewController {
         if let siteOptional = site {
             // nsApi = NightscoutAPIClient(url:siteOptional.url)
             UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
             
             updateData()
         }
     }
     
     func updateSite(notification: NSNotification?) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         self.updateData()
     }
     

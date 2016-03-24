@@ -20,16 +20,17 @@ import Foundation
     public typealias ViewController = NSViewController
 #endif
 
+@objc
 public protocol UpdatableUserInterfaceType {
-    func startUpdateUITimer()
-    var updateInterval: NSTimeInterval { get }
+    optional func startUpdateUITimer()
+    optional var updateInterval: NSTimeInterval { get }
     func updateUI(notif: NSTimer)
 }
 
 public extension UpdatableUserInterfaceType where Self: ViewController {
     
     var updateUITimer: NSTimer {
-        return NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: Selector("updateUI:"), userInfo: nil, repeats: true)
+        return NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: #selector(Self.updateUI(_:)), userInfo: nil, repeats: true)
     }
     
     func startUpdateUITimer() {

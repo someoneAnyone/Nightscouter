@@ -151,7 +151,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     
     public init(fromSite site: Site) {
         #if DEBUG
-           // print(">>> Entering \(__FUNCTION__) <<<")
+           // print(">>> Entering \(#function) <<<")
         #endif
         
         // Make sure we've got data in the site before proceeding otherwise fail the init.

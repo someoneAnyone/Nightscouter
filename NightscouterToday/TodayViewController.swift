@@ -129,7 +129,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                 
                 
             default:
-                print("\(__FUNCTION__) ERROR recieved: \(error.description)")
+                print("\(#function) ERROR recieved: \(error.description)")
             }
         }
     }

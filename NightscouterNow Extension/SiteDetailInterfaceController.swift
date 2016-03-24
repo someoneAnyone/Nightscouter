@@ -153,7 +153,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         
         guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
             return

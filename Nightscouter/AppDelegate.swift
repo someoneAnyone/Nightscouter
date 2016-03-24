@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
         WatchSessionManager.sharedManager.startSession()
@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dataManagerDidChange:"), name: AppDataManagerDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
         
         // If a shortcut was launched, display its information and take the appropriate action
         if #available(iOS 9.0, *) {
@@ -52,7 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func applicationWillResignActive(application: UIApplication) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         self.timer?.invalidate()
@@ -60,7 +60,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func applicationDidBecomeActive(application: UIApplication) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
@@ -78,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     // MARK: Background Fetch
     func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         AppDataManageriOS.sharedInstance.generateData(forSites: sites) { () -> Void in
@@ -93,7 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
             print("Recieved URL: \(url) with options: \(options)")
         #endif
         let schemes = supportedSchemes!
@@ -109,7 +109,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     // MARK: Local Notifications
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         print("Received a local notification payload: \(notification) with application: \(application)")
         
         processLocalNotification(notification)
@@ -224,14 +224,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     }
     
     func createUpdateTimer() -> NSTimer {
-        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: Selector("updateDataNotification:"), userInfo: nil, repeats: true)
+        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: #selector(AppDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
         
         return localTimer
     }
     
     func updateDataNotification(timer: NSTimer?) -> Void {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
             print("Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) Notification at \(NSDate())")
         #endif
         
@@ -246,7 +246,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func scheduleLocalNotification(site: Site) {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
             print("Scheduling a notification for site: \(site.url) and is allowed: \(site.allowNotifications)")
         #endif
         
@@ -277,7 +277,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     }
     
     func setupNotificationSettings() {
-        print(">>> Entering \(__FUNCTION__) <<<")
+        print(">>> Entering \(#function) <<<")
         // Specify the notification types.
         let notificationTypes: UIUserNotificationType = [.Alert, .Sound, .Badge]
         

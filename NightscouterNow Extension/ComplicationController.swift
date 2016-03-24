@@ -20,7 +20,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineStartDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
         #endif
         var date: NSDate?
         let model = WatchSessionManager.sharedManager.complicationData.last
@@ -35,7 +35,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEndDateForComplication(complication: CLKComplication, withHandler handler: (NSDate?) -> Void) {
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
         #endif
         var date: NSDate?
         
@@ -57,7 +57,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getCurrentTimelineEntryForComplication(complication: CLKComplication, withHandler handler: ((CLKComplicationTimelineEntry?) -> Void)) {
         // Call the handler with the current timeline entry
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
         #endif
         
         getTimelineEntriesForComplication(complication, beforeDate: NSDate(), limit: 1) { (timelineEntries) -> Void in
@@ -68,7 +68,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getTimelineEntriesForComplication(complication: CLKComplication, beforeDate date: NSDate, limit: Int, withHandler handler: ([CLKComplicationTimelineEntry]?) -> Void) {
         // Call the handler with the timeline entries prior to the given date
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
             // print("complication: \(complication.family)")
         #endif
         
@@ -95,7 +95,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getTimelineEntriesForComplication(complication: CLKComplication, afterDate date: NSDate, limit: Int, withHandler handler: (([CLKComplicationTimelineEntry]?) -> Void)) {
         // Call the handler with the timeline entries after to the given date
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
         #endif
         
         var timelineEntries = [CLKComplicationTimelineEntry]()
@@ -124,7 +124,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getNextRequestedUpdateDateWithHandler(handler: (NSDate?) -> Void) {
         // Call the handler with the date when you would next like to be given the opportunity to update your complication content
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         ComplicationController.reloadComplications()
@@ -140,7 +140,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     static func reloadComplications() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         // Get the date of last complication timeline entry.
         let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.first?.date ?? NSDate(timeIntervalSince1970: 0)
@@ -148,10 +148,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
         
         if lastReloadDate.compare(lastModelUpdate) != .OrderedSame {
-            print(">>> Actually Updating \(__FUNCTION__) <<<")
+            print(">>> Actually Updating \(#function) <<<")
             let complicationServer = CLKComplicationServer.sharedInstance()
             // Possible iOS Bug. Sometimes the CLKComplicationServer.sharedInstance() returns a nil object.
-            if complicationServer != nil {
                 if let activeComplications = complicationServer.activeComplications {
                     for complication in activeComplications {
                         // Reload the timeline.
@@ -159,17 +158,17 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
                         // Set the complication model's date to defaults.
                         WatchSessionManager.sharedManager.defaults.setObject(lastModelUpdate, forKey: "lastReloadDate")
                     }
-                }
+
             }
         } else {
-            print(">>> Not Updating \(__FUNCTION__) <<< because it was too soon. No new entries were found.")
+            print(">>> Not Updating \(#function) <<< because it was too soon. No new entries were found.")
         }
     }
     
     
     static func extendComplications() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         let complicationServer = CLKComplicationServer.sharedInstance()
@@ -181,7 +180,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     }
     func requestedUpdateDidBegin() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.updateComplication { () -> Void in
@@ -191,7 +190,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func requestedUpdateBudgetExhausted() {
         #if DEBUG
-            print(">>> Entering \(__FUNCTION__) <<<")
+            print(">>> Entering \(#function) <<<")
         #endif
         
         WatchSessionManager.sharedManager.complicationRequestedUpdateBudgetExhausted()
@@ -202,7 +201,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     func getPlaceholderTemplateForComplication(complication: CLKComplication, withHandler handler: (CLKComplicationTemplate?) -> Void) {
         // This method will be called once per supported complication, and the results will be cached
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
             // print("complication family: \(complication.family)")
         #endif
         
@@ -258,7 +257,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     private func templateForComplication(complication: CLKComplication, model: ComplicationModel) -> CLKComplicationTemplate? {
         #if DEBUG
-            // print(">>> Entering \(__FUNCTION__) <<<")
+            // print(">>> Entering \(#function) <<<")
         #endif
         
         var template: CLKComplicationTemplate
