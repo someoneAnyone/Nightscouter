@@ -33,7 +33,8 @@ class GlanceController: WKInterfaceController {
         
         self.configureView()
         
-        WatchSessionManager.sharedManager.updateComplication { () -> Void in
+        WatchSessionManager.sharedManager.updateComplication { (timline) in
+        
             self.configureView()
             self.endGlanceUpdates()
         }

@@ -46,16 +46,18 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         super.awakeWithContext(context)
         print(">>> Entering \(#function) <<<")
 //        updateTableData()
-        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
+        self.models = WatchSessionManager.sharedManager.models
+
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
         super.willActivate()
         print(">>> Entering \(#function) <<<")
         
-        self.models = WatchSessionManager.sharedManager.models
 
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        
+//        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
     
     override func didDeactivate() {

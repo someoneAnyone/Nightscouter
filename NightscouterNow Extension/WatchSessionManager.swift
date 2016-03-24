@@ -35,6 +35,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                 ComplicationController.reloadComplications()
             }
+            
             defaults.synchronize()
         }
     }
@@ -59,7 +60,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             
             iCloudKeyStore.synchronize()
             
-            updateComplication { () -> Void in
+            updateComplication { complicationData in
                 NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                     ComplicationController.reloadComplications()
                 }
@@ -203,8 +204,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
         dataSourceChangedDelegates.append(delegate)
-        
-        updateDelegates("addDataSourceChangedDelegate")
+
+       updateData(forceRefresh: false)
+
+//        updateDelegates("addDataSourceChangedDelegate")
     }
     
     public func removeDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
@@ -252,7 +255,7 @@ extension WatchSessionManager {
     }
     
     public func sessionReachabilityDidChange(session: WCSession) {
-        
+        print(#function)
         if session.reachable && models.isEmpty {
             let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
             
@@ -343,7 +346,7 @@ extension WatchSessionManager {
             defaults.setObject([NSDate()], forKey: requestReceived)
         }
         
-        updateComplication { () -> Void in
+        updateComplication { complicationData in
             
         }
     }
@@ -364,7 +367,7 @@ extension WatchSessionManager {
         }
     }
     
-    public func updateComplication(completion: () -> Void) {
+    public func updateComplication(completion: (timline: [ComplicationModel]) -> Void) {
         
         startSession()
         let requestReceived = "requestedUpdateDidBeginRequestRecieved"
@@ -383,6 +386,7 @@ extension WatchSessionManager {
         guard let model = self.defaultModel() else {
             print("No model was found...")
             
+            completion(timline: self.complicationData)
             return
         }
         
@@ -397,9 +401,9 @@ extension WatchSessionManager {
                 NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
                     self.processApplicationContext(context, updateDelegates: true)
                     // ComplicationController.reloadComplications()
+                    completion(timline: self.complicationData)
                 }
                 
-                completion()
                 }, errorHandler: {(error: NSError ) -> Void in
                     print("WatchSession Transfer Error: \(error)")
                     fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
@@ -407,13 +411,13 @@ extension WatchSessionManager {
                             WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                             // ComplicationController.reloadComplications()
                             
-                            completion()
+                            completion(timline: self.complicationData)
                         })
                     })
             })
         } else {
             updateDelegates(#function)
-            completion()
+            completion(timline: self.complicationData)
         }
         
     }
@@ -460,6 +464,9 @@ extension WatchSessionManager {
                         self?.dataSourceChangedDelegates.forEach { $0.dataSourceCouldNotConnectToPhone(error) }
                     }
             })
+        } else {
+            self.currentlySendingMessage = false
+            updateDelegates(#function)
         }
     }
     

@@ -183,7 +183,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Entering \(#function) <<<")
         #endif
         WatchSessionManager.sharedManager.startSession()
-        WatchSessionManager.sharedManager.updateComplication { () -> Void in
+        WatchSessionManager.sharedManager.updateComplication { (timline) in
             
         }
     }
