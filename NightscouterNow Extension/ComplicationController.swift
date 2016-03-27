@@ -151,14 +151,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             print(">>> Actually Updating \(#function) <<<")
             let complicationServer = CLKComplicationServer.sharedInstance()
             // Possible iOS Bug. Sometimes the CLKComplicationServer.sharedInstance() returns a nil object.
-                if let activeComplications = complicationServer.activeComplications {
-                    for complication in activeComplications {
-                        // Reload the timeline.
-                        complicationServer.reloadTimelineForComplication(complication)
-                        // Set the complication model's date to defaults.
-                        WatchSessionManager.sharedManager.defaults.setObject(lastModelUpdate, forKey: "lastReloadDate")
-                    }
-
+            if let activeComplications = complicationServer.activeComplications {
+                for complication in activeComplications {
+                    // Reload the timeline.
+                    complicationServer.reloadTimelineForComplication(complication)
+                    // Set the complication model's date to defaults.
+                    WatchSessionManager.sharedManager.defaults.setObject(lastModelUpdate, forKey: "lastReloadDate")
+                }
+                
             }
         } else {
             print(">>> Not Updating \(#function) <<< because it was too soon. No new entries were found.")

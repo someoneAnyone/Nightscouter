@@ -25,7 +25,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #endif
         
         // Perform any final initialization of your application.
-        // WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidBecomeActive() {

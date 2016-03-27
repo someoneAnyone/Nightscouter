@@ -88,7 +88,7 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
     }
 }
 
-private func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
+public func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
     
     let cals = calibrations.sort{(item1: Calibration, item2: Calibration) -> Bool in
         item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending

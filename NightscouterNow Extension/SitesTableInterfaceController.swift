@@ -16,8 +16,12 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     @IBOutlet var sitesTable: WKInterfaceTable!
     @IBOutlet var sitesLoading: WKInterfaceLabel!
     
-    var models: [WatchModel] = []
-
+    var models: [WatchModel] = [] {
+        didSet {
+            updateTableData()
+        }
+    }
+    
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate? {
         didSet{
@@ -33,8 +37,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             }
             
             sitesLoading.setHidden(!self.models.isEmpty)
-            
-            updateTableData()
         }
     }
     
@@ -45,19 +47,14 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(#function) <<<")
-//        updateTableData()
+        
         self.models = WatchSessionManager.sharedManager.models
-
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func willActivate() {
         super.willActivate()
         print(">>> Entering \(#function) <<<")
-        
-
-        
-//        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func didDeactivate() {
@@ -86,7 +83,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             let rowSiteTypeIdentifier: String = "SiteRowController"
             let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
             let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
-
+            
             if self.models.isEmpty {
                 self.sitesLoading.setHidden(true)
                 
@@ -120,10 +117,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         print(">>> Entering \(#function) <<<")
-//        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            self.models = models
-            self.lastUpdatedTime = NSDate()
-//        }
+        self.models = models
+        self.lastUpdatedTime = NSDate()
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {

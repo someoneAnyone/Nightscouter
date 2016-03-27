@@ -312,7 +312,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     public func generateData(forSites sites: [Site], handler:()->Void) -> Void {
         sites.forEach { (siteToLoad) -> () in
             print("fetching for: \(siteToLoad.url)")
-            fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
+            quickFetch(siteToLoad, handler: { (returnedSite, error) -> Void in
                 self.updateSite(returnedSite)
             })
         }
@@ -320,6 +320,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         print("COMPLETE:   generateDataForAllSites complete")
         
         handler()
+        
+        updateComplication()
     }
     
     public func updateComplication() {
