@@ -142,10 +142,15 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
+             
+        var lastReloadDate = NSDate()
+        if let defaultReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate {
+            lastReloadDate = defaultReloadDate
+        }
+        
         // Get the date of last complication timeline entry.
         let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.first?.date ?? NSDate(timeIntervalSince1970: 0)
         // Get the date of the last reload of the complication timeline.
-        let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
         
         if lastReloadDate.compare(lastModelUpdate) != .OrderedSame {
             print(">>> Actually Updating \(#function) <<<")
@@ -184,7 +189,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
         WatchSessionManager.sharedManager.startSession()
         WatchSessionManager.sharedManager.updateComplication { (timline) in
-            
+            ComplicationController.reloadComplications()
         }
     }
     

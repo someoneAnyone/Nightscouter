@@ -15,10 +15,13 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
     dispatch_async(queue) {
         print(">>> Entering \(#function) <<<")
         print("STARTING:    Load all available site data for: \(site.url)")
+        
         let nsAPI = NightscoutAPIClient(url: site.url)
         var errorToReturn: NightscoutAPIError = .NoError
         let startDate = NSDate()
+        
         print("STEP 1:  GET Sever Status/Configuration for site: \(site.url)")
+        
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
             case .Error:
@@ -29,9 +32,11 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
                 let configuration = boxedConfiguration.value
                 site.configuration = configuration
                 print("STEP 2:      GET Sever Pebble/Watch for site: \(site.url)")
+        
                 nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                     site.watchEntry = watchEntry
                     errorToReturn = errorCode
+                
                     NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                         print("COMPLETE:    All network operations are complete for site: \(site.url)")
                         print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
@@ -174,10 +179,10 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
     }
     
     if let model = model {
-        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 30)
+        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 60)
         let warnItem = ComplicationModel(displayName:"Data Missing", date: warningStaleDate, sgv: "WARNING", sgvEmoji: " ", tintString: colorForDesiredColorState(.Warning).toHexString(), delta: " ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
         
-        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 60)
+        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 90)
         let urgentItem = ComplicationModel(displayName:"Data Missing", date: urgentStaleDate, sgv: "URGENT", sgvEmoji: " ", tintString: colorForDesiredColorState(.Alert).toHexString(), delta:" ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
 
         cmodels.append(warnItem)

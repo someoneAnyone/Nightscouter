@@ -14,9 +14,9 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     override init() {
         print(">>> Entering \(#function) <<<")
+        WatchSessionManager.sharedManager.startSession()
         
         super.init()
-        WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidFinishLaunching() {
@@ -24,7 +24,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print(">>> Entering \(#function) <<<")
         #endif
         
-        // Perform any final initialization of your application.
+        WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidBecomeActive() {
@@ -39,9 +39,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print(">>> Entering \(#function) <<<")
         #endif
         
-        WatchSessionManager.sharedManager.saveData()
         self.timer?.invalidate()
         self.timer = nil
+        
+        WatchSessionManager.sharedManager.saveData()
     }
     
     func createUpdateTimer() -> NSTimer {
@@ -52,18 +53,16 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     func updateDataNotification(timer: NSTimer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
-            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(NSDate())")
         #endif
-        
         
         let date = NSDate()
         let calendar = NSCalendar.currentCalendar()
         let components = calendar.components([.Second], fromDate: date)
-        let delayedStart:Double=(Double)(60 - components.second)
+        let delayedStart:Double=(Double)(10 - components.second)
         let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(delayedStart * Double(NSEC_PER_SEC)))
         dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(NSDate())")
             NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
-            WatchSessionManager.sharedManager.saveData()
             
             if (self.timer == nil) {
                 self.timer = self.createUpdateTimer()

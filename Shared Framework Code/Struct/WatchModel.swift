@@ -40,6 +40,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         public static let modelKey = "siteModel"
         public static let modelUUIDKey = "uuid"
         public static let delegateKey = "delegate"
+        public static let successfullyProcessed = "successfullyProcessed"
     }
     
     public let uuid: String

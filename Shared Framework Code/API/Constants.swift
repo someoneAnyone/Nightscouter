@@ -8,6 +8,8 @@
 
 import Foundation
 
+public let AppDataManagerDidChangeNotification: String = "com.nothingonline.nightscouter.appDataManager.DidChange.Notification"
+
 public struct DefaultKey {
     public static let sitesArrayObjectsKey = "userSitesData"
     public static let currentSiteIndexKey = "currentSiteIndexInt"

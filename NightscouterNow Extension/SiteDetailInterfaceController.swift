@@ -11,7 +11,7 @@ import Foundation
 import NightscouterWatchOSKit
 
 protocol SiteDetailViewDidUpdateItemDelegate {
-    //func didUpdateItem(model: WatchModel)
+    func didUpdateItem(model: WatchModel)
     func didSetItemAsDefault(model: WatchModel)
 }
 
@@ -35,13 +35,17 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         }
     }
     
+    override func awakeWithContext(context: AnyObject?) {
+        super.awakeWithContext(context)
+        
+        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+    }
+    
     override func willActivate() {
         super.willActivate()
         print("willActivate")
         
         if WatchSessionManager.sharedManager.models.isEmpty { popController() }
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         
         self.model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
         
@@ -49,6 +53,9 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         compassImage.setImage(image)
         
         self.configureView()
+        
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
     
     override func didDeactivate() {
@@ -62,23 +69,21 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-       model = models[WatchSessionManager.sharedManager.currentSiteIndex]
+        model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
     }
- 
+    
     func dataSourceCouldNotConnectToPhone(error: NSError) {
         self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-    }
-
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        
-        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }        
     }
     
     func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
         // catch any errors here
         let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
             WatchSessionManager.sharedManager.updateData(forceRefresh: true)
+        })
+        
+        let cancel = WKAlertAction(title: "Cancel", style: .Cancel, handler: { () -> Void in
+            self.dismissController()
         })
         
         guard let model = model else {
@@ -96,7 +101,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             }
         })
         NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action])
+            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action, cancel])
         })
     }
     
@@ -117,7 +122,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             let rawColor = UIColor(hexString: model.rawColor)
             let batteryColor = UIColor(hexString: model.batteryColor)
             let lastReadingColor = UIColor(hexString: model.lastReadingColor)
-
+            
             let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
             
             self.setTitle(model.displayName)
@@ -163,7 +168,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             WatchSessionManager.sharedManager.currentSiteIndex = index
         }
         
-        NSOperationQueue.mainQueue().addOperationWithBlock {
+        dispatch_async(dispatch_get_main_queue()) {
             let modelDict = incomingModel.dictionary
             // self.awakeWithContext(modelDict)
             self.model = WatchModel(fromDictionary: modelDict)

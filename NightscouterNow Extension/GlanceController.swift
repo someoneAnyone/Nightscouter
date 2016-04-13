@@ -21,8 +21,17 @@ class GlanceController: WKInterfaceController {
     
     var updateUITimer: NSTimer?
     
+    /*
     var model: WatchModel? {
         return WatchSessionManager.sharedManager.defaultModel()
+    }
+ */
+    var model: WatchModel? {
+        didSet{
+            dispatch_async(dispatch_get_main_queue()) {
+                self.configureView()
+            }
+        }
     }
     
     override func willActivate() {
@@ -31,11 +40,9 @@ class GlanceController: WKInterfaceController {
         
         beginGlanceUpdates()
         
-        self.configureView()
-        
+        // self.configureView()
         WatchSessionManager.sharedManager.updateComplication { (timline) in
-        
-            self.configureView()
+            self.model = WatchSessionManager.sharedManager.defaultModel()
             self.endGlanceUpdates()
         }
     }
@@ -66,8 +73,7 @@ class GlanceController: WKInterfaceController {
             return
         }
         
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            
+        
             let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
             let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: UIColor(hexString: model.lastReadingColor), textHeader: "LR")
@@ -77,7 +83,9 @@ class GlanceController: WKInterfaceController {
             let formattedBattery = self.formattedStringWithHeaderFor(model.batteryString, textColor:  UIColor(hexString: model.batteryColor), textHeader: "B")
             
             let sgvString = String(stringInterpolation:model.sgvStringWithEmoji.stringByReplacingOccurrencesOfString(" ", withString: ""))
-            
+
+        NSOperationQueue.mainQueue().addOperationWithBlock {
+
             // Battery
             self.batteryLabel.setAttributedText(formattedBattery)
             self.lastUpdateLabel.setAttributedText(formattedLastUpdateString)

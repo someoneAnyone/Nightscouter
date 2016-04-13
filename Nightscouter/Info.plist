@@ -46,6 +46,24 @@
 		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).site</string>
 		<string>com.nothingonline.$(PRODUCT_NAME:rfc1034identifier).new</string>
 	</array>
+	<key>UIApplicationShortcutItems</key>
+	<array>
+		<dict>
+			<key>UIApplicationShortcutItemIconType</key>
+			<string>UIApplicationShortcutIconTypeAdd</string>
+			<key>UIApplicationShortcutItemSubtitle</key>
+			<string></string>
+			<key>UIApplicationShortcutItemTitle</key>
+			<string>Add New Site</string>
+			<key>UIApplicationShortcutItemType</key>
+			<string>$(PRODUCT_BUNDLE_IDENTIFIER).AddNew</string>
+			<key>UIApplicationShortcutItemUserInfo</key>
+			<dict>
+				<key>firstShorcutKey1</key>
+				<string>AddNew</string>
+			</dict>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -76,23 +94,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>UIApplicationShortcutItems</key>
-	<array>
-		<dict>
-			<key>UIApplicationShortcutItemIconType</key>
-			<string>UIApplicationShortcutIconTypeAdd</string>
-			<key>UIApplicationShortcutItemTitle</key>
-			<string>Add New Site</string>
-			<key>UIApplicationShortcutItemSubtitle</key>
-			<string></string>
-			<key>UIApplicationShortcutItemUserInfo</key>
-			<dict>
-				<key>firstShorcutKey1</key>
-				<string>AddNew</string>
-			</dict>
-			<key>UIApplicationShortcutItemType</key>
-			<string>$(PRODUCT_BUNDLE_IDENTIFIER).AddNew</string>
-		</dict>
-	</array>
 </dict>
 </plist>

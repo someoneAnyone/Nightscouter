@@ -23,16 +23,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
-    
-    // MARK: AppDelegate Lifecycle
-    
+
+    // MARK: AppDelegate Lifecycle    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
         WatchSessionManager.sharedManager.startSession()
-        
+
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
@@ -63,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print(">>> Entering \(#function) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        
+
         updateDataNotification(nil)
     }
     
@@ -83,10 +82,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         AppDataManageriOS.sharedInstance.generateData(forSites: sites) { () -> Void in
             AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
+            completionHandler(.NewData)
+            return
         }
         
-        completionHandler(.NewData)
-        
+        // completionHandler(.NewData)
         // Always return NewData.
         // TODO: Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
     }
