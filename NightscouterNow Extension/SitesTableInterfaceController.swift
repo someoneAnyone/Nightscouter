@@ -40,13 +40,18 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     var currentlyUpdating: Bool = false
     
+    override func willActivate() {
+        super.willActivate()
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+    
     override func awakeWithContext(context: AnyObject?) {
         super.awakeWithContext(context)
         print(">>> Entering \(#function) <<<")
      
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         self.models = WatchSessionManager.sharedManager.models
-        
+        self.updateTableData()
+
         let model = models.minElement{ (lModel, rModel) -> Bool in
             return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .OrderedAscending
         }
@@ -55,7 +60,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         WatchSessionManager.sharedManager.updateData(forceRefresh: false)
         
-        self.updateTableData()
     }
     
     override func didDeactivate() {
@@ -85,6 +89,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
         let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
         
+            self.sitesTable.setNumberOfRows(0, withRowType: rowEmptyTypeIdentifier)
+
+            
         if self.models.isEmpty {
             self.sitesLoading.setHidden(true)
             
@@ -138,8 +145,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         NSOperationQueue.mainQueue().addOperationWithBlock {
             
             self.dismissController()
-            //        self.models = WatchSessionManager.sharedManager.models
-            
+            self.models = WatchSessionManager.sharedManager.models
             self.lastUpdatedTime = NSDate()
             self.updateTableData()
         }

@@ -81,12 +81,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #endif
         
         AppDataManageriOS.sharedInstance.generateData(forSites: sites) { () -> Void in
-            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
-            completionHandler(.NewData)
+//            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
+//            completionHandler(.NewData)
             return
         }
         
-        // completionHandler(.NewData)
+         completionHandler(.NewData)
         // Always return NewData.
         // TODO: Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
     }

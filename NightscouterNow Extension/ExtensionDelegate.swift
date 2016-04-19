@@ -13,7 +13,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     var timer: NSTimer?
     
     override init() {
-        print(">>> Entering \(#function) <<<")
+        print(">>> Entering \(#function) in ExtensionDelegate) <<<")
         WatchSessionManager.sharedManager.startSession()
         
         super.init()
@@ -23,8 +23,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
-        
-        WatchSessionManager.sharedManager.startSession()
     }
     
     func applicationDidBecomeActive() {

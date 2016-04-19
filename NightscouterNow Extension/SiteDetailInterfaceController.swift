@@ -58,6 +58,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
     
+    
     override func didDeactivate() {
         super.didDeactivate()
         print("didDeactivate \(self)")
@@ -69,7 +70,11 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     }
     
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            let model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
+            self?.model = model
+            self?.delegate?.didUpdateItem(model)
+        }
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {

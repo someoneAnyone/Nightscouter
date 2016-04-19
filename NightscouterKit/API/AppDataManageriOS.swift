@@ -10,6 +10,9 @@ import Foundation
 
 public class AppDataManageriOS: NSObject, BundleRepresentable {
     
+    
+    
+    
     public var sites: [Site] = [] {
         didSet{
             let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
@@ -66,7 +69,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }).first
     }
     
-    public var dictionaryOfDataSource: [String: AnyObject] {
+    func dictionaryOfDataSource(watchAction: WatchAction) -> [String: AnyObject] {
         var dictionaryOfData = [String: AnyObject]()
         dictionaryOfData[DefaultKey.modelArrayObjectsKey] = sites.flatMap( { $0.viewModel.dictionary } )
         dictionaryOfData[DefaultKey.currentSiteIndexKey] = currentSiteIndex
@@ -159,8 +162,8 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             success = true
         }
         
-        updateWatch(withAction: .AppContext)
-        
+        self.updateWatch(withAction: .AppContext)
+    
         return success
     }
     
@@ -202,40 +205,91 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     
     // MARK: Watch OS Communication
-    func processApplicationContext(context: [String : AnyObject], replyHandler:([String : AnyObject]) -> Void ) -> Bool {
+    func processApplicationContext(context: [String : AnyObject]) -> Bool {
         print("processApplicationContext \(context)")
         
         // Create a generic context to transfer to the watch.
-        var payload = [String: AnyObject]()
         var success = false
+        
+        if let defaults = context["defaults"] as? [String: AnyObject] {
+            self.defaults.setObject(defaults, forKey: "watchDefaults")
+            self.iCloudKeyStore.setObject(defaults, forKey: "watchDefaults")
+        }
+        
+        if let uuidString = context[DefaultKey.defaultSiteKey] as? String {
+            defaultSiteUUID = NSUUID(UUIDString: uuidString)
+        }
         
         // check to see if an incomming action is available.
         guard let action = WatchAction(rawValue: (context[WatchModel.PropertyKey.actionKey] as? String)!) else {
             print("No action was found, didReceiveMessage: \(context)")
             
-            payload[WatchModel.PropertyKey.successfullyProcessed] = success.description
-            // Create a generic context to transfer to the watch.
-            // Send last known dataSource
-            payload[WatchModel.PropertyKey.contextKey] = self.dictionaryOfDataSource
-            replyHandler(payload)
-            
             return success
         }
         
         success = true
-        payload[WatchModel.PropertyKey.successfullyProcessed] = success.description
-        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
-        replyHandler(payload)
-
+        
         switch action {
+        case .UpdateComplication:
+            updateComplicationForDefaultSite(foreRrefresh: false, handler: { (site, error) in
+                if let site = site {
+                    self.updateSite(site)
+                    self.updateWatch(withAction: action)
+                }
+            })
+
         default:
             generateData(forSites: self.sites, handler: { () -> Void in
-                
+               
             })
         }
         
         return success
     }
+    
+    private var currentPayload: [String: AnyObject] = [String: AnyObject]()
+    private static let debounceIntervalTime = NSTimeInterval(4.0)
+    let transmitToWatch = dispatch_debounce_block(AppDataManageriOS.debounceIntervalTime, block: {
+        
+        print("Throttle how many times we send to the watch... only send every \(debounceIntervalTime) seconds!!!!!!!!!")
+        if #available(iOSApplicationExtension 9.0, *) {
+                
+            let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
+
+            guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
+                print("no action was found.")
+                return
+            }
+            
+            switch action {
+            
+            case .AppContext:
+                if let session = WatchSessionManager.sharedManager.validReachableSession {
+                    session.sendMessage(currentPayload, replyHandler: nil, errorHandler: { (error) in
+                        print(error)
+                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+                    })
+                } else if (WatchSessionManager.sharedManager.validSession != nil) {
+                    do {
+                        print("Sending application context")
+                        try WatchSessionManager.sharedManager.updateApplicationContext(currentPayload)
+                    } catch {
+                        print("AppContext failed, attempting to transferUserInfo")
+                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+                    }
+                } else {
+                    print("No session was found, attempting to transferUserInfo")
+                    
+                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+                }
+                
+            case .UpdateComplication, .UserInfo:
+                print("Sending user info with complication data")
+                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+            }
+        }
+    })
+    
     
     public func updateWatch(withAction action: WatchAction) {
         #if DEBUG
@@ -243,38 +297,19 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             // print("Please \(action) the watch with the \(sites)")
         #endif
         
-        // Create a generic context to transfer to the watch.
-        var payload = [String: AnyObject]()
-        
         if #available(iOSApplicationExtension 9.0, *) {
+            // Create a generic context to transfer to the watch.
+            var payload = [String: AnyObject]()
             // Tag the context with an action so that the watch can handle it if needed.
             // ["action" : "WatchAction.Create"] for example...
             payload[WatchModel.PropertyKey.actionKey] = action.rawValue
-            
             // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-            payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
+            payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource(action)
             
-            /*
-             if WatchSessionManager.sharedManager.validReachableSession == nil {
-             // Tag the context with an action so that the watch can handle it if needed.
-             payload[WatchModel.PropertyKey.actionKey] = WatchAction.UpdateComplication.rawValue
-             }
-             */
-            
-            switch action {
-            case .AppContext:
-                do {
-                    print("Sending application context")
-                    try WatchSessionManager.sharedManager.updateApplicationContext(payload)
-                } catch {
-                    print("AppContext failed, attempting to transferUserInfo")
-                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-                }
-                
-            case .UpdateComplication, .UserInfo:
-                print("Sending user info with complication data")
-                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(payload)
-            }
+            currentPayload = payload
+            transmitToWatch()
+        } else {
+            return
         }
     }
     
@@ -348,6 +383,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         guard let userInfo = notification.userInfo as? [String: AnyObject], changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
             return
         }
+        
         let reason = changeReason.integerValue
         
         if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {

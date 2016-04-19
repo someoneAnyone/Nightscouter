@@ -35,6 +35,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public func startSession() {
         session?.delegate = self
         session?.activateSession()
+        
         #if DEBUG
             print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(session?.paired), Watch App Installed: \(session?.watchAppInstalled)")
         #endif
@@ -42,11 +43,11 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public func sessionReachabilityDidChange(session: WCSession) {
         print("sessionReachabilityDidChange")
-        print(session)
-        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-        AppDataManageriOS.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
-            
-        }
+        //  print(session)
+        //let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+        //        AppDataManageriOS.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
+        //
+        //        }
     }
     
     public func sessionWatchStateDidChange(session: WCSession) {
@@ -86,8 +87,7 @@ public extension WatchSessionManager {
         
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
-            AppDataManageriOS.sharedInstance.processApplicationContext(applicationContext, replyHandler: { context in
-            })
+            AppDataManageriOS.sharedInstance.processApplicationContext(applicationContext)
         }
     }
 }
@@ -141,6 +141,7 @@ extension WatchSessionManager {
         // handle receiving user info
         dispatch_async(dispatch_get_main_queue()) {
             // make sure to put on the main queue to update UI!
+            AppDataManageriOS.sharedInstance.processApplicationContext(userInfo)
         }
     }
     
@@ -171,10 +172,10 @@ public extension WatchSessionManager {
             print(">>> Entering \(#function)<<")
         #endif
         
-        // dispatch_async(dispatch_get_main_queue()) {
-        AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: { context in
-            replyHandler(context)
-        })
-        // }
+        replyHandler([WatchModel.PropertyKey.successfullyRecieved: true])
+        
+        dispatch_async(dispatch_get_main_queue()) {
+            AppDataManageriOS.sharedInstance.processApplicationContext(message)
+        }
     }
 }
