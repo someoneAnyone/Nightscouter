@@ -1,4 +1,3 @@
-
 //
 //  ComplicationController.swift
 //  NightscouterNow Extension
@@ -10,7 +9,20 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource {
+class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
+    
+    override init() {
+        super.init()
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+    
+    func dataSourceCouldNotConnectToPhone(error: NSError) {
+        
+    }
+
+    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+        ComplicationController.reloadComplications()
+    }
     
     // MARK: - Timeline Configuration
     
@@ -142,7 +154,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         #endif
              
         let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
-
+        
         // Get the date of last complication timeline entry.
         let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.first?.date ?? NSDate(timeIntervalSince1970: 0)
         // Get the date of the last reload of the complication timeline.
