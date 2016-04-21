@@ -107,13 +107,17 @@ extension SiteDetailViewController {
         self.siteCompassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        
         if let siteOptional = site {
             // nsApi = NightscoutAPIClient(url:siteOptional.url)
             UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
             
-            updateData()
+        } else {
+            site = AppDataManageriOS.sharedInstance.sites[AppDataManageriOS.sharedInstance.currentSiteIndex]
         }
+        
+        updateData()
     }
     
     func updateSite(notification: NSNotification?) {

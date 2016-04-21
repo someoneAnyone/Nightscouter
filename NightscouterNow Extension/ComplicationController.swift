@@ -13,7 +13,10 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     
     override init() {
         super.init()
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        //WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dataDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {
@@ -22,6 +25,11 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
 
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
         ComplicationController.reloadComplications()
+    }
+    
+    func dataDidChange(notif:NSNotification) {
+        print(#function)
+        print(notif)
     }
     
     // MARK: - Timeline Configuration
@@ -195,7 +203,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             print(">>> Entering \(#function) <<<")
         #endif
         WatchSessionManager.sharedManager.updateComplication { (timline) in
-            ComplicationController.reloadComplications()
+            //ComplicationController.reloadComplications()
         }
     }
     

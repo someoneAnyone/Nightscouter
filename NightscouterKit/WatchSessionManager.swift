@@ -114,7 +114,7 @@ extension WatchSessionManager {
     }
     
     // Sender
-    private func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")

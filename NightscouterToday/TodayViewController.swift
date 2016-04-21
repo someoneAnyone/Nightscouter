@@ -137,11 +137,13 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     func openApp(with indexPath: NSIndexPath) {
         if let context = extensionContext {
     
-            let site = sites[indexPath.row], uuidString = site.uuid.UUIDString
+            let site = sites[indexPath.row], _ = site.uuid.UUIDString
             AppDataManageriOS.sharedInstance.currentSiteIndex = indexPath.row
             AppDataManageriOS.sharedInstance.saveData()
             
-            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
+            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+            
+// let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
             context.openURL(url!, completionHandler: nil)
         }
     }

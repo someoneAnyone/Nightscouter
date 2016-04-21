@@ -52,7 +52,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             iCloudKeyStore.synchronize()
             
             updateComplicationForDefaultSite(foreRrefresh: true) { (returnedSite, _) in
-                if let site = returnedSite  { self.updateSite(site) }
+                if let site = returnedSite  {
+                    self.updateSite(site)
+                    //self.updateWatch(withAction: .UpdateComplication)
+                }
             }
         }
         get {
@@ -163,7 +166,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
         
         self.updateWatch(withAction: .AppContext)
-    
+        
         return success
     }
     
@@ -237,10 +240,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                     self.updateWatch(withAction: action)
                 }
             })
-
+            
         default:
             generateData(forSites: self.sites, handler: { () -> Void in
-               
+                
             })
         }
         
@@ -252,41 +255,28 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     let transmitToWatch = dispatch_debounce_block(AppDataManageriOS.debounceIntervalTime, block: {
         
         print("Throttle how many times we send to the watch... only send every \(debounceIntervalTime) seconds!!!!!!!!!")
+        
+        let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
+        
+        guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
+            print("no action was found.")
+            return
+        }
+        
         if #available(iOSApplicationExtension 9.0, *) {
-                
-            let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
+            WatchSessionManager.sharedManager.sendMessage(currentPayload, replyHandler: nil, errorHandler: { (error) in
+                print("Sending error: \(error)")
+                do {
+                    print("Updating Application Context")
+                    try WatchSessionManager.sharedManager.updateApplicationContext(currentPayload)
+                } catch {
+                    print("Couldn't update Application Context, transferUserInfo.")
 
-            guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
-                print("no action was found.")
-                return
-            }
-            
-            switch action {
-            
-            case .AppContext:
-                if let session = WatchSessionManager.sharedManager.validReachableSession {
-                    session.sendMessage(currentPayload, replyHandler: nil, errorHandler: { (error) in
-                        print(error)
-                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
-                    })
-                } else if (WatchSessionManager.sharedManager.validSession != nil) {
-                    do {
-                        print("Sending application context")
-                        try WatchSessionManager.sharedManager.updateApplicationContext(currentPayload)
-                    } catch {
-                        print("AppContext failed, attempting to transferUserInfo")
-                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
-                    }
-                } else {
-                    print("No session was found, attempting to transferUserInfo")
-                    
-                    WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+                    WatchSessionManager.sharedManager.transferUserInfo(currentPayload)
                 }
-                
-            case .UpdateComplication, .UserInfo:
-                print("Sending user info with complication data")
-                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
-            }
+            })
+            print("Update transferCurrentComplicationUserInfo.")
+            WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
         }
     })
     
@@ -323,7 +313,10 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             if siteToLoad == defaultSite() {
                 updateComplicationForDefaultSite(foreRrefresh: true, handler: {returnedSite,_ in
                     // Completed complication data.
-                    if let site = returnedSite  { self.updateSite(site) }
+                    if let site = returnedSite  {
+                        self.updateSite(site)
+                        //self.updateWatch(withAction: .UpdateComplication)
+                    }
                 })
             } else {
                 quickFetch(siteToLoad, handler: { (returnedSite, error) -> Void in

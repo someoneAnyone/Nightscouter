@@ -21,6 +21,19 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     private let modelInfoQueue = dispatch_queue_create("com.nothingonline.nightscouter.watchsessionmanager", DISPATCH_QUEUE_SERIAL)
     
+    
+    let reloadComplications = dispatch_debounce_block(10.0, block: {
+        dispatch_async(dispatch_get_main_queue()) {
+            ComplicationController.reloadComplications()
+        }
+    })
+    
+    let postNotificaitonForDefaults = dispatch_debounce_block(4.0, block: {
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+        }
+    })
+    
     public var models: [WatchModel] = [] {
         didSet {
             let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
@@ -38,9 +51,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
                 currentSiteIndex = 0
             }
             
-            //            dispatch_async(dispatch_get_main_queue()) {
-            //                ComplicationController.reloadComplications()
-            //            }
+            
+            
+            reloadComplications()
         }
     }
     
@@ -78,9 +91,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             
             
             updateComplication { complicationData in
-                dispatch_async(dispatch_get_main_queue()) {
-                    ComplicationController.reloadComplications()
-                }
+                //                dispatch_async(dispatch_get_main_queue()) {
+                //                    ComplicationController.reloadComplications()
+                //                }
             }
         }
         get {
@@ -272,7 +285,7 @@ extension WatchSessionManager {
         // print("\(userInfo)")
         
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.processApplicationContext(userInfo, updateDelegates: false)
+            self?.processApplicationContext(userInfo, updateDelegates: true)
         }
     }
     
@@ -343,9 +356,11 @@ extension WatchSessionManager {
                 updateDelegatesForModelChange(models)
             }
             
-            dispatch_async(dispatch_get_main_queue()) {
-                ComplicationController.reloadComplications()
-            }
+            
+            reloadComplications()
+            //dispatch_async(dispatch_get_main_queue()) {
+            //  ComplicationController.reloadComplications()
+            //}
         }
         
         return true
@@ -392,7 +407,7 @@ extension WatchSessionManager {
         }
         
         updateComplication { complicationData in
-            ComplicationController.reloadComplications()
+            // ComplicationController.reloadComplications()
         }
     }
     
@@ -443,7 +458,7 @@ extension WatchSessionManager {
             
             print("Updating because: model needs updating: \(model.updateNow)")
             self.currentlySendingMessage = true
-
+            
             let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
             
             validSession?.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
@@ -560,9 +575,12 @@ extension WatchSessionManager {
         //print("userDefaultsDidChange:")
         
         guard let _ = notification.object as? NSUserDefaults else { return }
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
-        }
+        
+        postNotificaitonForDefaults()
+        
+        //        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+        //            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+        //        }
         
         
         //        dispatch_async(dispatch_get_main_queue()) {
