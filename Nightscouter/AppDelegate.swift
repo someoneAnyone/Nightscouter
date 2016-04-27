@@ -80,15 +80,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print(">>> Entering \(#function) <<<")
         #endif
         
-        AppDataManageriOS.sharedInstance.generateData(forSites: sites) { () -> Void in
-//            AppDataManageriOS.sharedInstance.updateWatch(withAction: .UpdateComplication)
-//            completionHandler(.NewData)
-            return
+        AppDataManageriOS.sharedInstance.generateData(forSites: self.sites) { (updatedSites) in
+            
+                for site in updatedSites {
+                    AppDataManageriOS.sharedInstance.updateSite(site)
+                }
+
+                print("returning completionHandler() for \(#function)")
+                completionHandler(.NewData)
         }
-        
-         completionHandler(.NewData)
-        // Always return NewData.
-        // TODO: Refactor this so we can actually say with some accuracy that we did infact update with NewData or failed. It needs to take into account all the sites... one might fail but other might get new data... should return newdata at that point. If all fail (bad connection) then it should report .Fiailed.
     }
     
     func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {

@@ -53,12 +53,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     public func sessionWatchStateDidChange(session: WCSession) {
         print("sessionWatchStateDidChange")
         print(session)
-        if session.watchAppInstalled == true && validReachableSession == nil {
-            // AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.UpdateComplication)
-        } else if validReachableSession != nil {
-            // AppDataManageriOS.sharedInstance.updateWatch(withAction: WatchAction.AppContext)
-        }
-        
     }
 }
 
@@ -73,7 +67,6 @@ public extension WatchSessionManager {
         if let session = validSession {
             do {
                 cleanUpTransfers()
-                
                 try session.updateApplicationContext(applicationContext)
             } catch let error {
                 throw error
@@ -101,7 +94,7 @@ extension WatchSessionManager {
     public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferCurrentComplicationUserInfo")
-            print("validSession?.complicationEnabled == \(validReachableSession?.complicationEnabled)")
+            print("validSession?.complicationEnabled == \(validSession?.complicationEnabled)")
         #endif
         
         cleanUpTransfers()
@@ -110,7 +103,7 @@ extension WatchSessionManager {
     }
     
     func cleanUpTransfers(){
-        validReachableSession?.outstandingUserInfoTransfers.forEach({ $0.cancel() })
+        validSession?.outstandingUserInfoTransfers.forEach({ $0.cancel() })
     }
     
     // Sender
@@ -119,7 +112,8 @@ extension WatchSessionManager {
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
         #endif
-        
+        cleanUpTransfers()
+
         return validSession?.transferUserInfo(userInfo)
     }
     
@@ -172,10 +166,10 @@ public extension WatchSessionManager {
             print(">>> Entering \(#function)<<")
         #endif
         
-        replyHandler([WatchModel.PropertyKey.successfullyRecieved: true])
+        // replyHandler([WatchModel.PropertyKey.successfullyRecieved: true])
         
         dispatch_async(dispatch_get_main_queue()) {
-            AppDataManageriOS.sharedInstance.processApplicationContext(message)
+            AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: replyHandler)
         }
     }
 }

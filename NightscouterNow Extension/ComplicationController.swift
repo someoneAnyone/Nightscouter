@@ -13,14 +13,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     
     override init() {
         super.init()
-        //WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        
+
+        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dataDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     func dataSourceCouldNotConnectToPhone(error: NSError) {
-        
+        print(error)
     }
 
     func dataSourceDidUpdateAppContext(models: [WatchModel]) {
@@ -30,6 +30,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
     func dataDidChange(notif:NSNotification) {
         print(#function)
         print(notif)
+        ComplicationController.reloadComplications()
     }
     
     // MARK: - Timeline Configuration
@@ -161,7 +162,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             print(">>> Entering \(#function) <<<")
         #endif
              
-        let lastReloadDate = WatchSessionManager.sharedManager.defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
+        let lastReloadDate = WatchSessionManager.sharedManager.lastReloadDate
         
         // Get the date of last complication timeline entry.
         let lastModelUpdate = WatchSessionManager.sharedManager.complicationData.first?.date ?? NSDate(timeIntervalSince1970: 0)
@@ -176,7 +177,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
                     // Reload the timeline.
                     complicationServer.reloadTimelineForComplication(complication)
                     // Set the complication model's date to defaults.
-                    WatchSessionManager.sharedManager.defaults.setObject(lastModelUpdate, forKey: "lastReloadDate")
+                    WatchSessionManager.sharedManager.lastReloadDate = lastModelUpdate
                 }
                 
             }

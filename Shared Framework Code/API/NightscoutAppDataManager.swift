@@ -200,6 +200,9 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
 
 
 private func nearestCalibration(calibrations cals:[Calibration], calibrationsforDate date: NSDate) -> Calibration? {
+    
+    if cals.isEmpty { return nil }
+    
     var desiredIndex: Int?
     var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
     

@@ -58,7 +58,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         
         self.lastUpdatedTime = model?.lastReadingDate ?? NSDate(timeIntervalSince1970: 0)
         
-        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
+        //WatchSessionManager.sharedManager.updateData(forceRefresh: false)
         
     }
     
