@@ -32,7 +32,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         // Do any additional setup after loading the view, typically from a nib.
         
         // Add notification observer for text field updates
-        urlTextField.addTarget(self, action: "textFieldDidUpdate:", forControlEvents: UIControlEvents.EditingChanged)
+        urlTextField.addTarget(self, action: #selector(SiteFormViewController.textFieldDidUpdate(_:)), forControlEvents: UIControlEvents.EditingChanged)
         
         urlTextField.delegate = self
         
@@ -53,8 +53,6 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         nextButton.tintColor = NSAssetKit.darkNavColor
         
         observeKeyboard()
-        
-        AppDataManager.sharedInstance.shouldDisableIdleTimer = false
     }
     
     override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
@@ -164,8 +162,8 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     // MARK: Keyboard Notifications
     
     func observeKeyboard() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteFormViewController.keyboardWillShow(_:)), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteFormViewController.keyboardWillHide(_:)), name:UIKeyboardWillHideNotification, object: nil);
     }
     
     func keyboardWillShow(notification: NSNotification) {

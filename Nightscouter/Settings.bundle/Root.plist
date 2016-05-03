@@ -6,5 +6,7 @@
 	<array/>
 	<key>StringsTable</key>
 	<string>Root</string>
+	<key>ApplicationGroupContainerIdentifier</key>
+	<string>group.com.nothingonline.nightscouter</string>
 </dict>
 </plist>

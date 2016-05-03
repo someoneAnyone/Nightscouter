@@ -62,7 +62,9 @@ public extension NSURL
             request.HTTPMethod = "HEAD"
             ValidationQueue.queue.cancelAllOperations()
             
-            NSURLConnection.sendAsynchronousRequest(request, queue: ValidationQueue.queue, completionHandler:{ (response: NSURLResponse?, data: NSData?, error: NSError?) -> Void in
+            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: nil, delegateQueue: ValidationQueue.queue)
+            
+            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
                 let url = request.URL!.absoluteString
                 
                 // URL failed - No Response
@@ -87,6 +89,8 @@ public extension NSURL
                     }
                 }
             })
+            
+            task.resume()
         }
     }
 }

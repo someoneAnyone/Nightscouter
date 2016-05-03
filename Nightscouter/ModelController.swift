@@ -24,7 +24,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     var sites: [Site]
     var currentIndex: Int {
         didSet{
-            AppDataManager.sharedInstance.currentSiteIndex = currentIndex
+            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
         }
     }
     
@@ -63,7 +63,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
             return nil
         }
         
-        index--
+        index -= 1
         return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 
@@ -73,7 +73,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
             return nil
         }
         
-        index++
+        index += 1
         if index == self.sites.count {
             return nil
         }

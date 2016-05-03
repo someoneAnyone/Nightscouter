@@ -22,7 +22,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     @IBOutlet weak var siteNameLabel: UILabel!
     
-    @IBOutlet weak var siteColorBlockView: UIView!
+     @IBOutlet weak var siteColorBlockView: UIView!
     // @IBOutlet weak var siteCompassControl: CompassControl!
     
     @IBOutlet weak var siteSgvLabel: UILabel!
@@ -41,108 +41,36 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     func configureCell(site: Site) {
         
-        // siteUrlLabel.text = site.url.host
+        let model = site.viewModel
+        //        if let model = WatchModel(fromSite: site) {
         
-        let defaultTextColor = Theme.Color.labelTextColor
-        
-        if let configuration = site.configuration {
+            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
-            siteNameLabel.text = configuration.displayName
+            siteLastReadingLabel.text = date
+            siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
             
-            let units: Units = configuration.displayUnits
+            siteBatteryLabel.text = model.batteryString
+            siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
             
-            if let watchEntry = site.watchEntry {
-                // Configure compass control
-                // siteCompassControl.configureWith(site)
-                
-                // Battery label
-                siteBatteryLabel.text = watchEntry.batteryString
-                siteBatteryLabel.textColor = colorForDesiredColorState(watchEntry.batteryColorState)
-                
-                // Last reading label
-                siteLastReadingLabel.text = watchEntry.dateTimeAgoString
-                
-                if let sgvValue = watchEntry.sgv {
-                    
-                    var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
-                    if units == .Mmol {
-                        boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
-                    }
-                    let color = colorForDesiredColorState(boundedColor)
-                    
-                    siteColorBlockView.backgroundColor = color
-                    
-                    siteSgvLabel.text = "\(sgvValue.sgvString) \(sgvValue.direction.emojiForDirection)"
-                    siteSgvLabel.textColor = color
-                    
-                    siteDirectionLabel.text = "\(watchEntry.bgdelta.formattedForBGDelta) \(units.description)"
-                    siteDirectionLabel.textColor = color
-                    
-                    
-                    if configuration.displayRawData {
-                        if let rawValue = watchEntry.raw {
-                            let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                            
-                            var raw = "\(rawValue.formattedForMgdl)"
-                            if configuration.displayUnits == .Mmol {
-                                raw = rawValue.formattedForMmol
-                            }
-                            
-                            siteRawLabel?.textColor = color
-                            siteRawLabel.text = "\(raw) : \(sgvValue.noise)"
-                        }
-                    } else {
-                        siteRawHeader.hidden = true
-                        siteRawLabel.hidden = true
-                    }
-                    
-                    let timeAgo = watchEntry.date.timeIntervalSinceNow
-                    let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
-                    // siteCompassControl.shouldLookStale(look: isStaleData.warn)
-                    
-                    if isStaleData.warn {
-                        siteBatteryLabel?.text = "---%"
-                        siteBatteryLabel?.textColor = defaultTextColor
-                        siteRawLabel?.text = "--- : ---"
-                        siteRawLabel?.textColor = defaultTextColor
-                        siteLastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
-                        siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
-                        
-                        siteSgvLabel.text = "---"
-                        siteSgvLabel.textColor = colorForDesiredColorState(.Neutral)
-                        
-                        siteDirectionLabel.text = "----"
-                        siteDirectionLabel.textColor = colorForDesiredColorState(.Neutral)
-                    }
-                    
-                    if isStaleData.urgent{
-                        siteLastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
-                    }
-                    
-                } else {
-                    #if DEBUG
-                        println("No SGV was found in the watch")
-                    #endif
-                }
-                
-            } else {
-                // No watch was there...
-                #if DEBUG
-                    println("No watch data was found...")
-                #endif
-            }
-        } else {
-            #if DEBUG
-                println("No site current configuration was found for \(site.url)")
-            #endif
-        }
+            siteRawLabel?.hidden = !model.rawVisible
+            siteRawHeader?.hidden = !model.rawVisible
+            
+            siteRawLabel.text = model.rawString
+            siteRawLabel.textColor = UIColor(hexString: model.rawColor)
+            
+            siteNameLabel.text = model.displayName
+            
+            siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
+            
+            siteSgvLabel.textColor = UIColor(hexString: model.sgvColor)
+            siteSgvLabel.text = model.sgvStringWithEmoji
+            
+            siteDirectionLabel.text = model.deltaString
+            siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
+        //}
+
     }
-    
-    override func setSelected(selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        // Configure the view for the selected state
-    }
-    
+  
     override func prepareForReuse() {
         super.prepareForReuse()
         
@@ -150,7 +78,6 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteBatteryLabel.text = nil
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
-        // siteCompassControl.shouldLookStale(look: true)
         siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
         
         siteSgvLabel.text = nil

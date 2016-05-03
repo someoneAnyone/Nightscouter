@@ -31,18 +31,13 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
             }
         }
     }
-    var nsApi: NightscoutAPIClient?
+    // var nsApi: NightscoutAPIClient?
     var data = [AnyObject]()
-    var defaultTextColor: UIColor? {
-        return Theme.Color.labelTextColor
-    }
     
     // MARK: View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Do any additional setup after loading the view, typically from a nib.
-        // navigationController?.hidesBarsOnTap = true
         // remove any uneeded decorations from this view if contained within a UI page view controller
         if let _ = parentViewController as? UIPageViewController {
             // println("contained in UIPageViewController")
@@ -55,11 +50,13 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     
     deinit {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+        // nsApi?.task?.cancel()
         data.removeAll()
     }
     
@@ -74,15 +71,20 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
 
 extension SiteDetailViewController{
     @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
-        // print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(#function) <<<")
         // print("\(segue)")
+    }
+    
+    override func viewDidDisappear(animated: Bool) {
+        super.viewDidDisappear(animated)
+        UIApplication.sharedApplication().idleTimerDisabled = false
     }
 }
 
-// Mark: WebKit WebView Delegates
+// MARK: WebKit WebView Delegates
 extension SiteDetailViewController {
     func webViewDidFinishLoad(webView: UIWebView) {
-        // print(">>> Entering \(__FUNCTION__) <<<")
+        // print(">>> Entering \(#function) <<<")
         let updateData = "updateData(\(self.data))"
         
         if let configuration = site?.configuration {
@@ -92,6 +94,10 @@ extension SiteDetailViewController {
         }
         webView.stringByEvaluatingJavaScriptFromString(updateData)
         webView.hidden = false
+        
+        if let configuration = self.site?.configuration {
+            updateTitles(configuration.displayName)
+        }
     }
 }
 
@@ -101,45 +107,22 @@ extension SiteDetailViewController {
         self.siteCompassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        
         if let siteOptional = site {
-            nsApi = NightscoutAPIClient(url:siteOptional.url)
-            AppDataManager.sharedInstance.shouldDisableIdleTimer = siteOptional.overrideScreenLock
-            NSNotificationCenter.defaultCenter().addObserver(self, selector: "updateSite:", name: Constants.Notification.DataIsStaleUpdateNow, object: nil)
+            // nsApi = NightscoutAPIClient(url:siteOptional.url)
+            UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
             
-            updateSite(nil)
+        } else {
+            site = AppDataManageriOS.sharedInstance.sites[AppDataManageriOS.sharedInstance.currentSiteIndex]
         }
+        
+        updateData()
     }
     
     func updateSite(notification: NSNotification?) {
-        nsApi!.fetchServerConfiguration { (result) -> Void in
-            switch (result) {
-            case let .Error(error):
-                // display error message
-                print("error: \(error)")
-                self.navigationController?.popViewControllerAnimated(true)
-                
-            case let .Value(boxedConfiguration):
-                let configuration:ServerConfiguration = boxedConfiguration.value
-                // Get back on the main queue to update the user interface
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                    
-                    self.updateTitles(configuration.displayName)
-                    
-                    if let enabledOptions = configuration.enabledOptions {
-                        let rawEnabled =  enabledOptions.contains(EnabledOptions.rawbg)
-                        if !rawEnabled {
-                            // self.rawHeader!.removeFromSuperview() // Screws with the layout contstraints.
-                            // self.rawReadingLabel!.removeFromSuperview()
-                            if let _ = self.siteRawHeader {
-                                self.siteRawHeader?.hidden = true
-                                self.siteRawLabel?.hidden = true
-                            }
-                        }
-                    }
-                    self.updateData()
-                })
-            }
-        }
+        print(">>> Entering \(#function) <<<")
+        self.updateData()
     }
     
     func updateTitles(title: String) {
@@ -148,86 +131,80 @@ extension SiteDetailViewController {
         self.siteNameLabel?.text = title
     }
     
-    func updateData() {
-        // print(">>> Entering \(__FUNCTION__) <<<")
-        if let site = self.site, configuration = site.configuration {
+    func updateData(forceUpdate force: Bool = false) {
+        guard let site = self.site else { return }
+        
+        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || site.entries == nil || site.configuration == nil || force == true) {
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
             self.siteActivityView?.startAnimating()
-            nsApi!.fetchDataForWatchEntry{ (watchEntry, errorCode) -> Void in
-                if let watchEntry = watchEntry, sgv = watchEntry.sgv {
-                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                        
-                        self.siteCompassControl?.configureWith(site)
-                        
-                        // Battery label
-                        self.siteBatteryLabel?.text = watchEntry.batteryString
-                        self.siteBatteryLabel?.textColor = colorForDesiredColorState(watchEntry.batteryColorState)
-                        
-                        // Last reading label
-                        self.siteLastReadingLabel?.text = watchEntry.dateTimeAgoString
-                        self.siteLastReadingLabel?.textColor = self.defaultTextColor
-                        
-                        
-                        if configuration.displayRawData {
-                            // Raw label
-                            if let rawValue = watchEntry.raw {
-                                let color = colorForDesiredColorState(configuration.boundedColorForGlucoseValue(rawValue))
-                                
-                                var raw = "\(rawValue.formattedForMgdl)"
-                                if configuration.displayUnits == .Mmol {
-                                    raw = rawValue.formattedForMmol
-                                }
-                                
-                                self.siteRawLabel?.textColor = color
-                                self.siteRawLabel?.text = "\(raw) : \(sgv.noise)"
-                            }
-                        } else {
-                            self.siteRawHeader?.hidden = true
-                            self.siteRawLabel?.hidden = true
-                        }
-                        
-                        let timeAgo = watchEntry.date.timeIntervalSinceNow
-                        let isStaleData = configuration.isDataStaleWith(interval: timeAgo)
-                        self.siteCompassControl?.shouldLookStale(look: isStaleData.warn)
-                        
-                        if isStaleData.warn {
-                            self.siteBatteryLabel?.text = "---"
-                            self.siteBatteryLabel?.textColor = self.defaultTextColor
-                            
-                            self.siteRawLabel?.text = "--- : ---"
-                            self.siteRawLabel?.textColor = self.defaultTextColor
-                            
-                            self.siteLastReadingLabel?.textColor = NSAssetKit.predefinedWarningColor
-                        }
-                        
-                        if isStaleData.urgent{
-                            self.siteLastReadingLabel?.textColor = NSAssetKit.predefinedAlertColor
-                        }
-                        
-                        if timeAgo >= Constants.StandardTimeFrame.TwoHoursInSeconds.inThePast {
-                            self.nsApi!.fetchDataForEntries(Constants.EntryCount.NumberForChart) { (entries, errorCode) -> Void in
-                                if let entries = entries {
-                                    for entry in entries {
-                                        if let sgv = entry.sgv {
-                                            if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
-                                                self.data.append(entry.jsonForChart)
-                                            }
-                                        }
-                                    }
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        self.siteActivityView?.stopAnimating()
-                                        self.siteWebView?.reload()
-                                    })
-                                }
-                            }
-                        } else {
-                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                self.siteActivityView?.stopAnimating()
-                            })
-                        }
-                    })
+            
+            fetchSiteData(site, handler: { (returnedSite, error) -> Void in
+                
+                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                
+                self.updateUI()
+                
+            })
+        } else {
+            self.updateUI()
+        }
+    }
+    
+    func updateUI() {
+        defer {
+            print("setting networkActivityIndicatorVisible: false and stopping animation.")
+            
+            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
+            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                self.siteActivityView?.stopAnimating()
+                
+                
+            })
+        }
+        
+        guard let site = site else { return }
+        self.updateTitles(site.viewModel.displayName)
+        
+        if let entries = site.entries {
+            for entry in entries {
+                if let sgv = entry.sgv {
+                    if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
+                        self.data.append(entry.jsonForChart)
+                    }
                 }
             }
         }
+        
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            let model = site.viewModel
+            
+            // Configure the Compass
+            self.siteCompassControl?.configureWith(model)
+            
+            // Battery label
+            self.siteBatteryLabel?.text = model.batteryString
+            self.siteBatteryLabel?.textColor = UIColor(hexString: model.batteryColor)
+            
+            // Get date object as string.
+            let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+            
+            // Last reading label
+            self.siteLastReadingLabel?.text = dateString
+            self.siteLastReadingLabel?.textColor = UIColor(hexString: model.lastReadingColor)
+            
+            self.siteRawLabel?.hidden = !model.rawVisible
+            self.siteRawHeader?.hidden = !model.rawVisible
+            
+            self.siteRawLabel?.text = model.rawString
+            self.siteRawLabel?.textColor = UIColor(hexString: model.rawColor)
+            
+            //self.updateTitles(model.displayName)
+            
+            // Reload the webview.
+            self.siteWebView?.reload()
+        })
+        
     }
     
     func loadWebView () {
@@ -250,21 +227,22 @@ extension SiteDetailViewController {
     }
     
     func updateScreenOverride(shouldOverride: Bool) {
-        self.site!.overrideScreenLock = shouldOverride
+        guard let site = self.site else {
+            return
+        }
+        UIApplication.sharedApplication().idleTimerDisabled = shouldOverride
+        site.overrideScreenLock = shouldOverride
+        AppDataManageriOS.sharedInstance.updateSite(site)
         
-        AppDataManager.sharedInstance.shouldDisableIdleTimer = self.site!.overrideScreenLock
-        AppDataManager.sharedInstance.updateSite(site!)
-        UIApplication.sharedApplication().idleTimerDisabled = site!.overrideScreenLock
         
         #if DEBUG
-            print("{site.overrideScreenLock:\(site?.overrideScreenLock), AppDataManager.shouldDisableIdleTimer:\(AppDataManager.sharedInstance.shouldDisableIdleTimer), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+            print("{site.overrideScreenLock:\(site.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
     }
     
     @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {
         
         let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: .ActionSheet)
-        
         
         let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
             #if DEBUG
@@ -275,7 +253,7 @@ extension SiteDetailViewController {
         
         let checkEmoji = "✓ "
         var yesString = "   "
-        if site!.overrideScreenLock == true {
+        if site?.overrideScreenLock == true {
             yesString = checkEmoji
         }
         
@@ -291,7 +269,6 @@ extension SiteDetailViewController {
         if #available(iOS 9.0, *) {
             alertController.preferredAction = yesAction
         }
-        
         
         var noString = "   "
         if (site!.overrideScreenLock == false) {
@@ -322,22 +299,22 @@ extension SiteDetailViewController {
             #endif
         }
     }
-    
-    @IBAction func gotoLabs(sender: UITapGestureRecognizer) {
-        #if DEBUG
-            let storyboard = UIStoryboard(name: Constants.StoryboardName.Labs.rawValue, bundle: NSBundle.mainBundle())
-            NSUserDefaults.standardUserDefaults().setURL(site!.url, forKey: "url")
-            
-            presentViewController(storyboard.instantiateInitialViewController()!, animated: true) { () -> Void in
-                print("Present Labs as a modal controller!")
-            }
-        #endif
+}
+
+extension SiteDetailViewController: UpdatableUserInterfaceType {
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        startUpdateUITimer()
     }
     
-    // MARK: Handoff
+    func updateUI(notif: NSTimer) {
+        
+        print("updating ui for: \(notif)")
+        self.updateData()
+    }
     
-    override func updateUserActivityState(activity: NSUserActivity) {
-        activity.webpageURL = site?.url
-        super.updateUserActivityState(activity)
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        updateUITimer.invalidate()
     }
 }
