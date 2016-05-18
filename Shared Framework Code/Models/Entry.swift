@@ -118,7 +118,7 @@ public extension Entry {
             let nsDateFormatter = NSDateFormatter()
             // nsDateFormatter.dateFormat = "EEE MMM d yyy HH:mm:ss OOOO (zzz)"
             nsDateFormatter.dateFormat = "EEE MMM d HH:mm:ss zzz yyy"
-            
+            nsDateFormatter.locale = NSLocale(localeIdentifier: "EN")
             nsDateFormatter.timeZone = NSTimeZone.localTimeZone()
             let dateForJson = nsDateFormatter.stringFromDate(entry.date)
             
