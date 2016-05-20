@@ -428,4 +428,5 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             }
         }
     }
-}
+    
+  }

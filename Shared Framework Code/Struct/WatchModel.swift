@@ -101,6 +101,9 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let urgent: Bool
     public let warn: Bool
     
+    // Is the SGV alarming?
+    public var alarmForSGV: Bool = false
+    
     public var calibrations: [[String : AnyObject]] = []
     public var complicationModels: [[String : AnyObject]] = []
     
@@ -192,6 +195,12 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             var boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv)
             if units == .Mmol {
                 boundedColor = configuration.boundedColorForGlucoseValue(sgvValue.sgv.toMgdl)
+            }
+            
+            if boundedColor == .Alert || boundedColor == .Warning {
+                alarmForSGV = true
+            } else if sgvValue.isReservedValue(forUnits: units) {
+                alarmForSGV = true
             }
             
             sgvString =  "\(sgvValue.sgvString(forUnits: units))"

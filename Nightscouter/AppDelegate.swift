@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AVFoundation
 import NightscouterKit
 
 @UIApplicationMain
@@ -23,15 +24,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
-
-    // MARK: AppDelegate Lifecycle    
+    
+    // MARK: AppDelegate Lifecycle
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
         WatchSessionManager.sharedManager.startSession()
-
+        
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
@@ -62,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print(">>> Entering \(#function) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
+        
         updateDataNotification(nil)
     }
     
@@ -82,12 +83,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         AppDataManageriOS.sharedInstance.generateData(forSites: self.sites) { (updatedSites) in
             
-                for site in updatedSites {
-                    AppDataManageriOS.sharedInstance.updateSite(site)
-                }
-
-                print("returning completionHandler() for \(#function)")
-                completionHandler(.NewData)
+            for site in updatedSites {
+                AppDataManageriOS.sharedInstance.updateSite(site)
+            }
+            
+            print("returning completionHandler() for \(#function)")
+            completionHandler(.NewData)
         }
     }
     
@@ -154,6 +155,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
                 UIApplication.sharedApplication().shortcutItems?.append(UIApplicationShortcutItem(type: "com.nothingonline.Nightscouter.ViewSite", localizedTitle: site.viewModel.displayName, localizedSubtitle: site.viewModel.displayUrlString, icon: nil, userInfo: ["uuid": site.uuid.UUIDString, "siteIndex": index]))
             }
         }
+        
+        
+        let alarmingSites = self.sites.filter { (site) -> Bool in
+            if site.viewModel.warn || site.viewModel.urgent || site.viewModel.alarmForSGV {
+                return true
+            }
+            return false
+        }
+        
+        if !alarmingSites.isEmpty {
+            //warning
+            // play alarm....
+            if #available(iOS 9.0, *) {
+                playAlarmFor((alarmingSites[0].url)!)
+            } else {
+                // Fallback on earlier versions
+            }
+        } else {
+            alarmAudioPlayer?.stop()
+        }
+        
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
     
@@ -310,5 +332,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         return nil
     }
+}
+
+public var alarmAudioPlayer:AVAudioPlayer?
+
+@available(iOS 9.0, *)
+public func playAlarmFor(url: NSURL, urgent: Bool = false) {
+    let assetName = urgent ? "alarm2" : "alarm"
+    let audioUrl = url.URLByAppendingPathComponent("/audio/\(assetName).mp3")
+
+    var downloadTask:NSURLSessionDownloadTask
+    downloadTask = NSURLSession.sharedSession().downloadTaskWithURL(audioUrl, completionHandler: { (URL, response, error) -> Void in
+        
+        do {
+            try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+
+            alarmAudioPlayer = try AVAudioPlayer(contentsOfURL: URL!)
+            
+            alarmAudioPlayer?.prepareToPlay()
+            alarmAudioPlayer?.volume = 1.0
+            alarmAudioPlayer?.numberOfLoops = -1
+            alarmAudioPlayer?.play()
+        } catch let error as NSError {
+            alarmAudioPlayer = nil
+            print(error.localizedDescription)
+        } catch {
+            print("AVAudioPlayer init failed")
+        }
+        
+    })
+    
+    downloadTask.resume()
 }
 

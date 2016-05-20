@@ -105,6 +105,12 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
     public let rssi: Int
     public let noise: Noise
     
+    public func isReservedValue(forUnits units: Units) -> Bool {
+        let mgdlSgvValue: Double = (units == .Mgdl) ? sgv : sgv.toMgdl // If the units are set to mgd/L do nothing let it pass... if its mmol/L then convert it back to mgd/L to get its proper string.
+
+        return (ReservedValues(rawValue: mgdlSgvValue) != nil) ? true : false
+    }
+    
     enum ReservedValues: Double {
         case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
     }
