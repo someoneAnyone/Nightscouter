@@ -22,8 +22,7 @@ public class AlarmManager {
     
     public var snoozeText: String = "Snooze"
     
-    
-    
+    private var active: Bool = false
     
     private init() {
         AlarmRule.snoozeSeconds(15)
@@ -68,6 +67,8 @@ public class AlarmManager {
         
         let (active, alarmUrl, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
         
+        self.active = active
+        
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: active, snoozed: AlarmRule.isSnoozed()) }
         }
@@ -80,11 +81,11 @@ public class AlarmManager {
             return
         }
         
-        if active {
+        if active && (audioPlayer == nil) {
             //warning
             // play alarm....
             playAlarmFor((alarmUrl!), urgent: urgent)
-        } else {
+        } else if !active {
             stop()
         }
     }
@@ -203,7 +204,6 @@ public class AlarmManager {
             }))
             
             viewController.presentViewController(alertController, animated: true, completion: nil)
-            
             alertController.view.tintColor = NSAssetKit.darkNavColor
         }
         
@@ -216,48 +216,11 @@ public class AlarmManager {
         AlarmManager.sharedManager.stop()
         AlarmManager.sharedManager.unmuteVolume()
         
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, snoozed: AlarmRule.isSnoozed()) }
+        }
+        
         self.updateSnoozeButtonText()
     }
     
-}
-
-class AnimateBarButtonItem: UIBarButtonItem {
-    required init?(coder aDecoder: NSCoder) {
-        
-        super.init(coder: aDecoder)
-        // using image from asset catalog
-        let icon = self.image
-        // need the icon size for the button
-        let iconSize = CGRect(origin: CGPointZero, size: icon!.size)
-        // create a button using the icon size
-        let iconButton = UIButton(frame: iconSize)
-        // set the button image
-        iconButton.setBackgroundImage(icon, forState: .Normal)
-        
-        // put the button in the right bar button item
-        self.customView = iconButton
-        // This is to support the initial animation.
-        // First stage the button to be microscopic
-        self.customView!.transform = CGAffineTransformMakeScale(0, 0)
-        
-        // animate the button to normal size
-        UIView.animateWithDuration(1.0,
-                                   delay: 0.5,
-                                   // between 0.0 and 1.0, this is the brakes applied to the bounciness
-            usingSpringWithDamping: 0.5,
-            // approximate pixels per second you want to explode the button
-            initialSpringVelocity: 10,
-            options: .CurveLinear,
-            animations: {
-                // restore the button to original size.
-                // it may briefly grow past normal size,
-                // depending on how high you set the spring velocity.
-                self.customView!.transform = CGAffineTransformIdentity
-            },
-            completion: nil
-        )
-        
-        // custom view breaks the IBAction, so set the target manually
-        iconButton.addTarget(self, action:self.action, forControlEvents: .TouchUpInside)
-    }
 }

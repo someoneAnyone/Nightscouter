@@ -14,7 +14,7 @@ import NightscouterKit
 class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
     @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
-
+    
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
@@ -62,10 +62,10 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-    
+        
         AlarmManager.sharedManager.addAlarmManagerDelgate(self)
     }
-  
+    
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool) {
         if alarm {
             snoozeAlarmButton.enabled = true
@@ -82,7 +82,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         }
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -90,7 +90,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
     deinit {
         AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
-
+        
         // Remove this class from the observer list. Was listening for a global update timer.
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -391,14 +391,14 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                     self.presentAlertDialog(site.url, index: index, error: err.description)
                 })
             }
-        
+            
         }
     }
     // AppDataManagerNotificationDidChange Handler
     func dataManagerDidChange(notification: NSNotification) {
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
-
+    
     
     // Attempt to handle an error.
     func presentAlertDialog(siteURL:NSURL, index: Int, error: String) {
