@@ -35,30 +35,32 @@ class SiteTableViewCell: UITableViewCell {
     
     func configureCell(site: Site) {
         
-      let model = site.viewModel
+        let model = site.viewModel
+        
+        let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+                
+        siteLastReadingLabel.text = date
+        siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
 
-            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-            
-            siteLastReadingLabel.text = date
-            siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
-            
-            siteBatteryLabel.text = model.batteryString
-            siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
-            
-            siteRawLabel?.hidden = !model.rawVisible
-            siteRawHeader?.hidden = !model.rawVisible
-            
-            siteRawLabel.text = model.rawString
-            siteRawLabel.textColor = UIColor(hexString: model.rawColor)
-            
-            
-            siteNameLabel.text = model.displayName
-            siteUrlLabel.text = model.displayUrlString
-            
-            siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
-            
-            siteCompassControl.configureWith(model)
-
+        siteBatteryHeader.hidden = !model.batteryVisible
+        siteBatteryLabel.hidden = !model.batteryVisible
+        siteBatteryLabel.text = model.batteryString
+        siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
+        
+        siteRawLabel?.hidden = !model.rawVisible
+        siteRawHeader?.hidden = !model.rawVisible
+        
+        siteRawLabel.text = model.rawString
+        siteRawLabel.textColor = UIColor(hexString: model.rawColor)
+        
+        
+        siteNameLabel.text = model.displayName
+        siteUrlLabel.text = model.displayUrlString
+        
+        siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
+        
+        siteCompassControl.configureWith(model)
+        
     }
     
     override func setSelected(selected: Bool, animated: Bool) {

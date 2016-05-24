@@ -93,6 +93,11 @@
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
+		832E03AB1CF28EB100B4F2AB /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 832E03AA1CF28EB100B4F2AB /* alarm.mp3 */; };
+		832E03AD1CF28EBF00B4F2AB /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 832E03AC1CF28EBF00B4F2AB /* alarm2.mp3 */; };
+		83857F331CF10A8E00D588F2 /* AlarmRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83857F321CF10A8E00D588F2 /* AlarmRule.swift */; };
+		83857F341CF10A8E00D588F2 /* AlarmRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83857F321CF10A8E00D588F2 /* AlarmRule.swift */; };
+		83857F361CF113BA00D588F2 /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83857F351CF113BA00D588F2 /* AlarmManager.swift */; };
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -283,7 +288,11 @@
 		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
 		17F22E5C1BEF9E600041E0B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteUpdateRowController.swift; sourceTree = "<group>"; };
+		832E03AA1CF28EB100B4F2AB /* alarm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm.mp3; sourceTree = "<group>"; };
+		832E03AC1CF28EBF00B4F2AB /* alarm2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm2.mp3; sourceTree = "<group>"; };
 		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		83857F321CF10A8E00D588F2 /* AlarmRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmRule.swift; sourceTree = "<group>"; };
+		83857F351CF113BA00D588F2 /* AlarmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmManager.swift; sourceTree = "<group>"; };
 		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D771BC1F7E800BD1A9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		83883D791BC1F7E800BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -464,7 +473,10 @@
 		1771B0431B75235B006C1F5E /* iOS Framework */ = {
 			isa = PBXGroup;
 			children = (
+				832E03AA1CF28EB100B4F2AB /* alarm.mp3 */,
+				832E03AC1CF28EBF00B4F2AB /* alarm2.mp3 */,
 				1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */,
+				83857F351CF113BA00D588F2 /* AlarmManager.swift */,
 				8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */,
 				1771B0631B7524AA006C1F5E /* AppTheme.swift */,
 				1771B0641B7524AA006C1F5E /* ConstantsiOS.swift */,
@@ -552,6 +564,7 @@
 		17BD1C131BF0EBC10014EE38 /* Shared Framework Code */ = {
 			isa = PBXGroup;
 			children = (
+				83857F321CF10A8E00D588F2 /* AlarmRule.swift */,
 				1771B06A1B7524AF006C1F5E /* API */,
 				17BD1C2C1BF0ECEE0014EE38 /* Extensions */,
 				1771B0881B752502006C1F5E /* Models */,
@@ -960,6 +973,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				832E03AB1CF28EB100B4F2AB /* alarm.mp3 in Resources */,
+				832E03AD1CF28EBF00B4F2AB /* alarm2.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1107,8 +1122,10 @@
 				17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */,
 				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				178257531C91C5F900E1B3D3 /* UpdatableUserInterfaceType-Extensions.swift in Sources */,
+				83857F331CF10A8E00D588F2 /* AlarmRule.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
+				83857F361CF113BA00D588F2 /* AlarmManager.swift in Sources */,
 				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				1771B0681B7524AA006C1F5E /* ConstantsiOS.swift in Sources */,
 			);
@@ -1140,6 +1157,7 @@
 				17DA132C1BF4DF0000A89DA4 /* Calibration.swift in Sources */,
 				17BD1C1F1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				17DA13321BF4DF0000A89DA4 /* SensorGlucoseValue.swift in Sources */,
+				83857F341CF10A8E00D588F2 /* AlarmRule.swift in Sources */,
 				17DA13301BF4DF0000A89DA4 /* MeterBloodGlucose.swift in Sources */,
 				17E17C491C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
 				17BD1C221BF0EC720014EE38 /* NightscoutAPIClient.swift in Sources */,

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="nAT-HQ-Vfb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="nAT-HQ-Vfb">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Segues with Peek and Pop" minToolsVersion="7.1"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -34,17 +35,17 @@
                                 <rect key="frame" x="0.0" y="86" width="600" height="240"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <rect key="frame" x="0.0" y="0.0" width="600" height="239"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="239.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--%" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeD-lw-ya8">
-                                            <rect key="frame" x="23" y="100" width="20" height="14"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-----" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FeD-lw-ya8">
+                                            <rect key="frame" x="23" y="100" width="27" height="14"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="----" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iAe-Lu-fpS">
-                                            <rect key="frame" x="23" y="140" width="22" height="14"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="--%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iAe-Lu-fpS">
+                                            <rect key="frame" x="23" y="140" width="20" height="14"/>
                                             <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
@@ -89,14 +90,14 @@
                                             <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZPz-cT-pRh">
-                                            <rect key="frame" x="23" y="82" width="36" height="10"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZPz-cT-pRh">
+                                            <rect key="frame" x="23" y="82" width="58" height="10"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                             <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LAST READING" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8o2-u1-ejJ">
-                                            <rect key="frame" x="23" y="122" width="58" height="10"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="BATTERY" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8o2-u1-ejJ">
+                                            <rect key="frame" x="23" y="122" width="36" height="10"/>
                                             <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="8"/>
                                             <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
@@ -155,12 +156,12 @@
                                 </tableViewCellContentView>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
-                                    <outlet property="siteBatteryHeader" destination="ZPz-cT-pRh" id="6t6-rd-aWe"/>
-                                    <outlet property="siteBatteryLabel" destination="FeD-lw-ya8" id="gHj-n7-xC4"/>
+                                    <outlet property="siteBatteryHeader" destination="8o2-u1-ejJ" id="rw0-wR-aLO"/>
+                                    <outlet property="siteBatteryLabel" destination="iAe-Lu-fpS" id="xVR-Rr-Xi1"/>
                                     <outlet property="siteColorBlockView" destination="KWx-hb-Jfz" id="PH9-de-xks"/>
                                     <outlet property="siteCompassControl" destination="hvW-MN-sK9" id="VSZ-n4-xYE"/>
-                                    <outlet property="siteLastReadingHeader" destination="8o2-u1-ejJ" id="Amb-9u-PGj"/>
-                                    <outlet property="siteLastReadingLabel" destination="iAe-Lu-fpS" id="GFh-8p-o8y"/>
+                                    <outlet property="siteLastReadingHeader" destination="ZPz-cT-pRh" id="JkF-LJ-415"/>
+                                    <outlet property="siteLastReadingLabel" destination="FeD-lw-ya8" id="VPp-sT-CdF"/>
                                     <outlet property="siteNameLabel" destination="40m-vl-Yyi" id="47k-iA-gIg"/>
                                     <outlet property="siteRawHeader" destination="ZZR-zg-DRJ" id="1qD-F0-gqC"/>
                                     <outlet property="siteRawLabel" destination="oOp-dm-VNu" id="hQl-wk-tOj"/>
@@ -180,11 +181,18 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="Nightscouter" id="Z0j-6x-YBb">
                         <barButtonItem key="backBarButtonItem" title="Back" id="oqJ-rD-Ca4"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="tCV-mR-dKd">
-                            <connections>
-                                <segue destination="uOL-W9-Wcu" kind="presentation" identifier="AddSite" id="R9d-Rd-ZAB"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="tCV-mR-dKd">
+                                <connections>
+                                    <segue destination="uOL-W9-Wcu" kind="presentation" identifier="AddSite" id="R9d-Rd-ZAB"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="alarmIcon" id="iJD-mO-4rK">
+                                <connections>
+                                    <action selector="manageAlarm:" destination="gN4-pK-tB3" id="ksU-9G-PYa"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="vW9-DE-sKT">
                         <autoresizingMask key="autoresizingMask"/>
@@ -193,6 +201,7 @@
                         </connections>
                     </refreshControl>
                     <connections>
+                        <outlet property="snoozeAlarmButton" destination="iJD-mO-4rK" id="vsl-XD-0RI"/>
                         <segue destination="p8y-7x-GHH" kind="presentation" identifier="AddNewWhenEmpty" id="VUV-Ph-2hx"/>
                     </connections>
                 </tableViewController>
@@ -574,11 +583,18 @@
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <navigationItem key="navigationItem" title="Loading..." id="KxS-n8-bsf">
-                        <barButtonItem key="rightBarButtonItem" image="settingsIcon" id="cdV-iF-Fya">
-                            <connections>
-                                <action selector="gotoSiteSettings:" destination="MFN-Ce-ICW" id="4DE-CH-MNw"/>
-                            </connections>
-                        </barButtonItem>
+                        <rightBarButtonItems>
+                            <barButtonItem image="settingsIcon" id="cdV-iF-Fya">
+                                <connections>
+                                    <action selector="gotoSiteSettings:" destination="MFN-Ce-ICW" id="4DE-CH-MNw"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem image="alarmIcon" id="4jX-lB-8RN">
+                                <connections>
+                                    <action selector="manageAlarm:" destination="MFN-Ce-ICW" id="Mbg-qw-UVj"/>
+                                </connections>
+                            </barButtonItem>
+                        </rightBarButtonItems>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <connections>
@@ -592,6 +608,7 @@
                         <outlet property="siteRawHeader" destination="Prp-ZU-51q" id="62M-Se-k1J"/>
                         <outlet property="siteRawLabel" destination="t35-qs-Wix" id="yph-Zx-VE3"/>
                         <outlet property="siteWebView" destination="Hny-uc-L71" id="nSj-De-ieP"/>
+                        <outlet property="snoozeAlarmButton" destination="4jX-lB-8RN" id="Zhf-I6-FLr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="45H-R3-BhD" sceneMemberID="firstResponder"/>
@@ -691,11 +708,12 @@
         </scene>
     </scenes>
     <resources>
+        <image name="alarmIcon" width="22" height="22"/>
         <image name="listIcon" width="22" height="22"/>
         <image name="settingsIcon" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="fup-S8-v45"/>
-        <segue reference="G7S-TT-kXe"/>
+        <segue reference="ahu-F9-TDu"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -69,6 +69,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     }
     
     // Battery in precentage, for example 1% - 100%. Will change color once below 20%.
+    public var batteryVisible: Bool = true
     public let batteryString: String
     public let batteryColor: String
     
@@ -212,7 +213,9 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             sgvColor = colorForDesiredColorState(boundedColor)
             
-            isRawDataAvailable = configuration.displayRawData
+            let first = site.entries?.first
+            
+            isRawDataAvailable = configuration.displayRawData && !(first?.device == Device.Share2)
             
             var isArrowVisible = true
             var isDoubleUp = false
@@ -298,6 +301,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             self.lastReadingColor = lastUpdatedColor.toHexString()
             
+            self.batteryVisible = !(first?.device == .Share2)
             self.batteryColor = batteryColor.toHexString()
             self.batteryString = batteryString
             

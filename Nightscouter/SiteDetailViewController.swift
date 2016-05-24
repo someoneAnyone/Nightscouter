@@ -9,7 +9,7 @@
 import UIKit
 import NightscouterKit
 
-class SiteDetailViewController: UIViewController, UIWebViewDelegate {
+class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManagerDelgate {
     
     // MARK: IBOutlets
     @IBOutlet weak var siteCompassControl: CompassControl?
@@ -22,6 +22,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
     @IBOutlet weak var siteNameLabel: UILabel?
     @IBOutlet weak var siteWebView: UIWebView?
     @IBOutlet weak var siteActivityView: UIActivityIndicatorView?
+    
+    @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
     
     // MARK: Properties
     var site: Site? {
@@ -45,10 +47,34 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
             self.siteNameLabel?.removeFromSuperview()
         }
         
+        
+        AlarmManager.sharedManager.addAlarmManagerDelgate(self)
+
+        
         configureView()
     }
     
+    
+    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool) {
+        if alarm {
+            snoozeAlarmButton.enabled = true
+            snoozeAlarmButton.tintColor = NSAssetKit.predefinedAlertColor
+        } else {
+            snoozeAlarmButton.enabled = false
+            snoozeAlarmButton.tintColor = nil
+        }
+        
+        if snoozed {
+            snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
+        } else {
+            snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+        }
+
+    }
+    
     deinit {
+        AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
+
         NSNotificationCenter.defaultCenter().removeObserver(self)
         UIApplication.sharedApplication().idleTimerDisabled = false
     }
@@ -183,6 +209,8 @@ extension SiteDetailViewController {
             self.siteCompassControl?.configureWith(model)
             
             // Battery label
+            self.siteBatteryHeader?.hidden = !model.batteryVisible
+            self.siteBatteryLabel?.hidden = !model.batteryVisible
             self.siteBatteryLabel?.text = model.batteryString
             self.siteBatteryLabel?.textColor = UIColor(hexString: model.batteryColor)
             
@@ -238,6 +266,10 @@ extension SiteDetailViewController {
         #if DEBUG
             print("{site.overrideScreenLock:\(site.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
         #endif
+    }
+    
+    @IBAction func manageAlarm(sender: AnyObject?) {
+        AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
     }
     
     @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {

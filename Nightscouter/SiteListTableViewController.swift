@@ -11,8 +11,10 @@ import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController {
+class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
+    @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
+
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
@@ -60,15 +62,35 @@ class SiteListTableViewController: UITableViewController {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
+    
+        AlarmManager.sharedManager.addAlarmManagerDelgate(self)
+    }
+  
+    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool) {
+        if alarm {
+            snoozeAlarmButton.enabled = true
+            snoozeAlarmButton.tintColor = NSAssetKit.predefinedAlertColor
+        } else {
+            snoozeAlarmButton.enabled = false
+            snoozeAlarmButton.tintColor = nil
+        }
+        
+        if snoozed {
+            snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
+        } else {
+            snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+        }
         
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     deinit {
+        AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
+
         // Remove this class from the observer list. Was listening for a global update timer.
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
@@ -218,6 +240,10 @@ class SiteListTableViewController: UITableViewController {
     // MARK: Actions
     @IBAction func refreshTable() {
         updateData()
+    }
+    
+    @IBAction func manageAlarm(sender: AnyObject?) {
+        AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
     }
     
     @IBAction func goToSettings(sender: AnyObject?) {

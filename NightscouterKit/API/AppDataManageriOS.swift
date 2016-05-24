@@ -387,7 +387,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         // guard let defaultObject = notification.object as? NSUserDefaults else { return }
         NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: self.sites)
         }
         
         // transmitToWatch()

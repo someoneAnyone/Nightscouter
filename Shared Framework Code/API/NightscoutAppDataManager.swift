@@ -32,11 +32,11 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
                 let configuration = boxedConfiguration.value
                 site.configuration = configuration
                 print("STEP 2:      GET Sever Pebble/Watch for site: \(site.url)")
-        
+                
                 nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                     site.watchEntry = watchEntry
                     errorToReturn = errorCode
-                
+                    
                     NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
                         print("COMPLETE:    All network operations are complete for site: \(site.url)")
                         print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
@@ -57,38 +57,47 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
         var errorToReturn: NightscoutAPIError = .NoError
         let startDate = NSDate()
         quickFetch(site, handler: { (returnedSite, error) -> Void in
-            print("STEP 3:      GET Sever Entries/SGVs for site: \(site.url)")
-            nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
-                site.entries = entries
-                errorToReturn = errorCode
+            
+            switch error {
+            case .NoError:
                 
-                print("STEP 4:      GET Sever CALs/Calibrations for site: \(site.url)")
-                let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
-                nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
+                
+                
+                print("STEP 3:      GET Sever Entries/SGVs for site: \(site.url)")
+                nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
+                    site.entries = entries
                     errorToReturn = errorCode
                     
-                    guard let calibrations = calibrations else {
-                        return
-                    }
-                    
-                    let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
-                        item1.date.compare(item2.date) == .OrderedDescending
-                        }.flatMap { $0.cal }
-                    
-                    site.calibrations = cals
-                    
-                    print("STEP 5:      Generate Timeline data for Complication for site: \(site.url)")
-                    let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
-                    site.complicationModels = complicationModels
-                    
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        print("COMPLETE:    All network operations are complete for site: \(site.url)")
-                        print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
-                        print("STEP 6:      Return Handler to main thread.")
-                        handler(returnedSite: site, error: errorToReturn)
+                    print("STEP 4:      GET Sever CALs/Calibrations for site: \(site.url)")
+                    let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
+                    nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
+                        errorToReturn = errorCode
+                        
+                        guard let calibrations = calibrations else {
+                            return
+                        }
+                        
+                        let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
+                            item1.date.compare(item2.date) == .OrderedDescending
+                            }.flatMap { $0.cal }
+                        
+                        site.calibrations = cals
+                        
+                        print("STEP 5:      Generate Timeline data for Complication for site: \(site.url)")
+                        let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
+                        site.complicationModels = complicationModels
+                        
+                        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                            print("COMPLETE:    All network operations are complete for site: \(site.url)")
+                            print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+                            print("STEP 6:      Return Handler to main thread.")
+                            handler(returnedSite: site, error: errorToReturn)
+                        })
                     })
                 })
-            })
+            default:
+                handler(returnedSite: site, error: error)
+            }
         })
     }
 }
@@ -165,14 +174,14 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
     
     
     /*
-    let minModel = self.models.minElement { (lModel, rModel) -> Bool in
-    return rModel.lastReadingDate < lModel.lastReadingDate
-    }
-    
-    guard let model = minModel else {
-    return
-    }
-    */
+     let minModel = self.models.minElement { (lModel, rModel) -> Bool in
+     return rModel.lastReadingDate < lModel.lastReadingDate
+     }
+     
+     guard let model = minModel else {
+     return
+     }
+     */
     
     let model = cmodels.maxElement{ (lModel, rModel) -> Bool in
         return rModel.date.compare(lModel.date) == .OrderedDescending
@@ -184,7 +193,7 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
         
         let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 90)
         let urgentItem = ComplicationModel(displayName:"Data Missing", date: urgentStaleDate, sgv: "URGENT", sgvEmoji: " ", tintString: colorForDesiredColorState(.Alert).toHexString(), delta:" ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
-
+        
         cmodels.append(warnItem)
         cmodels.append(urgentItem)
     }

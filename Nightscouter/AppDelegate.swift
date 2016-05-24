@@ -32,11 +32,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         #endif
         // Override point for customization after application launch.
         WatchSessionManager.sharedManager.startSession()
-        
+        AlarmManager.sharedManager.startAlarmMonitor()
+
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
+        
         
         // If a shortcut was launched, display its information and take the appropriate action
         if #available(iOS 9.0, *) {
@@ -69,6 +71,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     func applicationWillTerminate(application: UIApplication) {
         AppDataManageriOS.sharedInstance.saveData()
+        AlarmManager.sharedManager.endAlarmMonitor()
     }
     
     deinit {
@@ -155,29 +158,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
                 UIApplication.sharedApplication().shortcutItems?.append(UIApplicationShortcutItem(type: "com.nothingonline.Nightscouter.ViewSite", localizedTitle: site.viewModel.displayName, localizedSubtitle: site.viewModel.displayUrlString, icon: nil, userInfo: ["uuid": site.uuid.UUIDString, "siteIndex": index]))
             }
         }
-        
-        
-        let alarmingSites = self.sites.filter { (site) -> Bool in
-            if site.viewModel.warn || site.viewModel.urgent || site.viewModel.alarmForSGV {
-                return true
-            }
-            return false
-        }
-        
-        if !alarmingSites.isEmpty {
-            //warning
-            // play alarm....
-            if #available(iOS 9.0, *) {
-                playAlarmFor((alarmingSites[0].url)!)
-            } else {
-                // Fallback on earlier versions
-            }
-        } else {
-            alarmAudioPlayer?.stop()
-        }
-        
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
+
     
     // MARK: Custom Methods
     func processLocalNotification(notification: UILocalNotification) {
@@ -333,35 +316,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         return nil
     }
 }
-
-public var alarmAudioPlayer:AVAudioPlayer?
-
-@available(iOS 9.0, *)
-public func playAlarmFor(url: NSURL, urgent: Bool = false) {
-    let assetName = urgent ? "alarm2" : "alarm"
-    let audioUrl = url.URLByAppendingPathComponent("/audio/\(assetName).mp3")
-
-    var downloadTask:NSURLSessionDownloadTask
-    downloadTask = NSURLSession.sharedSession().downloadTaskWithURL(audioUrl, completionHandler: { (URL, response, error) -> Void in
-        
-        do {
-            try! AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-
-            alarmAudioPlayer = try AVAudioPlayer(contentsOfURL: URL!)
-            
-            alarmAudioPlayer?.prepareToPlay()
-            alarmAudioPlayer?.volume = 1.0
-            alarmAudioPlayer?.numberOfLoops = -1
-            alarmAudioPlayer?.play()
-        } catch let error as NSError {
-            alarmAudioPlayer = nil
-            print(error.localizedDescription)
-        } catch {
-            print("AVAudioPlayer init failed")
-        }
-        
-    })
-    
-    downloadTask.resume()
-}
-
