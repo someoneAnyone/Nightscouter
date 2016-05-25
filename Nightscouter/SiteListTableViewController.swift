@@ -66,10 +66,12 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         AlarmManager.sharedManager.addAlarmManagerDelgate(self)
     }
     
-    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool) {
+    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
+        
         if alarm {
             snoozeAlarmButton.enabled = true
-            snoozeAlarmButton.tintColor = NSAssetKit.predefinedAlertColor
+            
+            snoozeAlarmButton.tintColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
         } else {
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
@@ -80,7 +82,6 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
         }
-        
     }
     
     override func didReceiveMemoryWarning() {

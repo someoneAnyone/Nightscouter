@@ -8,8 +8,9 @@
 import UIKit
 import AVFoundation
 
-public protocol AlarmManagerDelgate {
-    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool)
+@objc public protocol AlarmManagerDelgate {
+    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool)
+    //func alarmManagerSnoozeRemaining(snoozeTimeRemaining remaining: Int)
 }
 
 public class AlarmManager {
@@ -23,9 +24,10 @@ public class AlarmManager {
     public var snoozeText: String = "Snooze"
     
     private var active: Bool = false
+    private var urgent: Bool = false
     
     private init() {
-        AlarmRule.snoozeSeconds(15)
+       // AlarmRule.snoozeSeconds(15)
     }
     
     deinit {
@@ -68,10 +70,8 @@ public class AlarmManager {
         let (active, alarmUrl, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
         
         self.active = active
+        self.urgent = urgent
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: active, snoozed: AlarmRule.isSnoozed()) }
-        }
         /*
          If things are active... we need to play...
          but if the player is currently playing we shouldn't start again.
@@ -87,6 +87,12 @@ public class AlarmManager {
             playAlarmFor((alarmUrl!), urgent: urgent)
         } else if !active {
             stop()
+        }
+        
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: active, urgent: urgent, snoozed: AlarmRule.isSnoozed()) }
+            
+// self?.alarmManagerDelegates.forEach { $0.alarmManagerSnoozeRemaining(snoozeTimeRemaining: AlarmRule.getRemainingSnoozeMinutes()) }
         }
     }
     
@@ -217,7 +223,7 @@ public class AlarmManager {
         AlarmManager.sharedManager.unmuteVolume()
         
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, snoozed: AlarmRule.isSnoozed()) }
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: AlarmRule.isSnoozed()) }
         }
         
         self.updateSnoozeButtonText()

@@ -49,16 +49,15 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
         
         
         AlarmManager.sharedManager.addAlarmManagerDelgate(self)
-
+        
         
         configureView()
     }
     
-    
-    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, snoozed: Bool) {
+    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
         if alarm {
             snoozeAlarmButton.enabled = true
-            snoozeAlarmButton.tintColor = NSAssetKit.predefinedAlertColor
+            snoozeAlarmButton.tintColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
         } else {
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
@@ -69,12 +68,11 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
         }
-
     }
     
     deinit {
         AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
-
+        
         NSNotificationCenter.defaultCenter().removeObserver(self)
         UIApplication.sharedApplication().idleTimerDisabled = false
     }
