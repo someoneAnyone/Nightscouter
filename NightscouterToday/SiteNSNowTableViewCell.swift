@@ -22,7 +22,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     @IBOutlet weak var siteNameLabel: UILabel!
     
-     @IBOutlet weak var siteColorBlockView: UIView!
+    @IBOutlet weak var siteColorBlockView: UIView!
     // @IBOutlet weak var siteCompassControl: CompassControl!
     
     @IBOutlet weak var siteSgvLabel: UILabel!
@@ -44,33 +44,35 @@ class SiteNSNowTableViewCell: UITableViewCell {
         let model = site.viewModel
         //        if let model = WatchModel(fromSite: site) {
         
-            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-            
-            siteLastReadingLabel.text = date
-            siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
-            
-            siteBatteryLabel.text = model.batteryString
-            siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
-            
-            siteRawLabel?.hidden = !model.rawVisible
-            siteRawHeader?.hidden = !model.rawVisible
-            
-            siteRawLabel.text = model.rawString
-            siteRawLabel.textColor = UIColor(hexString: model.rawColor)
-            
-            siteNameLabel.text = model.displayName
-            
-            siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
-            
-            siteSgvLabel.textColor = UIColor(hexString: model.sgvColor)
-            siteSgvLabel.text = model.sgvStringWithEmoji
-            
-            siteDirectionLabel.text = model.deltaString
-            siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
+        let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+        
+        siteLastReadingLabel.text = date
+        siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
+        
+        siteBatteryHeader.hidden = !model.batteryVisible
+        siteBatteryLabel.hidden = !model.batteryVisible
+        siteBatteryLabel.text = model.batteryString
+        siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
+        
+        siteRawLabel?.hidden = !model.rawVisible
+        siteRawHeader?.hidden = !model.rawVisible
+        
+        siteRawLabel.text = model.rawString
+        siteRawLabel.textColor = UIColor(hexString: model.rawColor)
+        
+        siteNameLabel.text = model.displayName
+        
+        siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
+        
+        siteSgvLabel.textColor = UIColor(hexString: model.sgvColor)
+        siteSgvLabel.text = model.sgvStringWithEmoji
+        
+        siteDirectionLabel.text = model.deltaString
+        siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
         //}
-
+        
     }
-  
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         
