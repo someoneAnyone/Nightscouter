@@ -88,28 +88,9 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
     public var viewModel: WatchModel {
         return WatchModel(fromSite: self)
     }
-    
-    // MARK: Initialization
-    public init?(url: NSURL, apiSecret: String?) {
-        // Initialize stored properties.
-        self.url = url
-        self.apiSecret = apiSecret
-        
-        self.uuid = NSUUID()
-        self.overrideScreenLock = false
-        self.disabled = false
-        self.allowNotifications = true
-        
-        super.init()
-        
-        // Initialization should fail if there is no name.
-        if url.absoluteString.isEmpty {
-            return nil
-        }
-    }
    
     // MARK: Initialization
-    public init?(url: NSURL, apiSecret: String?, uuid: NSUUID) {
+    public init?(url: NSURL, apiSecret: String?, uuid: NSUUID = NSUUID()) {
         // Initialize stored properties.
         self.url = url
         self.apiSecret = apiSecret

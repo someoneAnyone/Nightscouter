@@ -292,9 +292,9 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.displayUrlString = displayUrlString
             self.uuid = site.uuid.UUIDString
             
-            self.urgent = isStaleData.urgent
             self.warn = isStaleData.warn
-            
+            self.urgent = isStaleData.urgent
+
             self.displayName = displayName
             
             self.lastReadingDate = watchEntry.date

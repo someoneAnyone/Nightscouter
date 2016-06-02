@@ -38,6 +38,12 @@ public class AlarmManager {
     
     public func addAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
         alarmManagerDelegates.append(delegate)
+        
+        
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: AlarmRule.isSnoozed()) }
+        }
+
     }
     
     public func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
@@ -58,14 +64,11 @@ public class AlarmManager {
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
-    private var lastHashOfSite: Int?
-    
     @objc private func dataManagerDidChange(notifcation: NSNotification) {
         
         guard let sites = notifcation.object as? [Site] else {
             return
         }
-        
         
         let (active, alarmUrl, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
         
@@ -91,13 +94,12 @@ public class AlarmManager {
         
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: active, urgent: urgent, snoozed: AlarmRule.isSnoozed()) }
-            
-// self?.alarmManagerDelegates.forEach { $0.alarmManagerSnoozeRemaining(snoozeTimeRemaining: AlarmRule.getRemainingSnoozeMinutes()) }
         }
     }
     
     public func stop() {
         audioPlayer?.stop()
+        //try! AVAudioSession.sharedInstance().setActive(false)
     }
     
     public func play() {
@@ -109,16 +111,6 @@ public class AlarmManager {
             self.audioPlayer?.prepareToPlay()
             self.audioPlayer?.numberOfLoops = -1
             self.audioPlayer?.play()
-            
-            if #available(iOSApplicationExtension 9.0, *) {
-                AudioServicesPlayAlertSoundWithCompletion(SystemSoundID(kSystemSoundID_Vibrate), {
-                    
-                })
-            } else {
-                // Fallback on earlier versions
-                AudioServicesPlayAlertSound(SystemSoundID(kSystemSoundID_Vibrate))
-            }
-            
             
         } catch {
             print("Audio Error: \(error)")

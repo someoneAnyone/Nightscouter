@@ -12,7 +12,7 @@ import Foundation
  * This class implements the Rules for which an alarm should be played.
  * 
  * This is right now the case if
- * - the blood glucose is above 180 or below 80
+ * - the blood glucose is above outside of the configuration's provided thresholds.
  * - or the last value is older than 15 Minutes
  *
  * Further more an Alarm can be snoozed temporarily.
@@ -23,38 +23,37 @@ public class AlarmRule {
     
     private static var snoozedUntilTimestamp = NSTimeInterval()
   
+    public static var alarmingSites = [Site]()
+    
     /*
      * Returns true if the alarm should be played.
      * Snooze is true if the Alarm has been manually deactivated.
      * Suspended is true if the Alarm has been technically deactivated for a short period of time.
      */
-    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, firstUrl:NSURL?, urgent: Bool) {
+    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, url:NSURL?, urgent: Bool) {
+        
+        if sites.isEmpty { return (false, nil, false) }
         
         var urgent: Bool = false
         
-        let alarmingSites = sites.filter { (site) -> Bool in
+        alarmingSites = sites.filter { site in
             if site.viewModel.warn || site.viewModel.urgent || site.viewModel.alarmForSGV {
-                
-                if site.viewModel.urgent {
-                    urgent = true
-                }
-                
+                urgent = site.viewModel.urgent
                 return true
+            } else {
+                return false
             }
-            return false
         }
 
         guard let firstSite = alarmingSites.first else {
             return (false, nil, false)
         }
         
-        if isSnoozed() {
-            return (true, firstSite.url, urgent )
-        }
+        if isSnoozed() { return (true, firstSite.url, urgent ) }
         
         if !alarmingSites.isEmpty { return (true, firstSite.url, urgent) }
         
-        return (false,  alarmingSites.first?.url, urgent)
+        return (false,  firstSite.url, urgent)
     }
     
     /*

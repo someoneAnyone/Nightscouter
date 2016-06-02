@@ -55,8 +55,10 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     }
     
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
+        
         if alarm {
             snoozeAlarmButton.enabled = true
+            
             snoozeAlarmButton.tintColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
         } else {
             snoozeAlarmButton.enabled = false
