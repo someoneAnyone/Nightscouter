@@ -293,7 +293,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.uuid = site.uuid.UUIDString
             
             self.warn = isStaleData.warn
-            self.urgent = isStaleData.urgent
+            self.urgent = isStaleData.urgent || boundedColor == .Alert
 
             self.displayName = displayName
             
