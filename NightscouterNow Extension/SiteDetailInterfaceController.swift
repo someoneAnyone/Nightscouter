@@ -98,10 +98,8 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
             if model.updateNow || refresh {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                        self.configureView()
-                    }
+                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                    self.configureView()
                 })
             }
         })
