@@ -11,36 +11,49 @@ import Foundation
 let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
 public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
 
+
+/**
+ Fetch the metadata for a given site.
+ The handler will always return on the main thread
+ 
+ - parameter site: Destination site for which we are querying
+ - parameter handler: closure with the resulting site or an error as parameters
+
+ 
+ - returns: none
+ */
 public func quickFetch(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
     dispatch_async(queue) {
         print(">>> Entering \(#function) <<<")
-        print("STARTING:    Load all available site data for: \(site.url)")
+        print("STARTING quickFetch:    Load all available site data for: \(site.url)")
         
         let nsAPI = NightscoutAPIClient(url: site.url)
         var errorToReturn: NightscoutAPIError = .NoError
         let startDate = NSDate()
         
-        print("STEP 1:  GET Sever Status/Configuration for site: \(site.url)")
+        print("STEP 1:  GET Sever Status/Configuration")
         
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
             case .Error:
                 site.disabled = true
                 errorToReturn = NightscoutAPIError.DownloadErorr("No configuration was found")
-                handler(returnedSite: site, error: errorToReturn)
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    handler(returnedSite: site, error: errorToReturn)
+                })
             case let .Value(boxedConfiguration):
                 let configuration = boxedConfiguration.value
                 site.configuration = configuration
-                print("STEP 2:      GET Sever Pebble/Watch for site: \(site.url)")
+                print("\tSTEP 2: GET Sever Pebble/Watch")
         
                 nsAPI.fetchDataForWatchEntry({ (watchEntry, errorCode) -> Void in
                     site.watchEntry = watchEntry
                     errorToReturn = errorCode
                 
                     NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        print("COMPLETE:    All network operations are complete for site: \(site.url)")
-                        print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
-                        print("STEP 6:      Return Handler to main thread.")
+                        print("\t\t\t\t\tCOMPLETE:    All network operations are complete ")
+                        print("\t\t\t\t\tDURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+                        print("\t\t\t\t\tSTEP 6 quickFetch:      Return Handler to main thread.")
                         handler(returnedSite: site, error: errorToReturn)
                     })
                 })
@@ -49,48 +62,58 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
     }
 }
 
+/**
+ Fetch the metadata, then entries then calibrations for a given site. The handler
+ will always be called on the main thread
+ 
+ - parameter site: Destination site for which we are querying
+ - parameter handler: closure with the resulting site or an error as parameters
+ 
+ - returns: none
+ */
 public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
-    dispatch_async(queue) {
-        print(">>> Entering \(#function) <<<")
-        print("STARTING:    Load all available site data for: \(site.url)")
-        let nsAPI = NightscoutAPIClient(url: site.url)
-        var errorToReturn: NightscoutAPIError = .NoError
-        let startDate = NSDate()
-        quickFetch(site, handler: { (returnedSite, error) -> Void in
-            print("STEP 3:      GET Sever Entries/SGVs for site: \(site.url)")
-            nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
-                site.entries = entries
+    print(">>> Entering \(#function) <<<")
+    print("STARTING fetchSiteData:    Load all available site data for: \(site.url)")
+    let nsAPI = NightscoutAPIClient(url: site.url)
+    var errorToReturn: NightscoutAPIError = .NoError
+    let startDate = NSDate()
+    quickFetch(site, handler: { (returnedSite, error) -> Void in
+        print("\t\tSTEP 3: GET Sever Entries/SGVs ")
+        nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
+            site.entries = entries
+            errorToReturn = errorCode
+            
+            print("\t\t\tSTEP 4: GET Sever CALs/Calibrations")
+            let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
+            nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
                 errorToReturn = errorCode
                 
-                print("STEP 4:      GET Sever CALs/Calibrations for site: \(site.url)")
-                let numberOfCalsNeeded = ((Constants.EntryCount.NumberForComplication * 5) / 60) / 12 + 1
-                nsAPI.fetchCalibrations(numberOfCalsNeeded, completetion: { (calibrations, errorCode) -> Void in
-                    errorToReturn = errorCode
-                    
-                    guard let calibrations = calibrations else {
-                        return
-                    }
-                    
-                    let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
-                        item1.date.compare(item2.date) == .OrderedDescending
-                        }.flatMap { $0.cal }
-                    
-                    site.calibrations = cals
-                    
-                    print("STEP 5:      Generate Timeline data for Complication for site: \(site.url)")
-                    let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
-                    site.complicationModels = complicationModels
-                    
+                guard let calibrations = calibrations else {
                     NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        print("COMPLETE:    All network operations are complete for site: \(site.url)")
-                        print("DURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
-                        print("STEP 6:      Return Handler to main thread.")
-                        handler(returnedSite: site, error: errorToReturn)
+                        handler(returnedSite: site, error: errorCode)
                     })
+                    return
+                }
+                
+                let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
+                    item1.date.compare(item2.date) == .OrderedDescending
+                    }.flatMap { $0.cal }
+                
+                site.calibrations = cals
+                
+                print("\t\t\t\tSTEP 5: Generate Timeline data for Complication")
+                let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
+                site.complicationModels = complicationModels
+                
+                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    print("\t\t\t\t\tCOMPLETE:    All network operations are complete")
+                    print("\t\t\t\t\tDURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+                    print("\t\t\t\t\tSTEP 6 fetchSiteData:      Return Handler to main thread.")
+                    handler(returnedSite: site, error: errorToReturn)
                 })
             })
         })
-    }
+    })
 }
 
 public func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {

@@ -86,11 +86,6 @@ public class HTTPClient {
             print(dataString)
             
         }
-        
-        
-        
-        
         downloadTask.resume()
-        
     }
 }

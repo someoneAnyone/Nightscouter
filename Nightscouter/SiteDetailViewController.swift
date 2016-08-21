@@ -140,11 +140,8 @@ extension SiteDetailViewController {
             self.siteActivityView?.startAnimating()
             
             fetchSiteData(site, handler: { (returnedSite, error) -> Void in
-                
                 AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                
                 self.updateUI()
-                
             })
         } else {
             self.updateUI()

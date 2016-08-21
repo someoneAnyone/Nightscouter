@@ -287,8 +287,6 @@ class SiteListTableViewController: UITableViewController {
     func setupNotifications() {
         // Listen for global update timer.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
-        
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteListTableViewController.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
@@ -341,38 +339,26 @@ class SiteListTableViewController: UITableViewController {
         fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
-                
                 AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                 UIApplication.sharedApplication().networkActivityIndicatorVisible = false
                 
                 if (self.refreshControl?.refreshing != nil) {
                     self.refreshControl?.endRefreshing()
                 }
-                
             }
             
             switch error {
             case .NoError:
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
-                })
                 return
                 
             default:
                 let err = error
-                dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     self.presentAlertDialog(site.url, index: index, error: err.description)
-                })
             }
-        
         }
     }
-    // AppDataManagerNotificationDidChange Handler
-    func dataManagerDidChange(notification: NSNotification) {
-        // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
-    }
-
     
     // Attempt to handle an error.
     func presentAlertDialog(siteURL:NSURL, index: Int, error: String) {
