@@ -54,6 +54,19 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         print("sessionWatchStateDidChange")
         print(session)
     }
+    
+    public func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+ 
+        print(">>> Entering \(#function) <<<")
+    }
+    
+    public func sessionDidBecomeInactive(session: WCSession) {
+        print(">>> Entering \(#function) <<<")
+    }
+    public func sessionDidDeactivate(session: WCSession) {
+        print(">>> Entering \(#function) <<<")
+    }
+
 }
 
 // MARK: Application Context

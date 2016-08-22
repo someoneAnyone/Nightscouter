@@ -84,9 +84,9 @@ public extension CompassControl {
         NSAssetKit.drawTextBlock(frame: rect, arrowTintColor: self.color, sgvText: self.sgvText, bg_delta: self.delta, textSizeForSgv: 39, textSizeForDelta: 12)
         
         if self.isUncomputable {
-            NSAssetKit.drawUncomputedCircle(frame: rect, arrowTintColor:self.color, isUncomputable: self.isUncomputable, computeAnimation: self.animationValue)
+            NSAssetKit.drawUncomputedCircle(rect, arrowTintColor:self.color, isUncomputable: self.isUncomputable, computeAnimation: self.animationValue)
         } else {
-            NSAssetKit.drawWatchFaceOnly(frame: rect, arrowTintColor: self.color, angle: self.angle, isArrowVisible: self.isArrowVisible, doubleUp: self.isDoubleUp)
+            NSAssetKit.drawWatchFaceOnly(rect, arrowTintColor: self.color, angle: self.angle, isArrowVisible: self.isArrowVisible, doubleUp: self.isDoubleUp)
         }
         
         accessibilityHint = "Glucose Value of \(sgvText) with a delta of \(delta), with the following direction \(direction)"
@@ -111,7 +111,7 @@ public extension CompassControl {
     func takeSnapshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
         drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
-        let image = UIGraphicsGetImageFromCurrentImageContext()
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return image
     }

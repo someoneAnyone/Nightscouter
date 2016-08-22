@@ -38,9 +38,9 @@ public class NSAssetKitWatchOS : NSObject {
 
     //// Drawing Methods
 
-    public class func drawWatchFace(watchFrame watchFrame: CGRect = CGRectMake(0, 0, 134, 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) {
+    public class func drawWatchFace(watchFrame: CGRect = CGRectMake(0, 0, 134, 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let arrowTintShadowColor = arrowTintColor.colorWithShadow(0.2)
@@ -232,9 +232,9 @@ public class NSAssetKitWatchOS : NSObject {
         }
     }
 
-    public class func drawSourceIcon(logoTintColor logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    public class func drawSourceIcon(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let logoHighlightColor = logoTintColor.colorWithHighlight(1)
@@ -338,11 +338,11 @@ public class NSAssetKitWatchOS : NSObject {
 
     //// Generated Images
 
-    public class func imageOfWatchFace(watchFrame watchFrame: CGRect = CGRectMake(0, 0, 134, 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) -> UIImage {
+    public class func imageOfWatchFace(watchFrame: CGRect = CGRectMake(0, 0, 134, 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(watchFrame.size, false, 0)
-            NSAssetKitWatchOS.drawWatchFace(watchFrame: CGRectMake(0, 0, watchFrame.size.width, watchFrame.size.height), arrowTintColor: arrowTintColor, rawColor: rawColor, isDoubleUp: isDoubleUp, isArrowVisible: isArrowVisible, isRawEnabled: isRawEnabled, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta, textSizeForRaw: textSizeForRaw, deltaString: deltaString, sgvString: sgvString, rawString: rawString, angle: angle)
+            NSAssetKitWatchOS.drawWatchFace(CGRectMake(0, 0, watchFrame.size.width, watchFrame.size.height), arrowTintColor: arrowTintColor, rawColor: rawColor, isDoubleUp: isDoubleUp, isArrowVisible: isArrowVisible, isRawEnabled: isRawEnabled, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta, textSizeForRaw: textSizeForRaw, deltaString: deltaString, sgvString: sgvString, rawString: rawString, angle: angle)
 
-        let imageOfWatchFace = UIGraphicsGetImageFromCurrentImageContext()
+        let imageOfWatchFace = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return imageOfWatchFace

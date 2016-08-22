@@ -98,10 +98,8 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
         let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
             if model.updateNow || refresh {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                        self.configureView()
-                    }
+                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                    self.configureView()
                 })
             }
         })
@@ -128,7 +126,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             let batteryColor = UIColor(hexString: model.batteryColor)
             let lastReadingColor = UIColor(hexString: model.lastReadingColor)
             
-            let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
+            let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, groupFrame)
             
             self.setTitle(model.displayName)
             

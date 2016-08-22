@@ -240,7 +240,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             
             // Set the template
             template = modularSmall
-        case .ModularLarge:
+            
+        case .ModularLarge: //, .ExtraLarge:
             let modularLarge = CLKComplicationTemplateModularLargeStandardBody()
             modularLarge.headerTextProvider = CLKSimpleTextProvider(text: "Nightscouter")
             modularLarge.body1TextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.delta)
@@ -249,7 +250,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             
             // Set the template
             template = modularLarge
-        case .UtilitarianSmall:
+
+        case .UtilitarianSmall: //, .UtilitarianSmallFlat:
             let utilitarianSmall = CLKComplicationTemplateUtilitarianSmallFlat()
             utilitarianSmall.textProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.sgv)
             
@@ -290,7 +292,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         var raw = PlaceHolderStrings.rawShort
         var rawShort = PlaceHolderStrings.rawShort
         
-        if let rawLong = model.raw, rawShor = model.rawShort {
+        if let rawLong = model.raw, let rawShor = model.rawShort {
             raw = rawLong // only if available.
             rawShort = rawShor
         }
@@ -307,7 +309,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             
             // Set the template
             template = modularSmall
-        case .ModularLarge:
+        case .ModularLarge: //, .ExtraLarge:
             let modularLarge = CLKComplicationTemplateModularLargeTable()
             modularLarge.headerTextProvider = CLKSimpleTextProvider(text: sgv + " " + delta, shortText: sgv + " " + deltaShort)
             modularLarge.row1Column1TextProvider = CLKSimpleTextProvider(text: displayName)
@@ -318,7 +320,8 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
             modularLarge.tintColor = UIColor(hexString: tintString)
             // Set the template
             template = modularLarge
-        case .UtilitarianSmall:
+            
+        case .UtilitarianSmall: //, .UtilitarianSmallFlat:
             let utilitarianSmall = CLKComplicationTemplateUtilitarianSmallFlat()
             utilitarianSmall.textProvider = CLKSimpleTextProvider(text: sgv)
             

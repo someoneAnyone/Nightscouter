@@ -46,9 +46,9 @@ public class NSAssetKit : NSObject {
 
     //// Drawing Methods
 
-    public class func drawWatchFaceOnly(frame frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true) {
+    public class func drawWatchFaceOnly(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let arrowTintHighlightColor = arrowTintColor.colorWithHighlight(0.1)
@@ -408,7 +408,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawTextBlock(frame frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), sgvText: String = "High", bg_delta: String = "+00 mg/dl", textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let arrowTintHighlightColor = arrowTintColor.colorWithHighlight(0.1)
@@ -461,7 +461,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawWatchFaceComposite(frame frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true, sgvText: String = "High", bg_delta: String = "+00 mg/dl", isUncomputable: Bool = true, computeAnimation: CGFloat = 0, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// compassControl Drawing
         let compassControlRect = CGRect(x: frame.minX + floor(frame.width * 0.00000 + 0.5), y: frame.minY + floor(frame.height * 0.00000 + 0.5), width: floor(frame.width * 1.00000 + 0.5) - floor(frame.width * 0.00000 + 0.5), height: floor(frame.height * 1.00000 + 0.5) - floor(frame.height * 0.00000 + 0.5))
@@ -469,7 +469,7 @@ public class NSAssetKit : NSObject {
         UIRectClip(compassControlRect)
         CGContextTranslateCTM(context, compassControlRect.origin.x, compassControlRect.origin.y)
 
-        NSAssetKit.drawWatchFaceOnly(frame: CGRect(x: 0, y: 0, width: compassControlRect.size.width, height: compassControlRect.size.height), arrowTintColor: arrowTintColor, angle: angle, isArrowVisible: isArrowVisible, doubleUp: doubleUp)
+        NSAssetKit.drawWatchFaceOnly(CGRect(x: 0, y: 0, width: compassControlRect.size.width, height: compassControlRect.size.height), arrowTintColor: arrowTintColor, angle: angle, isArrowVisible: isArrowVisible, doubleUp: doubleUp)
         CGContextRestoreGState(context)
 
 
@@ -480,7 +480,7 @@ public class NSAssetKit : NSObject {
             UIRectClip(computeCircleRect)
             CGContextTranslateCTM(context, computeCircleRect.origin.x, computeCircleRect.origin.y)
 
-            NSAssetKit.drawUncomputedCircle(frame: CGRect(x: 0, y: 0, width: computeCircleRect.size.width, height: computeCircleRect.size.height), arrowTintColor: arrowTintColor, isUncomputable: isUncomputable, computeAnimation: computeAnimation)
+            NSAssetKit.drawUncomputedCircle(CGRect(x: 0, y: 0, width: computeCircleRect.size.width, height: computeCircleRect.size.height), arrowTintColor: arrowTintColor, isUncomputable: isUncomputable, computeAnimation: computeAnimation)
             CGContextRestoreGState(context)
         }
 
@@ -495,9 +495,9 @@ public class NSAssetKit : NSObject {
         CGContextRestoreGState(context)
     }
 
-    public class func drawUncomputedCircle(frame frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), isUncomputable: Bool = true, computeAnimation: CGFloat = 0) {
+    public class func drawUncomputedCircle(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), isUncomputable: Bool = true, computeAnimation: CGFloat = 0) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let arrowTintShadowColor = arrowTintColor.colorWithShadow(0.2)
@@ -532,7 +532,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawNightscoutLogo(logoFrame logoFrame: CGRect = CGRect(x: 0, y: 0, width: 133, height: 173), logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Symbol Drawing
         let symbolRect = CGRect(x: logoFrame.minX + 7, y: logoFrame.minY + 7, width: logoFrame.width - 14, height: logoFrame.height - 14)
@@ -783,7 +783,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawSourceAppicon(logoTintColor logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let logoHighlightColor = logoTintColor.colorWithHighlight(1)
@@ -902,7 +902,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawListIcon() {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Symbol Drawing
         let symbolRect = CGRect(x: 0, y: 0, width: 22, height: 6)
@@ -1136,7 +1136,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawAppStoreIcon(logoTintColor logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Symbol Drawing
         let symbolRect = CGRect(x: 0, y: 0, width: 512, height: 512)
@@ -1151,7 +1151,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawAppIconiPadPro(logoTintColor logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Symbol Drawing
         let symbolRect = CGRect(x: 0, y: 0, width: 167, height: 167)
@@ -1210,7 +1210,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawAlarmSliencedIcon() {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Bezier 5 Drawing
         CGContextSaveGState(context)
@@ -1275,7 +1275,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawAnimatedAlarm(arrowTintColor arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), alarmSwing: CGFloat = 0.5, alarmSlientVisible: Bool = false, alarmSnoozeRemaining: String = "--") {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
 
         //// Variable Declarations
@@ -1358,7 +1358,7 @@ public class NSAssetKit : NSObject {
 
     public class func drawTableViewBackgroundView(backgroundFrame backgroundFrame: CGRect = CGRect(x: 0, y: 0, width: 240, height: 320)) {
         //// General Declarations
-        let context = UIGraphicsGetCurrentContext()
+        let context = UIGraphicsGetCurrentContext()!
 
         //// Color Declarations
         let logoShadowColor = NSAssetKit.appLogoTintColor.colorWithShadow(0.218)
@@ -1384,7 +1384,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
             NSAssetKit.drawWatchFaceComposite(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height), arrowTintColor: arrowTintColor, angle: angle, isArrowVisible: isArrowVisible, doubleUp: doubleUp, sgvText: sgvText, bg_delta: bg_delta, isUncomputable: isUncomputable, computeAnimation: computeAnimation, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta)
 
-        let imageOfWatchFaceComposite = UIGraphicsGetImageFromCurrentImageContext()
+        let imageOfWatchFaceComposite = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return imageOfWatchFaceComposite
@@ -1398,7 +1398,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawListIcon()
 
-        Cache.imageOfListIcon = UIGraphicsGetImageFromCurrentImageContext()
+        Cache.imageOfListIcon = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return Cache.imageOfListIcon!
@@ -1412,7 +1412,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawSettingsIcon()
 
-        Cache.imageOfSettingsIcon = UIGraphicsGetImageFromCurrentImageContext()
+        Cache.imageOfSettingsIcon = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return Cache.imageOfSettingsIcon!
@@ -1426,7 +1426,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawAlarmIcon()
 
-        Cache.imageOfAlarmIcon = UIGraphicsGetImageFromCurrentImageContext()
+        Cache.imageOfAlarmIcon = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return Cache.imageOfAlarmIcon!
@@ -1440,7 +1440,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawAlarmSliencedIcon()
 
-        Cache.imageOfAlarmSliencedIcon = UIGraphicsGetImageFromCurrentImageContext()
+        Cache.imageOfAlarmSliencedIcon = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return Cache.imageOfAlarmSliencedIcon!
@@ -1450,7 +1450,7 @@ public class NSAssetKit : NSObject {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawAnimatedAlarm(arrowTintColor: arrowTintColor, alarmSwing: alarmSwing, alarmSlientVisible: alarmSlientVisible, alarmSnoozeRemaining: alarmSnoozeRemaining)
 
-        let imageOfAnimatedAlarm = UIGraphicsGetImageFromCurrentImageContext()
+        let imageOfAnimatedAlarm = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
 
         return imageOfAnimatedAlarm

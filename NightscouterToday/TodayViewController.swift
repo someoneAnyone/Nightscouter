@@ -31,12 +31,12 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         super.viewDidLoad()
 
         tableView.backgroundColor = UIColor.clearColor()
-
+        
         sites = AppDataManageriOS.sharedInstance.sites
         
-        let itemCount = sites.isEmpty ? 1 : sites.count
+        // let itemCount = sites.isEmpty ? 1 : sites.count
         
-        preferredContentSize = CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
+        preferredContentSize = tableView.contentSize //CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
     }
     
     override func didReceiveMemoryWarning() {
@@ -45,6 +45,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     }
     
     // MARK: NCWidgetProviding
+
     
     func widgetMarginInsetsForProposedMarginInsets(defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsets(top: defaultMarginInsets.top, left: 0, bottom: defaultMarginInsets.bottom, right: defaultMarginInsets.right)
@@ -125,6 +126,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                    self.preferredContentSize = self.tableView.contentSize
                 })
                 
                 

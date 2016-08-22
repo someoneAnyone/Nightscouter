@@ -271,7 +271,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
 //            return
 //        }
 //        
-        if #available(iOSApplicationExtension 9.0, *) {
 //            switch action {
 //            case .UpdateComplication:
 //                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
@@ -293,8 +292,6 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 // WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UpdateComplication))
                 
                 return
-            }
-        
             
 //        }
     })

@@ -41,13 +41,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         
         
         // If a shortcut was launched, display its information and take the appropriate action
-        if #available(iOS 9.0, *) {
             if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
                 
                 launchedShortcutItem = shortcutItem.type
                 
             }
-        }
+
         return true
         
     }
@@ -152,12 +151,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             setupNotificationSettings()
         }
         
-        if #available(iOS 9.0, *) {
             UIApplication.sharedApplication().shortcutItems = nil
             for (index, site) in AppDataManageriOS.sharedInstance.sites.enumerate() {
                 UIApplication.sharedApplication().shortcutItems?.append(UIApplicationShortcutItem(type: "com.nothingonline.Nightscouter.ViewSite", localizedTitle: site.viewModel.displayName, localizedSubtitle: site.viewModel.displayUrlString, icon: nil, userInfo: ["uuid": site.uuid.UUIDString, "siteIndex": index]))
             }
-        }
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
     }
 

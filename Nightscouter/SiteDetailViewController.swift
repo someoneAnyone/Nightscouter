@@ -166,11 +166,8 @@ extension SiteDetailViewController {
             self.siteActivityView?.startAnimating()
             
             fetchSiteData(site, handler: { (returnedSite, error) -> Void in
-                
                 AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                
                 self.updateUI()
-                
             })
         } else {
             self.updateUI()
@@ -298,9 +295,7 @@ extension SiteDetailViewController {
         
         alertController.addAction(yesAction)
         
-        if #available(iOS 9.0, *) {
-            alertController.preferredAction = yesAction
-        }
+        alertController.preferredAction = yesAction
         
         var noString = "   "
         if (site!.overrideScreenLock == false) {
