@@ -10,7 +10,24 @@ import AVFoundation
 
 @objc public protocol AlarmManagerDelgate {
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool)
-    //func alarmManagerSnoozeRemaining(snoozeTimeRemaining remaining: Int)
+}
+
+public protocol AudioCordinator {
+    var alarmManagerDelegates: [AlarmManagerDelgate] { get set }
+    func addAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T)
+    func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T)
+    func startAlarmMonitor()
+    func endAlarmMonitor()
+    func stop()
+    func paly()
+    func pause()
+    func unmuteVolume()
+    func muteVolume()
+}
+
+public protocol Snoozable {
+    func snooze(forMiutes minutes : Int)
+    func updateSnoozeButtonText()
 }
 
 public class AlarmManager {
@@ -21,13 +38,13 @@ public class AlarmManager {
     
     private var mute : Bool = false
     
-    public var snoozeText: String = "Snooze"
+    public var snoozeText: String = Constants.LocalizedString.snoozeLabel.localized
     
     private var active: Bool = false
     private var urgent: Bool = false
     
     private init() {
-       // AlarmRule.snoozeSeconds(15)
+        AlarmRule.snoozeSeconds(4)
     }
     
     deinit {
@@ -43,7 +60,7 @@ public class AlarmManager {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: AlarmRule.isSnoozed()) }
         }
-
+        
     }
     
     public func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
@@ -104,7 +121,7 @@ public class AlarmManager {
     
     public func play() {
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
+            //try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
             try AVAudioSession.sharedInstance().setActive(true)
             
             // Play endless loops
@@ -133,29 +150,51 @@ public class AlarmManager {
     }
     
     public func playAlarmFor(url: NSURL, urgent: Bool = false) {
+        
         let assetName = urgent ? "alarm2" : "alarm"
-        let audioUrl = url.URLByAppendingPathComponent("/audio/\(assetName).mp3")
         
-        var downloadTask:NSURLSessionDownloadTask
-        downloadTask = NSURLSession.sharedSession().downloadTaskWithURL(audioUrl, completionHandler: { (URL, response, error) -> Void in
-            
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOfURL: URL!)
-                self.play()
-            } catch let error as NSError {
-                print(error.localizedDescription)
-            } catch {
-                print("AVAudioPlayer init failed")
-            }
-        })
+        let bundle = NSBundle(forClass: AlarmManager.self)
         
-        downloadTask.resume()
+        let audioUrl = NSURL.fileURLWithPath(
+            bundle.pathForResource(assetName,
+                ofType: "mp3")!)
+        
+        
+        // let audioUrl = url.URLByAppendingPathComponent("/audio/\(assetName).mp3")
+        /*
+         var downloadTask:NSURLSessionDownloadTask
+         downloadTask = NSURLSession.sharedSession().downloadTaskWithURL(audioUrl, completionHandler: { (URL, response, error) -> Void in
+         
+         do {
+         self.audioPlayer = try AVAudioPlayer(contentsOfURL: URL!)
+         self.play()
+         } catch let error as NSError {
+         print(error.localizedDescription)
+         } catch {
+         print("AVAudioPlayer init failed")
+         }
+         })
+         */
+        //downloadTask.resume()
+        
+        do {
+            self.audioPlayer = try AVAudioPlayer(contentsOfURL: audioUrl)
+            self.play()
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        } catch {
+            print("AVAudioPlayer init failed")
+        }
+        
+        
     }
     
     public func updateSnoozeButtonText() {
         // var snoozeText: String = "Snooze"
         if AlarmRule.isSnoozed() {
-            snoozeText = "Snoozed for " + String(AlarmRule.getRemainingSnoozeMinutes()) + "min"
+            snoozeText = String(format: Constants.LocalizedString.snoozeMessage.localized, AlarmRule.getRemainingSnoozeMinutes())
+            
+                //"Snoozed for " + String(AlarmRule.getRemainingSnoozeMinutes()) +  Constants.LocalizedString.min.localized
             print(snoozeText)
         }
     }
@@ -163,36 +202,36 @@ public class AlarmManager {
     public func presentSnoozePopup(forViewController viewController: UIViewController) {
         if AlarmRule.isSnoozed() {
             AlarmRule.disableSnooze()
-            snoozeText = "Snooze"
+            snoozeText = Constants.LocalizedString.snoozeLabel.localized
         } else {
             
             self.muteVolume()
             
-            let alertController = UIAlertController(title: "Snooze", message: "How long should the alarm be ignored?", preferredStyle: UIAlertControllerStyle.Alert)
+            let alertController = UIAlertController(title: Constants.LocalizedString.snoozeLabel.localized, message: Constants.LocalizedString.snoozeMessage.localized, preferredStyle: .Alert)
             
-            alertController.addAction(UIAlertAction(title: "30 Minutes",
+            alertController.addAction(UIAlertAction(title: "30 \(Constants.LocalizedString.minutes.localized)",
                 style: UIAlertActionStyle.Default,
                 handler: {(alert: UIAlertAction!) in
                     
-                    self.snoozeMinutes(30)
+                    self.snooze(forMiutes: 30)
             }))
-            alertController.addAction(UIAlertAction(title: "1 Hour",
+            alertController.addAction(UIAlertAction(title: "1 \(Constants.LocalizedString.hour.localized)",
                 style: UIAlertActionStyle.Default,
                 handler: {(alert: UIAlertAction!) in
                     
-                    self.snoozeMinutes(60)
+                    self.snooze(forMiutes: 60)
             }))
-            alertController.addAction(UIAlertAction(title: "1 1/2 Hours",
+            alertController.addAction(UIAlertAction(title: "1 1/2 \(Constants.LocalizedString.hours.localized)",
                 style: UIAlertActionStyle.Default,
                 handler: {(alert: UIAlertAction!) in
                     
-                    self.snoozeMinutes(90)
+                    self.snooze(forMiutes: 90)
             }))
-            alertController.addAction(UIAlertAction(title: "2 Hours",
+            alertController.addAction(UIAlertAction(title: "2 \(Constants.LocalizedString.hours.localized)",
                 style: UIAlertActionStyle.Default,
                 handler: {(alert: UIAlertAction!) in
                     
-                    self.snoozeMinutes(120)
+                    self.snooze(forMiutes: 120)
             }))
             alertController.addAction(UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized
                 ,
@@ -207,7 +246,7 @@ public class AlarmManager {
         
     }
     
-    public func snoozeMinutes(minutes : Int) {
+    public func snooze(forMiutes minutes : Int) {
         
         AlarmRule.snooze(minutes)
         
