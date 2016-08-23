@@ -28,3 +28,11 @@
 "sgvLowString" = "Low";
 
 "nightscoutTitleString" = "Nightscouter";
+
+"snoozeLabel" = "Snooze";
+"snoozedForLabel" = "Snoozed for %@ min";
+"snoozeMessage" = "How long should the alarm be ignored?";
+"minutes" = "Minutes";
+"hour" = "Hour";
+"hours" = "Hours";
+"min" = "min";

@@ -59,6 +59,15 @@ extension Constants {
         public static let VesionValue = "1.0"
     }
 
+    public enum LocalizedString: String {
+        case tableViewCellRemove, tableViewCellLoading, lastUpdatedDateLabel,generalEditLabel, generalCancelLabel, generalRetryLabel, generalYesLabel, generalNoLabel, uiAlertBadSiteMessage, uiAlertBadSiteTitle, uiAlertScreenOverrideTitle, uiAlertScreenOverrideMessage, sgvLowString, nightscoutTitleString, snoozeLabel, snoozedForLabel, snoozeMessage, minutes, hour, hours, min
+        
+        public var localized: String {
+            return self.rawValue.localized
+        }
+    }
+    
+    /*
     public struct LocalizedString {
         public static let tableViewCellRemove = "tableViewCellRemove"
         public static let tableViewCellLoading = "tableViewCellLoading"
@@ -74,6 +83,7 @@ extension Constants {
         public static let uiAlertScreenOverrideMessage = "uiAlertScreenOverrideMessage"
         public static let sgvLowString = "sgvLowString"
         
+        
         // static let localNotificationMessage = "localNotificationMessage" // not implemented.
         // static let localNotificationAlertButton = "localNotificationAlertButton" // not implemented.
         // static let batteryLabel = "batteryLabel" // not implemented.
@@ -81,4 +91,5 @@ extension Constants {
         
         // static let lastReadingLabel = "lastReadingLabel" // not implemented.
     }
+ */
 }
