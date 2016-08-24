@@ -83,6 +83,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             tableView.reloadData()
             
             if let headerView = tableView.tableHeaderView as? BannerMessage {
+                headerView.hidden = false
                 headerView.tintColor = activeColor
                 headerView.message = "One or more of your sites are sounding an alarm."
             }

@@ -24,6 +24,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     @IBOutlet weak var siteActivityView: UIActivityIndicatorView?
     
     @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
+    @IBOutlet private weak var headerView: BannerMessage!
     
     // MARK: Properties
     var site: Site? {
@@ -56,20 +57,37 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
         
-        if alarm {
-            snoozeAlarmButton.enabled = true
+        if alarm == true {
+            let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
             
-            snoozeAlarmButton.tintColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-        } else {
+            snoozeAlarmButton.enabled = true
+            snoozeAlarmButton.tintColor = activeColor
+            
+            
+            headerView.hidden = false
+            
+            headerView.tintColor = activeColor
+            headerView.message = "One or more of your sites are sounding an alarm."
+            
+            
+        } else if alarm == false {
+            
+            headerView.hidden = true
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
+            
         }
         
         if snoozed {
+            headerView.hidden = true
+            
+            headerView.message = AlarmManager.sharedManager.snoozeText
+            
             snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
         }
+        
     }
     
     deinit {
