@@ -30,9 +30,9 @@ public class AlarmRule {
      * Snooze is true if the Alarm has been manually deactivated.
      * Suspended is true if the Alarm has been technically deactivated for a short period of time.
      */
-    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, url:NSURL?, urgent: Bool) {
+    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, urgent: Bool) {
         
-        if sites.isEmpty { return (false, nil, false) }
+        //if sites.isEmpty { return (false, false) }
         
         var urgent: Bool = false
         
@@ -45,15 +45,11 @@ public class AlarmRule {
             }
         }
 
-        guard let firstSite = alarmingSites.first else {
-            return (false, nil, false)
-        }
+        if isSnoozed { return (true, urgent ) }
         
-        if isSnoozed() { return (true, firstSite.url, urgent ) }
+        if !alarmingSites.isEmpty { return (true, urgent) }
         
-        if !alarmingSites.isEmpty { return (true, firstSite.url, urgent) }
-        
-        return (false,  firstSite.url, urgent)
+        return (false, urgent)
     }
     
     /*
@@ -81,7 +77,7 @@ public class AlarmRule {
     /*
      * Returns true if the alarms are currently snoozed.
      */
-    public static func isSnoozed() -> Bool {
+    public static var isSnoozed: Bool {
         let currentTimestamp = NSDate().timeIntervalSince1970
         return currentTimestamp < snoozedUntilTimestamp
     }
@@ -90,7 +86,7 @@ public class AlarmRule {
      * Return the number of remaing minutes till the snooze state ends.
      * The value will always be rounded up.
      */
-    public static func getRemainingSnoozeMinutes() -> Int {
+    public static var remainingSnoozeMinutes: Int {
         let currentTimestamp = NSDate().timeIntervalSince1970
         
         if (snoozedUntilTimestamp - currentTimestamp) <= 0 {

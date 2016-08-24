@@ -15,6 +15,8 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
     @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
     
+    @IBOutlet private weak var headerView: BannerMessage!
+    
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
@@ -35,6 +37,10 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             if let date = lastUpdatedTime {
                 let str = String(stringInterpolation:Constants.LocalizedString.lastUpdatedDateLabel.localized, dateFormatter.stringFromDate(date))
                 self.refreshControl!.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+            }
+            
+            if let headerView = tableView.tableHeaderView as? BannerMessage {
+                headerView.message = AlarmManager.sharedManager.snoozeText
             }
         }
     }
@@ -63,21 +69,36 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         // Check if we should display a form.
         shouldIShowNewSiteForm()
         
-        AlarmManager.sharedManager.addAlarmManagerDelgate(self)
     }
     
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
         
-        if alarm {
-            snoozeAlarmButton.enabled = true
+        if alarm == true {
+            let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
             
-            snoozeAlarmButton.tintColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-        } else {
+            snoozeAlarmButton.enabled = true
+            snoozeAlarmButton.tintColor = activeColor
+            
+            tableView.tableHeaderView = headerView
+            tableView.reloadData()
+            
+            if let headerView = tableView.tableHeaderView as? BannerMessage {
+                headerView.tintColor = activeColor
+                headerView.message = "One or more of your sites are sounding an alarm."
+            }
+            
+        } else if alarm == false {
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
+            tableView.tableHeaderView = nil
         }
         
         if snoozed {
+            tableView.tableHeaderView = headerView
+            
+            if let headerView = tableView.tableHeaderView as? BannerMessage {
+                headerView.message = AlarmManager.sharedManager.snoozeText
+            }            
             snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
@@ -299,12 +320,18 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         refreshControl?.tintColor = UIColor.whiteColor()
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-        setupNotifications()
+        
+        let triggerTime = (Int64(NSEC_PER_SEC) * 5)
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
+            self.setupNotifications()
+        })
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.sharedApplication().idleTimerDisabled = false
         
         timer = NSTimer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
+        
+        AlarmManager.sharedManager.addAlarmManagerDelgate(self)
     }
     
     func updateUI() {
@@ -321,7 +348,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         let site = sites[indexPath.row]
         cell.configureCell(site)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
+        if (site.updateNow || lastUpdatedTime == nil || site.configuration == nil) {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -376,13 +403,15 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             
             switch error {
             case .NoError:
-                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+                self.lastUpdatedTime = returnedSite.lastConnectedDate
+                if let _ = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0)) {
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                }
                 return
                 
             default:
                 let err = error
-                    self.presentAlertDialog(site.url, index: index, error: err.description)
+                self.presentAlertDialog(site.url, index: index, error: err.description)
             }
         }
     }

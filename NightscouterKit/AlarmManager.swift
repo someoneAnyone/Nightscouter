@@ -8,18 +8,15 @@
 import UIKit
 import AVFoundation
 
-@objc public protocol AlarmManagerDelgate {
+public protocol AlarmManagerDelgate {
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool)
 }
 
 public protocol AudioCordinator {
-    var alarmManagerDelegates: [AlarmManagerDelgate] { get set }
-    func addAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T)
-    func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T)
     func startAlarmMonitor()
     func endAlarmMonitor()
     func stop()
-    func paly()
+    func play()
     func pause()
     func unmuteVolume()
     func muteVolume()
@@ -27,40 +24,58 @@ public protocol AudioCordinator {
 
 public protocol Snoozable {
     func snooze(forMiutes minutes : Int)
-    func updateSnoozeButtonText()
+    var snoozeText: String { get }
+    var snoozeTimeRemaining: Int { get }
 }
 
-public class AlarmManager {
+
+public class AlarmManager: AudioCordinator, Snoozable {
     
     public static let sharedManager = AlarmManager()
     
+    public var snoozeTimeRemaining: Int {
+        return AlarmRule.remainingSnoozeMinutes
+    }
+    
+    public var isSnoozed: Bool {
+        return AlarmRule.isSnoozed
+    }
+    
+    public var snoozeText: String {
+        if AlarmRule.isSnoozed {
+            return String(format: Constants.LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
+        }
+        
+        return ""
+    }
+    
     private var audioPlayer: AVAudioPlayer?
-    
-    private var mute : Bool = false
-    
-    public var snoozeText: String = Constants.LocalizedString.snoozeLabel.localized
-    
+    private var muted: Bool = false
     private var active: Bool = false
     private var urgent: Bool = false
+    private var updateTimer: NSTimer?
+    private var alarmManagerDelegates = [AlarmManagerDelgate]()
     
     private init() {
-        AlarmRule.snoozeSeconds(4)
+        // AlarmRule.snoozeSeconds(0)
+    }
+    
+    private func createTimer() {
+        let snoozeTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.OneMinuteInSeconds, target: self, selector: #selector(AlarmManager.updateDelegates(_:)), userInfo: nil, repeats: true)
+        
+        updateTimer = snoozeTimer
     }
     
     deinit {
         endAlarmMonitor()
     }
     
-    private var alarmManagerDelegates = [AlarmManagerDelgate]()
-    
     public func addAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
         alarmManagerDelegates.append(delegate)
-        
-        
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: AlarmRule.isSnoozed()) }
+        if isSnoozed && updateTimer == nil {
+            createTimer()
+            return
         }
-        
     }
     
     public func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
@@ -74,11 +89,19 @@ public class AlarmManager {
     }
     
     public func startAlarmMonitor() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AlarmManager.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
     }
     
     public func endAlarmMonitor() {
         NSNotificationCenter.defaultCenter().removeObserver(self)
+        updateTimer?.invalidate()
+    }
+    
+    
+    @objc private func updateDelegates(notofication: NSTimer? = nil){
+        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self!.active, urgent: self!.urgent, snoozed: self!.isSnoozed) }
+        }
     }
     
     @objc private func dataManagerDidChange(notifcation: NSNotification) {
@@ -87,7 +110,7 @@ public class AlarmManager {
             return
         }
         
-        let (active, alarmUrl, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
+        let (active, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
         
         self.active = active
         self.urgent = urgent
@@ -95,34 +118,38 @@ public class AlarmManager {
         /*
          If things are active... we need to play...
          but if the player is currently playing we shouldn't start again.
-         Also if the alarm rule is snoozing we shouldn't sound again?
+         Also if the alarm rule is snoozing we shouldn't sound again, right?
          */
-        if AlarmRule.isSnoozed() {
+        if isSnoozed {
+            guard updateTimer != nil else {
+                createTimer()
+                return
+            }
+            
             return
         }
         
         if active && (audioPlayer == nil) {
             //warning
             // play alarm....
-            playAlarmFor((alarmUrl!), urgent: urgent)
+            playAlarmFor(urgent)
         } else if !active {
             stop()
         }
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: active, urgent: urgent, snoozed: AlarmRule.isSnoozed()) }
-        }
+        updateDelegates()
+        
     }
     
     public func stop() {
         audioPlayer?.stop()
-        //try! AVAudioSession.sharedInstance().setActive(false)
+        try! AVAudioSession.sharedInstance().setActive(false)
     }
     
     public func play() {
         do {
-            //try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)
-            try AVAudioSession.sharedInstance().setActive(true)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategorySoloAmbient)
+            try AVAudioSession.sharedInstance().setActive(true, withOptions: .NotifyOthersOnDeactivation)
             
             // Play endless loops
             self.audioPlayer?.prepareToPlay()
@@ -141,41 +168,20 @@ public class AlarmManager {
     
     public func unmuteVolume(){
         audioPlayer?.volume = 1.0
-        mute = false
+        muted = false
     }
     
     public func muteVolume() {
         audioPlayer?.volume = 0
-        mute = true
+        muted = true
     }
     
-    public func playAlarmFor(url: NSURL, urgent: Bool = false) {
-        
+    public func playAlarmFor(urgent: Bool = false) {
         let assetName = urgent ? "alarm2" : "alarm"
         
-        let bundle = NSBundle(forClass: AlarmManager.self)
-        
-        let audioUrl = NSURL.fileURLWithPath(
-            bundle.pathForResource(assetName,
-                ofType: "mp3")!)
-        
-        
-        // let audioUrl = url.URLByAppendingPathComponent("/audio/\(assetName).mp3")
-        /*
-         var downloadTask:NSURLSessionDownloadTask
-         downloadTask = NSURLSession.sharedSession().downloadTaskWithURL(audioUrl, completionHandler: { (URL, response, error) -> Void in
-         
-         do {
-         self.audioPlayer = try AVAudioPlayer(contentsOfURL: URL!)
-         self.play()
-         } catch let error as NSError {
-         print(error.localizedDescription)
-         } catch {
-         print("AVAudioPlayer init failed")
-         }
-         })
-         */
-        //downloadTask.resume()
+        let bundle: NSBundle = NSBundle(forClass: AlarmManager.self)
+        let path: String = bundle.pathForResource(assetName, ofType: "mp3") ?? ""
+        let audioUrl = NSURL.fileURLWithPath(path)
         
         do {
             self.audioPlayer = try AVAudioPlayer(contentsOfURL: audioUrl)
@@ -185,24 +191,11 @@ public class AlarmManager {
         } catch {
             print("AVAudioPlayer init failed")
         }
-        
-        
-    }
-    
-    public func updateSnoozeButtonText() {
-        // var snoozeText: String = "Snooze"
-        if AlarmRule.isSnoozed() {
-            snoozeText = String(format: Constants.LocalizedString.snoozeMessage.localized, AlarmRule.getRemainingSnoozeMinutes())
-            
-                //"Snoozed for " + String(AlarmRule.getRemainingSnoozeMinutes()) +  Constants.LocalizedString.min.localized
-            print(snoozeText)
-        }
     }
     
     public func presentSnoozePopup(forViewController viewController: UIViewController) {
-        if AlarmRule.isSnoozed() {
+        if AlarmRule.isSnoozed {
             AlarmRule.disableSnooze()
-            snoozeText = Constants.LocalizedString.snoozeLabel.localized
         } else {
             
             self.muteVolume()
@@ -254,10 +247,10 @@ public class AlarmManager {
         AlarmManager.sharedManager.unmuteVolume()
         
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: AlarmRule.isSnoozed()) }
+            self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: self?.isSnoozed ?? false) }
         }
         
-        self.updateSnoozeButtonText()
+        //self.updateSnoozeButtonText()
     }
     
 }

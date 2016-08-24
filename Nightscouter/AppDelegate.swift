@@ -31,14 +31,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
-        WatchSessionManager.sharedManager.startSession()
-        AlarmManager.sharedManager.startAlarmMonitor()
 
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
-        
+
+        WatchSessionManager.sharedManager.startSession()
+        AlarmManager.sharedManager.startAlarmMonitor()
+
         
         // If a shortcut was launched, display its information and take the appropriate action
             if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
