@@ -99,6 +99,7 @@ class BannerMessage: UIView {
         mainStack.sendSubviewToBack(blurredEffectView)
         mainStack.axis = .Vertical
         mainStack.spacing = 2
+        
         mainStack.translatesAutoresizingMaskIntoConstraints = false
         
         self.addSubview(mainStack)
@@ -109,8 +110,8 @@ class BannerMessage: UIView {
         
          // Define constraints for UILabel.
          //let labelHorizontalConstraint = NSLayoutConstraint(item: labelButtonStack, attribute: .CenterY, relatedBy: .Equal, toItem: nil, attribute: .CenterY, multiplier: 1, constant: 0)
-         let labelLeftConstraint = NSLayoutConstraint(item: label, attribute: .Left, relatedBy: .Equal, toItem: nil, attribute: .LeftMargin, multiplier: 1, constant: 8)
-         let labelRightConstraint = NSLayoutConstraint(item: label, attribute: .Right, relatedBy: .Equal, toItem: nil, attribute: .RightMargin, multiplier: 1, constant: 8)
+         //let labelLeftConstraint = NSLayoutConstraint(item: label, attribute: .Leading, relatedBy: .Equal, toItem: mainStack, attribute: .LeadingMargin, multiplier: 1, constant: 8)
+         //let labelRightConstraint = NSLayoutConstraint(item: label, attribute: .Trailing, relatedBy: .Equal, toItem: mainStack, attribute: .TrailingMargin, multiplier: 1, constant: 8)
  
         
         // Define constratints for StackView
@@ -118,16 +119,16 @@ class BannerMessage: UIView {
         let stackTopConstraint = NSLayoutConstraint(item: mainStack, attribute: .Top , relatedBy: .Equal, toItem: mainStack.superview, attribute: .Top ,  multiplier: 1, constant: 0)
         //let stackWidthConstraint = NSLayoutConstraint(item: mainStack, attribute: .Width , relatedBy: .Equal, toItem: mainStack.superview, attribute: .Width ,  multiplier: 1, constant: 0)
         
-        let stackLeftConstraint = NSLayoutConstraint(item: mainStack, attribute: .Left, relatedBy: .Equal, toItem: mainStack.superview, attribute: .LeftMargin, multiplier: 1, constant: 8)
+        let stackLeftConstraint = NSLayoutConstraint(item: mainStack, attribute: .Leading, relatedBy: .Equal, toItem: mainStack.superview, attribute: .LeadingMargin, multiplier: 1, constant: 0)
         
-        let stackRightConstraint = NSLayoutConstraint(item: mainStack, attribute: .Right, relatedBy: .Equal, toItem: mainStack.superview, attribute: .RightMargin, multiplier: 1, constant: 8)
+        let stackRightConstraint = NSLayoutConstraint(item: mainStack, attribute: .Trailing, relatedBy: .Equal, toItem: mainStack.superview, attribute: .TrailingMargin, multiplier: 1, constant: 0)
         
         //let stackHorizontalConstraint = NSLayoutConstraint(item: mainStack, attribute: .CenterX, relatedBy: .Equal, toItem: mainStack.superview, attribute: .CenterX, multiplier: 1, constant: 0)
         
         let stackHeightConstraint = NSLayoutConstraint(item: mainStack, attribute: .Height , relatedBy: .GreaterThanOrEqual, toItem: nil, attribute: .Height ,  multiplier: 1, constant: 50)
         
         
-        self.addConstraints([stackTopConstraint, stackBottomConstraint, stackHeightConstraint, tintLineHeightConstraint, stackLeftConstraint, stackRightConstraint, labelLeftConstraint, labelRightConstraint])
+        self.addConstraints([stackTopConstraint, stackBottomConstraint, stackHeightConstraint, tintLineHeightConstraint, stackLeftConstraint, stackRightConstraint])
     }
     
     override init(frame: CGRect) {
