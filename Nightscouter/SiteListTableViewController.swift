@@ -40,6 +40,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             }
             
             if let headerView = tableView.tableHeaderView as? BannerMessage {
+                headerView.hidden = false
                 headerView.message = AlarmManager.sharedManager.snoozeText
             }
         }
@@ -73,7 +74,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
     func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
         
-        if alarm == true {
+        if alarm == true || snoozed {
             let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
             
             snoozeAlarmButton.enabled = true
@@ -85,22 +86,14 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             if let headerView = tableView.tableHeaderView as? BannerMessage {
                 headerView.hidden = false
                 headerView.tintColor = activeColor
-                headerView.message = "One or more of your sites are sounding an alarm."
+                headerView.message = snoozed ? AlarmManager.sharedManager.snoozeText : "One or more of your sites are sounding an alarm."
             }
             
-        } else if alarm == false {
+        } else if alarm == false && !snoozed {
+            
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
             tableView.tableHeaderView = nil
-        }
-        
-        if snoozed {
-            tableView.tableHeaderView = headerView
-            
-            if let headerView = tableView.tableHeaderView as? BannerMessage {
-                headerView.message = AlarmManager.sharedManager.snoozeText
-            }            
-            snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
         }
@@ -325,12 +318,12 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         let triggerTime = (Int64(NSEC_PER_SEC) * 5)
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, triggerTime), dispatch_get_main_queue(), { () -> Void in
             self.setupNotifications()
+            self.timer = NSTimer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
         })
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.sharedApplication().idleTimerDisabled = false
         
-        timer = NSTimer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
         
         AlarmManager.sharedManager.addAlarmManagerDelgate(self)
     }

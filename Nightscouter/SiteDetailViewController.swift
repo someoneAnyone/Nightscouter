@@ -24,7 +24,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     @IBOutlet weak var siteActivityView: UIActivityIndicatorView?
     
     @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
-    @IBOutlet private weak var headerView: BannerMessage!
+    @IBOutlet private weak var headerView: BannerMessage?
     
     // MARK: Properties
     var site: Site? {
@@ -48,10 +48,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
             self.siteNameLabel?.removeFromSuperview()
         }
         
-        
         AlarmManager.sharedManager.addAlarmManagerDelgate(self)
-        
-        
         configureView()
     }
     
@@ -64,24 +61,21 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
             snoozeAlarmButton.tintColor = activeColor
             
             
-            headerView.hidden = false
+            headerView?.hidden = false
             
-            headerView.tintColor = activeColor
-            headerView.message = "One or more of your sites are sounding an alarm."
+            headerView?.tintColor = activeColor
+            headerView?.message = "One or more of your sites are sounding an alarm."
             
             
-        } else if alarm == false {
-            
-            headerView.hidden = true
+        } else if alarm == false && !snoozed {
+            headerView?.hidden = true
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
-            
         }
         
         if snoozed {
-            headerView.hidden = true
-            
-            headerView.message = AlarmManager.sharedManager.snoozeText
+            headerView?.hidden = false
+            headerView?.message = AlarmManager.sharedManager.snoozeText
             
             snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
         } else {
@@ -150,7 +144,8 @@ extension SiteDetailViewController {
     func configureView() {
         self.siteCompassControl?.color = NSAssetKit.predefinedNeutralColor
         self.loadWebView()
-        
+
+
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
         
         if let siteOptional = site {
