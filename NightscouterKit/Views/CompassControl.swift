@@ -28,7 +28,19 @@ public class CompassControl: UIView {
     }
     
     public override func intrinsicContentSize() -> CGSize {
-        return CGSizeMake(156, 196)
+        
+        switch direction {
+        case .DoubleDown, .DoubleUp:
+            return CGSizeMake(156, 200)
+
+            
+        case .SingleUp, .SingleDown:
+            return CGSizeMake(156, 180)
+        case .FortyFiveDown, .FortyFiveDown:
+            return CGSizeMake(156, 150)
+        default:
+            return CGSizeMake(156, 200)
+        }
     }
     
     var animationValue: CGFloat = 0

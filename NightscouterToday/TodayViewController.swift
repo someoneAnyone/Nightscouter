@@ -86,7 +86,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             contentCell.configureCell(site)
             
-            if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || lastUpdatedTime == nil || site.configuration == nil) {
+            if site.updateNow {
                 refreshDataFor(site, index: indexPath.row)
             }
             
@@ -111,7 +111,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         }
     }
     
-    func refreshDataFor(site: Site, index: Int){
+    func refreshDataFor(site: Site, index: Int, completionHandler: ((NCUpdateResult) -> Void)? = nil){
         // Start up the API
         
         fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in

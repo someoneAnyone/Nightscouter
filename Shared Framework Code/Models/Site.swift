@@ -61,8 +61,8 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
 
     public var updateNow: Bool {
         let now = NSDate()
-        let result = nextRefreshDate.compare(now) == NSComparisonResult.OrderedAscending
-        // print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
+        let result = nextRefreshDate.compare(now) == .OrderedAscending || configuration == nil || lastConnectedDate == nil
+         print("updateNow calulcation: \(nextRefreshDate).comare(\(now)) == .OrderedAscending), result:\(result)")
         return result
     }
 
