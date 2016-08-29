@@ -257,6 +257,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
                     }
                     
                     rawString = "\(raw) : \(sgvValue.noise.description)"
+                } else {
+                    rawString = PlaceHolderStrings.raw
                 }
             }
             

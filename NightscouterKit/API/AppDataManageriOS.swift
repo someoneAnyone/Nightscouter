@@ -10,9 +10,6 @@ import Foundation
 
 public class AppDataManageriOS: NSObject, BundleRepresentable {
     
-    
-    
-    
     public var sites: [Site] = [] {
         didSet{
             let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
@@ -25,7 +22,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             }
             
             defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
-            defaults.synchronize()
+            //defaults.synchronize()
             
             iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
             iCloudKeyStore.synchronize()
@@ -237,7 +234,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 if let site = site {
                     
                     self.updateSite(site)
-             
+                    
                     if let replyHandler = replyHandler {
                         replyHandler(self.genratePayloadForAction(action))
                     }
@@ -264,36 +261,36 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         print("Throttle how many times we send to the watch... only send every \(4.0) seconds!!!!!!!!!")
         
-//        let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
+        //        let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
         
-//        guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
-//            print("no action was found.")
-//            return
-//        }
-//        
-//            switch action {
-//            case .UpdateComplication:
-//                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
-//                
-//                return
-//            default:
-                WatchSessionManager.sharedManager.sendMessage(AppDataManageriOS.sharedInstance.genratePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
-                    print("Sending error: \(error)")
-                    do {
-                        print("Updating Application Context")
-                        try WatchSessionManager.sharedManager.updateApplicationContext(AppDataManageriOS.sharedInstance.genratePayloadForAction())
-                    } catch {
-                        print("Couldn't update Application Context, transferCurrentComplicationUserInfo.")
-                        
-                        WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UserInfo))
-                    }
-                })
-                print("Update transferCurrentComplicationUserInfo.")
-                // WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UpdateComplication))
+        //        guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
+        //            print("no action was found.")
+        //            return
+        //        }
+        //
+        //            switch action {
+        //            case .UpdateComplication:
+        //                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
+        //
+        //                return
+        //            default:
+        WatchSessionManager.sharedManager.sendMessage(AppDataManageriOS.sharedInstance.genratePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
+            print("Sending error: \(error)")
+            do {
+                print("Updating Application Context")
+                try WatchSessionManager.sharedManager.updateApplicationContext(AppDataManageriOS.sharedInstance.genratePayloadForAction())
+            } catch {
+                print("Couldn't update Application Context, transferCurrentComplicationUserInfo.")
                 
-                return
-            
-//        }
+                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UserInfo))
+            }
+        })
+        print("Update transferCurrentComplicationUserInfo.")
+        // WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UpdateComplication))
+        
+        return
+        
+        //        }
     })
     
     
@@ -302,17 +299,17 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             print(">>> Entering \(#function) <<<")
             // print("Please \(action) the watch with the \(sites)")
         #endif
-            // Create a generic context to transfer to the watch.
-            var payload = [String: AnyObject]()
-            // Tag the context with an action so that the watch can handle it if needed.
-            // ["action" : "WatchAction.Create"] for example...
-            payload[WatchModel.PropertyKey.actionKey] = action.rawValue
-            // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-            payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
-            
-            currentPayload = payload
-            
-            return payload
+        // Create a generic context to transfer to the watch.
+        var payload = [String: AnyObject]()
+        // Tag the context with an action so that the watch can handle it if needed.
+        // ["action" : "WatchAction.Create"] for example...
+        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
+        // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
+        payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
+        
+        currentPayload = payload
+        
+        return payload
     }
     
     
@@ -378,15 +375,20 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     // MARK: Storage Updates
     
     // MARK: Defaults have Changed
+    let postNotification = dispatch_debounce_block(1.0) {
+        //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+        print("Posting: AppDataManagerDidChangeNotification")
+        NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: AppDataManageriOS.sharedInstance
+            .sites)
+        //            }
+    }
     
     func userDefaultsDidChange(notification: NSNotification) {
         print("userDefaultsDidChange:")
         
         // guard let defaultObject = notification.object as? NSUserDefaults else { return }
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: self.sites)
-        }
         
+        postNotification()
         // transmitToWatch()
     }
     
@@ -403,6 +405,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
             let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]
+         
             let store = NSUbiquitousKeyValueStore.defaultStore()
             
             for key in changedKeys {
@@ -426,4 +429,4 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         }
     }
     
-  }
+}

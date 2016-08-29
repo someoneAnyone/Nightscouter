@@ -39,10 +39,10 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 self.refreshControl!.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
             }
             
-            if let headerView = tableView.tableHeaderView as? BannerMessage {
-                headerView.hidden = false
-                headerView.message = AlarmManager.sharedManager.snoozeText
-            }
+//            if let headerView = tableView.tableHeaderView as? BannerMessage {
+//                headerView.hidden = false
+//                headerView.message = AlarmManager.sharedManager.snoozeText
+//            }
         }
     }
     
@@ -90,12 +90,13 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             }
             
         } else if alarm == false && !snoozed {
-            
             snoozeAlarmButton.enabled = false
             snoozeAlarmButton.tintColor = nil
             tableView.tableHeaderView = nil
+            
         } else {
             snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+            tableView.tableHeaderView = nil
         }
     }
     
@@ -283,8 +284,16 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 editing = false
                 let newIndexPath = NSIndexPath(forRow: 0, inSection: 0)
                 AppDataManageriOS.sharedInstance.addSite(site, index: newIndexPath.row)
-                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Automatic)
+                
                 accessoryIndexPath = nil
+                guard let _ = tableView.cellForRowAtIndexPath(newIndexPath) else {
+                    
+                    tableView.reloadData()
+                    return
+                }
+
+                tableView.insertRowsAtIndexPaths([newIndexPath], withRowAnimation: .Automatic)
+                
             }
         }
         
@@ -306,7 +315,8 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         clearsSelectionOnViewWillAppear = true
         
         // Configure table view properties.
-        tableView.rowHeight = 240
+        tableView.estimatedRowHeight = 200
+        tableView.rowHeight = UITableViewAutomaticDimension//240
         tableView.backgroundView = BackgroundView() // TODO: Move this out to a theme manager.
         tableView.separatorColor = NSAssetKit.darkNavColor
         
@@ -398,8 +408,11 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
             switch error {
             case .NoError:
                 self.lastUpdatedTime = returnedSite.lastConnectedDate
-                if let _ = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0)) {
+                if let _ = self.tableView.cellForRowAtIndexPath(NSIndexPath(forRow: index, inSection: 0)) where self.tableView.numberOfRowsInSection(0)<0 {
+
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
+                } else {
+                    self.tableView.reloadData()
                 }
                 return
                 

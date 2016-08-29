@@ -1,9 +1,10 @@
 //
 //  AlarmRule.swift
-//  scoutwatch
+//  scoutwatch / nightscouter
 //
 //  Created by Dirk Hermanns on 25.01.16.
-//  Copyright © 2016 private. All rights reserved.
+//  Modified by Peter Ina on 05.01.2016
+//  Copyright © 2016. All rights reserved.
 //
 
 import Foundation
@@ -21,8 +22,8 @@ import Foundation
  */
 public class AlarmRule {
     
-    private static var snoozedUntilTimestamp = NSTimeInterval()
-  
+    private static var snoozedUntilTimestamp: NSTimeInterval = NSTimeInterval()
+    
     public static var alarmingSites = [Site]()
     
     /*
@@ -30,26 +31,27 @@ public class AlarmRule {
      * Snooze is true if the Alarm has been manually deactivated.
      * Suspended is true if the Alarm has been technically deactivated for a short period of time.
      */
-    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, urgent: Bool) {
-        
-        //if sites.isEmpty { return (false, false) }
+    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, urgent: Bool, snooze: Bool) {
         
         var urgent: Bool = false
         
         alarmingSites = sites.filter { site in
-            if site.viewModel.warn || site.viewModel.urgent || site.viewModel.alarmForSGV {
-                urgent = site.viewModel.urgent
+            let viewModel = site.viewModel
+            if viewModel.warn || viewModel.urgent || viewModel.alarmForSGV {
+                urgent = viewModel.urgent
                 return true
             } else {
                 return false
             }
         }
 
-        if isSnoozed { return (true, urgent ) }
+        if alarmingSites.isEmpty {
+            disableSnooze()
+            
+            return (false, false, false)
+        }
         
-        if !alarmingSites.isEmpty { return (true, urgent) }
-        
-        return (false, urgent)
+        return (!alarmingSites.isEmpty, urgent, isSnoozed)
     }
     
     /*
@@ -63,7 +65,7 @@ public class AlarmRule {
      * This is used to snooze just a few seconds on startup in order to retrieve
      * new values. Otherwise the alarm would play at once which makes no sense on startup.
      */
-    public static func snoozeSeconds(seconds : Int) {
+    public static func snooze(seconds seconds : Int) {
         snoozedUntilTimestamp = NSDate().timeIntervalSince1970 + Double(seconds)
     }
     

@@ -20,14 +20,19 @@ public protocol AudioCordinator {
     func pause()
     func unmuteVolume()
     func muteVolume()
+    
+    func playAlarmFor(urgent: Bool)
+    
+    func addAlarmManagerDelgate<T where T : AlarmManagerDelgate, T : Equatable>(delegate: T)
+    func removeAlarmManagerDelgate<T where T : AlarmManagerDelgate, T : Equatable>(delegate: T)
 }
 
 public protocol Snoozable {
     func snooze(forMiutes minutes : Int)
     var snoozeText: String { get }
     var snoozeTimeRemaining: Int { get }
+    var isSnoozed: Bool { get }
 }
-
 
 public class AlarmManager: AudioCordinator, Snoozable {
     
@@ -49,6 +54,11 @@ public class AlarmManager: AudioCordinator, Snoozable {
         return ""
     }
     
+    public var alarmCurrentStatus: (alarm: Bool, urgent: Bool, snoozed: Bool) {
+        return (self.active, self.urgent, self.isSnoozed)
+    }
+
+    
     private var audioPlayer: AVAudioPlayer?
     private var muted: Bool = false
     private var active: Bool = false
@@ -57,7 +67,7 @@ public class AlarmManager: AudioCordinator, Snoozable {
     private var alarmManagerDelegates = [AlarmManagerDelgate]()
     
     private init() {
-        // AlarmRule.snoozeSeconds(0)
+        AlarmRule.snooze(seconds: 2)
     }
     
     private func createTimer() {
@@ -110,7 +120,7 @@ public class AlarmManager: AudioCordinator, Snoozable {
             return
         }
         
-        let (active, urgent) = AlarmRule.isAlarmActivated(forSites: sites)
+        let (active, urgent, snooze) = AlarmRule.isAlarmActivated(forSites: sites)
         
         self.active = active
         self.urgent = urgent
@@ -120,7 +130,7 @@ public class AlarmManager: AudioCordinator, Snoozable {
          but if the player is currently playing we shouldn't start again.
          Also if the alarm rule is snoozing we shouldn't sound again, right?
          */
-        if isSnoozed {
+        if snooze {
             guard updateTimer != nil else {
                 createTimer()
                 return
@@ -194,10 +204,14 @@ public class AlarmManager: AudioCordinator, Snoozable {
     }
     
     public func presentSnoozePopup(forViewController viewController: UIViewController) {
-        if AlarmRule.isSnoozed {
+        if isSnoozed {
             AlarmRule.disableSnooze()
-        } else {
             
+            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: self?.isSnoozed ?? false) }
+            }
+            
+        } else {
             self.muteVolume()
             
             let alertController = UIAlertController(title: Constants.LocalizedString.snoozeLabel.localized, message: Constants.LocalizedString.snoozeMessage.localized, preferredStyle: .Alert)
@@ -236,7 +250,6 @@ public class AlarmManager: AudioCordinator, Snoozable {
             viewController.presentViewController(alertController, animated: true, completion: nil)
             alertController.view.tintColor = NSAssetKit.darkNavColor
         }
-        
     }
     
     public func snooze(forMiutes minutes : Int) {
@@ -249,8 +262,5 @@ public class AlarmManager: AudioCordinator, Snoozable {
         dispatch_async(dispatch_get_main_queue()) { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: self?.isSnoozed ?? false) }
         }
-        
-        //self.updateSnoozeButtonText()
     }
-    
 }
