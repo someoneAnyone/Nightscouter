@@ -14,7 +14,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     struct TableViewConstants {
         static let baseRowCount = 2
-        static let todayRowHeight = 70
+        static let todayRowHeight: CGFloat = 70
         
         struct CellIdentifiers {
             static let content = "nsSiteNow"
@@ -22,21 +22,19 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         }
     }
     
-    var sites:[Site] = [Site]()
+    var sites:[Site] = []
     
-    // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: NSDate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.backgroundColor = UIColor.clearColor()
-        
         sites = AppDataManageriOS.sharedInstance.sites
         
-        // let itemCount = sites.isEmpty ? 1 : sites.count
-        
-        preferredContentSize = tableView.contentSize //CGSize(width: preferredContentSize.width, height: CGFloat(itemCount * TableViewConstants.todayRowHeight))
+        tableView.backgroundColor = UIColor.clearColor()
+        tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
+        tableView.rowHeight = UITableViewAutomaticDimension
+        preferredContentSize = tableView.contentSize
     }
     
     override func didReceiveMemoryWarning() {
@@ -121,15 +119,12 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             switch error {
                 
             case .NoError :
-                
                 dispatch_async(dispatch_get_main_queue(), { () -> Void in
                     AppDataManageriOS.sharedInstance.updateSite(returnedSite)
                     self.lastUpdatedTime = returnedSite.lastConnectedDate
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: index, inSection: 0)], withRowAnimation: .Automatic)
                     self.preferredContentSize = self.tableView.contentSize
                 })
-                
-                
             default:
                 print("\(#function) ERROR recieved: \(error.description)")
             }
@@ -145,7 +140,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
             
-// let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
             context.openURL(url!, completionHandler: nil)
         }
     }

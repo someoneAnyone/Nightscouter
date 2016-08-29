@@ -30,7 +30,6 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     // @IBOutlet weak var siteDeltaHeader: UILabel!
     // @IBOutlet weak var siteDeltaLabel: UILabel!
-    
     // @IBOutlet weak var siteUrlLabel: UILabel!
     
     override func awakeFromNib() {
@@ -42,7 +41,6 @@ class SiteNSNowTableViewCell: UITableViewCell {
     func configureCell(site: Site) {
         
         let model = site.viewModel
-        //        if let model = WatchModel(fromSite: site) {
         
         let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
         
@@ -69,8 +67,6 @@ class SiteNSNowTableViewCell: UITableViewCell {
         
         siteDirectionLabel.text = model.deltaString
         siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
-        //}
-        
     }
     
     override func prepareForReuse() {
