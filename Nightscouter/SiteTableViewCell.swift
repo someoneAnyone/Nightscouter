@@ -61,6 +61,9 @@ class SiteTableViewCell: UITableViewCell {
         
         siteCompassControl.configureWith(model)
         
+        setNeedsLayout()
+        layoutIfNeeded()
+        
     }
     
     override func setSelected(selected: Bool, animated: Bool) {

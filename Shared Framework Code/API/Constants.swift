@@ -10,6 +10,7 @@ import Foundation
 
 public let AppDataManagerDidChangeNotification: String = "com.nothingonline.nightscouter.appDataManager.DidChange.Notification"
 
+/*
 public struct DefaultKey {
     public static let sitesArrayObjectsKey = "userSitesData"
     public static let currentSiteIndexKey = "currentSiteIndexInt"
@@ -25,6 +26,23 @@ public struct DefaultKey {
     public static let complicationUpdateEndedOnDate = "complicationUpdateEndedOnDate"
     
     public static let osPlatform = "osPlatform"
+}
+ */
+
+public enum DefaultKey: String, RawRepresentable, CustomStringConvertible {
+    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, osPlatform
+
+    static var payloadPhoneUpdate: [String : String] {
+        return [DefaultKey.action.rawValue: DefaultKey.updateData.rawValue]
+    }
+    
+    static var payloadPhoneUpdateError: [String : String] {
+        return [DefaultKey.action.rawValue: DefaultKey.error.rawValue]
+    }
+    
+    public var description: String {
+        return self.rawValue
+    }
 }
 
 public struct Constants {

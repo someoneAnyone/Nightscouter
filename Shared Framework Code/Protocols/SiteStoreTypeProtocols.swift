@@ -8,6 +8,15 @@
 
 import Foundation
 
+public protocol SitesDataSourceProvider: Dateable {
+    var sites: [Site] { get }
+}
+public extension SitesDataSourceProvider {
+    var milliseconds: Double {
+        return AppConfiguration.Constant.knownMilliseconds.inThePast
+    }
+}
+
 /**
  Storage location
  
@@ -35,21 +44,21 @@ public protocol SiteStoreType {
     /// - parameter site: A fully formed site.
     /// - returns: True if things were successful.
     ///
-    func create(site site: Site, atIndex index: Int?) -> Bool
+    func createSite(_ site: Site, atIndex index: Int?) -> Bool
     ///
     /// Update a specific site in storage.
     ///
     /// - parameter site: A fully formed site.
     /// - returns: True if things were successful.
     ///
-    func update(site site: Site)  ->  Bool
+    func updateSite(_ site: Site)  ->  Bool
     ///
     /// Delete a site from storage.
     ///
     /// - parameter atIndex: Index of a site in the storage array.
     /// - returns: True if things were successful.
     ///
-    func delete(site site: Site) -> Bool
+    func deleteSite(_ site: Site) -> Bool
     ///
     /// Last viewed site.
     ///
@@ -59,19 +68,11 @@ public protocol SiteStoreType {
     ///
     var lastViewedSiteIndex: Int { set get }
     ///
-    /// Which site should the UI focus limited resources on if required to.
-    ///
-    var primarySite: Site? { get }
-    ///
-    /// Primary Site Index
-    ///
-    var primarySiteUUID: NSUUID? { set get }
-    ///
     /// Handle payload received through `WatchConnectivity`.
     ///
     /// - parameter payload: The application context dictionary received from the counterpart app.
     ///
-    func handle(applicationContextPayload payload:[String: AnyObject])
+    func handleApplicationContextPayload(_ payload:[String: AnyObject])
     ///
     /// Remove all sites from the store.
     /// - returns Bool: True if things were successful.
@@ -81,7 +82,7 @@ public protocol SiteStoreType {
     /// Save all site data to long-term storage.
     /// -returns Bool: True if things were successful.
     ///
-    func save(data dictionary: [String: AnyObject]) -> (savedLocally: Bool, updatedApplicationContext: Bool)
+    func saveData(_ dictionary: [String: AnyObject]) -> (savedLocally: Bool, updatedApplicationContext: Bool)
     ///
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.
@@ -96,20 +97,6 @@ public extension SiteStoreType {
     var lastViewedSite: Site? {
         return sites[lastViewedSiteIndex]
     }
-    
-    var primarySite: Site? {
-        guard let uuid = primarySiteUUID else {
-            return nil
-        }
-        
-        let filteredSites = sites.filter { $0.uuid == uuid }
-        
-        if let site = filteredSites.first {
-            return site
-        }
-        
-        return nil
-    }
 }
 
 public protocol SessionManagerType {
@@ -120,7 +107,7 @@ public protocol SessionManagerType {
     ///
     /// - parameter applicationContext: The fresh application context payload.
     ///
-    func update(applicationContext applicationContext: [String : AnyObject]) throws
+    func updateApplicationContext(_ applicationContext: [String : AnyObject]) throws
     /// Start the WatchConnectivity session.
     ///
     /// Call this method after initialization to send/receive payload between the counterparts.

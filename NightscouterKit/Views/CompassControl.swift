@@ -28,18 +28,21 @@ public class CompassControl: UIView {
     }
     
     public override func intrinsicContentSize() -> CGSize {
+        super.invalidateIntrinsicContentSize()
+        
+        let compactSize = CGSizeMake(156, 120)
+        let midSize = CGSizeMake(156, 140)
+        let fullSize = CGSizeMake(156, 200)
         
         switch direction {
-        case .DoubleDown, .DoubleUp:
-            return CGSizeMake(156, 200)
-
-            
+        case .None, .NotComputable, .Not_Computable:
+            return compactSize
+        case .FortyFiveUp, .FortyFiveDown, .Flat:
+            return compactSize
         case .SingleUp, .SingleDown:
-            return CGSizeMake(156, 180)
-        case .FortyFiveDown, .FortyFiveDown:
-            return CGSizeMake(156, 150)
+            return midSize
         default:
-            return CGSizeMake(156, 200)
+            return fullSize
         }
     }
     
@@ -49,7 +52,7 @@ public class CompassControl: UIView {
             setNeedsDisplay()
         }
     }
-  
+    
     public var direction: Direction = .None {
         didSet {
             switch direction {
@@ -74,8 +77,10 @@ public class CompassControl: UIView {
             case .RateOutOfRange:
                 configireDrawRect(isArrowVisible: false, isUncomputable: true, sgvText: direction.description)
             }
-                setNeedsDisplay()
-
+            
+            invalidateIntrinsicContentSize()
+            setNeedsDisplay()
+            
         }
     }
 }
@@ -85,9 +90,9 @@ public extension CompassControl {
     override func awakeFromNib() {
         super.awakeFromNib()
         self.backgroundColor = UIColor.clearColor()
-
+        
         isAccessibilityElement = true
-
+        
         setNeedsDisplay()
     }
     
@@ -103,7 +108,7 @@ public extension CompassControl {
         
         accessibilityHint = "Glucose Value of \(sgvText) with a delta of \(delta), with the following direction \(direction)"
     }
-
+    
 }
 
 // MARK: - Methods

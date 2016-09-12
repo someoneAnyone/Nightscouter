@@ -35,11 +35,15 @@
 		178A9BFE1D6C8EF700267FCA /* BannerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */; };
 		178A9BFF1D6CD5F400267FCA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 17336D541B42F81B0063FB70 /* Localizable.strings */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
+		1793AFF71D6F295B00AFB7F4 /* SiteStoreTypeProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1793AFF51D6F294E00AFB7F4 /* SiteStoreTypeProtocols.swift */; };
+		1793AFF81D6F295D00AFB7F4 /* SiteStoreTypeProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1793AFF51D6F294E00AFB7F4 /* SiteStoreTypeProtocols.swift */; };
 		17961F921C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17961F911C5D99BF00617898 /* ComplicationModel.swift */; };
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17A8A87B1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
 		17A8A87C1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
+		17ABD9051D79E6C000FEB743 /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */; };
+		17ABD9061D79E6C000FEB743 /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
@@ -250,8 +254,10 @@
 		178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteListTableViewController.swift; sourceTree = "<group>"; };
 		178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerMessage.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		1793AFF51D6F294E00AFB7F4 /* SiteStoreTypeProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteStoreTypeProtocols.swift; sourceTree = "<group>"; };
 		17961F911C5D99BF00617898 /* ComplicationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationModel.swift; path = Models/ComplicationModel.swift; sourceTree = "<group>"; };
 		17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSUbiquitousKeyValueStore+Extensions.swift"; path = "Extensions/NSUbiquitousKeyValueStore+Extensions.swift"; sourceTree = "<group>"; };
+		17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesDataSource.swift; sourceTree = "<group>"; };
 		17B07CD21BF590B2001017CE /* WatchModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = WatchModel.swift; path = "Shared Framework Code/Struct/WatchModel.swift"; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NAssetWatchOS+Helpers.swift"; sourceTree = "<group>"; };
 		17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DictionaryRepresentable.swift; path = "Shared Framework Code/Protocols/DictionaryRepresentable.swift"; sourceTree = SOURCE_ROOT; };
@@ -465,6 +471,7 @@
 		175ADA1D1BFA7846002F89F8 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				1793AFF51D6F294E00AFB7F4 /* SiteStoreTypeProtocols.swift */,
 				17B07CD71BF643B1001017CE /* DictionaryRepresentable.swift */,
 				17C3F2BF1C1E607900C8B0CA /* BundleRepresntable.swift */,
 				1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */,
@@ -475,8 +482,6 @@
 		1771B0431B75235B006C1F5E /* iOS Framework */ = {
 			isa = PBXGroup;
 			children = (
-				832E03AA1CF28EB100B4F2AB /* alarm.mp3 */,
-				832E03AC1CF28EBF00B4F2AB /* alarm2.mp3 */,
 				1771B0621B7524AA006C1F5E /* AppDataManageriOS.swift */,
 				83857F351CF113BA00D588F2 /* AlarmManager.swift */,
 				8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */,
@@ -502,6 +507,7 @@
 		1771B06A1B7524AF006C1F5E /* API */ = {
 			isa = PBXGroup;
 			children = (
+				83857F321CF10A8E00D588F2 /* AlarmRule.swift */,
 				17BD1C201BF0EC720014EE38 /* NightscoutAPIClient.swift */,
 				17EF27721BFCDA0D00A16136 /* Constants.swift */,
 				17BDE6891C21C7960082FC7C /* NightscoutAppDataManager.swift */,
@@ -544,6 +550,8 @@
 		1771B0911B7541F3006C1F5E /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				832E03AA1CF28EB100B4F2AB /* alarm.mp3 */,
+				832E03AC1CF28EBF00B4F2AB /* alarm2.mp3 */,
 				17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */,
 			);
 			name = Resources;
@@ -562,10 +570,18 @@
 			name = "View Controllers";
 			sourceTree = "<group>";
 		};
+		17ABD9031D79E6A400FEB743 /* Stores */ = {
+			isa = PBXGroup;
+			children = (
+				17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */,
+			);
+			name = Stores;
+			sourceTree = "<group>";
+		};
 		17BD1C131BF0EBC10014EE38 /* Shared Framework Code */ = {
 			isa = PBXGroup;
 			children = (
-				83857F321CF10A8E00D588F2 /* AlarmRule.swift */,
+				17ABD9031D79E6A400FEB743 /* Stores */,
 				1771B06A1B7524AF006C1F5E /* API */,
 				17BD1C2C1BF0ECEE0014EE38 /* Extensions */,
 				1771B0881B752502006C1F5E /* Models */,
@@ -1108,6 +1124,7 @@
 				17E17C481C6F7E5B00810A4B /* HTTPClient.swift in Sources */,
 				17BD1C1A1BF0EC1D0014EE38 /* ServerConfiguration.swift in Sources */,
 				17BD1C2A1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
+				1793AFF71D6F295B00AFB7F4 /* SiteStoreTypeProtocols.swift in Sources */,
 				17EF27731BFCDA5900A16136 /* Constants.swift in Sources */,
 				17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */,
 				17A8A87B1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */,
@@ -1126,6 +1143,7 @@
 				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				83857F331CF10A8E00D588F2 /* AlarmRule.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
+				17ABD9051D79E6C000FEB743 /* SitesDataSource.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				83857F361CF113BA00D588F2 /* AlarmManager.swift in Sources */,
 				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
@@ -1149,10 +1167,12 @@
 				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
+				17ABD9061D79E6C000FEB743 /* SitesDataSource.swift in Sources */,
 				1781AA3E1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */,
 				17BD1C271BF0ECE40014EE38 /* Double+Extension.swift in Sources */,
+				1793AFF81D6F295D00AFB7F4 /* SiteStoreTypeProtocols.swift in Sources */,
 				17BD1C2B1BF0ECE40014EE38 /* String+Extensions.swift in Sources */,
 				17C3F2C21C1E60FA00C8B0CA /* BundleRepresntable.swift in Sources */,
 				17BDE68C1C21C7B40082FC7C /* NightscoutAppDataManager.swift in Sources */,

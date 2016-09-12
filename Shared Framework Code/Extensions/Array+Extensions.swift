@@ -14,3 +14,29 @@ public extension Array {
         return Int(index) < count ? self[Int(index)] : nil
     }
 }
+
+extension Array where Element: Equatable {
+    public mutating func insertOrUpdate(object: Element) -> Bool {
+        if let index = self.indexOf(object) {
+            self[index] = object
+        } else {
+            self.append(object)
+        }
+        
+        return self.contains(object)
+    }
+    
+    public mutating func appendUniqueObject(object: Element) {
+        if contains(object) == false {
+            append(object)
+        }
+    }
+    
+    public mutating func remove(object object: Element) -> Bool {
+        if let index = self.indexOf(object) {
+            self.removeAtIndex(index)
+        }
+        
+        return self.contains(object)
+    }
+}

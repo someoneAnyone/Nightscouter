@@ -21,31 +21,31 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 iCloudKeyStore.resetStorage()
             }
             
-            defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+            defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
             //defaults.synchronize()
             
-            iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
+            iCloudKeyStore.setArray(models, forKey: DefaultKey.sites.rawValue)
             iCloudKeyStore.synchronize()
         }
     }
     
     public var currentSiteIndex: Int {
         set{
-            defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
+            defaults.setInteger(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             
-            iCloudKeyStore.setLongLong(Int64(currentSiteIndex), forKey: DefaultKey.currentSiteIndexKey)
+            iCloudKeyStore.setLongLong(Int64(currentSiteIndex), forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             iCloudKeyStore.synchronize()
         }
         get{
-            return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
+            return defaults.integerForKey(DefaultKey.lastViewedSiteIndex.rawValue)
         }
     }
     
     public var defaultSiteUUID: NSUUID? {
         set{
-            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
             
-            iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
             iCloudKeyStore.synchronize()
             
             updateComplicationForDefaultSite(foreRrefresh: true) { (returnedSite, _) in
@@ -56,7 +56,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             }
         }
         get {
-            if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
+            if let uuidString = defaults.objectForKey(DefaultKey.primarySiteUUID.rawValue) as? String {
                 return NSUUID(UUIDString: uuidString)
             }
             return sites.first?.uuid
@@ -71,9 +71,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     var dictionaryOfDataSource:[String: AnyObject] {
         var dictionaryOfData = [String: AnyObject]()
-        dictionaryOfData[DefaultKey.modelArrayObjectsKey] = sites.flatMap( { $0.viewModel.dictionary } )
-        dictionaryOfData[DefaultKey.currentSiteIndexKey] = currentSiteIndex
-        dictionaryOfData[DefaultKey.defaultSiteKey] = defaultSiteUUID?.UUIDString
+        dictionaryOfData[DefaultKey.sites.rawValue] = sites.flatMap( { $0.viewModel.dictionary } )
+        dictionaryOfData[DefaultKey.lastViewedSiteIndex.rawValue] = currentSiteIndex
+        dictionaryOfData[DefaultKey.primarySiteUUID.rawValue] = defaultSiteUUID?.UUIDString
         
         return dictionaryOfData
     }
@@ -104,22 +104,22 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
         let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
         
-        defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
-        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
-        defaults.setObject("iOS", forKey: DefaultKey.osPlatform)
-        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
+        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        defaults.setObject("iOS", forKey: DefaultKey.osPlatform.rawValue)
+        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
         
         // Save To iCloud
-        iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
-        iCloudKeyStore.setArray(models, forKey: DefaultKey.modelArrayObjectsKey)
-        iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        iCloudKeyStore.setArray(models, forKey: DefaultKey.sites.rawValue)
+        iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
         
         iCloudKeyStore.synchronize()
     }
     
     public func loadData() {
         
-        if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+        if let models = defaults.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
             sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
         
@@ -217,7 +217,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             self.iCloudKeyStore.setObject(defaults, forKey: "watchDefaults")
         }
         
-        if let uuidString = context[DefaultKey.defaultSiteKey] as? String {
+        if let uuidString = context[DefaultKey.primarySiteUUID.rawValue] as? String {
             defaultSiteUUID = NSUUID(UUIDString: uuidString)
         }
         
@@ -412,17 +412,17 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 
                 // Update Data Source
                 
-                if key == DefaultKey.modelArrayObjectsKey {
-                    if let models = store.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+                if key == DefaultKey.sites.rawValue {
+                    if let models = store.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
                         sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
                     }
                 }
                 
-                if key == DefaultKey.currentSiteIndexKey {
-                    currentSiteIndex = Int(store.longLongForKey(DefaultKey.currentSiteIndexKey))
+                if key == DefaultKey.lastViewedSiteIndex.rawValue {
+                    currentSiteIndex = Int(store.longLongForKey(DefaultKey.lastViewedSiteIndex.rawValue))
                 }
                 
-                if key == DefaultKey.defaultSiteKey {
+                if key == DefaultKey.primarySiteUUID.rawValue {
                     print("defaultSiteUUID: " + key)
                 }
             }

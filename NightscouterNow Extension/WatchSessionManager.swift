@@ -100,7 +100,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         didSet {
             let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
             
-            defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
+            defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
             
             if models.isEmpty {
                 defaultSiteUUID = nil
@@ -113,20 +113,20 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     
     public var currentSiteIndex: Int {
         set{
-            defaults.setInteger(newValue, forKey: DefaultKey.currentSiteIndexKey)
+            defaults.setInteger(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             
         }
         get{
-            return defaults.integerForKey(DefaultKey.currentSiteIndexKey)
+            return defaults.integerForKey(DefaultKey.lastViewedSiteIndex.rawValue)
         }
     }
     
     public var defaultSiteUUID: NSUUID? {
         set{
-            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
             
             var payload = [String: AnyObject]()
-            payload[DefaultKey.defaultSiteKey] = newValue?.UUIDString
+            payload[DefaultKey.primarySiteUUID.rawValue] = newValue?.UUIDString
             session?.transferUserInfo(payload)
             
             updateComplication { complicationData in
@@ -134,7 +134,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             }
         }
         get {
-            if let uuidString = defaults.objectForKey(DefaultKey.defaultSiteKey) as? String {
+            if let uuidString = defaults.objectForKey(DefaultKey.primarySiteUUID.rawValue) as? String {
                 return NSUUID(UUIDString: uuidString)
             } else if let firstModel = models.first {
                 return NSUUID(UUIDString: firstModel.uuid)
@@ -224,15 +224,15 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         print("Saving Data")
         let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
         
-        defaults.setObject(models, forKey: DefaultKey.modelArrayObjectsKey)
-        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.currentSiteIndexKey)
-        defaults.setObject("watchOS", forKey: DefaultKey.osPlatform)
-        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.defaultSiteKey)
+        defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
+        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        defaults.setObject("watchOS", forKey: DefaultKey.osPlatform.rawValue)
+        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
     }
     
     public func loadData() {
         
-        if let models = defaults.arrayForKey(DefaultKey.modelArrayObjectsKey) as? [[String : AnyObject]] {
+        if let models = defaults.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
         
@@ -335,7 +335,7 @@ extension WatchSessionManager {
          }
          */
         
-        if let modelArray = payload[DefaultKey.modelArrayObjectsKey] as? [[String: AnyObject]] {
+        if let modelArray = payload[DefaultKey.sites.rawValue] as? [[String: AnyObject]] {
             let models = modelArray.map({ WatchModel(fromDictionary: $0)! })
             
             self.models = models
