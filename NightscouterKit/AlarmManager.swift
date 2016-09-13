@@ -21,10 +21,10 @@ public protocol AudioCordinator {
     func unmuteVolume()
     func muteVolume()
     
-    func playAlarmFor(urgent: Bool)
+    func playAlarmFor(_ urgent: Bool)
     
-    func addAlarmManagerDelgate<T where T : AlarmManagerDelgate, T : Equatable>(delegate: T)
-    func removeAlarmManagerDelgate<T where T : AlarmManagerDelgate, T : Equatable>(delegate: T)
+    func addAlarmManagerDelgate<T>(_ delegate: T) where T : AlarmManagerDelgate, T : Equatable
+    func removeAlarmManagerDelgate<T>(_ delegate: T) where T : AlarmManagerDelgate, T : Equatable
 }
 
 public protocol Snoozable {
@@ -34,19 +34,19 @@ public protocol Snoozable {
     var isSnoozed: Bool { get }
 }
 
-public class AlarmManager: AudioCordinator, Snoozable {
+open class AlarmManager: AudioCordinator, Snoozable {
     
-    public static let sharedManager = AlarmManager()
+    open static let sharedManager = AlarmManager()
     
-    public var snoozeTimeRemaining: Int {
+    open var snoozeTimeRemaining: Int {
         return AlarmRule.remainingSnoozeMinutes
     }
     
-    public var isSnoozed: Bool {
+    open var isSnoozed: Bool {
         return AlarmRule.isSnoozed
     }
     
-    public var snoozeText: String {
+    open var snoozeText: String {
         if AlarmRule.isSnoozed {
             return String(format: Constants.LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
         }
@@ -54,24 +54,24 @@ public class AlarmManager: AudioCordinator, Snoozable {
         return ""
     }
     
-    public var alarmCurrentStatus: (alarm: Bool, urgent: Bool, snoozed: Bool) {
+    open var alarmCurrentStatus: (alarm: Bool, urgent: Bool, snoozed: Bool) {
         return (self.active, self.urgent, self.isSnoozed)
     }
 
     
-    private var audioPlayer: AVAudioPlayer?
-    private var muted: Bool = false
-    private var active: Bool = false
-    private var urgent: Bool = false
-    private var updateTimer: NSTimer?
-    private var alarmManagerDelegates = [AlarmManagerDelgate]()
+    fileprivate var audioPlayer: AVAudioPlayer?
+    fileprivate var muted: Bool = false
+    fileprivate var active: Bool = false
+    fileprivate var urgent: Bool = false
+    fileprivate var updateTimer: Timer?
+    fileprivate var alarmManagerDelegates = [AlarmManagerDelgate]()
     
-    private init() {
+    fileprivate init() {
         AlarmRule.snooze(seconds: 2)
     }
     
-    private func createTimer() {
-        let snoozeTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.OneMinuteInSeconds, target: self, selector: #selector(AlarmManager.updateDelegates(_:)), userInfo: nil, repeats: true)
+    fileprivate func createTimer() {
+        let snoozeTimer = Timer.scheduledTimer(timeInterval: Constants.StandardTimeFrame.OneMinuteInSeconds, target: self, selector: #selector(AlarmManager.updateDelegates(_:)), userInfo: nil, repeats: true)
         
         updateTimer = snoozeTimer
     }
@@ -80,7 +80,7 @@ public class AlarmManager: AudioCordinator, Snoozable {
         endAlarmMonitor()
     }
     
-    public func addAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
+    open func addAlarmManagerDelgate<T>(_ delegate: T) where T: AlarmManagerDelgate, T: Equatable {
         alarmManagerDelegates.append(delegate)
         if isSnoozed && updateTimer == nil {
             createTimer()
@@ -88,33 +88,33 @@ public class AlarmManager: AudioCordinator, Snoozable {
         }
     }
     
-    public func removeAlarmManagerDelgate<T where T: AlarmManagerDelgate, T: Equatable>(delegate: T) {
-        for (index, indexDelegate) in alarmManagerDelegates.enumerate() {
-            if let indexDelegate = indexDelegate as? T where indexDelegate == delegate {
-                alarmManagerDelegates.removeAtIndex(index)
+    open func removeAlarmManagerDelgate<T>(_ delegate: T) where T: AlarmManagerDelgate, T: Equatable {
+        for (index, indexDelegate) in alarmManagerDelegates.enumerated() {
+            if let indexDelegate = indexDelegate as? T , indexDelegate == delegate {
+                alarmManagerDelegates.remove(at: index)
                 
                 break
             }
         }
     }
     
-    public func startAlarmMonitor() {
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AlarmManager.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
+    open func startAlarmMonitor() {
+        NotificationCenter.default.addObserver(self, selector: #selector(AlarmManager.dataManagerDidChange(_:)), name: NSNotification.Name(rawValue: AppDataManagerDidChangeNotification), object: nil)
     }
     
-    public func endAlarmMonitor() {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+    open func endAlarmMonitor() {
+        NotificationCenter.default.removeObserver(self)
         updateTimer?.invalidate()
     }
     
     
-    @objc private func updateDelegates(notofication: NSTimer? = nil){
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+    @objc fileprivate func updateDelegates(_ notofication: Timer? = nil){
+        DispatchQueue.main.async { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self!.active, urgent: self!.urgent, snoozed: self!.isSnoozed) }
         }
     }
     
-    @objc private func dataManagerDidChange(notifcation: NSNotification) {
+    @objc fileprivate func dataManagerDidChange(_ notifcation: Notification) {
         
         guard let sites = notifcation.object as? [Site] else {
             return
@@ -151,15 +151,15 @@ public class AlarmManager: AudioCordinator, Snoozable {
         
     }
     
-    public func stop() {
+    open func stop() {
         audioPlayer?.stop()
         try! AVAudioSession.sharedInstance().setActive(false)
     }
     
-    public func play() {
+    open func play() {
         do {
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategorySoloAmbient)
-            try AVAudioSession.sharedInstance().setActive(true, withOptions: .NotifyOthersOnDeactivation)
+            try AVAudioSession.sharedInstance().setActive(true, with: .notifyOthersOnDeactivation)
             
             // Play endless loops
             self.audioPlayer?.prepareToPlay()
@@ -172,29 +172,29 @@ public class AlarmManager: AudioCordinator, Snoozable {
         }
     }
     
-    public func pause() {
+    open func pause() {
         self.audioPlayer?.pause()
     }
     
-    public func unmuteVolume(){
+    open func unmuteVolume(){
         audioPlayer?.volume = 1.0
         muted = false
     }
     
-    public func muteVolume() {
+    open func muteVolume() {
         audioPlayer?.volume = 0
         muted = true
     }
     
-    public func playAlarmFor(urgent: Bool = false) {
+    open func playAlarmFor(_ urgent: Bool = false) {
         let assetName = urgent ? "alarm2" : "alarm"
         
-        let bundle: NSBundle = NSBundle(forClass: AlarmManager.self)
-        let path: String = bundle.pathForResource(assetName, ofType: "mp3") ?? ""
-        let audioUrl = NSURL.fileURLWithPath(path)
+        let bundle: Bundle = Bundle(for: AlarmManager.self)
+        let path: String = bundle.path(forResource: assetName, ofType: "mp3") ?? ""
+        let audioUrl = URL(fileURLWithPath: path)
         
         do {
-            self.audioPlayer = try AVAudioPlayer(contentsOfURL: audioUrl)
+            self.audioPlayer = try AVAudioPlayer(contentsOf: audioUrl)
             self.play()
         } catch let error as NSError {
             print(error.localizedDescription)
@@ -203,63 +203,63 @@ public class AlarmManager: AudioCordinator, Snoozable {
         }
     }
     
-    public func presentSnoozePopup(forViewController viewController: UIViewController) {
+    open func presentSnoozePopup(forViewController viewController: UIViewController) {
         if isSnoozed {
             AlarmRule.disableSnooze()
             
-            dispatch_async(dispatch_get_main_queue()) { [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: self?.isSnoozed ?? false) }
             }
             
         } else {
             self.muteVolume()
             
-            let alertController = UIAlertController(title: Constants.LocalizedString.snoozeLabel.localized, message: Constants.LocalizedString.snoozeMessage.localized, preferredStyle: .Alert)
+            let alertController = UIAlertController(title: Constants.LocalizedString.snoozeLabel.localized, message: Constants.LocalizedString.snoozeMessage.localized, preferredStyle: .alert)
             
             alertController.addAction(UIAlertAction(title: "30 \(Constants.LocalizedString.minutes.localized)",
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler: {(alert: UIAlertAction!) in
                     
                     self.snooze(forMiutes: 30)
             }))
             alertController.addAction(UIAlertAction(title: "1 \(Constants.LocalizedString.hour.localized)",
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler: {(alert: UIAlertAction!) in
                     
                     self.snooze(forMiutes: 60)
             }))
             alertController.addAction(UIAlertAction(title: "1 1/2 \(Constants.LocalizedString.hours.localized)",
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler: {(alert: UIAlertAction!) in
                     
                     self.snooze(forMiutes: 90)
             }))
             alertController.addAction(UIAlertAction(title: "2 \(Constants.LocalizedString.hours.localized)",
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler: {(alert: UIAlertAction!) in
                     
                     self.snooze(forMiutes: 120)
             }))
             alertController.addAction(UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized
                 ,
-                style: UIAlertActionStyle.Default,
+                style: UIAlertActionStyle.default,
                 handler: {(alert: UIAlertAction!) in
                     self.unmuteVolume()
             }))
             
-            viewController.presentViewController(alertController, animated: true, completion: nil)
+            viewController.present(alertController, animated: true, completion: nil)
             alertController.view.tintColor = NSAssetKit.darkNavColor
         }
     }
     
-    public func snooze(forMiutes minutes : Int) {
+    open func snooze(forMiutes minutes : Int) {
         
         AlarmRule.snooze(minutes)
         
         AlarmManager.sharedManager.stop()
         AlarmManager.sharedManager.unmuteVolume()
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             self?.alarmManagerDelegates.forEach { $0.alarmManagerHasChangedAlarmingState(isActive: self?.active ?? false, urgent: self?.urgent ?? false, snoozed: self?.isSnoozed ?? false) }
         }
     }

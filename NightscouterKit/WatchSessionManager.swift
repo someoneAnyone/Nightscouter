@@ -9,16 +9,16 @@
 import WatchConnectivity
 
 @available(iOSApplicationExtension 9.0, *)
-public class WatchSessionManager: NSObject, WCSessionDelegate {
+open class WatchSessionManager: NSObject, WCSessionDelegate {
     
-    public static let sharedManager = WatchSessionManager()
-    private override init() {
+    open static let sharedManager = WatchSessionManager()
+    fileprivate override init() {
         super.init()
     }
     
-    private let session: WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
+    fileprivate let session: WCSession? = WCSession.isSupported() ? WCSession.default() : nil
     
-    public var validSession: WCSession? {
+    open var validSession: WCSession? {
         
         // paired - the user has to have their device paired to the watch
         // watchAppInstalled - the user must have your watch app installed
@@ -26,22 +26,22 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         // Note: if the device is paired, but your watch app is not installed
         // consider prompting the user to install it for a better experience
         
-        if let session = session where session.paired && session.watchAppInstalled {
+        if let session = session , session.isPaired && session.isWatchAppInstalled {
             return session
         }
         return nil
     }
     
-    public func startSession() {
+    open func startSession() {
         session?.delegate = self
-        session?.activateSession()
+        session?.activate()
         
         #if DEBUG
-            print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(session?.paired), Watch App Installed: \(session?.watchAppInstalled)")
+            print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(session?.isPaired), Watch App Installed: \(session?.isWatchAppInstalled)")
         #endif
     }
     
-    public func sessionReachabilityDidChange(session: WCSession) {
+    open func sessionReachabilityDidChange(_ session: WCSession) {
         print("sessionReachabilityDidChange")
         //  print(session)
         //let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
@@ -50,20 +50,20 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         //        }
     }
     
-    public func sessionWatchStateDidChange(session: WCSession) {
+    open func sessionWatchStateDidChange(_ session: WCSession) {
         print("sessionWatchStateDidChange")
         print(session)
     }
     
-    public func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+    open func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
  
         print(">>> Entering \(#function) <<<")
     }
     
-    public func sessionDidBecomeInactive(session: WCSession) {
+    open func sessionDidBecomeInactive(_ session: WCSession) {
         print(">>> Entering \(#function) <<<")
     }
-    public func sessionDidDeactivate(session: WCSession) {
+    open func sessionDidDeactivate(_ session: WCSession) {
         print(">>> Entering \(#function) <<<")
     }
 
@@ -76,7 +76,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
 public extension WatchSessionManager {
     
     // Sender
-    public func updateApplicationContext(applicationContext: [String : AnyObject]) throws {
+    public func updateApplicationContext(_ applicationContext: [String : AnyObject]) throws {
         if let session = validSession {
             do {
                 cleanUpTransfers()
@@ -88,10 +88,10 @@ public extension WatchSessionManager {
     }
     
     // Receiver
-    public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
+    public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
         // handle receiving application context
         
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             // make sure to put on the main queue to update UI!
             AppDataManageriOS.sharedInstance.processApplicationContext(applicationContext)
         }
@@ -104,15 +104,15 @@ public extension WatchSessionManager {
 @available(iOSApplicationExtension 9.0, *)
 extension WatchSessionManager {
     
-    public func transferCurrentComplicationUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    public func transferCurrentComplicationUserInfo(_ userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferCurrentComplicationUserInfo")
-            print("validSession?.complicationEnabled == \(validSession?.complicationEnabled)")
+            print("validSession?.complicationEnabled == \(validSession?.isComplicationEnabled)")
         #endif
         
         cleanUpTransfers()
         
-        return validSession?.complicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : transferUserInfo(userInfo)
+        return validSession?.isComplicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : transferUserInfo(userInfo)
     }
     
     func cleanUpTransfers(){
@@ -120,7 +120,7 @@ extension WatchSessionManager {
     }
     
     // Sender
-    public func transferUserInfo(userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    public func transferUserInfo(_ userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
@@ -130,7 +130,8 @@ extension WatchSessionManager {
         return validSession?.transferUserInfo(userInfo)
     }
     
-    public func session(session: WCSession, didFinishUserInfoTransfer userInfoTransfer: WCSessionUserInfoTransfer, error: NSError?) {
+    @objc(session:didFinishUserInfoTransfer:error:) public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+    //public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
         #if DEBUG
             print("session \(session), didFinishUserInfoTransfer: \(userInfoTransfer), error: \(error)")
             print("on" + NSDate.description())
@@ -141,12 +142,12 @@ extension WatchSessionManager {
     }
     
     // Receiver
-    public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
+    public func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any]) {
         #if DEBUG
             print("session \(session), didReceiveUserInfo: \(userInfo)")
         #endif
         // handle receiving user info
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             // make sure to put on the main queue to update UI!
             AppDataManageriOS.sharedInstance.processApplicationContext(userInfo)
         }
@@ -160,20 +161,20 @@ public extension WatchSessionManager {
     
     // Live messaging! App has to be reachable
     public var validReachableSession: WCSession? {
-        if let session = validSession where session.reachable {
+        if let session = validSession , session.isReachable {
             return session
         }
         return nil
     }
     
     // Sender
-    public func sendMessage(message: [String : AnyObject], replyHandler: (([String : AnyObject]) -> Void)? = nil, errorHandler: ((NSError) -> Void)? = nil)
+    public func sendMessage(_ message: [String : Any], replyHandler: (([String : Any]) -> Void)? = nil, errorHandler: ((Error) -> Void)? = nil)
     {
         validReachableSession?.sendMessage(message, replyHandler: replyHandler, errorHandler: errorHandler)
     }
     
     // Receiver
-    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
+    public func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
         // handle receiving message
         #if DEBUG
             print(">>> Entering \(#function)<<")
@@ -181,7 +182,7 @@ public extension WatchSessionManager {
         
         // replyHandler([WatchModel.PropertyKey.successfullyRecieved: true])
         
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: replyHandler)
         }
     }

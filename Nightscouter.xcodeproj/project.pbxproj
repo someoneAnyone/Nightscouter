@@ -42,8 +42,6 @@
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17A8A87B1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
 		17A8A87C1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A8A87A1C8612E200BA6147 /* NSUbiquitousKeyValueStore+Extensions.swift */; };
-		17ABD9051D79E6C000FEB743 /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */; };
-		17ABD9061D79E6C000FEB743 /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17ABD9041D79E6C000FEB743 /* SitesDataSource.swift */; };
 		17B07CD31BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD41BF590B2001017CE /* WatchModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD21BF590B2001017CE /* WatchModel.swift */; };
 		17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17B07CD51BF591C5001017CE /* NAssetWatchOS+Helpers.swift */; };
@@ -884,12 +882,13 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = "Peter Ina";
 				TargetAttributes = {
 					170825E21B2CBABB00304F8F = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = F754VXZDPA;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -905,10 +904,12 @@
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
+						LastSwiftMigration = 0800;
 					};
 					17F22E571BEF9E600041E0B0 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = F754VXZDPA;
+						LastSwiftMigration = 0800;
 					};
 					83883D731BC1F7E800BD1A9C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -922,6 +923,7 @@
 					83883D7F1BC1F7E800BD1A9C = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = F754VXZDPA;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -937,6 +939,7 @@
 					83F4C5771B7C201700C74285 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
+						LastSwiftMigration = 0800;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
@@ -1143,7 +1146,6 @@
 				17BD1C281BF0ECE40014EE38 /* NSCalendar+Extension.swift in Sources */,
 				83857F331CF10A8E00D588F2 /* AlarmRule.swift in Sources */,
 				1771B0671B7524AA006C1F5E /* AppTheme.swift in Sources */,
-				17ABD9051D79E6C000FEB743 /* SitesDataSource.swift in Sources */,
 				17BD1C1E1BF0EC1D0014EE38 /* WatchEntry.swift in Sources */,
 				83857F361CF113BA00D588F2 /* AlarmManager.swift in Sources */,
 				17B07CD81BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
@@ -1167,7 +1169,6 @@
 				17961F931C5D99BF00617898 /* ComplicationModel.swift in Sources */,
 				17B07CD61BF591C5001017CE /* NAssetWatchOS+Helpers.swift in Sources */,
 				17DA132E1BF4DF0000A89DA4 /* Device.swift in Sources */,
-				17ABD9061D79E6C000FEB743 /* SitesDataSource.swift in Sources */,
 				1781AA3E1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift in Sources */,
 				17B07CD91BF643B1001017CE /* DictionaryRepresentable.swift in Sources */,
 				17B2DF9B1C409B70005FE2D9 /* Array+Extensions.swift in Sources */,
@@ -1284,8 +1285,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1329,8 +1332,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -1349,6 +1354,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1368,6 +1374,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1384,6 +1391,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -1393,6 +1401,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1413,6 +1422,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1424,6 +1434,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -1436,6 +1447,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nothingonline.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1446,7 +1458,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1459,6 +1471,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1471,7 +1484,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1484,6 +1497,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1536,11 +1550,11 @@
 		83883D991BC1F7E900BD1A9C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -1549,6 +1563,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
@@ -1557,11 +1572,11 @@
 		83883D9A1BC1F7E900BD1A9C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
 				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp.watchkitextension;
@@ -1569,6 +1584,7 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.0;
 			};
@@ -1594,6 +1610,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -1610,6 +1627,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

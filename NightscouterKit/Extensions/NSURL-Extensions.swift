@@ -8,13 +8,13 @@
 
 import Foundation
 
-public extension NSURL
+public extension URL
 {
     public struct ValidationQueue {
-        public static var queue = NSOperationQueue()
+        public static var queue = OperationQueue()
     }
     
-    public class func validateUrl(urlString: String?, completion:(success: Bool, urlString: String? , error: NSString) -> Void)
+    public static func validateUrl(_ urlString: String?, completion:@escaping (_ success: Bool, _ urlString: String? , _ error: String) -> Void)
     {
         // Description: This function will validate the format of a URL, re-format if necessary, then attempt to make a header request to verify the URL actually exists and responds.
         // Return Value: This function has no return value but uses a closure to send the response to the caller.
@@ -24,7 +24,7 @@ public extension NSURL
         // Ignore Nils & Empty Strings
         if (urlString == nil || urlString == "")
         {
-            completion(success: false, urlString: nil, error: "Url String was empty")
+            completion(false, nil, "Url String was empty")
             return
         }
         
@@ -32,8 +32,8 @@ public extension NSURL
         let prefixes = ["http://www.", "https://www.", "www."]
         for prefix in prefixes
         {
-            if ((prefix.rangeOfString(urlString!, options: NSStringCompareOptions.CaseInsensitiveSearch, range: nil, locale: nil)) != nil){
-                completion(success: false, urlString: nil, error: "Url String was prefix only")
+            if ((prefix.range(of: urlString!, options: NSString.CompareOptions.caseInsensitive, range: nil, locale: nil)) != nil){
+                completion(false, nil, "Url String was prefix only")
                 return
             }
         }
@@ -41,9 +41,9 @@ public extension NSURL
         // Ignore URLs with spaces (NOTE - You should use the below method in the caller to remove spaces before attempting to validate a URL)
         // Example:
         // textField.text = textField.text.stringByReplacingOccurrencesOfString(" ", withString: "", options: nil, range: nil)
-        let range = urlString!.rangeOfCharacterFromSet(NSCharacterSet.whitespaceCharacterSet())
+        let range = urlString!.rangeOfCharacter(from: CharacterSet.whitespaces)
         if let _ = range {
-            completion(success: false, urlString: nil, error: "Url String cannot contain whitespaces")
+            completion(false, nil, "Url String cannot contain whitespaces")
             return
         }
         
@@ -55,36 +55,37 @@ public extension NSURL
         }
         
         // Check that an NSURL can actually be created with the formatted string
-        if let validatedUrl = NSURL(string: formattedUrlString!)
+        if let validatedUrl = URL(string: formattedUrlString!)
         {
             // Test that URL actually exists by sending a URL request that returns only the header response
-            let request = NSMutableURLRequest(URL: validatedUrl)
-            request.HTTPMethod = "HEAD"
+            let request = NSMutableURLRequest(url: validatedUrl)
+            request.httpMethod = "HEAD"
             ValidationQueue.queue.cancelAllOperations()
             
-            let session = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration(), delegate: nil, delegateQueue: ValidationQueue.queue)
+            let sessionTask = URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: ValidationQueue.queue)
             
-            let task = session.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
-                let url = request.URL!.absoluteString
+            
+            let task = sessionTask.dataTask(with: request as URLRequest, completionHandler: { (data, response, error) -> Void in
+                let url = request.url!.absoluteString
                 
                 // URL failed - No Response
                 if (error != nil)
                 {
-                    completion(success: false, urlString: url, error: "The url: \(url) received no response")
+                    completion(false, url, "The url: \(url) received no response")
                     return
                 }
                 
                 // URL Responded - Check Status Code
-                if let urlResponse = response as? NSHTTPURLResponse
+                if let urlResponse = response as? HTTPURLResponse
                 {
                     if ((urlResponse.statusCode >= 200 && urlResponse.statusCode < 400) || urlResponse.statusCode == 405)// 200-399 = Valid Responses, 405 = Valid Response (Weird Response on some valid URLs)
                     {
-                        completion(success: true, urlString: url, error: "The url: \(url) is valid!")
+                        completion(true, url, "The url: \(url) is valid!")
                         return
                     }
                     else // Error
                     {
-                        completion(success: false, urlString: url, error: "The url: \(url) received a \(urlResponse.statusCode) response")
+                        completion(false, url, "The url: \(url) received a \(urlResponse.statusCode) response")
                         return
                     }
                 }

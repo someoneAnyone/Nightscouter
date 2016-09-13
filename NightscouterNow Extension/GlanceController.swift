@@ -19,7 +19,7 @@ class GlanceController: WKInterfaceController {
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     
-    var updateUITimer: NSTimer?
+    var updateUITimer: Timer?
     
     /*
     var model: WatchModel? {
@@ -28,7 +28,7 @@ class GlanceController: WKInterfaceController {
  */
     var model: WatchModel? {
         didSet{
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.configureView()
             }
         }
@@ -36,7 +36,7 @@ class GlanceController: WKInterfaceController {
     
     override func willActivate() {
         
-        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: #selector(GlanceController.configureView), userInfo: nil, repeats: true)
+        updateUITimer = Timer.scheduledTimer(timeInterval: 60.0 , target: self, selector: #selector(GlanceController.configureView), userInfo: nil, repeats: true)
         
         beginGlanceUpdates()
         
@@ -47,8 +47,8 @@ class GlanceController: WKInterfaceController {
         }
     }
     
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
         // Configure interface objects here.
     }
     
@@ -62,7 +62,7 @@ class GlanceController: WKInterfaceController {
     func configureView() {
         
         guard let model = self.model else {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
+            OperationQueue.main.addOperation {
                 self.siteDeltaLabel.setText("Launch Nightscouter")
                 self.siteRawLabel.setText("and add a site.")
                 self.siteNameLabel.setText("")
@@ -74,7 +74,7 @@ class GlanceController: WKInterfaceController {
         }
         
         
-            let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+            let dateString = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
             let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: UIColor(hexString: model.lastReadingColor), textHeader: "LR")
             
@@ -82,9 +82,9 @@ class GlanceController: WKInterfaceController {
             
             let formattedBattery = self.formattedStringWithHeaderFor(model.batteryString, textColor:  UIColor(hexString: model.batteryColor), textHeader: "B")
             
-            let sgvString = String(stringInterpolation:model.sgvStringWithEmoji.stringByReplacingOccurrencesOfString(" ", withString: ""))
+            let sgvString = String(stringInterpolation:model.sgvStringWithEmoji.replacingOccurrences(of: " ", with: ""))
 
-        NSOperationQueue.mainQueue().addOperationWithBlock {
+        OperationQueue.main.addOperation {
 
             // Battery
             self.batteryLabel.setAttributedText(formattedBattery)
@@ -105,13 +105,13 @@ class GlanceController: WKInterfaceController {
             self.siteRawLabel.setAttributedText(formattedRaw)
             self.siteRawLabel.setHidden(!model.rawVisible)
             
-            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
+            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: URL(string: model.urlString)!)
         }
     }
     
-    func formattedStringWithHeaderFor(textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {
+    func formattedStringWithHeaderFor(_ textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {
         
-        let headerFontDict = [NSFontAttributeName: UIFont.boldSystemFontOfSize(8)]
+        let headerFontDict = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 8)]
         
         let headerString = NSMutableAttributedString(string: textHeader, attributes: headerFontDict)
         headerString.addAttribute(NSForegroundColorAttributeName, value: UIColor(white: 1.0, alpha: 0.5), range: NSRange(location:0,length:textHeader.characters.count))
@@ -119,7 +119,7 @@ class GlanceController: WKInterfaceController {
         let valueString = NSMutableAttributedString(string: textValue)
         valueString.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location:0,length:textValue.characters.count))
         
-        headerString.appendAttributedString(valueString)
+        headerString.append(valueString)
         
         return headerString
     }

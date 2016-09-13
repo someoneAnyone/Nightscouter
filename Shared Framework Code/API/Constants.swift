@@ -48,13 +48,13 @@ public enum DefaultKey: String, RawRepresentable, CustomStringConvertible {
 public struct Constants {
     
     public struct StandardTimeFrame {
-        public static let OneMinuteInSeconds: NSTimeInterval = 60.0
-        public static let TwoAndHalfMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 2.5
-        public static let FourMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 4
-        public static let TenMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 10
-        public static let ThirtyMinutesInSeconds: NSTimeInterval = OneMinuteInSeconds * 30
-        public static let OneHourInSeconds: NSTimeInterval = OneMinuteInSeconds * 60
-        public static let TwoHoursInSeconds: NSTimeInterval = OneMinuteInSeconds * 120
+        public static let OneMinuteInSeconds: TimeInterval = 60.0
+        public static let TwoAndHalfMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 2.5
+        public static let FourMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 4
+        public static let TenMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 10
+        public static let ThirtyMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 30
+        public static let OneHourInSeconds: TimeInterval = OneMinuteInSeconds * 60
+        public static let TwoHoursInSeconds: TimeInterval = OneMinuteInSeconds * 120
     }
     
     public struct NotableTime {

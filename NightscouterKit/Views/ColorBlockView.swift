@@ -9,10 +9,10 @@
 import UIKit
 
 @IBDesignable
-public class ColorBlockView: UIView {
+open class ColorBlockView: UIView {
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
-    override public func drawRect(rect: CGRect) {
+    override open func draw(_ rect: CGRect) {
         // Drawing code
         if let _ = self.backgroundColor {
             // print("color: \(color)")

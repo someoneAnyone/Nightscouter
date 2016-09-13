@@ -10,16 +10,16 @@ import Foundation
 
 public extension String {
     public var localized: String {
-        return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: "")
+        return NSLocalizedString(self, tableName: nil, bundle: Bundle.main, value: "", comment: "")
     }
-    public func localizedWithComment(comment:String) -> String {
-        return NSLocalizedString(self, tableName: nil, bundle: NSBundle.mainBundle(), value: "", comment: comment)
+    public func localizedWithComment(_ comment:String) -> String {
+        return NSLocalizedString(self, tableName: nil, bundle: Bundle.main, value: "", comment: comment)
     }
 }
 
 public extension String {
     public var versions: [String] {
-        return self.componentsSeparatedByString(".")
+        return self.components(separatedBy: ".")
     }
     public var majorVersion: Int {
         return Int(versions.first!)!
@@ -33,16 +33,16 @@ public extension String {
 }
 
 public extension String {
-    var formatter: NSNumberFormatter {
-        let formatter = NSNumberFormatter()
-        formatter.locale = NSLocale.systemLocale()
+    var formatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.autoupdatingCurrent
         return formatter
     }
     
     public var floatValue: Float? {
-        return formatter.numberFromString(self)?.floatValue
+        return formatter.number(from: self)?.floatValue
     }
     public var toDouble: Double? {
-        return formatter.numberFromString(self)?.doubleValue
+        return formatter.number(from: self)?.doubleValue
     }
 }

@@ -33,12 +33,12 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         // Configure the page view controller and add it as a child view controller.
-        pageViewController = UIPageViewController(transitionStyle: .Scroll, navigationOrientation: .Horizontal, options: nil)
+        pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal, options: nil)
         pageViewController!.delegate = self
         
         let startingViewController: SiteDetailViewController = self.modelController.viewControllerAtIndex(currentIndex, storyboard: self.storyboard!)!
         let viewControllers = [startingViewController]
-        pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: false, completion: {done in })
+        pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: false, completion: {done in })
         pageViewController!.dataSource = self.modelController
         
         addChildViewController(self.pageViewController!)
@@ -46,18 +46,18 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         
         // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
         var pageViewRect = self.view.bounds
-        if UIDevice.currentDevice().userInterfaceIdiom == .Pad {
-            pageViewRect = CGRectInset(pageViewRect, 40.0, 40.0)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            pageViewRect = pageViewRect.insetBy(dx: 40.0, dy: 40.0)
         }
         
         pageViewController!.view.frame = pageViewRect
-        pageViewController!.didMoveToParentViewController(self)
+        pageViewController!.didMove(toParentViewController: self)
         
         // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
         view.gestureRecognizers = pageViewController!.gestureRecognizers
         
         // view.bringSubviewToFront(self.goToListButton)
-        goToListButton.hidden = true
+        goToListButton.isHidden = true
         
         setupNotifications()
         updateNavigationController()
@@ -71,11 +71,11 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     deinit {
         // Remove this class from the observer list. Was listening for a global update timer.
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return .lightContent
     }
     
     var modelController: ModelController {
@@ -91,14 +91,14 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     // MARK: - UIPageViewController delegate methods
     
-    func pageViewController(pageViewController: UIPageViewController, spineLocationForInterfaceOrientation orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
-        if (orientation == .Portrait) || (orientation == .PortraitUpsideDown) || (UIDevice.currentDevice().userInterfaceIdiom == .Phone) {
+    func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
+        if (orientation == .portrait) || (orientation == .portraitUpsideDown) || (UIDevice.current.userInterfaceIdiom == .phone) {
             // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewControllerSpineLocationMid' in landscape orientation sets the doubleSided property to YES, so set it to NO here.
             let currentViewController: UIViewController = self.pageViewController!.viewControllers![0]
             let viewControllers: [UIViewController] = [currentViewController]
-            self.pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: true, completion: {done in })
-            self.pageViewController!.doubleSided = false
-            return .Min
+            self.pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
+            self.pageViewController!.isDoubleSided = false
+            return .min
         }
         
         // In landscape orientation: Set set the spine location to "mid" and the page view controller's view controllers array to contain two view controllers. If the current page is even, set it to contain the current and next view controllers; if it is odd, set the array to contain the previous and current view controllers.
@@ -107,18 +107,18 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         
         let indexOfCurrentViewController = self.modelController.indexOfViewController(currentViewController)
         if (indexOfCurrentViewController == 0) || (indexOfCurrentViewController % 2 == 0) {
-            let nextViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerAfterViewController: currentViewController)
+            let nextViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerAfter: currentViewController)
             viewControllers = [currentViewController, nextViewController!]
         } else {
-            let previousViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerBeforeViewController: currentViewController)
+            let previousViewController = self.modelController.pageViewController(self.pageViewController!, viewControllerBefore: currentViewController)
             viewControllers = [previousViewController!, currentViewController]
         }
-        self.pageViewController!.setViewControllers(viewControllers, direction: .Forward, animated: true, completion: {done in })
+        self.pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: true, completion: {done in })
         
-        return .Mid
+        return .mid
     }
     
-    func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if finished && completed {
             updateNavigationController()
         }
@@ -126,7 +126,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: NightscoutAPIClientNotification.DataUpdateSuccessful, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: NSNotification.Name(rawValue: NightscoutAPIClientNotification.DataUpdateSuccessful), object: nil)
     }
     
     func updateNavigationController() {

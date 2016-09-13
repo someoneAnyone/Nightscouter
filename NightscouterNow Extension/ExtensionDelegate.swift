@@ -10,7 +10,7 @@ import WatchKit
 import NightscouterWatchOSKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
-    var timer: NSTimer?
+    var timer: Timer?
     
     override init() {
         print(">>> Entering \(#function) in ExtensionDelegate) <<<")
@@ -43,24 +43,24 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         WatchSessionManager.sharedManager.saveData()
     }
     
-    func createUpdateTimer() -> NSTimer {
-        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
+    func createUpdateTimer() -> Timer {
+        let localTimer = Timer.scheduledTimer(timeInterval: Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
         return localTimer
     }
     
-    func updateDataNotification(timer: NSTimer?) -> Void {
+    func updateDataNotification(_ timer: Timer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
         
-        let date = NSDate()
-        let calendar = NSCalendar.currentCalendar()
-        let components = calendar.components([.Second], fromDate: date)
-        let delayedStart:Double=(Double)(10 - components.second)
-        let dispatchTime: dispatch_time_t = dispatch_time(DISPATCH_TIME_NOW, Int64(delayedStart * Double(NSEC_PER_SEC)))
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(NSDate())")
-            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
+        let date = Date()
+        let calendar = Calendar.current
+        let components = (calendar as NSCalendar).components([.second], from: date)
+        let delayedStart:Double=(Double)(10 - components.second!)
+        let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(delayedStart * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
+        DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
+            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(Date())")
+            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: NightscoutAPIClientNotification.DataIsStaleUpdateNow), object: self))
             
             if (self.timer == nil) {
                 self.timer = self.createUpdateTimer()

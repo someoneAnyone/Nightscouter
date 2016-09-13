@@ -10,16 +10,16 @@ import UIKit
 
 public extension CompassControl {
     
-    func configure(sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
+    func configure(_ sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
         self.delta = bgdelta.formattedBGDelta(forUnits: Units(string: units))//"\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    public func configureWith(model: WatchModel){
+    public func configureWith(_ model: WatchModel){
         
-        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.stringByReplacingOccurrencesOfString(" ", withString: "")), bgdelta: model.delta, units: model.units)
+        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.replacingOccurrences(of: " ", with: "")), bgdelta: model.delta, units: model.units)
         self.shouldLookStale(look: model.warn)
     }
     

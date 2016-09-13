@@ -11,7 +11,7 @@ import Foundation
 public struct ComplicationModel: DictionaryConvertible {
     
     public let displayName: String
-    public let date: NSDate
+    public let date: Date
     public let sgv: String// = "000 >"// model.sgvStringWithEmoji
     public let sgvEmoji: String
     public let tintString: String//  = UIColor.redColor().toHexString() //model.sgvColor
@@ -24,7 +24,7 @@ public struct ComplicationModel: DictionaryConvertible {
         return (raw != nil)
     }
     
-    public init(displayName: String, date: NSDate, sgv: String, sgvEmoji: String, tintString: String, delta: String, deltaShort: String, raw: String?, rawShort: String?) {
+    public init(displayName: String, date: Date, sgv: String, sgvEmoji: String, tintString: String, delta: String, deltaShort: String, raw: String?, rawShort: String?) {
         self.displayName = displayName
         self.date = date
         self.sgv = sgv
@@ -37,11 +37,11 @@ public struct ComplicationModel: DictionaryConvertible {
     }
     
     public init?(fromDictionary d:[String : AnyObject]) {
-        guard let displayName = d["displayName"] as? String, sgv = d["sgv"] as? String, date = d["date"] as? NSDate, sgvEmoji = d["sgvEmoji"] as? String, tintString = d["tintString"] as? String, delta = d["delta"] as? String, deltaShort = d["deltaShort"] as? String else {
+        guard let displayName = d["displayName"] as? String, let sgv = d["sgv"] as? String, let date = d["date"] as? Date, let sgvEmoji = d["sgvEmoji"] as? String, let tintString = d["tintString"] as? String, let delta = d["delta"] as? String, let deltaShort = d["deltaShort"] as? String else {
             return nil
         }
         
-        if let raw = d["raw"] as? String, rawShort = d["rawShort"] as? String {
+        if let raw = d["raw"] as? String, let rawShort = d["rawShort"] as? String {
             self.raw = raw
             self.rawShort = rawShort
         }

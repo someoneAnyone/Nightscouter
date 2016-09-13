@@ -18,52 +18,51 @@ import Foundation
 
 public typealias ArrayOfDictionaries = [[String: AnyObject]]
 
-
-public class SitesDataSource: SiteStoreType {
+open class SitesDataSource: SiteStoreType {
     
-    public static let sharedInstance = SitesDataSource()
+    open static let sharedInstance = SitesDataSource()
     
     // MARK: - Private iVars
     
-    private init() {
+    fileprivate init() {
         
-        defaults = NSUserDefaults.standardUserDefaults()
+        defaults = UserDefaults.standard
     }
     
-    private let defaults: NSUserDefaults
+    fileprivate let defaults: UserDefaults
     
-    private var sessionManagers: [SessionManagerType] = []
+    fileprivate var sessionManagers: [SessionManagerType] = []
     
-    public var storageLocation: StorageLocation { return .localKeyValueStore }
+    open var storageLocation: StorageLocation { return .localKeyValueStore }
     
-    public var otherStorageLocations: SiteStoreType?
+    open var otherStorageLocations: SiteStoreType?
     
-    public var sites: [Site] {
+    open var sites: [Site] {
         if let loadedSites = loadData() {
             return loadedSites
         }
         return []
     }
     
-    public var lastViewedSiteIndex: Int {
+    open var lastViewedSiteIndex: Int {
         get {
-            return defaults.objectForKey(DefaultKey.lastViewedSiteIndex.rawValue) as? Int ?? 0
+            return defaults.object(forKey: DefaultKey.lastViewedSiteIndex.rawValue) as? Int ?? 0
         }
         set {
             if lastViewedSiteIndex != newValue {
-                save(data: [DefaultKey.lastViewedSiteIndex.rawValue: newValue])
+                save(data: [DefaultKey.lastViewedSiteIndex.rawValue: newValue as Any])
             }
         }
     }
     
-    public var primarySiteUUID: NSUUID? {
+    open var primarySiteUUID: UUID? {
         set{
             if let uuid = newValue {
-                save(data: [DefaultKey.primarySiteUUID.rawValue: uuid.UUIDString])
+                save(data: [DefaultKey.primarySiteUUID.rawValue: uuid.uuidString as Any])
             }
         }
         get {
-            guard let uuidString = defaults.objectForKey(DefaultKey.primarySiteUUID.rawValue) as? String, let uuid = NSUUID(UUIDString: uuidString) else {
+            guard let uuidString = defaults.object(forKey: DefaultKey.primarySiteUUID.rawValue) as? String, let uuid = UUID(uuidString: uuidString) else {
                 return nil
             }
             return uuid
@@ -71,39 +70,39 @@ public class SitesDataSource: SiteStoreType {
     }
 
     
-    public func create(site site: Site, atIndex index: Int?) -> Bool {
+    open func create(site: Site, atIndex index: Int?) -> Bool {
         var initial: [Site] = self.sites
         
         if initial.isEmpty {
-            primarySiteUUID = site.uuid
+            primarySiteUUID = site.uuid as UUID
         }
         
         if let index = index {
-            initial.insert(site, atIndex: index)
+            initial.insert(site, at: index)
         } else {
             initial.append(site)
         }
         
         let siteDict = initial.map { $0.viewModel.dictionary }
         
-        save(data: [DefaultKey.sites.rawValue: siteDict])
+        save(data: [DefaultKey.sites.rawValue: siteDict as Any])
         
         return initial.contains(site)
     }
     
-    public func update(site site: Site) -> Bool {
+    open func update(site: Site) -> Bool {
         var initial = sites
         
         let success = initial.insertOrUpdate(site)
         
         let siteDict = initial.map { $0.viewModel.dictionary }
         
-        save(data: [DefaultKey.sites.rawValue: siteDict])
+        save(data: [DefaultKey.sites.rawValue: siteDict as Any])
         
         return success
     }
     
-    public func delete(site site: Site) -> Bool {
+    open func delete(site: Site) -> Bool {
         var initial = sites
         
         let success = initial.remove(object: site)
@@ -120,16 +119,16 @@ public class SitesDataSource: SiteStoreType {
         }
         
         let siteDict = initial.map { $0.viewModel.dictionary }
-        save(data:[DefaultKey.sites.rawValue: siteDict])
+        save(data:[DefaultKey.sites.rawValue: siteDict as Any])
         
         return success
     }
     
     
-    public func handle(applicationContextPayload payload: [String : AnyObject]) {
+    open func handle(applicationContextPayload payload: [String : AnyObject]) {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
-            defaults.setObject(sites, forKey: DefaultKey.sites.rawValue)
+            defaults.set(sites, forKey: DefaultKey.sites.rawValue)
         } else {
             print("No sites were found.")
         }
@@ -141,13 +140,13 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let uuidString = payload[DefaultKey.primarySiteUUID.rawValue] as? String {
-            self.primarySiteUUID = sites.filter{ $0.uuid.UUIDString == uuidString }.first!.uuid
+            self.primarySiteUUID = sites.filter{ $0.uuid.uuidString == uuidString }.first!.uuid as UUID
         } else {
             print("No primarySiteUUID was found.")
         }
         
         #if os(watchOS)
-            if let lastDataUpdateDateFromPhone = payload[DefaultKey.lastDataUpdateDateFromPhone.rawValue] as? NSDate {
+            if let lastDataUpdateDateFromPhone = payload[DefaultKey.lastDataUpdateDateFromPhone.rawValue] as? Date {
                 //defaults.setObject(lastDataUpdateDateFromPhone,forKey: DefaultKey.lastDataUpdateDateFromPhone.rawValue)
                 print(lastDataUpdateDateFromPhone)
             }
@@ -173,15 +172,15 @@ public class SitesDataSource: SiteStoreType {
         //NSNotificationCenter.defaultCenter().postNotificationName(NightscoutAPIClientNotification.DataUpdateSuccessful, object: nil)
     }
     
-    public func loadData() -> [Site]? {
-        guard let sites = defaults.arrayForKey(DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
+    open func loadData() -> [Site]? {
+        guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
             return []
         }
         
         return sites.flatMap { WatchModel(fromDictionary: $0)?.generateSite() }
     }
     
-    public func save(data dictionary: [String : AnyObject]) -> (savedLocally: Bool, updatedApplicationContext: Bool) {
+    open func save(data dictionary: [String : Any]) -> (savedLocally: Bool, updatedApplicationContext: Bool) {
         
         var dictionaryToSend = dictionary
 
@@ -189,10 +188,10 @@ public class SitesDataSource: SiteStoreType {
         var successfullAppContextUpdate = false
 
         for (key, object) in dictionaryToSend {
-            defaults.setObject(object, forKey: key)
+            defaults.set(object, forKey: key)
         }
 
-        dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = NSDate()
+        dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = Date() as AnyObject?
         
         successfullSave = defaults.synchronize()
         
@@ -209,7 +208,7 @@ public class SitesDataSource: SiteStoreType {
         return (successfullSave, successfullAppContextUpdate)
     }
     
-    public func clearAllSites() -> Bool {
+    open func clearAllSites() -> Bool {
         var currentSites = sites
         currentSites.removeAll()
         save(data: [DefaultKey.sites.rawValue: []])

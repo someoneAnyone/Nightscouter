@@ -15,21 +15,21 @@ public protocol BundleRepresentable {
     
     var infoDictionary: [String : AnyObject]? { get }
     
-    var bundleIdentifier: NSURL? { get }
+    var bundleIdentifier: URL? { get }
 }
 
 extension BundleRepresentable {
      public var sharedGroupIdentifier: String {
-        let group = NSURL(string: "group")
+        let group = URL(string: "group")
         
-        return (group?.URLByAppendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
+        return (group?.appendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
     }
     
     public var infoDictionary: [String: AnyObject]? {
-        return NSBundle.mainBundle().infoDictionary as [String : AnyObject]? // Grab the info.plist dictionary from the main bundle.
+        return Bundle.main.infoDictionary as [String : AnyObject]? // Grab the info.plist dictionary from the main bundle.
     }
     
-    public var bundleIdentifier: NSURL? {
-        return NSURL(string: NSBundle.mainBundle().bundleIdentifier!)
+    public var bundleIdentifier: URL? {
+        return URL(string: Bundle.main.bundleIdentifier!)
     }
 }

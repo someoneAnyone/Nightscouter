@@ -16,13 +16,13 @@ public extension Range
         {
             var offset = 0
             
-            if (startIndex as! Int) < 0   // allow negative ranges
+            if (lowerBound as! Int) < 0   // allow negative ranges
             {
-                offset = abs(startIndex as! Int)
+                offset = abs(lowerBound as! Int)
             }
             
-            let mini = UInt32(startIndex as! Int + offset)
-            let maxi = UInt32(endIndex as! Int + offset)
+            let mini = UInt32(lowerBound as! Int + offset)
+            let maxi = UInt32(upperBound as! Int + offset)
             
             return Int(mini + arc4random_uniform(maxi - mini)) - offset
         }
@@ -31,16 +31,18 @@ public extension Range
 
 
 public extension Double {
-    public func millisecondsToSecondsTimeInterval() -> NSTimeInterval {
-        return round(self/1000)
+    public mutating func millisecondsToSecondsTimeInterval() -> TimeInterval {
+        let milliseconds = self/1000
+        let rounded = milliseconds.rounded(.toNearestOrAwayFromZero)
+        return rounded
     }
     
-    public var inThePast: NSTimeInterval {
+    public var inThePast: TimeInterval {
         return -self
     }
     
-    public func toDateUsingSeconds() -> NSDate {
-        let date = NSDate(timeIntervalSince1970:millisecondsToSecondsTimeInterval())
+    public mutating func toDateUsingSeconds() -> Date {
+        let date = Date(timeIntervalSince1970:millisecondsToSecondsTimeInterval())
         return date
     }
     
@@ -59,20 +61,20 @@ public extension Double {
         }
     }
     
-    internal var mgdlFormatter: NSNumberFormatter {
-        let numberFormat = NSNumberFormatter()
-        numberFormat.numberStyle = .NoStyle
+    internal var mgdlFormatter: NumberFormatter {
+        let numberFormat = NumberFormatter()
+        numberFormat.numberStyle = .none
         
         return numberFormat
     }
     
     public var formattedForMgdl: String {
-        return self.mgdlFormatter.stringFromNumber(self)!
+        return self.mgdlFormatter.string(from: NSNumber(value: self))!
     }
 
-    internal var mmolFormatter: NSNumberFormatter {
-        let numberFormat = NSNumberFormatter()
-        numberFormat.numberStyle = .DecimalStyle
+    internal var mmolFormatter: NumberFormatter {
+        let numberFormat = NumberFormatter()
+        numberFormat.numberStyle = .decimal
         numberFormat.minimumFractionDigits = 1
         numberFormat.maximumFractionDigits = 1
         numberFormat.secondaryGroupingSize = 1
@@ -81,14 +83,14 @@ public extension Double {
     }
     
     public var formattedForMmol: String {
-        return self.mmolFormatter.stringFromNumber(self.toMmol)!
+        return self.mmolFormatter.string(from: NSNumber(value: self.toMmol))!
     }
 }
 
 public extension Double {
-    internal var bgDeltaFormatter: NSNumberFormatter {
-        let numberFormat =  NSNumberFormatter()
-        numberFormat.numberStyle = .DecimalStyle
+    internal var bgDeltaFormatter: NumberFormatter {
+        let numberFormat =  NumberFormatter()
+        numberFormat.numberStyle = .decimal
         numberFormat.positivePrefix = numberFormat.plusSign
         numberFormat.negativePrefix = numberFormat.minusSign
         
@@ -103,10 +105,10 @@ public extension Double {
             numberFormat.minimumFractionDigits = 1
             numberFormat.maximumFractionDigits = 1
             numberFormat.secondaryGroupingSize = 1
-           formattedNumber = numberFormat.stringFromNumber(self) ?? "?"
+            formattedNumber = numberFormat.string(from: NSNumber(value: self)) ?? "?"
             
         case .Mgdl:
-           formattedNumber = self.bgDeltaFormatter.stringFromNumber(self) ?? "?"
+            formattedNumber = self.bgDeltaFormatter.string(from: NSNumber(value: self)) ?? "?"
         }
         
         var unitMarker: String = units.description

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class HTTPClient {
+open class HTTPClient {
     
     enum RequestMethod: String {
         case GET
@@ -35,16 +35,16 @@ public class HTTPClient {
         static let ContentTypeValueApplicationJSON = "application/json"
     }
     
-    private let url: NSURL
-    private let baseURL: NSURL
-    private let pebbleURL: NSURL
-    private let entriesURL: NSURL
-    private let statusURL: NSURL
-    private let calsURL: NSURL
+    fileprivate let url: URL
+    fileprivate let baseURL: URL
+    fileprivate let pebbleURL: URL
+    fileprivate let entriesURL: URL
+    fileprivate let statusURL: URL
+    fileprivate let calsURL: URL
     
     internal let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
     
-    public typealias JSON = AnyObject
+    public typealias JSON = Any
     public typealias JSONDictionary = Dictionary<String, JSON>
     public typealias JSONArray = Array<JSONDictionary>
     public typealias EntryArray = Array<Entry>
@@ -52,40 +52,45 @@ public class HTTPClient {
     
     // MARK: Lifecycle
     
-    init(url: NSURL) {
+    init(url: URL) {
         self.url = url
-        self.pebbleURL = NSURL(string: URLPart.Pebble, relativeToURL: url)!
-        self.baseURL = url.URLByAppendingPathComponent(URLPart.ApiVersion)
-        self.entriesURL = baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathExtension(URLPart.FileExtension)
-        self.statusURL = baseURL.URLByAppendingPathComponent(URLPart.Status).URLByAppendingPathExtension(URLPart.FileExtension)
-        self.calsURL = baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathComponent(URLPart.Cals).URLByAppendingPathExtension(URLPart.FileExtension)
+        self.pebbleURL = URL(string: URLPart.Pebble, relativeTo: url)!
+        self.baseURL = url.appendingPathComponent(URLPart.ApiVersion)
+        self.entriesURL = baseURL.appendingPathComponent(URLPart.Entries).appendingPathExtension(URLPart.FileExtension)
+        self.statusURL = baseURL.appendingPathComponent(URLPart.Status).appendingPathExtension(URLPart.FileExtension)
+        self.calsURL = baseURL.appendingPathComponent(URLPart.Entries).appendingPathComponent(URLPart.Cals).appendingPathExtension(URLPart.FileExtension)
     }
     
     
     
     
-    lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
-    lazy var session: NSURLSession = NSURLSession(configuration: self.config)
+    lazy var config: URLSessionConfiguration = URLSessionConfiguration.default
+    lazy var session: URLSession = {
+        return URLSession(configuration: self.config)
+    }()
     
     
-    func fetchSiteData() {        
-        let request = NSMutableURLRequest(URL: url)
-        request.HTTPMethod = RequestMethod.GET.rawValue
-        request.cachePolicy = NSURLRequestCachePolicy.ReloadIgnoringCacheData
+    func fetchSiteData() {
+        var request = URLRequest(url: url)
+        request.httpMethod = RequestMethod.GET.rawValue
+        request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringCacheData
         
-            let downloadTask = session.dataTaskWithRequest(request) {
+        
+        
+        let downloadTask = session.dataTask(with: request, completionHandler: {
             (
-            let data, let response, let error) in
+            data, response, error) in
             
-            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+            guard let _:Data = data, let _:URLResponse = response  , error == nil else {
                 print("error")
                 return
             }
             
-            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            let dataString = NSString(data: data!, encoding: String.Encoding.utf8.rawValue)
             print(dataString)
             
-        }
+        })
+        
         downloadTask.resume()
     }
 }

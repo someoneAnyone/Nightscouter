@@ -36,10 +36,10 @@ extension DictionaryConvertible {
     }
     
     
-    private func unwrap(subject: Any) -> Any? {
+    fileprivate func unwrap(_ subject: Any) -> Any? {
         var value: Any?
         let mirrored = Mirror(reflecting:subject)
-        if mirrored.displayStyle != .Optional {
+        if mirrored.displayStyle != .optional {
             value = subject
         } else if let firstChild = mirrored.children.first {
             value = firstChild.value

@@ -7,7 +7,7 @@
 //
 import Foundation
 
-public class Site: NSObject, NSCoding, DictionaryConvertible {
+open class Site: NSObject, NSCoding, DictionaryConvertible {
     
     public struct PropertyKey {
         static let urlKey = "url"
@@ -22,7 +22,7 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         public static let uuidKey = "uuid"
     }
     
-    public var url: NSURL! {
+    open var url: URL! {
         didSet {
             #if DEBUG
                 print("Changed site URL to \(url) from \(oldValue)")
@@ -34,68 +34,68 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
             disabled = false
         }
     }
-    public var apiSecret: String? // set in keychain
+    open var apiSecret: String? // set in keychain
     
-    public var hasApiSecret: Bool {
+    open var hasApiSecret: Bool {
         return (apiSecret?.isEmpty != nil)
     }
     
-    public var configuration: ServerConfiguration? {
+    open var configuration: ServerConfiguration? {
         didSet {
-            lastConnectedDate = NSDate()
+            lastConnectedDate = Date()
         }
     }
-    public var watchEntry: WatchEntry?
-    public var entries: [Entry]?
-    public var allowNotifications: Bool
-    public var overrideScreenLock: Bool
+    open var watchEntry: WatchEntry?
+    open var entries: [Entry]?
+    open var allowNotifications: Bool
+    open var overrideScreenLock: Bool
     
-    public var complicationModels: [ComplicationModel] = []
-    public var calibrations: [Calibration] = []
+    open var complicationModels: [ComplicationModel] = []
+    open var calibrations: [Calibration] = []
     
-    public var disabled: Bool
+    open var disabled: Bool
     
-    public private(set) var uuid: NSUUID
-    public private(set) var lastConnectedDate: NSDate?
+    open fileprivate(set) var uuid: UUID
+    open fileprivate(set) var lastConnectedDate: Date?
     
 
-    public var updateNow: Bool {
-        let now = NSDate()
-        let result = nextRefreshDate.compare(now) == .OrderedAscending || configuration == nil || lastConnectedDate == nil
+    open var updateNow: Bool {
+        let now = Date()
+        let result = nextRefreshDate.compare(now) == .orderedAscending || configuration == nil || lastConnectedDate == nil
          print("updateNow calulcation: \(nextRefreshDate).comare(\(now)) == .OrderedAscending), result:\(result)")
         return result
     }
 
     
-    public var nextRefreshDate: NSDate {
-        let date = lastConnectedDate?.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime) ?? NSDate().dateByAddingTimeInterval(-10)
+    open var nextRefreshDate: Date {
+        let date = lastConnectedDate?.addingTimeInterval(Constants.NotableTime.StandardRefreshTime) ?? Date().addingTimeInterval(-10)
         print("iOS nextRefreshDate: " + date.description)
         return date
     }
     
-    public override var description: String {
+    open override var description: String {
         return dictionary.description
     }
     
-    public var dictionaryRep: [String: AnyObject] {
+    open var dictionaryRep: [String: AnyObject] {
 
         var dict = Dictionary<String, AnyObject>()
       
-        dict["urlString"] = url.absoluteString
+        dict["urlString"] = url.absoluteString as AnyObject?
         
         if let configuration = configuration {
-            dict["displayName"] = configuration.displayName
+            dict["displayName"] = configuration.displayName as AnyObject?
         }
         
         return dict
     }
     
-    public var viewModel: WatchModel {
+    open var viewModel: WatchModel {
         return WatchModel(fromSite: self)
     }
    
     // MARK: Initialization
-    public init?(url: NSURL, apiSecret: String?, uuid: NSUUID = NSUUID()) {
+    public init?(url: URL, apiSecret: String?, uuid: UUID = UUID()) {
         // Initialize stored properties.
         self.url = url
         self.apiSecret = apiSecret
@@ -115,28 +115,28 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
 
     
     // MARK: NSCoding
-    public func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(url, forKey: PropertyKey.urlKey)
-        aCoder.encodeObject(apiSecret, forKey: PropertyKey.apiSecretKey)
-        aCoder.encodeBool(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
-        aCoder.encodeObject(uuid.UUIDString, forKey: PropertyKey.uuidKey)
-        aCoder.encodeBool(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
-        aCoder.encodeBool(disabled, forKey: PropertyKey.disabledKey)
-        aCoder.encodeObject(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
+    open func encode(with aCoder: NSCoder) {
+        aCoder.encode(url, forKey: PropertyKey.urlKey)
+        aCoder.encode(apiSecret, forKey: PropertyKey.apiSecretKey)
+        aCoder.encode(allowNotifications, forKey: PropertyKey.allowNotificationsKey)
+        aCoder.encode(uuid.uuidString, forKey: PropertyKey.uuidKey)
+        aCoder.encode(overrideScreenLock, forKey: PropertyKey.overrideScreenLockKey)
+        aCoder.encode(disabled, forKey: PropertyKey.disabledKey)
+        aCoder.encode(lastConnectedDate, forKey: PropertyKey.lastConnectedDateKey)
     }
     
     required public init?(coder aDecoder: NSCoder) {
-        let url = aDecoder.decodeObjectForKey(PropertyKey.urlKey) as! NSURL
-        let apiSecret = aDecoder.decodeObjectForKey(PropertyKey.apiSecretKey) as? String
-        let allowNotif = aDecoder.decodeBoolForKey(PropertyKey.allowNotificationsKey)
-        let overrideScreen = aDecoder.decodeBoolForKey(PropertyKey.overrideScreenLockKey)
-        let disabledSite = aDecoder.decodeBoolForKey(PropertyKey.disabledKey)
-        let lastConnectedDate = aDecoder.decodeObjectForKey(PropertyKey.lastConnectedDateKey) as? NSDate
+        let url = aDecoder.decodeObject(forKey: PropertyKey.urlKey) as! URL
+        let apiSecret = aDecoder.decodeObject(forKey: PropertyKey.apiSecretKey) as? String
+        let allowNotif = aDecoder.decodeBool(forKey: PropertyKey.allowNotificationsKey)
+        let overrideScreen = aDecoder.decodeBool(forKey: PropertyKey.overrideScreenLockKey)
+        let disabledSite = aDecoder.decodeBool(forKey: PropertyKey.disabledKey)
+        let lastConnectedDate = aDecoder.decodeObject(forKey: PropertyKey.lastConnectedDateKey) as? Date
         
-        if let uuidString = aDecoder.decodeObjectForKey(PropertyKey.uuidKey) as? String {
-            self.uuid = NSUUID(UUIDString: uuidString)!
+        if let uuidString = aDecoder.decodeObject(forKey: PropertyKey.uuidKey) as? String {
+            self.uuid = UUID(uuidString: uuidString)!
         } else {
-            self.uuid = NSUUID()
+            self.uuid = UUID()
         }
         
         self.url = url
@@ -148,7 +148,7 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
         self.disabled = disabledSite
     }
     
-    public override func isEqual(object: AnyObject?) -> Bool {
+    open override func isEqual(_ object: Any?) -> Bool {
         if let object = object as? Site {
             return uuid == object.uuid
         } else {
@@ -160,7 +160,7 @@ public class Site: NSObject, NSCoding, DictionaryConvertible {
 extension Site {
     public convenience init?(dictionary: [String: AnyObject]) {
 
-        guard let url = dictionary["url"] as? NSURL else {
+        guard let url = dictionary["url"] as? URL else {
             return nil
         }
         
@@ -168,7 +168,7 @@ extension Site {
 
         self.init(url: url, apiSecret: api)
         
-        if let uuidString = dictionary["uuid"] as? String, uuid = NSUUID(UUIDString: uuidString) {
+        if let uuidString = dictionary["uuid"] as? String, let uuid = UUID(uuidString: uuidString) {
             self.uuid = uuid
         }
     }

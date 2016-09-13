@@ -11,7 +11,7 @@ import UIKit
 @IBDesignable
 public class CompassControl: UIView {
     
-    @IBInspectable public var sgvText:String = "---" {
+    @IBInspectable open var sgvText:String = "---" {
         didSet{
             setNeedsDisplay()
         }
@@ -21,18 +21,18 @@ public class CompassControl: UIView {
     var isDoubleUp = false
     var isArrowVisible = false
     
-    @IBInspectable public var color: UIColor = NSAssetKit.predefinedNeutralColor {
+    @IBInspectable open var color: UIColor = NSAssetKit.predefinedNeutralColor {
         didSet {
             setNeedsDisplay()
         }
     }
     
-    public override func intrinsicContentSize() -> CGSize {
+    open override var intrinsicContentSize : CGSize {
         super.invalidateIntrinsicContentSize()
         
-        let compactSize = CGSizeMake(156, 120)
-        let midSize = CGSizeMake(156, 140)
-        let fullSize = CGSizeMake(156, 200)
+        let compactSize = CGSize(width: 156, height: 120)
+        let midSize = CGSize(width: 156, height: 140)
+        let fullSize = CGSize(width: 156, height: 200)
         
         switch direction {
         case .None, .NotComputable, .Not_Computable:
@@ -47,13 +47,13 @@ public class CompassControl: UIView {
     }
     
     var animationValue: CGFloat = 0
-    @IBInspectable public var delta: String = "- --/--" {
+    @IBInspectable open var delta: String = "- --/--" {
         didSet{
             setNeedsDisplay()
         }
     }
     
-    public var direction: Direction = .None {
+    open var direction: Direction = .None {
         didSet {
             switch direction {
             case .None:
@@ -89,14 +89,14 @@ public class CompassControl: UIView {
 public extension CompassControl {
     override func awakeFromNib() {
         super.awakeFromNib()
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
         
         isAccessibilityElement = true
         
         setNeedsDisplay()
     }
     
-    override func drawRect(rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         
         NSAssetKit.drawTextBlock(frame: rect, arrowTintColor: self.color, sgvText: self.sgvText, bg_delta: self.delta, textSizeForSgv: 39, textSizeForDelta: 12)
         
@@ -113,7 +113,7 @@ public extension CompassControl {
 
 // MARK: - Methods
 public extension CompassControl {
-    public func configireDrawRect( isDoubleUp:Bool = false, isArrowVisible:Bool = true, isUncomputable:Bool = false, angle:CGFloat?=0, sgvText:String?=nil ){
+    public func configireDrawRect( _ isDoubleUp:Bool = false, isArrowVisible:Bool = true, isUncomputable:Bool = false, angle:CGFloat?=0, sgvText:String?=nil ){
         self.isDoubleUp = isDoubleUp
         self.isArrowVisible = isArrowVisible
         self.isUncomputable = isUncomputable
@@ -126,8 +126,8 @@ public extension CompassControl {
     }
     
     func takeSnapshot() -> UIImage {
-        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.mainScreen().scale)
-        drawViewHierarchyInRect(self.bounds, afterScreenUpdates: true)
+        UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
+        drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         return image

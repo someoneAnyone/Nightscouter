@@ -23,8 +23,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     @IBOutlet weak var siteWebView: UIWebView?
     @IBOutlet weak var siteActivityView: UIActivityIndicatorView?
     
-    @IBOutlet private weak var snoozeAlarmButton: UIBarButtonItem!
-    @IBOutlet private weak var headerView: BannerMessage?
+    @IBOutlet fileprivate weak var snoozeAlarmButton: UIBarButtonItem!
+    @IBOutlet fileprivate weak var headerView: BannerMessage?
     
     // MARK: Properties
     var site: Site? {
@@ -42,9 +42,9 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
         super.viewDidLoad()
         
         // remove any uneeded decorations from this view if contained within a UI page view controller
-        if let _ = parentViewController as? UIPageViewController {
+        if let _ = parent as? UIPageViewController {
             // println("contained in UIPageViewController")
-            self.view.backgroundColor = UIColor.clearColor()
+            self.view.backgroundColor = UIColor.clear
             self.siteNameLabel?.removeFromSuperview()
         }
         
@@ -57,24 +57,24 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
         if alarm == true {
             let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
             
-            snoozeAlarmButton.enabled = true
+            snoozeAlarmButton.isEnabled = true
             snoozeAlarmButton.tintColor = activeColor
             
             
-            headerView?.hidden = false
+            headerView?.isHidden = false
             
             headerView?.tintColor = activeColor
             headerView?.message = "One or more of your sites are sounding an alarm."
             
             
         } else if alarm == false && !snoozed {
-            headerView?.hidden = true
-            snoozeAlarmButton.enabled = false
+            headerView?.isHidden = true
+            snoozeAlarmButton.isEnabled = false
             snoozeAlarmButton.tintColor = nil
         }
         
         if snoozed {
-            headerView?.hidden = false
+            headerView?.isHidden = false
             headerView?.message = AlarmManager.sharedManager.snoozeText
             
             snoozeAlarmButton.image = UIImage(named: "alarmSliencedIcon")
@@ -87,8 +87,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
     deinit {
         AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
-        UIApplication.sharedApplication().idleTimerDisabled = false
+        NotificationCenter.default.removeObserver(self)
+        UIApplication.shared.isIdleTimerDisabled = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -98,40 +98,40 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmManage
         data.removeAll()
     }
     
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         self.siteWebView?.reload()
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
+    override var preferredStatusBarStyle : UIStatusBarStyle {
+        return UIStatusBarStyle.lightContent
     }
 }
 
 extension SiteDetailViewController{
-    @IBAction func unwindToSiteDetail(segue:UIStoryboardSegue) {
+    @IBAction func unwindToSiteDetail(_ segue:UIStoryboardSegue) {
         // print(">>> Entering \(#function) <<<")
         // print("\(segue)")
     }
     
-    override func viewDidDisappear(animated: Bool) {
+    override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        UIApplication.sharedApplication().idleTimerDisabled = false
+        UIApplication.shared.isIdleTimerDisabled = false
     }
 }
 
 // MARK: WebKit WebView Delegates
 extension SiteDetailViewController {
-    func webViewDidFinishLoad(webView: UIWebView) {
+    func webViewDidFinishLoad(_ webView: UIWebView) {
         // print(">>> Entering \(#function) <<<")
         let updateData = "updateData(\(self.data))"
         
         if let configuration = site?.configuration {
             
             let updateUnits = "updateUnits(\(configuration.displayUnits.hashValue))"
-            webView.stringByEvaluatingJavaScriptFromString(updateUnits)
+            webView.stringByEvaluatingJavaScript(from: updateUnits)
         }
-        webView.stringByEvaluatingJavaScriptFromString(updateData)
-        webView.hidden = false
+        webView.stringByEvaluatingJavaScript(from: updateData)
+        webView.isHidden = false
         
         if let configuration = self.site?.configuration {
             updateTitles(configuration.displayName)
@@ -146,11 +146,11 @@ extension SiteDetailViewController {
         self.loadWebView()
 
 
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteDetailViewController.updateSite(_:)), name: NSNotification.Name(rawValue: NightscoutAPIClientNotification.DataIsStaleUpdateNow), object: nil)
         
         if let siteOptional = site {
             // nsApi = NightscoutAPIClient(url:siteOptional.url)
-            UIApplication.sharedApplication().idleTimerDisabled = siteOptional.overrideScreenLock
+            UIApplication.shared.isIdleTimerDisabled = siteOptional.overrideScreenLock
             
         } else {
             site = AppDataManageriOS.sharedInstance.sites[AppDataManageriOS.sharedInstance.currentSiteIndex]
@@ -159,12 +159,12 @@ extension SiteDetailViewController {
         updateData()
     }
     
-    func updateSite(notification: NSNotification?) {
+    func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
         self.updateData()
     }
     
-    func updateTitles(title: String) {
+    func updateTitles(_ title: String) {
         self.navigationItem.title = title
         self.navigationController?.navigationItem.title = title
         self.siteNameLabel?.text = title
@@ -173,9 +173,9 @@ extension SiteDetailViewController {
     func updateData(forceUpdate force: Bool = false) {
         guard let site = self.site else { return }
         
-        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .OrderedDescending || site.entries == nil || site.configuration == nil || force == true) {
+        if (site.lastConnectedDate?.compare(site.nextRefreshDate) == .orderedDescending || site.entries == nil || site.configuration == nil || force == true) {
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = true
+            UIApplication.shared.isNetworkActivityIndicatorVisible = true
             self.siteActivityView?.startAnimating()
             
             fetchSiteData(site, handler: { (returnedSite, error) -> Void in
@@ -191,8 +191,8 @@ extension SiteDetailViewController {
         defer {
             print("setting networkActivityIndicatorVisible: false and stopping animation.")
             
-            UIApplication.sharedApplication().networkActivityIndicatorVisible = false
-            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            DispatchQueue.main.async(execute: { () -> Void in
                 self.siteActivityView?.stopAnimating()
                 
                 
@@ -206,33 +206,33 @@ extension SiteDetailViewController {
             for entry in entries {
                 if let sgv = entry.sgv {
                     if (sgv.sgv > Double(Constants.EntryCount.LowerLimitForValidSGV)) {
-                        self.data.append(entry.jsonForChart)
+                        self.data.append(entry.jsonForChart as AnyObject)
                     }
                 }
             }
         }
         
-        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+        DispatchQueue.main.async(execute: { () -> Void in
             let model = site.viewModel
             
             // Configure the Compass
             self.siteCompassControl?.configureWith(model)
             
             // Battery label
-            self.siteBatteryHeader?.hidden = !model.batteryVisible
-            self.siteBatteryLabel?.hidden = !model.batteryVisible
+            self.siteBatteryHeader?.isHidden = !model.batteryVisible
+            self.siteBatteryLabel?.isHidden = !model.batteryVisible
             self.siteBatteryLabel?.text = model.batteryString
             self.siteBatteryLabel?.textColor = UIColor(hexString: model.batteryColor)
             
             // Get date object as string.
-            let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+            let dateString = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
             // Last reading label
             self.siteLastReadingLabel?.text = dateString
             self.siteLastReadingLabel?.textColor = UIColor(hexString: model.lastReadingColor)
             
-            self.siteRawLabel?.hidden = !model.rawVisible
-            self.siteRawHeader?.hidden = !model.rawVisible
+            self.siteRawLabel?.isHidden = !model.rawVisible
+            self.siteRawHeader?.isHidden = !model.rawVisible
             
             self.siteRawLabel?.text = model.rawString
             self.siteRawLabel?.textColor = UIColor(hexString: model.rawColor)
@@ -248,45 +248,45 @@ extension SiteDetailViewController {
     func loadWebView () {
         self.siteWebView?.delegate = self
         self.siteWebView?.scrollView.bounces = false
-        self.siteWebView?.scrollView.scrollEnabled = false
+        self.siteWebView?.scrollView.isScrollEnabled = false
         
-        let filePath = NSBundle.mainBundle().pathForResource("index", ofType: "html", inDirectory: "html")
-        let defaultDBPath = "\(NSBundle.mainBundle().resourcePath)\\html"
+        let filePath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "html")
+        let defaultDBPath = "\(Bundle.main.resourcePath)\\html"
         
-        let fileExists = NSFileManager.defaultManager().fileExistsAtPath(filePath!)
+        let fileExists = FileManager.default.fileExists(atPath: filePath!)
         if !fileExists {
             do {
-                try NSFileManager.defaultManager().copyItemAtPath(defaultDBPath, toPath: filePath!)
+                try FileManager.default.copyItem(atPath: defaultDBPath, toPath: filePath!)
             } catch _ {
             }
         }
-        let request = NSURLRequest(URL: NSURL.fileURLWithPath(filePath!))
+        let request = URLRequest(url: URL(fileURLWithPath: filePath!))
         self.siteWebView?.loadRequest(request)
     }
     
-    func updateScreenOverride(shouldOverride: Bool) {
+    func updateScreenOverride(_ shouldOverride: Bool) {
         guard let site = self.site else {
             return
         }
-        UIApplication.sharedApplication().idleTimerDisabled = shouldOverride
+        UIApplication.shared.isIdleTimerDisabled = shouldOverride
         site.overrideScreenLock = shouldOverride
         AppDataManageriOS.sharedInstance.updateSite(site)
         
         
         #if DEBUG
-            print("{site.overrideScreenLock:\(site.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.sharedApplication().idleTimerDisabled)}")
+            print("{site.overrideScreenLock:\(site.overrideScreenLock), UIApplication.idleTimerDisabled:\(UIApplication.shared.isIdleTimerDisabled)}")
         #endif
     }
     
-    @IBAction func manageAlarm(sender: AnyObject?) {
+    @IBAction func manageAlarm(_ sender: AnyObject?) {
         AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
     }
     
-    @IBAction func gotoSiteSettings(sender: UIBarButtonItem) {
+    @IBAction func gotoSiteSettings(_ sender: UIBarButtonItem) {
         
-        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: .ActionSheet)
+        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertScreenOverrideTitle.localized, message: Constants.LocalizedString.uiAlertScreenOverrideMessage.localized, preferredStyle: .actionSheet)
         
-        let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .Cancel) { (action) in
+        let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .cancel) { (action) in
             #if DEBUG
                 print("Canceled action: \(action)")
             #endif
@@ -299,7 +299,7 @@ extension SiteDetailViewController {
             yesString = checkEmoji
         }
         
-        let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: .Default) { (action) -> Void in
+        let yesAction = UIAlertAction(title: "\(yesString)\(Constants.LocalizedString.generalYesLabel.localized)", style: .default) { (action) -> Void in
             self.updateScreenOverride(true)
             #if DEBUG
                 print("Yes action: \(action)")
@@ -315,7 +315,7 @@ extension SiteDetailViewController {
             noString = checkEmoji
         }
         
-        let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: .Destructive) { (action) -> Void in
+        let noAction = UIAlertAction(title: "\(noString)\(Constants.LocalizedString.generalNoLabel.localized)", style: .destructive) { (action) -> Void in
             self.updateScreenOverride(false)
             #if DEBUG
                 print("No action: \(action)")
@@ -333,7 +333,7 @@ extension SiteDetailViewController {
             popoverController.barButtonItem = sender
         }
         
-        self.presentViewController(alertController, animated: true) {
+        self.present(alertController, animated: true) {
             #if DEBUG
                 print("presentViewController: \(alertController.debugDescription)")
             #endif
@@ -342,18 +342,18 @@ extension SiteDetailViewController {
 }
 
 extension SiteDetailViewController: UpdatableUserInterfaceType {
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         startUpdateUITimer()
     }
     
-    func updateUI(notif: NSTimer) {
+    func updateUI(_ notif: Timer) {
         
         print("updating ui for: \(notif)")
         self.updateData()
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         updateUITimer.invalidate()
     }

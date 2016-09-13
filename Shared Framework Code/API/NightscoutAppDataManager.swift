@@ -8,8 +8,8 @@
 
 import Foundation
 
-let updateInterval: NSTimeInterval = Constants.NotableTime.StandardRefreshTime
-public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
+let updateInterval: TimeInterval = Constants.NotableTime.StandardRefreshTime
+public let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high)
 
 
 /**
@@ -21,26 +21,26 @@ public let queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0)
  
  - returns: none
  */
-public func quickFetch(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
-    dispatch_async(queue) {
+public func quickFetch(_ site: Site, handler: @escaping (_ returnedSite: Site, _ error: NightscoutAPIError) -> Void) {
+    queue.async {
         print(">>> Entering \(#function) <<<")
         print("STARTING quickFetch:    Load all available site data for: \(site.url)")
         
         let nsAPI = NightscoutAPIClient(url: site.url)
-        var errorToReturn: NightscoutAPIError = .NoError
-        let startDate = NSDate()
+        var errorToReturn: NightscoutAPIError = .noError
+        let startDate = Date()
         
         print("STEP 1:  GET Sever Status/Configuration")
         
         nsAPI.fetchServerConfiguration { (result) -> Void in
             switch result {
-            case .Error:
+            case .error:
                 site.disabled = true
-                errorToReturn = NightscoutAPIError.DownloadErorr("No configuration was found")
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    handler(returnedSite: site, error: errorToReturn)
+                errorToReturn = NightscoutAPIError.downloadErorr("No configuration was found")
+                OperationQueue.main.addOperation({ () -> Void in
+                    handler(site, errorToReturn)
                 })
-            case let .Value(boxedConfiguration):
+            case let .value(boxedConfiguration):
                 let configuration = boxedConfiguration.value
                 site.configuration = configuration
                 print("\tSTEP 2: GET Sever Pebble/Watch")
@@ -49,11 +49,11 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
                     site.watchEntry = watchEntry
                     errorToReturn = errorCode
                     
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                    OperationQueue.main.addOperation({ () -> Void in
                         print("\t\t\t\t\tCOMPLETE:    All network operations are complete ")
-                        print("\t\t\t\t\tDURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+                        print("\t\t\t\t\tDURATION:    The entire process took: \(Date().timeIntervalSince(startDate))")
                         print("\t\t\t\t\tSTEP 6 quickFetch:      Return Handler to main thread.")
-                        handler(returnedSite: site, error: errorToReturn)
+                        handler(site, errorToReturn)
                     })
                 })
             }
@@ -70,12 +70,12 @@ public func quickFetch(site: Site, handler: (returnedSite: Site, error: Nightsco
  
  - returns: none
  */
-public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: NightscoutAPIError) -> Void) {
+public func fetchSiteData(_ site: Site, handler: @escaping (_ returnedSite: Site, _ error: NightscoutAPIError) -> Void) {
     print(">>> Entering \(#function) <<<")
     print("STARTING fetchSiteData:    Load all available site data for: \(site.url)")
     let nsAPI = NightscoutAPIClient(url: site.url)
-    var errorToReturn: NightscoutAPIError = .NoError
-    let startDate = NSDate()
+    var errorToReturn: NightscoutAPIError = .noError
+    let startDate = Date()
     quickFetch(site, handler: { (returnedSite, error) -> Void in
         print("\t\tSTEP 3: GET Sever Entries/SGVs ")
         nsAPI.fetchDataForEntries(Constants.EntryCount.NumberForComplication, completetion: { (entries, errorCode) -> Void in
@@ -88,14 +88,14 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
                 errorToReturn = errorCode
                 
                 guard let calibrations = calibrations else {
-                    NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                        handler(returnedSite: site, error: errorCode)
+                    OperationQueue.main.addOperation({ () -> Void in
+                        handler(site, errorCode)
                     })
                     return
                 }
                 
-                let cals = calibrations.sort{(item1:Entry, item2:Entry) -> Bool in
-                    item1.date.compare(item2.date) == .OrderedDescending
+                let cals = calibrations.sorted{(item1:Entry, item2:Entry) -> Bool in
+                    item1.date.compare(item2.date) == .orderedDescending
                     }.flatMap { $0.cal }
                 
                 site.calibrations = cals
@@ -104,11 +104,11 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
                 let complicationModels = generateComplicationModels(forSite: site, calibrations: site.calibrations)
                 site.complicationModels = complicationModels
                 
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                OperationQueue.main.addOperation({ () -> Void in
                     print("\t\t\t\t\tCOMPLETE:    All network operations are complete")
-                    print("\t\t\t\t\tDURATION:    The entire process took: \(NSDate().timeIntervalSinceDate(startDate))")
+                    print("\t\t\t\t\tDURATION:    The entire process took: \(Date().timeIntervalSince(startDate))")
                     print("\t\t\t\t\tSTEP 6 fetchSiteData:      Return Handler to main thread.")
-                    handler(returnedSite: site, error: errorToReturn)
+                    handler(site, errorToReturn)
                 })
             })
         })
@@ -117,11 +117,11 @@ public func fetchSiteData(site: Site, handler: (returnedSite: Site, error: Night
 
 public func generateComplicationModels(forSite site: Site, calibrations: [Calibration]) -> [ComplicationModel] {
     
-    let cals = calibrations.sort{(item1: Calibration, item2: Calibration) -> Bool in
-        item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+    let cals = calibrations.sorted{(item1: Calibration, item2: Calibration) -> Bool in
+        item1.date.compare(item2.date as Date) == ComparisonResult.orderedDescending
     }
     
-    guard let configuration = site.configuration, entries = site.entries else {
+    guard let configuration = site.configuration, let entries = site.entries else {
         return []
     }
     
@@ -130,7 +130,7 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
     // Get prefered Units. mmol/L or mg/dL
     let units: Units = configuration.displayUnits
     
-    for (index, entry) in entries.enumerate() {
+    for (index, entry) in entries.enumerated() {
         
         if let sgvValue = entry.sgv {
             
@@ -169,7 +169,7 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
             var raw: String?
             var rawShort: String?
             
-            if let cal = nearestCalibration(calibrations: cals, calibrationsforDate: entry.date) {
+            if let cal = nearestCalibration(calibrations: cals, calibrationsforDate: entry.date as Date) {
                 
                 var convertedRawValue: String = sgvValue.rawIsigToRawBg(cal).formattedForMgdl
                 if configuration.displayUnits == .Mmol {
@@ -196,15 +196,15 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
      }
      */
     
-    let model = cmodels.maxElement{ (lModel, rModel) -> Bool in
-        return rModel.date.compare(lModel.date) == .OrderedDescending
+    let model = cmodels.max{ (lModel, rModel) -> Bool in
+        return rModel.date.compare(lModel.date as Date) == .orderedDescending
     }
     
     if let model = model {
-        let warningStaleDate = model.date.dateByAddingTimeInterval(60.0 * 60)
+        let warningStaleDate = model.date.addingTimeInterval(60.0 * 60)
         let warnItem = ComplicationModel(displayName:"Data Missing", date: warningStaleDate, sgv: "WARNING", sgvEmoji: " ", tintString: colorForDesiredColorState(.Warning).toHexString(), delta: " ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
         
-        let urgentStaleDate = model.date.dateByAddingTimeInterval(60.0 * 90)
+        let urgentStaleDate = model.date.addingTimeInterval(60.0 * 90)
         let urgentItem = ComplicationModel(displayName:"Data Missing", date: urgentStaleDate, sgv: "URGENT", sgvEmoji: " ", tintString: colorForDesiredColorState(.Alert).toHexString(), delta:" ", deltaShort: " ", raw: "Please update.", rawShort: "Please update.")
         
         cmodels.append(warnItem)
@@ -212,8 +212,8 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
     }
     
     
-    cmodels.sortInPlace{(item1: ComplicationModel, item2: ComplicationModel) -> Bool in
-        item1.date.compare(item2.date) == NSComparisonResult.OrderedDescending
+    cmodels.sort{(item1: ComplicationModel, item2: ComplicationModel) -> Bool in
+        item1.date.compare(item2.date as Date) == ComparisonResult.orderedDescending
     }
     
     
@@ -221,15 +221,15 @@ public func generateComplicationModels(forSite site: Site, calibrations: [Calibr
 }
 
 
-private func nearestCalibration(calibrations cals:[Calibration], calibrationsforDate date: NSDate) -> Calibration? {
+private func nearestCalibration(calibrations cals:[Calibration], calibrationsforDate date: Date) -> Calibration? {
     
     if cals.isEmpty { return nil }
     
     var desiredIndex: Int?
-    var minDate: NSTimeInterval = fabs(NSDate().timeIntervalSinceNow)
+    var minDate: TimeInterval = fabs(Date().timeIntervalSinceNow)
     
-    for (index, entry) in cals.enumerate() {
-        let dateInterval = fabs(entry.date.timeIntervalSinceDate(date))
+    for (index, entry) in cals.enumerated() {
+        let dateInterval = fabs(entry.date.timeIntervalSince(date))
         let compared = minDate < dateInterval
         // print("Testing: \(minDate) < \(dateInterval) = \(compared)")
         if compared {

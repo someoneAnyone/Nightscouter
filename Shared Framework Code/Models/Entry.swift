@@ -43,21 +43,21 @@ public enum Type: String, CustomStringConvertible {
     }
 }
 
-public class Entry: DictionaryConvertible {
-    public var identifier: String
-    public var device: Device
+open class Entry: DictionaryConvertible {
+    open var identifier: String
+    open var device: Device
     
-    public var date: NSDate
+    open var date: Date
     
-    public var dateTimeAgoString: String {
+    open var dateTimeAgoString: String {
         get{
-            return NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(date)
+            return Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(date)
         }
     }
-    public var dateTimeAgoStringShort: String {
+    open var dateTimeAgoStringShort: String {
         get{
             
-            let shorterTimeAgo = dateTimeAgoString.componentsSeparatedByString(" ").dropLast()
+            let shorterTimeAgo = dateTimeAgoString.components(separatedBy: " ").dropLast()
             var finalString: String = ""
             
             for stringPart in shorterTimeAgo {
@@ -66,22 +66,22 @@ public class Entry: DictionaryConvertible {
             return "\(finalString)"
         }
     }
-    public var dateString: String?
+    open var dateString: String?
     
-    public var sgv: SensorGlucoseValue?
-    public var cal: Calibration?
-    public var mbg: MeterBloodGlucose?
+    open var sgv: SensorGlucoseValue?
+    open var cal: Calibration?
+    open var mbg: MeterBloodGlucose?
     
-    public var type: Type
+    open var type: Type
     
-    public init(identifier: String, date: NSDate, device: Device) {
+    public init(identifier: String, date: Date, device: Device) {
         self.identifier = identifier
         self.date = date
         self.device = device
         self.type = Type()
     }
     
-    public init(identifier: String, date: NSDate, device: Device, dateString: String, sgv: SensorGlucoseValue?, cal: Calibration?, mbg: MeterBloodGlucose?, type: Type) {
+    public init(identifier: String, date: Date, device: Device, dateString: String, sgv: SensorGlucoseValue?, cal: Calibration?, mbg: MeterBloodGlucose?, type: Type) {
         self.identifier = identifier
         self.date = date
         self.device = device
@@ -115,12 +115,12 @@ public extension Entry {
                 color = "grey"
             }
             
-            let nsDateFormatter = NSDateFormatter()
+            let nsDateFormatter = DateFormatter()
             // nsDateFormatter.dateFormat = "EEE MMM d yyy HH:mm:ss OOOO (zzz)"
             nsDateFormatter.dateFormat = "EEE MMM d HH:mm:ss zzz yyy"
-            nsDateFormatter.locale = NSLocale(localeIdentifier: "EN")
-            nsDateFormatter.timeZone = NSTimeZone.localTimeZone()
-            let dateForJson = nsDateFormatter.stringFromDate(entry.date)
+            nsDateFormatter.locale = Locale(identifier: "EN")
+            nsDateFormatter.timeZone = TimeZone.autoupdatingCurrent
+            let dateForJson = nsDateFormatter.string(from: entry.date)
             
             let dict: NSDictionary = ["color" : color, "date" : dateForJson, "filtered" : entry.sgv!.filtered, "noise": entry.sgv!.noise.rawValue, "sgv" : entry.sgv!.sgv, "type" : entry.type.rawValue, "unfiltered" : entry.sgv!.unfiltered, "y" : entry.sgv!.sgv, "direction" : entry.sgv!.direction.rawValue]
             
@@ -129,8 +129,8 @@ public extension Entry {
     }
     
     public var jsonForChart: String {
-        let jsObj =  try? NSJSONSerialization.dataWithJSONObject(self.chartDictionary, options:[])
-        let str = NSString(data: jsObj!, encoding: NSUTF8StringEncoding)
+        let jsObj =  try? JSONSerialization.data(withJSONObject: self.chartDictionary, options:[])
+        let str = NSString(data: jsObj!, encoding: String.Encoding.utf8.rawValue)
         return String(str!)
     }
 }
@@ -138,15 +138,15 @@ public extension Entry {
 
 public extension Entry {
     
-    public convenience init(jsonDictionary: [String: AnyObject]) {
+    public convenience init(jsonDictionary: [String: Any]) {
         
         let dict = jsonDictionary
         
         guard let identifier = dict[EntryPropertyKey.identKey] as? String,
-            deviceString = dict[EntryPropertyKey.deviceKey] as? String,
-            rawEpoch = dict[EntryPropertyKey.dateKey] as? Double else {
+            let deviceString = dict[EntryPropertyKey.deviceKey] as? String,
+            var rawEpoch = dict[EntryPropertyKey.dateKey] as? Double else {
 
-                self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: Device())
+                self.init(identifier: UUID().uuidString, date: Date(), device: Device())
                 return
         }
 
@@ -156,9 +156,9 @@ public extension Entry {
         let dateString = dict[EntryPropertyKey.dateStringKey] as? String
         
         guard let stringForType = dict[EntryPropertyKey.typeKey] as? String,
-            type: Type = Type(rawValue: stringForType) else {
+            let type: Type = Type(rawValue: stringForType) else {
                 
-                self.init(identifier: NSUUID().UUIDString, date: NSDate(), device: Device())
+                self.init(identifier: UUID().uuidString, date: Date(), device: Device())
                 
                 return
         }
@@ -178,7 +178,7 @@ public extension Entry {
             }
 
             guard let directionString = dict[EntryPropertyKey.directionKey] as? String,
-                direction = Direction(rawValue: directionString) else {
+                let direction = Direction(rawValue: directionString) else {
             
                     break
             }
@@ -187,8 +187,8 @@ public extension Entry {
             var unfiltlered: Int = 0
             var rssi: Int = 0
         if let  filt = dict[EntryPropertyKey.filteredKey] as? Int,
-            unfilt = dict[EntryPropertyKey.unfilteredKey] as? Int,
-            rss = dict[EntryPropertyKey.rssiKey] as? Int {
+            let unfilt = dict[EntryPropertyKey.unfilteredKey] as? Int,
+            let rss = dict[EntryPropertyKey.rssiKey] as? Int {
 
                 filtered = filt
                 unfiltlered = unfilt
@@ -196,9 +196,9 @@ public extension Entry {
         }
         
         
-            var noise = Noise.None
+            var noise = Noise.none
             if let noiseInt = dict[EntryPropertyKey.noiseKey] as? Int,
-                noiseType = Noise(rawValue: noiseInt) {
+                let noiseType = Noise(rawValue: noiseInt) {
                     
                     noise = noiseType
             }
@@ -213,7 +213,7 @@ public extension Entry {
             
         case .Cal:
             guard let slope = dict[EntryPropertyKey.slopeKey] as? Double,
-                intercept = dict[EntryPropertyKey.interceptKey] as? Double,
+                let intercept = dict[EntryPropertyKey.interceptKey] as? Double,
                 let scale = dict[EntryPropertyKey.scaleKey] as? Double else {
                     break
             }
@@ -227,6 +227,6 @@ public extension Entry {
             #endif
             break
         }
-        self.init(identifier: identifier, date: date, device:device, dateString: dateString!, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
+        self.init(identifier: identifier, date: date as Date, device:device, dateString: dateString!, sgv: sgValue, cal: calValue, mbg: mbgValue, type: type)
     }
 }

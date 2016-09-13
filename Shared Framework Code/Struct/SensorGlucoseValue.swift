@@ -15,16 +15,16 @@ public enum Direction : String, CustomStringConvertible {
     
     public var description : String {
         switch(self) {
-        case .None: return NSLocalizedString("directionNone", tableName: nil, bundle:  NSBundle.mainBundle(), value: "None", comment: "Label used to indicate a direction.")
-        case .DoubleUp: return NSLocalizedString("directionDoubleUp", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Double Up", comment: "Label used to indicate a direction.")
-        case .SingleUp: return NSLocalizedString("directionSingleUp", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Single Up", comment: "Label used to indicate a direction.")
-        case .FortyFiveUp: return NSLocalizedString("directionFortyFiveUp", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Forty Five Up", comment: "Label used to indicate a direction.")
-        case .Flat: return NSLocalizedString("directionFlat", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Flat", comment: "Label used to indicate a direction.")
-        case .FortyFiveDown: return NSLocalizedString("directionFortyFiveDown", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Forty Five Down", comment: "Label used to indicate a direction.")
-        case .SingleDown: return NSLocalizedString("directionSingleDown", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Single Down", comment: "Label used to indicate a direction.")
-        case .DoubleDown: return NSLocalizedString("directionFortyDoubleDown", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Double Down", comment: "Label used to indicate a direction.")
-        case .NotComputable, .Not_Computable: return NSLocalizedString("directionNotComputable", tableName: nil, bundle:  NSBundle.mainBundle(), value: "N/C", comment: "Label used to indicate a direction.")
-        case .RateOutOfRange: return NSLocalizedString("directionRateOutOfRange", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Rate Out Of Range", comment: "Label used to indicate a direction.")
+        case .None: return NSLocalizedString("directionNone", tableName: nil, bundle:  Bundle.main, value: "None", comment: "Label used to indicate a direction.")
+        case .DoubleUp: return NSLocalizedString("directionDoubleUp", tableName: nil, bundle:  Bundle.main, value: "Double Up", comment: "Label used to indicate a direction.")
+        case .SingleUp: return NSLocalizedString("directionSingleUp", tableName: nil, bundle:  Bundle.main, value: "Single Up", comment: "Label used to indicate a direction.")
+        case .FortyFiveUp: return NSLocalizedString("directionFortyFiveUp", tableName: nil, bundle:  Bundle.main, value: "Forty Five Up", comment: "Label used to indicate a direction.")
+        case .Flat: return NSLocalizedString("directionFlat", tableName: nil, bundle:  Bundle.main, value: "Flat", comment: "Label used to indicate a direction.")
+        case .FortyFiveDown: return NSLocalizedString("directionFortyFiveDown", tableName: nil, bundle:  Bundle.main, value: "Forty Five Down", comment: "Label used to indicate a direction.")
+        case .SingleDown: return NSLocalizedString("directionSingleDown", tableName: nil, bundle:  Bundle.main, value: "Single Down", comment: "Label used to indicate a direction.")
+        case .DoubleDown: return NSLocalizedString("directionFortyDoubleDown", tableName: nil, bundle:  Bundle.main, value: "Double Down", comment: "Label used to indicate a direction.")
+        case .NotComputable, .Not_Computable: return NSLocalizedString("directionNotComputable", tableName: nil, bundle:  Bundle.main, value: "N/C", comment: "Label used to indicate a direction.")
+        case .RateOutOfRange: return NSLocalizedString("directionRateOutOfRange", tableName: nil, bundle:  Bundle.main, value: "Rate Out Of Range", comment: "Label used to indicate a direction.")
 
         }
     }
@@ -46,7 +46,7 @@ public enum Direction : String, CustomStringConvertible {
         }
     }
     
-   static public func directionForString(directionString: String) -> Direction {
+   static public func directionForString(_ directionString: String) -> Direction {
         switch directionString {
         case "None": return .None
         case "DoubleUp": return .DoubleUp
@@ -68,20 +68,20 @@ public enum Direction : String, CustomStringConvertible {
 }
 
 public enum Noise : Int, CustomStringConvertible {
-    case None = 0, Clean = 1, Light = 2, Medium = 3, Heavy = 4
+    case none = 0, clean = 1, light = 2, medium = 3, heavy = 4
     
     public var description: String {
         switch (self) {
-        case .None: return NSLocalizedString("noiseNone", tableName: nil, bundle:  NSBundle.mainBundle(), value: "None", comment: "Label used to indicate a direction.")
-        case .Clean: return NSLocalizedString("noiseClean", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Clean", comment: "Label used to indicate a direction.")
-        case .Light: return NSLocalizedString("noiseLight", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Light", comment: "Label used to indicate a direction.")
-        case .Medium: return NSLocalizedString("noiseMedium", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Medium", comment: "Label used to indicate a direction.")
-        case .Heavy: return NSLocalizedString("noiseHeavy", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Heavy", comment: "Label used to indicate a direction.")
+        case .none: return NSLocalizedString("noiseNone", tableName: nil, bundle:  Bundle.main, value: "None", comment: "Label used to indicate a direction.")
+        case .clean: return NSLocalizedString("noiseClean", tableName: nil, bundle:  Bundle.main, value: "Clean", comment: "Label used to indicate a direction.")
+        case .light: return NSLocalizedString("noiseLight", tableName: nil, bundle:  Bundle.main, value: "Light", comment: "Label used to indicate a direction.")
+        case .medium: return NSLocalizedString("noiseMedium", tableName: nil, bundle:  Bundle.main, value: "Medium", comment: "Label used to indicate a direction.")
+        case .heavy: return NSLocalizedString("noiseHeavy", tableName: nil, bundle:  Bundle.main, value: "Heavy", comment: "Label used to indicate a direction.")
         }
     }
     
     public init() {
-        self = .None
+        self = .none
     }
 }
 
@@ -112,7 +112,7 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
     }
     
     enum ReservedValues: Double {
-        case NoGlucose=0, SensoreNotActive=1, MinimalDeviation=2, NoAntenna=3, SensorNotCalibrated=5, CountsDeviation=6, AbsoluteDeviation=9, PowerDeviation=10, BadRF=12, HupHolland=17
+        case noGlucose=0, sensoreNotActive=1, minimalDeviation=2, noAntenna=3, sensorNotCalibrated=5, countsDeviation=6, absoluteDeviation=9, powerDeviation=10, badRF=12, hupHolland=17
     }
     
     
@@ -122,30 +122,30 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
         
         if let special:ReservedValues = ReservedValues(rawValue: mgdlSgvValue) {
             switch (special) {
-            case .NoGlucose:
+            case .noGlucose:
                 return "?NC"
-            case .SensoreNotActive:
+            case .sensoreNotActive:
                 return "?NA"
-            case .MinimalDeviation:
+            case .minimalDeviation:
                 return "?MD"
-            case .NoAntenna:
+            case .noAntenna:
                 return "?NA"
-            case .SensorNotCalibrated:
+            case .sensorNotCalibrated:
                 return "?NC"
-            case .CountsDeviation:
+            case .countsDeviation:
                 return "?CD"
-            case .AbsoluteDeviation:
+            case .absoluteDeviation:
                 return "?AD"
-            case .PowerDeviation:
+            case .powerDeviation:
                 return "???"
-            case .BadRF:
+            case .badRF:
                 return "?RF✖"
-            case .HupHolland:
+            case .hupHolland:
                 return "MH"
             }
         }
         if sgv >= 30 && sgv < 40 {
-            return  NSLocalizedString("sgvLowString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "Low", comment: "Label used to indicate a very low blood sugar.")
+            return  NSLocalizedString("sgvLowString", tableName: nil, bundle:  Bundle.main, value: "Low", comment: "Label used to indicate a very low blood sugar.")
         }
         if units == Units.Mgdl  {
             return sgv.formattedForMgdl
@@ -154,7 +154,7 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
         return sgv.isInteger ? sgv.formattedForMmol : sgv.toMgdl.formattedForMmol//NSNumberFormatter.localizedStringFromNumber(sgv, numberStyle: NSNumberFormatterStyle.DecimalStyle)
     }
     
-    @available(*, deprecated=1.0, message="Please use func func sgvString(forUnits units: Units) -> String")
+    @available(*, deprecated: 1.0, message: "Please use func func sgvString(forUnits units: Units) -> String")
     public var sgvString: String {
         get {
             return sgvString(forUnits: .Mgdl)
@@ -165,11 +165,11 @@ public struct SensorGlucoseValue: DictionaryConvertible, GlucoseValueHolder {
 
 /// Raw data support. Requires a calibration.
 public extension SensorGlucoseValue {
-    public func rawIsigToRawBg(calValue: Calibration) -> Double {
+    public func rawIsigToRawBg(_ calValue: Calibration) -> Double {
         return rawIsigToRawBg(self, calValue: calValue)
     }
     
-    internal func rawIsigToRawBg(sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
+    internal func rawIsigToRawBg(_ sgValue: SensorGlucoseValue, calValue: Calibration) -> Double {
         
         var raw: Double = 0
         

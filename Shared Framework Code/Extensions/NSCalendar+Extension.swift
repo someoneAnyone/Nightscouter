@@ -9,32 +9,32 @@
 import Foundation
 
 // MARK: Comparable instance for NSDate
-public func <(a: NSDate, b: NSDate) -> Bool {
-    return a.compare(b) == .OrderedAscending
+public func <(a: Date, b: Date) -> Bool {
+    return a.compare(b) == .orderedAscending
 }
 
-public func ==(a: NSDate, b: NSDate) -> Bool {
-    return a.compare(b) == .OrderedSame
+public func ==(a: Date, b: Date) -> Bool {
+    return a.compare(b) == .orderedSame
 }
 
-public extension NSCalendar {
+public extension Calendar {
         
-    public func stringRepresentationOfElapsedTimeFromDate(startDate: NSDate, endDate: NSDate) -> String {
+    public func stringRepresentationOfElapsedTimeFromDate(_ startDate: Date, endDate: Date) -> String {
         
-        if (!startDate.timeIntervalSince1970.isSignMinus && !endDate.timeIntervalSince1970.isSignMinus){
+        if (!(startDate.timeIntervalSince1970.sign == .minus) && !(endDate.timeIntervalSince1970.sign == .minus)){
 
 //            let hourMinuteComponents: NSCalendarUnit = [.Month, .Weekday, .Hour, .Minute, .Day]
 //            let componentsVar: NSDateComponents = self.components(hourMinuteComponents, fromDate: startDate, toDate: endDate, options: [])
             
-            let hourMinuteComponents: NSCalendarUnit = [.Month, .Weekday, .Hour, .Minute, .Day]
-            let componentsVar: NSDateComponents = self.components(hourMinuteComponents, fromDate: startDate, toDate: endDate, options: [])
+            let hourMinuteComponents: NSCalendar.Unit = [.month, .weekday, .hour, .minute, .day]
+            let componentsVar: DateComponents = (self as NSCalendar).components(hourMinuteComponents, from: startDate, to: endDate, options: [])
 
             
-            var months: Int = componentsVar.month
-            var weeks: Int = componentsVar.weekday
-            var days: Int = componentsVar.day
-            var hours: Int = componentsVar.hour
-            let minutes: Int = componentsVar.minute
+            var months: Int = componentsVar.month!
+            var weeks: Int = componentsVar.weekday!
+            var days: Int = componentsVar.day!
+            var hours: Int = componentsVar.hour!
+            let minutes: Int = componentsVar.minute!
             
             if (months > 1) {
                 // Simple date/time
@@ -111,7 +111,7 @@ public extension NSCalendar {
         return "Nothing"
     }
     
-    public func stringRepresentationOfElapsedTimeSinceNow(date:NSDate) -> String {
-        return self.stringRepresentationOfElapsedTimeFromDate(date, endDate: NSDate())
+    public func stringRepresentationOfElapsedTimeSinceNow(_ date:Date) -> String {
+        return self.stringRepresentationOfElapsedTimeFromDate(date, endDate: Date())
     }
 }

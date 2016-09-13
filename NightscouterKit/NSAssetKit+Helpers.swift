@@ -8,7 +8,7 @@
 
 import UIKit
 
-public func colorForDesiredColorState(desiredState: DesiredColorState) -> UIColor {
+public func colorForDesiredColorState(_ desiredState: DesiredColorState) -> UIColor {
     switch (desiredState) {
     case .Neutral:
         return NSAssetKit.predefinedNeutralColor

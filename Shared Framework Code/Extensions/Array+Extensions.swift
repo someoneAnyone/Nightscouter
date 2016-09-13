@@ -16,8 +16,8 @@ public extension Array {
 }
 
 extension Array where Element: Equatable {
-    public mutating func insertOrUpdate(object: Element) -> Bool {
-        if let index = self.indexOf(object) {
+    public mutating func insertOrUpdate(_ object: Element) -> Bool {
+        if let index = self.index(of: object) {
             self[index] = object
         } else {
             self.append(object)
@@ -26,15 +26,15 @@ extension Array where Element: Equatable {
         return self.contains(object)
     }
     
-    public mutating func appendUniqueObject(object: Element) {
+    public mutating func appendUniqueObject(_ object: Element) {
         if contains(object) == false {
             append(object)
         }
     }
     
-    public mutating func remove(object object: Element) -> Bool {
-        if let index = self.indexOf(object) {
-            self.removeAtIndex(index)
+    public mutating func remove(object: Element) -> Bool {
+        if let index = self.index(of: object) {
+            self.remove(at: index)
         }
         
         return self.contains(object)

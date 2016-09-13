@@ -12,34 +12,36 @@ import NightscouterWatchOSKit
 
 @available(watchOS 2.0, *)
 public protocol DataSourceChangedDelegate {
-    func dataSourceDidUpdateAppContext(models: [WatchModel])
-    func dataSourceCouldNotConnectToPhone(error: NSError)
+    func dataSourceDidUpdateAppContext(_ models: [WatchModel])
+    func dataSourceCouldNotConnectToPhone(_ error: Error)
 }
 
 struct Static {
-    static var dispatchOnceToken: dispatch_once_t = 0
+    static var dispatchOnceToken: Int = 0
 }
 
 @available(watchOS 2.0, *)
-public class WatchSessionManager: NSObject, WCSessionDelegate {
+open class WatchSessionManager: NSObject, WCSessionDelegate {
     
-    private let modelInfoQueue = dispatch_queue_create("com.nothingonline.nightscouter.watchsessionmanager", DISPATCH_QUEUE_SERIAL)
+    fileprivate let modelInfoQueue = DispatchQueue(label: "com.nothingonline.nightscouter.watchsessionmanager", attributes: [])
     
-    let reloadComplications = dispatch_debounce_block(10.0, block: {
-        dispatch_async(dispatch_get_main_queue()) {
+    let reloadComplications = debounce(delay: 10) { 
+        
+//    dispatch_debounce_block(10.0, block: {
+        DispatchQueue.main.async {
             ComplicationController.reloadComplications()
         }
-    })
+    }
     
-    let postNotificaitonForDefaults = dispatch_debounce_block(4.0, block: {
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: nil)
+    let postNotificaitonForDefaults = debounce(delay: 4) { //dispatch_debounce_block(4.0, block: {
+        OperationQueue.main.addOperation { () -> Void in
+            NotificationCenter.default.post(name: Notification.Name(rawValue: AppDataManagerDidChangeNotification), object: nil)
         }
-    })
+    }
     
-    public static let sharedManager = WatchSessionManager()
+    open static let sharedManager = WatchSessionManager()
     
-    private override init() {
+    fileprivate override init() {
         super.init()
         currentlySendingMessage = false
         
@@ -50,57 +52,57 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
     deinit {
         saveData()
         
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
-    private let session : WCSession? = WCSession.isSupported() ? WCSession.defaultSession() : nil
+    fileprivate let session : WCSession? = WCSession.isSupported() ? WCSession.default() : nil
     
-    public var validSession: WCSession? {
-        guard let session = session where session.reachable else {
+    open var validSession: WCSession? {
+        guard let session = session , session.isReachable else {
             return nil
         }
         
         return session
     }
     
-    public func startSession() {
+    open func startSession() {
         if WCSession.isSupported() {
             session?.delegate = self
-            session?.activateSession()
+            session?.activate()
             
             #if DEBUG
-                print("WCSession.isSupported: \(WCSession.isSupported()), Paired Phone Reachable: \(session?.reachable)")
+                print("WCSession.isSupported: \(WCSession.isSupported), Paired Phone Reachable: \(session?.isReachable)")
             #endif
         }
     }
     
-    private var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
+    fileprivate var dataSourceChangedDelegates = [DataSourceChangedDelegate]()
     
-    public func addDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
+    open func addDataSourceChangedDelegate<T>(_ delegate: T) where T: DataSourceChangedDelegate, T: Equatable {
         dataSourceChangedDelegates.append(delegate)
     }
     
-    public func removeDataSourceChangedDelegate<T where T: DataSourceChangedDelegate, T: Equatable>(delegate: T) {
-        for (index, indexDelegate) in dataSourceChangedDelegates.enumerate() {
-            if let indexDelegate = indexDelegate as? T where indexDelegate == delegate {
-                dataSourceChangedDelegates.removeAtIndex(index)
+    open func removeDataSourceChangedDelegate<T>(_ delegate: T) where T: DataSourceChangedDelegate, T: Equatable {
+        for (index, indexDelegate) in dataSourceChangedDelegates.enumerated() {
+            if let indexDelegate = indexDelegate as? T , indexDelegate == delegate {
+                dataSourceChangedDelegates.remove(at: index)
                 
                 break
             }
         }
     }
     
-    private struct SharedAppGroupKey {
+    fileprivate struct SharedAppGroupKey {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
     
-    private let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
+    fileprivate let defaults = UserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
-    public var models: [WatchModel] = [] {
+    open var models: [WatchModel] = [] {
         didSet {
             let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
             
-            defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
+            defaults.set(models, forKey: DefaultKey.sites.rawValue)
             
             if models.isEmpty {
                 defaultSiteUUID = nil
@@ -111,22 +113,22 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         }
     }
     
-    public var currentSiteIndex: Int {
+    open var currentSiteIndex: Int {
         set{
-            defaults.setInteger(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+            defaults.set(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             
         }
         get{
-            return defaults.integerForKey(DefaultKey.lastViewedSiteIndex.rawValue)
+            return defaults.integer(forKey: DefaultKey.lastViewedSiteIndex.rawValue)
         }
     }
     
-    public var defaultSiteUUID: NSUUID? {
+    open var defaultSiteUUID: UUID? {
         set{
-            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+            defaults.set(newValue?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
             
             var payload = [String: AnyObject]()
-            payload[DefaultKey.primarySiteUUID.rawValue] = newValue?.UUIDString
+            payload[DefaultKey.primarySiteUUID.rawValue] = newValue?.uuidString as AnyObject?
             session?.transferUserInfo(payload)
             
             updateComplication { complicationData in
@@ -134,19 +136,19 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
             }
         }
         get {
-            if let uuidString = defaults.objectForKey(DefaultKey.primarySiteUUID.rawValue) as? String {
-                return NSUUID(UUIDString: uuidString)
+            if let uuidString = defaults.object(forKey: DefaultKey.primarySiteUUID.rawValue) as? String {
+                return UUID(uuidString: uuidString)
             } else if let firstModel = models.first {
-                return NSUUID(UUIDString: firstModel.uuid)
+                return UUID(uuidString: firstModel.uuid)
             }
             
             return nil
         }
     }
     
-    public func defaultModel() -> WatchModel? {
+    open func defaultModel() -> WatchModel? {
         
-        let uuidString = defaultSiteUUID?.UUIDString
+        let uuidString = defaultSiteUUID?.uuidString
         
         let matched = self.models.filter({ (model) -> Bool in
             return model.uuid == uuidString
@@ -155,10 +157,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         return matched.first ?? models.first
     }
     
-    public func updateModel(model: WatchModel)  ->  Bool {
+    open func updateModel(_ model: WatchModel)  ->  Bool {
         var success = false
-        dispatch_sync(modelInfoQueue) {
-            if let index = self.models.indexOf(model) {
+        modelInfoQueue.sync {
+            if let index = self.models.index(of: model) {
                 self.models[index] = model
                 success = true
             } else {
@@ -172,72 +174,72 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
         return success
     }
     
-    public var lastReloadDate: NSDate {
+    open var lastReloadDate: Date {
         get {
-            return defaults.objectForKey("lastReloadDate") as? NSDate ?? NSDate()
+            return defaults.object(forKey: "lastReloadDate") as? Date ?? Date()
         }
         set {
-            return defaults.setObject(newValue, forKey: "lastReloadDate")
+            return defaults.set(newValue, forKey: "lastReloadDate")
         }
     }
     
-    public var lastAttmemptToUpdate: NSDate? {
+    open var lastAttmemptToUpdate: Date? {
         get {
-            return defaults.objectForKey("lastAttmemptToUpdate") as?  NSDate
+            return defaults.object(forKey: "lastAttmemptToUpdate") as?  Date
         }
         set {
-            defaults.setObject(newValue, forKey: "lastAttmemptToUpdate")
+            defaults.set(newValue, forKey: "lastAttmemptToUpdate")
         }
     }
     
-    public var lastUpdateTimeStamp: NSDate? {
+    open var lastUpdateTimeStamp: Date? {
         get {
-            return defaults.objectForKey("lastUpdateTimeStamp") as?  NSDate
+            return defaults.object(forKey: "lastUpdateTimeStamp") as?  Date
         }
         set {
-            defaults.setObject(newValue, forKey: "lastUpdateTimeStamp")
+            defaults.set(newValue, forKey: "lastUpdateTimeStamp")
         }
     }
     
-    private var currentlySendingMessage: Bool {
+    fileprivate var currentlySendingMessage: Bool {
         get {
-            return defaults.boolForKey("currentlySendingMessage")
+            return defaults.bool(forKey: "currentlySendingMessage")
         }
         set {
-            lastAttmemptToUpdate = NSDate()
-            defaults.setBool(newValue, forKey: "currentlySendingMessage")
+            lastAttmemptToUpdate = Date()
+            defaults.set(newValue, forKey: "currentlySendingMessage")
         }
     }
     
     
-    private func setupNotifications() {
+    fileprivate func setupNotifications() {
         // Listen for global update timer.
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(WatchSessionManager.dataStaleUpdate(_:)), name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(WatchSessionManager.dataStaleUpdate(_:)), name: NSNotification.Name(rawValue: NightscoutAPIClientNotification.DataIsStaleUpdateNow), object: nil)
     }
     
-    func dataStaleUpdate(notif: NSNotification) {
+    func dataStaleUpdate(_ notif: Notification) {
         updateData(forceRefresh: true)
     }
     
     // MARK: Save and Load Data
-    public func saveData() {
+    open func saveData() {
         print("Saving Data")
         let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
         
-        defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
-        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
-        defaults.setObject("watchOS", forKey: DefaultKey.osPlatform.rawValue)
-        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+        defaults.set(models, forKey: DefaultKey.sites.rawValue)
+        defaults.set(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        defaults.set("watchOS", forKey: DefaultKey.osPlatform.rawValue)
+        defaults.set(defaultSiteUUID?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
     }
     
-    public func loadData() {
+    open func loadData() {
         
-        if let models = defaults.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
+        if let models = defaults.array(forKey: DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
         
         // Register for settings changes as store might have changed
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(userDefaultsDidChange(_:)), name: NSUserDefaultsDidChangeNotification, object: defaults)
+        NotificationCenter.default.addObserver(self, selector: #selector(userDefaultsDidChange(_:)), name: UserDefaults.didChangeNotification, object: defaults)
     }
     
     
@@ -246,20 +248,20 @@ public class WatchSessionManager: NSObject, WCSessionDelegate {
 @available(watchOSApplicationExtension 2.2, *)
 extension WatchSessionManager {
     
-    public func session(session: WCSession, activationDidCompleteWithState activationState: WCSessionActivationState, error: NSError?) {
+    @objc(session:activationDidCompleteWithState:error:) public func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         if let error = error {
             print("session activation failed with error: \(error.localizedDescription)")
             return
         }
         
         // Do not proceed if `session` is not currently `.Activated`.
-        guard session.activationState == .Activated else { return }
+        guard session.activationState == .activated else { return }
         
         print("\(#function)= session.activationState = \(session.activationState)")
         
         if !session.receivedApplicationContext.isEmpty {
             print("!session.receivedApplicationContext.isEmpty")
-            processApplicationContext(WCSession.defaultSession().receivedApplicationContext)
+            processApplicationContext(WCSession.default().receivedApplicationContext as [String : Any])
         }
         
         updateData(forceRefresh: false)
@@ -272,39 +274,39 @@ extension WatchSessionManager {
 // if the data was not sent, it will be replaced
 extension WatchSessionManager {
     
-    public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
+    public func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any]) {
         print(#function)
         // print("\(userInfo)")
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.processApplicationContext(userInfo, updateDelegates: true)
+        DispatchQueue.main.async { [weak self] in
+            self?.processApplicationContext(userInfo as [String : Any], updateDelegates: true)
         }
     }
     
     // Receiver
-    public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
+    public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
         print(#function)
         // print("received: \(applicationContext)")
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.processApplicationContext(applicationContext)
+        DispatchQueue.main.async { [weak self] in
+            self?.processApplicationContext(applicationContext as [String : Any])
         }
     }
     
-    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject]) {
+    public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
         print(#function)
         // print(message)
         
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.processApplicationContext(message)
+        DispatchQueue.main.async { [weak self] in
+            self?.processApplicationContext(message as [String : Any])
         }
     }
     
-    public func sessionReachabilityDidChange(session: WCSession) {
+    public func sessionReachabilityDidChange(_ session: WCSession) {
         print(#function)
         // print(session)
         
-        if session.reachable == true && currentlySendingMessage == false {
+        if session.isReachable == true && currentlySendingMessage == false {
             updateData(forceRefresh: false)
         }
     }
@@ -313,7 +315,7 @@ extension WatchSessionManager {
 
 extension WatchSessionManager {
     
-    public func processApplicationContext(context: [String : AnyObject], updateDelegates update: Bool = true) {
+    public func processApplicationContext(_ context: [String : Any], updateDelegates update: Bool = true) {
         print("processApplicationContext")
         // print("Incoming context: \(context)")
         
@@ -352,14 +354,14 @@ extension WatchSessionManager {
 
 extension WatchSessionManager {
     
-    func updateDelegatesForError(errorType: NSError) {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+    func updateDelegatesForError(_ errorType: Error) {
+        DispatchQueue.main.async { [weak self] in
             self?.dataSourceChangedDelegates.forEach { $0.dataSourceCouldNotConnectToPhone(errorType) }
         }
     }
     
-    func updateDelegatesForModelChange(models:[WatchModel]) {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
+    func updateDelegatesForModelChange(_ models:[WatchModel]) {
+        DispatchQueue.main.async { [weak self] in
             print("\(#function) UPDATING DELEGATES!!!!! -------")
             self?.dataSourceChangedDelegates.forEach { $0.dataSourceDidUpdateAppContext(
                 models) }
@@ -374,14 +376,14 @@ extension WatchSessionManager {
         
         let requestReceived = "complicationRequestedUpdateBudgetExhausted"
         
-        if var updateArray = defaults.arrayForKey(requestReceived) as? [NSDate] {
+        if var updateArray = defaults.array(forKey: requestReceived) as? [Date] {
             if updateArray.count > 5 {
                 updateArray.removeLast()
             }
-            updateArray.append(NSDate())
-            defaults.setObject(updateArray, forKey: requestReceived)
+            updateArray.append(Date())
+            defaults.set(updateArray, forKey: requestReceived)
         } else {
-            defaults.setObject([NSDate()], forKey: requestReceived)
+            defaults.set([Date()], forKey: requestReceived)
         }
         
         updateComplication { complicationData in
@@ -389,20 +391,20 @@ extension WatchSessionManager {
         }
     }
     
-    public var nextRequestedComplicationUpdateDate: NSDate {
-        let updateInterval: NSTimeInterval = Constants.StandardTimeFrame.OneHourInSeconds
+    public var nextRequestedComplicationUpdateDate: Date {
+        let updateInterval: TimeInterval = Constants.StandardTimeFrame.OneHourInSeconds
         
         if let defaultModel = defaultModel() {
-            return defaultModel.lastReadingDate.dateByAddingTimeInterval(updateInterval)
+            return defaultModel.lastReadingDate.addingTimeInterval(updateInterval)
         }
         
-        return NSDate(timeIntervalSinceNow: updateInterval)
+        return Date(timeIntervalSinceNow: updateInterval)
     }
     
     public var complicationData: [ComplicationModel] {
         get {
             var complicationModels: [ComplicationModel] = []
-            dispatch_sync(modelInfoQueue) {
+            modelInfoQueue.sync {
                 complicationModels = self.defaultModel()?.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) } ?? []
             }
             
@@ -410,19 +412,19 @@ extension WatchSessionManager {
         }
     }
     
-    public func updateComplication(completion: (timline: [ComplicationModel]) -> Void) {
+    public func updateComplication(_ completion: @escaping (_ timline: [ComplicationModel]) -> Void) {
         print(#function)
         
         let requestReceived = "requestedUpdateDidBeginRequestRecieved"
         
-        if var updateArray = defaults.arrayForKey(requestReceived) as? [NSDate] {
+        if var updateArray = defaults.array(forKey: requestReceived) as? [Date] {
             if updateArray.count > 5 {
                 updateArray.removeLast()
             }
-            updateArray.append(NSDate())
-            defaults.setObject(updateArray, forKey: requestReceived)
+            updateArray.append(Date())
+            defaults.set(updateArray, forKey: requestReceived)
         } else {
-            defaults.setObject([NSDate()], forKey: requestReceived)
+            defaults.set([Date()], forKey: requestReceived)
         }
         
         let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
@@ -430,7 +432,7 @@ extension WatchSessionManager {
         guard let model = self.defaultModel() else {
             print("No model was found... returning empty timline in \(#function)")
             
-            completion(timline: [])
+            completion([])
             return
         }
         
@@ -442,48 +444,46 @@ extension WatchSessionManager {
             guard let validSession = validSession else {
                 fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                     WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                    completion(timline: returnedSite.complicationModels)
+                    completion(returnedSite.complicationModels)
                 })
                 
                 return
             }
             
-            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : Any]) -> Void in
                 // handle reply from iPhone app here
                 print("\(#function): recievedMessageReply from iPhone")
                 
                 self.currentlySendingMessage = false
                 
-                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                DispatchQueue.main.async { [weak self] in
                     print("updateComplication success...")
                     self?.processApplicationContext(context)
-                    completion(timline: self?.complicationData ?? [])
+                    completion(self?.complicationData ?? [])
                 }
                 
-                }, errorHandler: {(error: NSError ) -> Void in
+                }, errorHandler: {(error: Error ) -> Void in
                     print("\(#function): recieved error from phone: \(error)")
                     self.currentlySendingMessage = false
                     
-                    guard let watchErrorCode =  WCErrorCode(rawValue: error.code) else {
-                        return
-                    }
+                     let watchErrorCode =  WCError(_nsError: error as NSError).code
                     
                     switch watchErrorCode {
-                    case .SessionNotActivated:
-                        self.session?.activateSession()
-                    case .MessageReplyTimedOut:
+                    case .sessionNotActivated:
+                        self.session?.activate()
+                    case .messageReplyTimedOut:
                         print(error)
                         
                     default:
                         fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                             WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            completion(timline: returnedSite.complicationModels)
+                            completion(returnedSite.complicationModels)
                         })
                     }
             })
             
         } else {
-            completion(timline: self.complicationData)
+            completion(self.complicationData)
         }
         
     }
@@ -491,11 +491,11 @@ extension WatchSessionManager {
     public func updateData(forceRefresh refresh: Bool) {
         print(">>> Entering \(#function) <<<")
         
-        let minModel = self.models.minElement { (lModel, rModel) -> Bool in
-            return rModel.lastReadingDate < lModel.lastReadingDate
+        let minModel = self.models.min { (lModel, rModel) -> Bool in
+            return (rModel.lastReadingDate <= lModel.lastReadingDate)
         }
         
-        if let model = minModel where (model.updateNow || refresh == false) && currentlySendingMessage == false {
+        if let model = minModel , (model.updateNow || refresh == false) && currentlySendingMessage == false {
             
             print("Updating because: model needs updating: \(model.updateNow) or becasue force refresh is set to: \(refresh), currentlySending: \(currentlySendingMessage.description)")
             
@@ -514,27 +514,26 @@ extension WatchSessionManager {
                 return
             }
             
-            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
+            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : Any]) -> Void in
                 // handle reply from iPhone app here
                 print("recievedMessageReply from iPhone")
-                dispatch_async(dispatch_get_main_queue()) { [weak self] in
+                DispatchQueue.main.async { [weak self] in
                     print("WatchSession success...")
                     self?.currentlySendingMessage = false
                     self?.processApplicationContext(context)
                 }
                 
-                }, errorHandler: {(error: NSError ) -> Void in
+                }, errorHandler: {(error: Error ) -> Void in
                     print("WatchSession Transfer Error: \(error)")
                     self.currentlySendingMessage = false
                     
-                    guard let watchErrorCode =  WCErrorCode(rawValue: error.code) else {
-                        return
-                    }
+                    let watchErrorCode =  WCError(_nsError: error as NSError).code
+                    
                     
                     switch watchErrorCode {
-                    case .SessionNotActivated:
-                        self.session?.activateSession()
-                    case .MessageReplyTimedOut:
+                    case .sessionNotActivated:
+                        self.session?.activate()
+                    case .messageReplyTimedOut:
                         print(error)
                     default:
                         self.updateDelegatesForError(error)
@@ -549,10 +548,10 @@ extension WatchSessionManager {
     
     // MARK: Defaults have Changed
     
-    func userDefaultsDidChange(notification: NSNotification) {
+    func userDefaultsDidChange(_ notification: Notification) {
         //print("userDefaultsDidChange:")
         
-        guard let _ = notification.object as? NSUserDefaults else { return }
+        guard let _ = notification.object as? UserDefaults else { return }
         
         postNotificaitonForDefaults()
     }

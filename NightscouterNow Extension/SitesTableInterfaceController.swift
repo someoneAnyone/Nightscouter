@@ -19,17 +19,17 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     var models: [WatchModel] = []
     
     // Whenever this changes, it updates the attributed title of the refresh control.
-    var lastUpdatedTime: NSDate? {
+    var lastUpdatedTime: Date? {
         didSet{
             
             // Create and use a formatter.
-            let dateFormatter = NSDateFormatter()
-            dateFormatter.timeStyle = NSDateFormatterStyle.ShortStyle
-            dateFormatter.dateStyle = NSDateFormatterStyle.ShortStyle
-            dateFormatter.timeZone = NSTimeZone.localTimeZone()
+            let dateFormatter = DateFormatter()
+            dateFormatter.timeStyle = DateFormatter.Style.short
+            dateFormatter.dateStyle = DateFormatter.Style.short
+            dateFormatter.timeZone = TimeZone.autoupdatingCurrent
             
             if let date = lastUpdatedTime {
-                timeStamp = dateFormatter.stringFromDate(date)
+                timeStamp = dateFormatter.string(from: date)
             }
             
             sitesLoading.setHidden(!self.models.isEmpty)
@@ -45,18 +45,18 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
         print(">>> Entering \(#function) <<<")
      
         self.models = WatchSessionManager.sharedManager.models
         self.updateTableData()
 
-        let model = models.minElement{ (lModel, rModel) -> Bool in
-            return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .OrderedAscending
+        let model = models.min{ (lModel, rModel) -> Bool in
+            return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .orderedAscending
         }
         
-        self.lastUpdatedTime = model?.lastReadingDate ?? NSDate(timeIntervalSince1970: 0)
+        self.lastUpdatedTime = model?.lastReadingDate ?? Date(timeIntervalSince1970: 0)
         
         //WatchSessionManager.sharedManager.updateData(forceRefresh: false)
         
@@ -71,19 +71,19 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         //WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
     }
     
-    override func table(table: WKInterfaceTable, didSelectRowAtIndex rowIndex: Int) {
+    override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
         // create object.
         // push controller...
         print(">>> Entering \(#function) <<<")
         
         WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
         
-        pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
+        pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
     }
     
-    private func updateTableData() {
+    fileprivate func updateTableData() {
         print(">>> Entering \(#function) <<<")
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
 
         let rowSiteTypeIdentifier: String = "SiteRowController"
         let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
@@ -96,7 +96,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             self.sitesLoading.setHidden(true)
             
             self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
-            let row = self.sitesTable.rowControllerAtIndex(0) as? SiteEmptyRowController
+            let row = self.sitesTable.rowController(at: 0) as? SiteEmptyRowController
             if let row = row {
                 row.messageLabel.setText("No sites availble.")
             }
@@ -109,13 +109,13 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             
             self.sitesTable.setRowTypes(rowSiteType)
             
-            for (index, model) in self.models.enumerate() {
-                if let row = self.sitesTable.rowControllerAtIndex(index) as? SiteRowController {
+            for (index, model) in self.models.enumerated() {
+                if let row = self.sitesTable.rowController(at: index) as? SiteRowController {
                     row.model = model
                 }
             }
             
-            let updateRow = self.sitesTable.rowControllerAtIndex(self.models.count) as? SiteUpdateRowController
+            let updateRow = self.sitesTable.rowController(at: self.models.count) as? SiteUpdateRowController
             if let updateRow = updateRow {
                 updateRow.siteLastReadingLabel.setText(self.timeStamp)
                 updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
@@ -124,52 +124,52 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         }
     }
     
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
+    func dataSourceDidUpdateAppContext(_ models: [WatchModel]) {
         print(">>> Entering \(#function) <<<")
-        NSOperationQueue.mainQueue().addOperationWithBlock { 
+        OperationQueue.main.addOperation { 
             
-        self.dismissController()
+        self.dismiss()
         self.models = models // WatchSessionManager.sharedManager.models
-        self.lastUpdatedTime = NSDate()
+        self.lastUpdatedTime = Date()
         self.updateTableData()
             
         }
 
     }
     
-    func dataSourceCouldNotConnectToPhone(error: NSError) {
+    func dataSourceCouldNotConnectToPhone(_ error: Error) {
         self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
     }
     
-    func didUpdateItem(model: WatchModel){
-        NSOperationQueue.mainQueue().addOperationWithBlock {
+    func didUpdateItem(_ model: WatchModel){
+        OperationQueue.main.addOperation {
             
-            self.dismissController()
+            self.dismiss()
             self.models = WatchSessionManager.sharedManager.models
-            self.lastUpdatedTime = NSDate()
+            self.lastUpdatedTime = Date()
             self.updateTableData()
         }
     }
     
-    func didSetItemAsDefault(model: WatchModel) {
-        WatchSessionManager.sharedManager.defaultSiteUUID = NSUUID(UUIDString: model.uuid)
+    func didSetItemAsDefault(_ model: WatchModel) {
+        WatchSessionManager.sharedManager.defaultSiteUUID = UUID(uuidString: model.uuid)
     }
     
     func presentErrorDialog(withTitle title: String, message: String) {
         // catch any errors here
-        let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
+        let retry = WKAlertAction(title: "Retry", style: .default, handler: { () -> Void in
             WatchSessionManager.sharedManager.updateData(forceRefresh: true)
         })
         
-        let cancel = WKAlertAction(title: "Cancel", style: .Cancel, handler: { () -> Void in
-            self.dismissController()
+        let cancel = WKAlertAction(title: "Cancel", style: .cancel, handler: { () -> Void in
+            self.dismiss()
         })
         
-        let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
+        let action = WKAlertAction(title: "Local Update", style: .default, handler: { () -> Void in
             for model in self.models {
                 self.currentlyUpdating = true
                 quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+                    OperationQueue.main.addOperation { () -> Void in
                         self.currentlyUpdating = false
                         WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
                     }
@@ -178,8 +178,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             
         })
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, cancel, action])
+        DispatchQueue.main.async {
+            self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel, action])
         }
     }
     
@@ -187,23 +187,23 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         WatchSessionManager.sharedManager.updateData(forceRefresh: true)
     }
     
-    override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
+    override func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
         print(">>> Entering \(#function) <<<")
         
-        guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+        guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], let incomingModel = WatchModel (fromDictionary: dict) else {
             
             return
         }
         
-        dispatch_async(dispatch_get_main_queue()) {
-            self.popController()
-            self.dismissController()
+        DispatchQueue.main.async {
+            self.pop()
+            self.dismiss()
             
-            if let index = WatchSessionManager.sharedManager.models.indexOf(incomingModel) {
+            if let index = WatchSessionManager.sharedManager.models.index(of: incomingModel) {
                 WatchSessionManager.sharedManager.currentSiteIndex = index
             }
             
-            self.pushControllerWithName("SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
+            self.pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
         }
     }
 }

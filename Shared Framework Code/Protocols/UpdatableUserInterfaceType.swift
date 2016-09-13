@@ -22,22 +22,22 @@ import Foundation
 
 @objc
 public protocol UpdatableUserInterfaceType {
-    optional func startUpdateUITimer()
-    optional var updateInterval: NSTimeInterval { get }
-    func updateUI(notif: NSTimer)
+    @objc optional func startUpdateUITimer()
+    @objc optional var updateInterval: TimeInterval { get }
+    func updateUI(_ notif: Timer)
 }
 
 public extension UpdatableUserInterfaceType where Self: ViewController {
     
-    var updateUITimer: NSTimer {
-        return NSTimer.scheduledTimerWithTimeInterval(updateInterval, target: self, selector: #selector(Self.updateUI(_:)), userInfo: nil, repeats: true)
+    var updateUITimer: Timer {
+        return Timer.scheduledTimer(timeInterval: updateInterval, target: self, selector: #selector(Self.updateUI(_:)), userInfo: nil, repeats: true)
     }
     
     func startUpdateUITimer() {
         print(updateUITimer)
     }
     
-    var updateInterval: NSTimeInterval {
+    var updateInterval: TimeInterval {
         return 60.0
     }
 }

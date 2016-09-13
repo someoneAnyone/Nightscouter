@@ -8,9 +8,9 @@
 import Foundation
 
 
-public class AppDataManageriOS: NSObject, BundleRepresentable {
+open class AppDataManageriOS: NSObject, BundleRepresentable {
     
-    public var sites: [Site] = [] {
+    open var sites: [Site] = [] {
         didSet{
             let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
             
@@ -21,31 +21,31 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
                 iCloudKeyStore.resetStorage()
             }
             
-            defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
+            defaults.set(models, forKey: DefaultKey.sites.rawValue)
             //defaults.synchronize()
             
-            iCloudKeyStore.setArray(models, forKey: DefaultKey.sites.rawValue)
+            iCloudKeyStore.set(models, forKey: DefaultKey.sites.rawValue)
             iCloudKeyStore.synchronize()
         }
     }
     
-    public var currentSiteIndex: Int {
+    open var currentSiteIndex: Int {
         set{
-            defaults.setInteger(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+            defaults.set(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             
-            iCloudKeyStore.setLongLong(Int64(currentSiteIndex), forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+            iCloudKeyStore.set(Int64(currentSiteIndex), forKey: DefaultKey.lastViewedSiteIndex.rawValue)
             iCloudKeyStore.synchronize()
         }
         get{
-            return defaults.integerForKey(DefaultKey.lastViewedSiteIndex.rawValue)
+            return defaults.integer(forKey: DefaultKey.lastViewedSiteIndex.rawValue)
         }
     }
     
-    public var defaultSiteUUID: NSUUID? {
+    open var defaultSiteUUID: UUID? {
         set{
-            defaults.setObject(newValue?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+            defaults.set(newValue?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
             
-            iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+            iCloudKeyStore.set(defaultSiteUUID?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
             iCloudKeyStore.synchronize()
             
             updateComplicationForDefaultSite(foreRrefresh: true) { (returnedSite, _) in
@@ -56,32 +56,32 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             }
         }
         get {
-            if let uuidString = defaults.objectForKey(DefaultKey.primarySiteUUID.rawValue) as? String {
-                return NSUUID(UUIDString: uuidString)
+            if let uuidString = defaults.object(forKey: DefaultKey.primarySiteUUID.rawValue) as? String {
+                return UUID(uuidString: uuidString)
             }
-            return sites.first?.uuid
+            return sites.first?.uuid as UUID?
         }
     }
     
-    public func defaultSite() -> Site? {
+    open func defaultSite() -> Site? {
         return self.sites.filter({ (site) -> Bool in
-            return site.uuid == defaultSiteUUID
+            return site.uuid as UUID == defaultSiteUUID!
         }).first
     }
     
-    var dictionaryOfDataSource:[String: AnyObject] {
-        var dictionaryOfData = [String: AnyObject]()
+    var dictionaryOfDataSource:[String: Any] {
+        var dictionaryOfData = [String: Any]()
         dictionaryOfData[DefaultKey.sites.rawValue] = sites.flatMap( { $0.viewModel.dictionary } )
-        dictionaryOfData[DefaultKey.lastViewedSiteIndex.rawValue] = currentSiteIndex
-        dictionaryOfData[DefaultKey.primarySiteUUID.rawValue] = defaultSiteUUID?.UUIDString
+        dictionaryOfData[DefaultKey.lastViewedSiteIndex.rawValue] = currentSiteIndex as AnyObject?
+        dictionaryOfData[DefaultKey.primarySiteUUID.rawValue] = defaultSiteUUID?.uuidString as AnyObject?
         
         return dictionaryOfData
     }
     
     
-    public static let sharedInstance = AppDataManageriOS()
+    open static let sharedInstance = AppDataManageriOS()
     
-    private override init() {
+    fileprivate override init() {
         super.init()
         
         loadData()
@@ -91,49 +91,49 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         saveData()
     }
     
-    private struct SharedAppGroupKey {
+    fileprivate struct SharedAppGroupKey {
         static let NightscouterGroup = "group.com.nothingonline.nightscouter"
     }
     
-    public let defaults = NSUserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
+    open let defaults = UserDefaults(suiteName: SharedAppGroupKey.NightscouterGroup)!
     
-    public let iCloudKeyStore = NSUbiquitousKeyValueStore.defaultStore()
+    open let iCloudKeyStore = NSUbiquitousKeyValueStore.default()
     
     // MARK: Save and Load Data
-    public func saveData() {
+    open func saveData() {
         
-        let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
+        let models: [[String : Any]] = sites.flatMap( { $0.viewModel.dictionary } )
         
-        defaults.setObject(models, forKey: DefaultKey.sites.rawValue)
-        defaults.setInteger(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
-        defaults.setObject("iOS", forKey: DefaultKey.osPlatform.rawValue)
-        defaults.setObject(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+        defaults.set(models, forKey: DefaultKey.sites.rawValue)
+        defaults.set(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        defaults.set("iOS", forKey: DefaultKey.osPlatform.rawValue)
+        defaults.set(defaultSiteUUID?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
         
         // Save To iCloud
-        iCloudKeyStore.setObject(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
-        iCloudKeyStore.setArray(models, forKey: DefaultKey.sites.rawValue)
-        iCloudKeyStore.setString(defaultSiteUUID?.UUIDString, forKey: DefaultKey.primarySiteUUID.rawValue)
+        iCloudKeyStore.set(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+        iCloudKeyStore.set(models, forKey: DefaultKey.sites.rawValue)
+        iCloudKeyStore.set(defaultSiteUUID?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
         
         iCloudKeyStore.synchronize()
     }
     
-    public func loadData() {
+    open func loadData() {
         
-        if let models = defaults.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
+        if let models = defaults.array(forKey: DefaultKey.sites.rawValue) as? [[String : Any]] {
             sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
         }
         
         // Register for settings changes as store might have changed
-        NSNotificationCenter.defaultCenter()
+        NotificationCenter.default
             .addObserver(self,
                          selector: #selector(AppDataManageriOS.userDefaultsDidChange(_:)),
-                         name: NSUserDefaultsDidChangeNotification,
+                         name: UserDefaults.didChangeNotification,
                          object: defaults)
         
-        NSNotificationCenter.defaultCenter()
+        NotificationCenter.default
             .addObserver(self,
                          selector: #selector(AppDataManageriOS.ubiquitousKeyValueStoreDidChange(_:)),
-                         name: NSUbiquitousKeyValueStoreDidChangeExternallyNotification,
+                         name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
                          object: iCloudKeyStore)
         
         iCloudKeyStore.synchronize()
@@ -141,25 +141,25 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     
     // MARK: Data Source Managment
-    public func addSite(site: Site, index: Int?) {
-        guard let safeIndex = index where sites.count >= safeIndex else {
+    open func addSite(_ site: Site, index: Int?) {
+        guard let safeIndex = index , sites.count >= safeIndex else {
             sites.append(site)
             
             return
         }
         
-        sites.insert(site, atIndex: safeIndex)
+        sites.insert(site, at: safeIndex)
         
         
         transmitToWatch()
         //updateWatch(withAction: .AppContext)
     }
     
-    public func updateSite(site: Site)  ->  Bool {
+    open func updateSite(_ site: Site)  ->  Bool {
         
         var success = false
         
-        if let index = sites.indexOf(site) {
+        if let index = sites.index(of: site) {
             sites[index] = site
             success = true
         }
@@ -170,17 +170,17 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         return success
     }
     
-    public func deleteSiteAtIndex(index: Int) {
-        sites.removeAtIndex(index)
+    open func deleteSiteAtIndex(_ index: Int) {
+        sites.remove(at: index)
         //updateWatch(withAction: .AppContext)
         transmitToWatch()
     }
     
     
     // MARK: Demo Site
-    private func loadSampleSites() -> Void {
+    fileprivate func loadSampleSites() -> Void {
         // Create a site URL.
-        let demoSiteURL = NSURL(string: "https://nscgm.herokuapp.com")!
+        let demoSiteURL = URL(string: "https://nscgm.herokuapp.com")!
         // Create a site.
         let demoSite = Site(url: demoSiteURL, apiSecret: nil)!
         
@@ -190,11 +190,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     
     // MARK: Supported URL Schemes
-    public var supportedSchemes: [String]? {
+    open var supportedSchemes: [String]? {
         if let info = infoDictionary {
             var schemes = [String]() // Create an empty array we can later set append available schemes.
             if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
-                for (index, _) in bundleURLTypes.enumerate() {
+                for (index, _) in bundleURLTypes.enumerated() {
                     if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
                         if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
                             schemes += urlScheme // We've found the supported schemes appending to the array.
@@ -209,20 +209,20 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     
     // MARK: Watch OS Communication
-    func processApplicationContext(context: [String : AnyObject], replyHandler: (([String : AnyObject]) -> Void)? = nil) {
+    func processApplicationContext(_ context: [String : Any], replyHandler: (([String : Any]) -> Void)? = nil) {
         print("processApplicationContext \(context)")
         
         if let defaults = context["defaults"] as? [String: AnyObject] {
-            self.defaults.setObject(defaults, forKey: "watchDefaults")
-            self.iCloudKeyStore.setObject(defaults, forKey: "watchDefaults")
+            self.defaults.set(defaults, forKey: "watchDefaults")
+            self.iCloudKeyStore.set(defaults, forKey: "watchDefaults")
         }
         
         if let uuidString = context[DefaultKey.primarySiteUUID.rawValue] as? String {
-            defaultSiteUUID = NSUUID(UUIDString: uuidString)
+            defaultSiteUUID = UUID(uuidString: uuidString)
         }
         
         // check to see if an incomming action is available.
-        guard let actionString = context[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
+        guard let actionString = context[WatchModel.PropertyKey.actionKey] as? String, let action = WatchAction(rawValue: actionString) else {
             print("No action was found, didReceiveMessage: \(context)")
             
             return
@@ -255,9 +255,11 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         
     }
     
-    private var currentPayload: [String: AnyObject] = [String: AnyObject]()
+    fileprivate var currentPayload: [String: AnyObject] = [String: AnyObject]()
     
-    let transmitToWatch = dispatch_debounce_block(4.0, block: {
+    let transmitToWatch = debounce(delay: 4, action: {
+        
+//        dispatch_debounce_block(4.0, block: {
         
         print("Throttle how many times we send to the watch... only send every \(4.0) seconds!!!!!!!!!")
         
@@ -294,7 +296,7 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     })
     
     
-    public func genratePayloadForAction(action: WatchAction = .AppContext) -> [String: AnyObject] {
+    open func genratePayloadForAction(_ action: WatchAction = .AppContext) -> [String: AnyObject] {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             // print("Please \(action) the watch with the \(sites)")
@@ -303,9 +305,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
         var payload = [String: AnyObject]()
         // Tag the context with an action so that the watch can handle it if needed.
         // ["action" : "WatchAction.Create"] for example...
-        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
+        payload[WatchModel.PropertyKey.actionKey] = action.rawValue as AnyObject?
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
+        payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource as AnyObject?
         
         currentPayload = payload
         
@@ -315,9 +317,9 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     // MARK: Complication Data Methods
     
-    public func generateData(forSites sites: [Site], handler:(updatedSites: [Site])->Void) -> Void {
+    open func generateData(forSites sites: [Site], handler:@escaping (_ updatedSites: [Site])->Void) -> Void {
         
-        let processingSiteDataGroup = dispatch_group_create()
+        let processingSiteDataGroup = DispatchGroup()
         
         var updatedSites:[Site] = []
         
@@ -326,47 +328,47 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
             
             if siteToLoad == self.defaultSite() {
                 
-                dispatch_group_enter(processingSiteDataGroup)
+                processingSiteDataGroup.enter()
                 self.updateComplicationForDefaultSite(foreRrefresh: true, handler: {returnedSite,_ in
                     // Completed complication data.
                     if let site = returnedSite  {
                         updatedSites.append(site)
                     }
-                    dispatch_group_leave(processingSiteDataGroup)
+                    processingSiteDataGroup.leave()
                 })
             } else {
-                dispatch_group_enter(processingSiteDataGroup)
+                processingSiteDataGroup.enter()
                 quickFetch(siteToLoad, handler: { (site, error) -> Void in
                     updatedSites.append(site)
-                    dispatch_group_leave(processingSiteDataGroup)
+                    processingSiteDataGroup.leave()
                 })
             }
         }
         
-        dispatch_group_notify(processingSiteDataGroup, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0)) {
-            handler(updatedSites: updatedSites)
+        processingSiteDataGroup.notify(queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.low)) {
+            handler(updatedSites)
         }
     }
     
     /*
      Generates data for a comnpication but does not transmitt it to the watch or update the data store.
      */
-    public func updateComplicationForDefaultSite(foreRrefresh force: Bool = false, handler:(site: Site?, error: NightscoutAPIError)-> Void) {
+    open func updateComplicationForDefaultSite(foreRrefresh force: Bool = false, handler:@escaping (_ site: Site?, _ error: NightscoutAPIError)-> Void) {
         print(#function)
         guard let siteToLoad = self.defaultSite() else {
-            handler(site: nil, error: NightscoutAPIError.DataError("No default site was found."))
+            handler(nil, NightscoutAPIError.dataError("No default site was found."))
             return
         }
         
-        if (siteToLoad.lastConnectedDate?.compare(siteToLoad.nextRefreshDate) == .OrderedDescending || siteToLoad.configuration == nil || force == true) {
+        if (siteToLoad.lastConnectedDate?.compare(siteToLoad.nextRefreshDate as Date) == .orderedDescending || siteToLoad.configuration == nil || force == true) {
             print("START:   iOS is updating complication data for \(siteToLoad.url)")
             fetchSiteData(siteToLoad, handler: { (returnedSite, error) -> Void in
                 print("COMPLETE:   iOS has updated complication data for \(siteToLoad.url)")
-                handler(site: returnedSite, error: error)
+                handler(returnedSite, error)
                 return
             })
         } else {
-            handler(site: siteToLoad, error: NightscoutAPIError.NoError)
+            handler(siteToLoad, NightscoutAPIError.noError)
             return
         }
     }
@@ -375,15 +377,16 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     // MARK: Storage Updates
     
     // MARK: Defaults have Changed
-    let postNotification = dispatch_debounce_block(1.0) {
+    let postNotification = debounce(delay: 1) { 
+            //dispatch_debounce_block(1.0)
         //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
         print("Posting: AppDataManagerDidChangeNotification")
-        NSNotificationCenter.defaultCenter().postNotificationName(AppDataManagerDidChangeNotification, object: AppDataManageriOS.sharedInstance
+        NotificationCenter.default.post(name: Notification.Name(rawValue: AppDataManagerDidChangeNotification), object: AppDataManageriOS.sharedInstance
             .sites)
         //            }
     }
     
-    func userDefaultsDidChange(notification: NSNotification) {
+    func userDefaultsDidChange(_ notification: Notification) {
         print("userDefaultsDidChange:")
         
         // guard let defaultObject = notification.object as? NSUserDefaults else { return }
@@ -394,32 +397,32 @@ public class AppDataManageriOS: NSObject, BundleRepresentable {
     
     // MARK: iCloud Key Store Changed
     
-    func ubiquitousKeyValueStoreDidChange(notification: NSNotification) {
+    func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
         print("ubiquitousKeyValueStoreDidChange:")
         
-        guard let userInfo = notification.userInfo as? [String: AnyObject], changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
+        guard let userInfo = (notification as NSNotification).userInfo as? [String: AnyObject], let changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
             return
         }
         
-        let reason = changeReason.integerValue
+        let reason = changeReason.intValue
         
         if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
             let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]
          
-            let store = NSUbiquitousKeyValueStore.defaultStore()
+            let store = NSUbiquitousKeyValueStore.default()
             
             for key in changedKeys {
                 
                 // Update Data Source
                 
                 if key == DefaultKey.sites.rawValue {
-                    if let models = store.arrayForKey(DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
+                    if let models = store.array(forKey: DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
                         sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
                     }
                 }
                 
                 if key == DefaultKey.lastViewedSiteIndex.rawValue {
-                    currentSiteIndex = Int(store.longLongForKey(DefaultKey.lastViewedSiteIndex.rawValue))
+                    currentSiteIndex = Int(store.longLong(forKey: DefaultKey.lastViewedSiteIndex.rawValue))
                 }
                 
                 if key == DefaultKey.primarySiteUUID.rawValue {

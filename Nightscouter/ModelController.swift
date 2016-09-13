@@ -34,30 +34,30 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         super.init()
     }
 
-    func viewControllerAtIndex(index: Int, storyboard: UIStoryboard) -> SiteDetailViewController? {
+    func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> SiteDetailViewController? {
         // Return the data view controller for the given index.
         if (self.sites.count == 0) || (index >= self.sites.count) {
             return nil
         }
 
         // Create a new view controller and pass suitable data.
-        let dataViewController = storyboard.instantiateViewControllerWithIdentifier(Constants.StoryboardViewControllerIdentifier.SiteDetailViewController.rawValue) as! SiteDetailViewController
+        let dataViewController = storyboard.instantiateViewController(withIdentifier: Constants.StoryboardViewControllerIdentifier.SiteDetailViewController.rawValue) as! SiteDetailViewController
         dataViewController.site = self.sites[index]
         return dataViewController
     }
 
-    func indexOfViewController(viewController: SiteDetailViewController) -> Int {
+    func indexOfViewController(_ viewController: SiteDetailViewController) -> Int {
         // Return the index of the given data view controller.
         // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
 //        currentIndex = sites.indexOf(viewController.site!) ?? NSNotFound
         
-        currentIndex = sites.indexOf(viewController.site!) ?? NSNotFound
+        currentIndex = sites.index(of: viewController.site!) ?? NSNotFound
         return currentIndex
     }
 
     // MARK: - Page View Controller Data Source
 
-    func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         var index = self.indexOfViewController(viewController as! SiteDetailViewController)
         if (index == 0) || (index == NSNotFound) {
             return nil
@@ -67,7 +67,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
 
-    func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+    func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         var index = self.indexOfViewController(viewController as! SiteDetailViewController)
         if index == NSNotFound {
             return nil
@@ -80,11 +80,11 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         return self.viewControllerAtIndex(index, storyboard: viewController.storyboard!)
     }
     
-    func presentationCountForPageViewController(pageViewController: UIPageViewController) -> Int {
+    func presentationCount(for pageViewController: UIPageViewController) -> Int {
         return self.sites.count
     }
     
-    func presentationIndexForPageViewController(pageViewController: UIPageViewController) -> Int {
+    func presentationIndex(for pageViewController: UIPageViewController) -> Int {
         return currentIndex
     }
 

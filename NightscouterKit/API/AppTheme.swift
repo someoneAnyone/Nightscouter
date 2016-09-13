@@ -12,9 +12,9 @@ public struct Theme {
     public struct Color {
         public static let windowTintColor =  NSAssetKit.predefinedNeutralColor
         public static let headerTextColor = UIColor(white: 1.0, alpha: 0.5)
-        public static let labelTextColor = UIColor.whiteColor()
+        public static let labelTextColor: UIColor = .white
         public static let navBarColor: UIColor = NSAssetKit.darkNavColor
-        public static let navBarTextColor: UIColor = UIColor.whiteColor()
+        public static let navBarTextColor: UIColor = .white
     }
     
     public struct Font {
@@ -22,19 +22,11 @@ public struct Theme {
     }
 }
 
-public class AppThemeManager: NSObject {
-    public class var themeApp: AppThemeManager {
-        struct Static {
-            static var onceToken: dispatch_once_t = 0
-            static var instance: AppThemeManager? = nil
-        }
-        dispatch_once(&Static.onceToken) {
-            Static.instance = AppThemeManager()
-        }
-        return Static.instance!
-    }
+open class AppThemeManager: NSObject {
     
-    override init() {
+    public static let themeApp: AppThemeManager = AppThemeManager()
+
+    private override init() {
         UINavigationBar.appearance().tintColor = Theme.Color.windowTintColor
         // Change the font and size of nav bar text.
         if let navBarFont = Theme.Font.navBarTitleFont {

@@ -19,23 +19,23 @@ extension EntryPropertyKey {
     static let iob = "iob" // Not implmented yet.
 }
 
-public class WatchEntry: Entry, CustomStringConvertible {
-    public var now: NSDate
-    public var bgdelta: Double
-    public let battery: Int
-    public var batteryString: String {
+open class WatchEntry: Entry, CustomStringConvertible {
+    open var now: Date
+    open var bgdelta: Double
+    open let battery: Int
+    open var batteryString: String {
         get{
             // Convert int from JSON into a proper precentge.
             let percentage = Float(battery)/100
             
-            let numberFormatter: NSNumberFormatter = NSNumberFormatter()
-            numberFormatter.numberStyle = .PercentStyle
+            let numberFormatter: NumberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .percent
             numberFormatter.zeroSymbol = "---%"
             
-            return numberFormatter.stringFromNumber(percentage)!
+            return numberFormatter.string(from: NSNumber(value: percentage))!
         }
     }
-    public var batteryColorState: DesiredColorState {
+    open var batteryColorState: DesiredColorState {
         if battery < 50 && battery > 20 {
             return DesiredColorState.Warning
         } else if battery <= 20 && battery > 1 {
@@ -44,8 +44,8 @@ public class WatchEntry: Entry, CustomStringConvertible {
         return DesiredColorState.Neutral
     }
     
-    public var raw: Double? {
-        if let sgValue:SensorGlucoseValue = self.sgv, calValue = self.cal {
+    open var raw: Double? {
+        if let sgValue:SensorGlucoseValue = self.sgv, let calValue = self.cal {
             let raw: Double = sgValue.rawIsigToRawBg(calValue)
             return sgValue.sgv.isInteger ? round(raw) : raw
             
@@ -53,11 +53,11 @@ public class WatchEntry: Entry, CustomStringConvertible {
         return nil
     }
     
-    public var description: String {
+    open var description: String {
         return "WatchEntry: { \(dictionary.description) }"
     }
     
-    public init(identifier: String, date: NSDate, device: Device, now: NSDate, bgdelta: Double, battery: Int) {
+    public init(identifier: String, date: Date, device: Device, now: Date, bgdelta: Double, battery: Int) {
         self.now = now
         self.bgdelta = bgdelta
         self.battery = battery
@@ -67,7 +67,7 @@ public class WatchEntry: Entry, CustomStringConvertible {
 }
 
 public extension WatchEntry {
-    public convenience init(watchEntryDictionary: [String : AnyObject]) {
+    public convenience init(watchEntryDictionary: [String: Any]) {
         
         let rootDictionary: NSMutableDictionary = NSMutableDictionary()
         
@@ -83,7 +83,7 @@ public extension WatchEntry {
         
         
         var nowDouble: Double = 0
-        if let statusDictionary = rootDictionary[EntryPropertyKey.statusKey] as? NSDictionary, now = statusDictionary[EntryPropertyKey.nowKey] as? Double {
+        if let statusDictionary = rootDictionary[EntryPropertyKey.statusKey] as? NSDictionary, let now = statusDictionary[EntryPropertyKey.nowKey] as? Double {
             nowDouble = now
         }
         
@@ -94,7 +94,7 @@ public extension WatchEntry {
         
         var filtered = 0
         var unfiltlered = 0
-        var noise: Noise = .None
+        var noise: Noise = .none
         
         var bgdelta: Double = 0
         var batteryInt: Int = 0
@@ -102,8 +102,8 @@ public extension WatchEntry {
         
         if let bgsDictionary = rootDictionary[EntryPropertyKey.bgsKey] as? NSDictionary {
             if let directionString = bgsDictionary[EntryPropertyKey.directionKey] as? String,
-                directionType = Direction(rawValue: directionString),
-                sgvString = bgsDictionary[EntryPropertyKey.sgvKey] as? String {
+                let directionType = Direction(rawValue: directionString),
+                let sgvString = bgsDictionary[EntryPropertyKey.sgvKey] as? String {
                     
                     direction = directionType
                     
@@ -114,14 +114,14 @@ public extension WatchEntry {
             }
             
             if let opFiltered = bgsDictionary[EntryPropertyKey.filteredKey] as? Int,
-                opUnfiltlered = bgsDictionary[EntryPropertyKey.unfilteredKey] as? Int
+                let opUnfiltlered = bgsDictionary[EntryPropertyKey.unfilteredKey] as? Int
             {
                 filtered = opFiltered
                 unfiltlered = opUnfiltlered
                 
             }
             if let opNoiseInt = bgsDictionary[EntryPropertyKey.noiseKey] as? Int,
-                opNoise = Noise(rawValue: opNoiseInt) {
+                let opNoise = Noise(rawValue: opNoiseInt) {
                     
                     noise = opNoise
                     
@@ -163,9 +163,9 @@ public extension WatchEntry {
         
         
         guard let slope = cals[EntryPropertyKey.slopeKey] as? Double,
-            intercept = cals[EntryPropertyKey.interceptKey] as? Double,
-            scale = cals[EntryPropertyKey.scaleKey] as? Double else {
-                self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: device, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+            let intercept = cals[EntryPropertyKey.interceptKey] as? Double,
+            let scale = cals[EntryPropertyKey.scaleKey] as? Double else {
+                self.init(identifier: UUID().uuidString, date: datetime.toDateUsingSeconds() as Date, device: device, now: nowDouble.toDateUsingSeconds() as Date, bgdelta: bgdelta, battery: batteryInt)
                 self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
                 
                 
@@ -174,7 +174,7 @@ public extension WatchEntry {
         
         
         
-        self.init(identifier: NSUUID().UUIDString, date: datetime.toDateUsingSeconds(), device: device, now: nowDouble.toDateUsingSeconds(), bgdelta: bgdelta, battery: batteryInt)
+        self.init(identifier: UUID().uuidString, date: datetime.toDateUsingSeconds() as Date, device: device, now: nowDouble.toDateUsingSeconds() as Date, bgdelta: bgdelta, battery: batteryInt)
         self.sgv =  SensorGlucoseValue(sgv: sgv, direction: direction, filtered: filtered, unfiltered: unfiltlered, rssi: 0, noise: noise)
         self.cal = Calibration(slope: slope, scale: scale, intercept: intercept, date: date)
         

@@ -52,16 +52,16 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let displayName: String
     
     // 3 mins ago... if things get stale then the color will change. Stale timer is based by the server's configuration.
-    public let lastReadingDate: NSDate
+    public let lastReadingDate: Date
     public let lastReadingColor: String
     
-    public var nextReadingDate: NSDate {
-        return lastReadingDate.dateByAddingTimeInterval(Constants.NotableTime.StandardRefreshTime)
+    public var nextReadingDate: Date {
+        return lastReadingDate.addingTimeInterval(Constants.NotableTime.StandardRefreshTime)
     }
     
     public var updateNow: Bool {
-        let now = NSDate()
-        let result = nextReadingDate.compare(now) == NSComparisonResult.OrderedAscending
+        let now = Date()
+        let result = nextReadingDate.compare(now) == ComparisonResult.orderedAscending
         // print("updateNow calulcation: \(nextReadingDate).comare(\(now)) == .OrderedAscending), result:\(result)")
         
         
@@ -96,7 +96,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public let isArrowVisible : Bool
     public let isDoubleUp : Bool
     public let angle: CGFloat
-    public private(set) var direction: String
+    public fileprivate(set) var direction: String
     
     // Is data stale? Find out with this flags.
     public let urgent: Bool
@@ -108,7 +108,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     public var calibrations: [[String : AnyObject]] = []
     public var complicationModels: [[String : AnyObject]] = []
     
-    public init?(fromDictionary: [String : AnyObject]) {
+    public init?(fromDictionary: [String : Any]) {
         
         let d = fromDictionary
         self.urlString = d["urlString"] as! String
@@ -119,7 +119,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         self.displayName = d["displayName"] as! String
         
-        self.lastReadingDate = d["lastReadingDate"] as! NSDate
+        self.lastReadingDate = d["lastReadingDate"] as! Date
         
         self.lastReadingColor = d["lastReadingColor"] as! String
         
@@ -160,7 +160,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         #endif
         
         // Make sure we've got data in the site before proceeding otherwise fail the init.
-        if let configuration = site.configuration, watchEntry = site.watchEntry, sgvValue = watchEntry.sgv {
+        if let configuration = site.configuration, let watchEntry = site.watchEntry, let sgvValue = watchEntry.sgv {
             
             // Get prefered Units. mmol/L or mg/dL
             let units: Units = configuration.displayUnits
@@ -292,14 +292,14 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.complicationModels = site.complicationModels.flatMap{ $0.dictionary }
             self.urlString = site.url.absoluteString
             self.displayUrlString = displayUrlString
-            self.uuid = site.uuid.UUIDString
+            self.uuid = site.uuid.uuidString
             
             self.warn = isStaleData.warn
             self.urgent = isStaleData.urgent || boundedColor == .Alert
 
             self.displayName = displayName
             
-            self.lastReadingDate = watchEntry.date
+            self.lastReadingDate = watchEntry.date as Date
             
             self.lastReadingColor = lastUpdatedColor.toHexString()
             
@@ -331,14 +331,14 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             self.urlString = site.url.absoluteString
             self.displayUrlString = site.url.host ?? site.url.absoluteString
-            self.uuid = site.uuid.UUIDString
+            self.uuid = site.uuid.uuidString
             
             self.displayName = PlaceHolderStrings.displayName
             
             self.urgent = false
             self.warn = false
             
-            self.lastReadingDate = NSDate().dateByAddingTimeInterval((60.0 * 10).inThePast)
+            self.lastReadingDate = Date().addingTimeInterval((60.0 * 10).inThePast)
             
             self.lastReadingColor = PlaceHolderStrings.defaultColor
             
@@ -370,8 +370,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     }
     
     public func generateSite() -> Site {
-        let url = NSURL(string: urlString)!
-        let site = Site(url: url, apiSecret: nil, uuid: NSUUID(UUIDString: self.uuid)!)!
+        let url = URL(string: urlString)!
+        let site = Site(url: url, apiSecret: nil, uuid: UUID(uuidString: self.uuid)!)!
         site.complicationModels = self.complicationModels.flatMap{ ComplicationModel(fromDictionary: $0) }
         site.calibrations = self.calibrations.flatMap{ Calibration(fromDictionary: $0) }
         return site

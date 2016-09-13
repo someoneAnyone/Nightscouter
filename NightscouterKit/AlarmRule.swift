@@ -20,18 +20,18 @@ import Foundation
  * Therefore this class remembers whether an alarm has been snoozed
  * and how long the snooze should last.
  */
-public class AlarmRule {
+open class AlarmRule {
     
-    private static var snoozedUntilTimestamp: NSTimeInterval = NSTimeInterval()
+    fileprivate static var snoozedUntilTimestamp: TimeInterval = TimeInterval()
     
-    public static var alarmingSites = [Site]()
+    open static var alarmingSites = [Site]()
     
     /*
      * Returns true if the alarm should be played.
      * Snooze is true if the Alarm has been manually deactivated.
      * Suspended is true if the Alarm has been technically deactivated for a short period of time.
      */
-    public static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, urgent: Bool, snooze: Bool) {
+    open static func isAlarmActivated(forSites sites:[Site]) -> (activated: Bool, urgent: Bool, snooze: Bool) {
         
         var urgent: Bool = false
         
@@ -57,30 +57,30 @@ public class AlarmRule {
     /*
      * Snoozes all alarms for the next x minutes.
      */
-    public static func snooze(minutes : Int) {
-        snoozedUntilTimestamp = NSDate().timeIntervalSince1970 + Double(60 * minutes)
+    open static func snooze(_ minutes : Int) {
+        snoozedUntilTimestamp = Date().timeIntervalSince1970 + Double(60 * minutes)
     }
     
     /*
      * This is used to snooze just a few seconds on startup in order to retrieve
      * new values. Otherwise the alarm would play at once which makes no sense on startup.
      */
-    public static func snooze(seconds seconds : Int) {
-        snoozedUntilTimestamp = NSDate().timeIntervalSince1970 + Double(seconds)
+    open static func snooze(seconds : Int) {
+        snoozedUntilTimestamp = Date().timeIntervalSince1970 + Double(seconds)
     }
     
     /*
      * An eventually activated snooze will be disabled again.
      */
-    public static func disableSnooze() {
-        snoozedUntilTimestamp = NSTimeInterval()
+    open static func disableSnooze() {
+        snoozedUntilTimestamp = TimeInterval()
     }
     
     /*
      * Returns true if the alarms are currently snoozed.
      */
-    public static var isSnoozed: Bool {
-        let currentTimestamp = NSDate().timeIntervalSince1970
+    open static var isSnoozed: Bool {
+        let currentTimestamp = Date().timeIntervalSince1970
         return currentTimestamp < snoozedUntilTimestamp
     }
     
@@ -88,8 +88,8 @@ public class AlarmRule {
      * Return the number of remaing minutes till the snooze state ends.
      * The value will always be rounded up.
      */
-    public static var remainingSnoozeMinutes: Int {
-        let currentTimestamp = NSDate().timeIntervalSince1970
+    open static var remainingSnoozeMinutes: Int {
+        let currentTimestamp = Date().timeIntervalSince1970
         
         if (snoozedUntilTimestamp - currentTimestamp) <= 0 {
             return 0

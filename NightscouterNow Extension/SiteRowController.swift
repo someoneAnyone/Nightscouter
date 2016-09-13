@@ -33,7 +33,7 @@ class SiteRowController: NSObject {
             
             if let model = model {
                 // Site name in row
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
+                OperationQueue.main.addOperation({ () -> Void in
                     
                     let sgvColor = UIColor(hexString: model.sgvColor)
                     let rawColor = UIColor(hexString: model.rawColor)
@@ -43,7 +43,7 @@ class SiteRowController: NSObject {
                     
                     self.siteNameLabel.setText(model.displayName)
                     
-                    let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+                    let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
                     
                     // Last reading label
                     self.siteLastReadingLabel.setText(date)
@@ -68,7 +68,7 @@ class SiteRowController: NSObject {
                     // Delta
                     self.siteDirectionLabel.setText(model.deltaString)
                     self.siteDirectionLabel.setTextColor(sgvColor)
-                    self.backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
+                    self.backgroundGroup.setBackgroundColor(sgvColor.withAlphaComponent(0.2))
                     
                 })
             }

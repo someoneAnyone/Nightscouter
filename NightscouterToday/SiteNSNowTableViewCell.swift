@@ -35,25 +35,25 @@ class SiteNSNowTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.backgroundColor = UIColor.clearColor()
+        self.backgroundColor = UIColor.clear
     }
     
-    func configureCell(site: Site) {
+    func configureCell(_ site: Site) {
         
         let model = site.viewModel
         
-        let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+        let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
         
         siteLastReadingLabel.text = date
         siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
         
-        siteBatteryHeader.hidden = !model.batteryVisible
-        siteBatteryLabel.hidden = !model.batteryVisible
+        siteBatteryHeader.isHidden = !model.batteryVisible
+        siteBatteryLabel.isHidden = !model.batteryVisible
         siteBatteryLabel.text = model.batteryString
         siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
         
-        siteRawLabel?.hidden = !model.rawVisible
-        siteRawHeader?.hidden = !model.rawVisible
+        siteRawLabel?.isHidden = !model.rawVisible
+        siteRawHeader?.isHidden = !model.rawVisible
         
         siteRawLabel.text = model.rawString
         siteRawLabel.textColor = UIColor(hexString: model.rawColor)
@@ -87,8 +87,8 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
         siteLastReadingLabel.textColor = Theme.Color.labelTextColor
         
-        siteRawHeader.hidden = false
-        siteRawLabel.hidden = false
+        siteRawHeader.isHidden = false
+        siteRawLabel.isHidden = false
         siteRawLabel.textColor = Theme.Color.labelTextColor
     }
 }

@@ -41,7 +41,7 @@ public enum Units: String, CustomStringConvertible {
     
     public init(string: String) {
         switch string {
-        case Mmol.description:
+        case Units.Mmol.description:
             self = .Mmol
         default:
         self = .Mgdl
@@ -93,9 +93,9 @@ public struct Alarm: CustomStringConvertible, DictionaryConvertible {
     public let alarmHigh: Bool
     public let alarmLow: Bool
     public let alarmTimeAgoUrgent: Bool
-    public let alarmTimeAgoUrgentMins: NSTimeInterval
+    public let alarmTimeAgoUrgentMins: TimeInterval
     public let alarmTimeAgoWarn: Bool
-    public let alarmTimeAgoWarnMins: NSTimeInterval
+    public let alarmTimeAgoWarnMins: TimeInterval
     public let alarmUrgentHigh: Bool
     public let alarmUrgentLow: Bool
 
@@ -251,7 +251,7 @@ public struct ServerConfiguration: CustomStringConvertible, DictionaryConvertibl
 
 public extension ServerConfiguration {
     
-    init(jsonDictionary: [String:AnyObject]) {
+    init(jsonDictionary: [String: Any]) {
         
         var serverConfig: ServerConfiguration = ServerConfiguration(status: nil, apiEnabled: nil, careportalEnabled: nil, enabledOptions: nil, defaults: nil, unitsRoot: nil, head: nil, version: nil, thresholds: nil, alarm_types: nil, name: nil)
         
@@ -288,7 +288,7 @@ public extension ServerConfiguration {
         
         var options = [EnabledOptions]()
         if let enabledOptionsString = root[ConfigurationPropertyKey.enabledOptionsKey] as? String {
-            for stringItem in enabledOptionsString.componentsSeparatedByString(" "){
+            for stringItem in enabledOptionsString.components(separatedBy: " "){
                 if let item = EnabledOptions(rawValue: stringItem){
                     options.append(item)
                 }
@@ -323,11 +323,11 @@ public extension ServerConfiguration {
             let aLow = defaultsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
             let aTAU = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentKey] as! Bool
             let aTAUMDouble = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoUrgentMinsKey] as! Double
-            let aTAUMin: NSTimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
+            let aTAUMin: TimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
             
             let aTAW = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnKey] as! Bool
             let aTAWMDouble = defaultsDictionary[ConfigurationPropertyKey.alarmTimeAgoWarnMinsKey] as! Double
-            let aTAWMin: NSTimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
+            let aTAWMin: TimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
             let aTUH = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
             let aTUL = defaultsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
             
@@ -339,7 +339,7 @@ public extension ServerConfiguration {
         }
         
         if let settingsDictionary = root[ConfigurationPropertyKey.settingsKey] as? [String: AnyObject] {
-            let units = Units(rawValue: (settingsDictionary[ConfigurationPropertyKey.unitsKey] as! String).lowercaseString)!
+            let units = Units(rawValue: (settingsDictionary[ConfigurationPropertyKey.unitsKey] as! String).lowercased())!
             
             
             var timeFormat: Int = 12
@@ -364,12 +364,12 @@ public extension ServerConfiguration {
             let aLow = settingsDictionary[ConfigurationPropertyKey.alarmLowKey] as! Bool
             let aTAU = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentKey] as! Bool
             let aTAUMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as? Double ?? Double(settingsDictionary[ConfigurationPropertyKey.alarmTimeagoUrgentMinsKey] as! String)!
-            let aTAUMin: NSTimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
+            let aTAUMin: TimeInterval = aTAUMDouble * 60 // Convert minutes to seconds.
             
             let aTAW = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnKey] as! Bool
             let aTAWMDouble = settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as? Double ?? Double(settingsDictionary[ConfigurationPropertyKey.alarmTimeagoWarnMinsKey] as! String)!
 
-            let aTAWMin: NSTimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
+            let aTAWMin: TimeInterval = aTAWMDouble * 60 // Convert minutes to seconds.
             let aTUH = settingsDictionary[ConfigurationPropertyKey.alarmUrgentHighKey] as! Bool
             let aTUL = settingsDictionary[ConfigurationPropertyKey.alarmUrgentLowKey] as! Bool
             
@@ -421,7 +421,7 @@ public enum DesiredColorState: String, CustomStringConvertible {
 // TODO: Should this be here? Maybe it shuld be a threshold extension.
 public extension ServerConfiguration {
     
-    public func boundedColorForGlucoseValue(mgdlSGV: Double) -> DesiredColorState {
+    public func boundedColorForGlucoseValue(_ mgdlSGV: Double) -> DesiredColorState {
         var color = DesiredColorState.Neutral
         
         let mgdlValue: Double = mgdlSGV
@@ -442,7 +442,7 @@ public extension ServerConfiguration {
         return color
     }
     
-    public func isDataStaleWith(interval sinceNow: NSTimeInterval) -> (warn: Bool, urgent: Bool) {
+    public func isDataStaleWith(interval sinceNow: TimeInterval) -> (warn: Bool, urgent: Bool) {
         if let alarms = self.defaults?.alarms {
             return isDataStaleWith(interval: sinceNow, warn: alarms.alarmTimeAgoWarnMins, urgent: alarms.alarmTimeAgoUrgentMins)
         } else {
@@ -450,10 +450,10 @@ public extension ServerConfiguration {
         }
     }
     
-    public func isDataStaleWith(interval sinceNow: NSTimeInterval, warn: NSTimeInterval, urgent: NSTimeInterval, fallback: NSTimeInterval = NSTimeInterval(600)) -> (warn: Bool, urgent: Bool) {
+    public func isDataStaleWith(interval sinceNow: TimeInterval, warn: TimeInterval, urgent: TimeInterval, fallback: TimeInterval = TimeInterval(600)) -> (warn: Bool, urgent: Bool) {
         
-        let warnValue: NSTimeInterval = -max(fallback, warn)
-        let urgentValue: NSTimeInterval = -max(fallback, urgent)
+        let warnValue: TimeInterval = -max(fallback, warn)
+        let urgentValue: TimeInterval = -max(fallback, urgent)
         let returnValue = (sinceNow < warnValue, sinceNow < urgentValue)
         
         #if DEBUG
@@ -471,7 +471,7 @@ public extension ServerConfiguration {
         } else if let name = name {
             return name
         } else {
-            return  NSLocalizedString("nightscoutTitleString", tableName: nil, bundle:  NSBundle.mainBundle(), value: "", comment: "Label used to when we can't find a title for the website.")
+            return  NSLocalizedString("nightscoutTitleString", tableName: nil, bundle:  Bundle.main, value: "", comment: "Label used to when we can't find a title for the website.")
         }
     }
     
@@ -512,7 +512,7 @@ public extension ServerConfiguration {
         var finalArray = [[String: AnyObject?]]()
         
         let dict: [String : String] = ["Site Name" : displayName, "Version": version!, "Units": displayUnits.description]
-        let section1: [String: AnyObject] = ["sectionTitle": "General", "data": dict]
+        let section1: [String: AnyObject] = ["sectionTitle": "General" as AnyObject, "data": dict as AnyObject]
         
         finalArray.append(section1)
         
@@ -520,7 +520,7 @@ public extension ServerConfiguration {
             
             let dict: [String: String] = ["Target Top": String(thresholds.bg_target_top), "High": String(thresholds.bg_high), "Low": String(thresholds.bg_low), "Target Bottom": String(thresholds.bg_target_bottom)]
             
-            let section2: [String: AnyObject] = ["sectionTitle": "Thresholds", "data": dict]
+            let section2: [String: AnyObject] = ["sectionTitle": "Thresholds" as AnyObject, "data": dict as AnyObject]
             
             finalArray.append(section2)
         }

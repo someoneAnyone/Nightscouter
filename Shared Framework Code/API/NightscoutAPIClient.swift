@@ -10,14 +10,14 @@ import Foundation
 Create protocol for setting base URL, API Token, etc...
 */
 public protocol NightscoutAPIClientDelegate {
-    func nightscoutAPIClient(nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) -> Void
+    func nightscoutAPIClient(_ nightscoutAPIClient: NightscoutAPIClient, usingNetwork: Bool) -> Void
 }
 
 // TODO: Create a queue of requests... and make this a singleton.
 
 internal let NightscoutAPIErrorDomain: String = "com.nightscout.nightscouter.api"
 
-public typealias JSON = AnyObject
+public typealias JSON = Any
 public typealias JSONDictionary = Dictionary<String, JSON>
 public typealias JSONArray = Array<JSONDictionary>
 public typealias EntryArray = Array<Entry>
@@ -41,17 +41,17 @@ internal struct HeaderPart {
 }
 
 public enum NightscoutAPIError: CustomStringConvertible {
-    case NoError
-    case DownloadErorr(String)
-    case DataError(String)
-    case JSONParseError(String)
+    case noError
+    case downloadErorr(String)
+    case dataError(String)
+    case jsonParseError(String)
     
     public var description: String {
         switch self {
-        case .NoError: return "No Error"
-        case .DataError(let err): return err
-        case .DownloadErorr(let err): return err
-        case .JSONParseError(let err): return err
+        case .noError: return "No Error"
+        case .dataError(let err): return err
+        case .downloadErorr(let err): return err
+        case .jsonParseError(let err): return err
         }
     }
 }
@@ -61,18 +61,18 @@ public struct NightscoutAPIClientNotification {
     public static let DataUpdateSuccessful: String = "data.update.successful"
 }
 
-public class NightscoutAPIClient {
+open class NightscoutAPIClient {
     
-    lazy var config: NSURLSessionConfiguration = NSURLSessionConfiguration.defaultSessionConfiguration()
-    lazy var sharedSession: NSURLSession = NSURLSession(configuration: self.config)
+    lazy var config: URLSessionConfiguration = URLSessionConfiguration.default
+    lazy var session: URLSession = URLSession(configuration: self.config)
     
-    public var url: NSURL!
+    open var url: URL!
     
-    public var delegate: NightscoutAPIClientDelegate?
+    open var delegate: NightscoutAPIClientDelegate?
     
-    public var task: NSURLSessionDownloadTask?
+    open var task: URLSessionDownloadTask?
     
-    private var apiSecret: String?
+    fileprivate var apiSecret: String?
     
     var headers = [String: String]()
     
@@ -81,7 +81,7 @@ public class NightscoutAPIClient {
     * \apiSecret ?.
     *
     */
-    public init(url: NSURL, apiSecret: String? = nil) {
+    public init(url: URL, apiSecret: String? = nil) {
         self.url = url
         self.apiSecret = apiSecret
         
@@ -92,121 +92,123 @@ public class NightscoutAPIClient {
         }
     }
     
-    internal convenience init() {
-        self.init(url: NSURL())
+    fileprivate convenience init() {
+        self.init(url: URL(string: "https://nscgm.herokuapp.com")!)
     }
 }
 
 // MARK: - Meat and Potatoes of the API
 extension NightscoutAPIClient {
-    public func fetchDataForEntries(count: Int = 1, completetion:(entries: EntryArray?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchDataForEntries(_ count: Int = 1, completetion:@escaping (_ entries: EntryArray?, _ errorCode: NightscoutAPIError) -> Void) {
         //        let entriesWithCountURL = self.stringForEntriesWithCount(count)
         //find[type]=cal&count=1
         
         let cleanString = "find[type]"
-        let queryItemType = NSURLQueryItem(name: cleanString, value: "sgv")
-        let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
+        let queryItemType = URLQueryItem(name: cleanString, value: "sgv")
+        let queryItemCount = URLQueryItem(name: URLPart.CountParameter, value: "\(count)")
         
-        let urlComponents = NSURLComponents(URL: self.urlForEntries, resolvingAgainstBaseURL: true)
+        var urlComponents = URLComponents(url: self.urlForEntries, resolvingAgainstBaseURL: true)
         urlComponents?.queryItems = [queryItemType, queryItemCount]
         
-        self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
+        self.fetchJSONWithURL(urlComponents?.url, completetion: { (result, errorCode) -> Void in
             if let entries = result as? JSONArray {
                 var finalArray = Array<Entry>()
                 for jsonDictionary: JSONDictionary in entries {
                     let entry: Entry = Entry(jsonDictionary: jsonDictionary)
                     finalArray.append(entry)
                 }
-                completetion(entries: finalArray, errorCode: errorCode)
+                completetion(finalArray, errorCode)
             } else {
-                completetion(entries: nil, errorCode: errorCode)
+                completetion(nil, errorCode)
             }
         })
     }
     
-    public func fetchDataForWatchEntry(completetion:(watchEntry: WatchEntry?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchDataForWatchEntry(_ completetion:@escaping (_ watchEntry: WatchEntry?, _ errorCode: NightscoutAPIError) -> Void) {
         let watchEntryUrl = self.urlForWatchEntry
         self.fetchJSONWithURL(watchEntryUrl, completetion: { (result, errorCode) -> Void in
             if let jsonDictionary = result as? JSONDictionary {
                 let watchEntry: WatchEntry = WatchEntry(watchEntryDictionary: jsonDictionary)
-                completetion(watchEntry: watchEntry, errorCode: errorCode)
+                completetion(watchEntry, errorCode)
             } else {
-                completetion(watchEntry: nil, errorCode: errorCode)
+                completetion(nil, errorCode)
             }
         })
     }
     
-    public func fetchCalibrations(count: Int = 1, completetion:(calibrations: [Entry]?, errorCode: NightscoutAPIError) -> Void) {
+    public func fetchCalibrations(_ count: Int = 1, completetion:@escaping (_ calibrations: [Entry]?, _ errorCode: NightscoutAPIError) -> Void) {
         //find[type]=cal&count=1
-        let queryItemCount = NSURLQueryItem(name: URLPart.CountParameter, value: "\(count)")
+        let queryItemCount = URLQueryItem(name: URLPart.CountParameter, value: "\(count)")
         
-        let urlComponents = NSURLComponents(URL: self.urlForCalibrations, resolvingAgainstBaseURL: true)
+        var urlComponents = URLComponents(url: self.urlForCalibrations, resolvingAgainstBaseURL: true)
         urlComponents?.queryItems = [queryItemCount]
         
-        self.fetchJSONWithURL(urlComponents?.URL, completetion: { (result, errorCode) -> Void in
+        self.fetchJSONWithURL(urlComponents?.url, completetion: { (result, errorCode) -> Void in
             if let entries = result as? JSONArray {
                 var finalArray = Array<Entry>()
                 for jsonDictionary: JSONDictionary in entries {
                     let entry: Entry = Entry(jsonDictionary: jsonDictionary)
                     finalArray.append(entry)
                 }
-                completetion(calibrations: finalArray, errorCode: errorCode)
+                completetion(finalArray, errorCode)
             } else {
-                completetion(calibrations: nil, errorCode: errorCode)
+                completetion(nil, errorCode)
             }
         })
     }
     
     internal func postExperiments() {
-        let request = NSMutableURLRequest(URL: self.urlForExperimentTest)
-        request.HTTPMethod = "POST"
+        let request = NSMutableURLRequest(url: self.urlForExperimentTest)
+        request.httpMethod = "POST"
         request.allHTTPHeaderFields = headers
         // request.HTTPBody = "postData"
         
-        let dataTask: NSURLSessionDataTask = sharedSession.dataTaskWithRequest(request, completionHandler: { (data, response, error) -> Void in
-            if (error != nil) {
-                print(error)
-            } else {
-                let httpResponse = response as? NSHTTPURLResponse
-                print(httpResponse)
-            }
-        })
-        
-        dataTask.resume()
+//        let dataTask = session.dataTask(with: request) { (data, response, error) in
+//            
+//        //sharedSession.dataTask(with: request, completionHandler: { (data, response, error) -> Void in
+//            if (error != nil) {
+//                print(error)
+//            } else {
+//                let httpResponse = response as? HTTPURLResponse
+//                print(httpResponse)
+//            }
+//        }
+//        
+//        dataTask.resume()
     }
     
 }
 
 // MARK: - Convenience Methods
 extension NightscoutAPIClient {
-    var baseURL: NSURL {
-        return url.URLByAppendingPathComponent(URLPart.ApiVersion)
+    var baseURL: URL {
+        return url.appendingPathComponent(URLPart.ApiVersion)
     }
     
-    var entriesString: NSURL {
-        return baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathExtension(URLPart.FileExtension)
+    var entriesString: URL {
+        return baseURL.appendingPathComponent(URLPart.Entries).appendingPathExtension(URLPart.FileExtension)
     }
     
-    var urlForWatchEntry: NSURL {
-        return NSURL(string: URLPart.Pebble, relativeToURL: url)!
+    var urlForWatchEntry: URL {
+        return URL(string: URLPart.Pebble, relativeTo: url)!
     }
     
-    var urlForStatus: NSURL {
-        let temp = baseURL.URLByAppendingPathComponent(URLPart.Status).URLByAppendingPathExtension(URLPart.FileExtension)
+    var urlForStatus: URL {
+        let temp = baseURL.appendingPathComponent(URLPart.Status).appendingPathExtension(URLPart.FileExtension)
         return temp
     }
     
-    internal var urlForEntries: NSURL {
-        let temp = baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathExtension(URLPart.FileExtension)
+    internal var urlForEntries: URL {
+        let temp = baseURL.appendingPathComponent(URLPart.Entries).appendingPathExtension(URLPart.FileExtension)
         return temp
     }
    
-    internal var urlForCalibrations: NSURL {
-        return baseURL.URLByAppendingPathComponent(URLPart.Entries).URLByAppendingPathComponent(URLPart.Cals).URLByAppendingPathExtension(URLPart.FileExtension)
+    internal var urlForCalibrations: URL {
+        return baseURL.appendingPathComponent(URLPart.Entries).appendingPathComponent(URLPart.Cals).appendingPathExtension(URLPart.FileExtension)
     }
     
-    internal var urlForExperimentTest: NSURL {
-        let temp = baseURL.URLByAppendingPathComponent(URLPart.ExperimentTest)
+    internal var urlForExperimentTest: URL {
+        let temp = baseURL.appendingPathComponent(URLPart.ExperimentTest)
         return temp
     }
     
@@ -215,70 +217,75 @@ extension NightscoutAPIClient {
 // MARK: - Private Methods
 private extension NightscoutAPIClient {
     
-    func useNetwork(showIndicator: Bool) {
+    func useNetwork(_ showIndicator: Bool) {
         if let delegate = self.delegate {
             delegate.nightscoutAPIClient(self, usingNetwork: showIndicator)
         }
     }
     
-    func fetchJSONWithURL(url: NSURL!, completetion:(result: JSON?, errorCode: NightscoutAPIError) -> Void) {
+    func fetchJSONWithURL(_ url: URL!, completetion:@escaping (_ result: JSON?, _ errorCode: NightscoutAPIError) -> Void) {
         
         useNetwork(true)
         
-        let downloadTask: NSURLSessionDownloadTask = sharedSession.downloadTaskWithURL(url, completionHandler: { (location: NSURL?, response: NSURLResponse?, downloadError: NSError?) -> Void in
-            if let httpResponse = response as? NSHTTPURLResponse {
+        
+let downloadTask: URLSessionDownloadTask = session.downloadTask(with: url) { (location, response, downloadError) in
+    
+    
+    
+//    let downloadTask: URLSessionDownloadTask = sharedSession.downloadTask(with: url, completionHandler: { (location: URL?, response: URLResponse?, downloadError: NSError?) -> Void in
+            if let httpResponse = response as? HTTPURLResponse {
                 switch httpResponse.statusCode {
                 case 200:
                     
                     guard let locationURL = location else {
-                        completetion(result: nil, errorCode: .DownloadErorr("Data did not have a valid location on disk."))
+                        completetion(nil, .downloadErorr("Data did not have a valid location on disk."))
                         return
                     }
-                    if let dataObject: NSData = NSData(contentsOfURL: locationURL) {
-                        var stringVersion = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
-                        stringVersion = stringVersion?.stringByReplacingOccurrencesOfString("+", withString: "")
+                    if let dataObject: Data = try? Data(contentsOf: locationURL) {
+                        var stringVersion = String(data: dataObject, encoding: String.Encoding.utf8) //NSString(data: dataObject, encoding: String.Encoding.utf8.rawValue)
+                        stringVersion = stringVersion?.replacingOccurrences(of: "+", with: "")
                         
-                        if let newData = stringVersion?.dataUsingEncoding(NSUTF8StringEncoding) {
+                        if let newData = stringVersion?.data(using: String.Encoding.utf8) {
                             var jsonError: NSError?
                             do {
-                                let responseObject: AnyObject = try NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments)
+                                let responseObject: Any = try JSONSerialization.jsonObject(with: newData, options: .allowFragments)
                                 if (jsonError != nil) {
                                     print("jsonError")
-                                    completetion(result: nil, errorCode: .JSONParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
+                                    completetion(nil, .jsonParseError("There was a problem processing the JSON data. Error code: \(jsonError)"))
                                     
                                 } else {
-                                    completetion(result: responseObject, errorCode: .NoError)
+                                    completetion(responseObject, .noError)
                                     
-                                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
-                                        NSNotificationCenter.defaultCenter().postNotification(NSNotification(name:NightscoutAPIClientNotification.DataUpdateSuccessful, object: self))
+                                    DispatchQueue.main.async(execute: { () -> Void in
+                                        NotificationCenter.default.post(Notification(name:Notification.Name(rawValue: NightscoutAPIClientNotification.DataUpdateSuccessful), object: self))
                                     })
                                     
                                 }
                             } catch let error as NSError {
                                 jsonError = error
                                 print("Could not create a response object")
-                                completetion(result: nil, errorCode: .DataError("Could not create a response object from given data."))
+                                completetion(nil, .dataError("Could not create a response object from given data."))
                                 
                             } catch {
                                 fatalError()
                             }
                         } else {
                             print("Could not create clean data for json processor")
-                            completetion(result: nil, errorCode: .DataError("Failed to create data for json."))
+                            completetion(nil, .dataError("Failed to create data for json."))
                         }
                     }
                     
                 default:
                     print("GET request not successful. HTTP status code: \(httpResponse.statusCode)")
-                    completetion(result: nil, errorCode: .DownloadErorr("GET request not successful. HTTP status code: \(httpResponse.statusCode), fullError: \(downloadError)"))
+                    completetion(nil, .downloadErorr("GET request not successful. HTTP status code: \(httpResponse.statusCode), fullError: \(downloadError)"))
                     
                 }
             } else {
                 print("Error: Not a valid HTTP response")
-                completetion(result: nil, errorCode: .DownloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
+                completetion(nil, .downloadErorr("There was a problem downloading data. Error code: \(downloadError)"))
             }
             self.useNetwork(false)
-        })
+        }
         
         downloadTask.resume()
     }
@@ -296,26 +303,26 @@ public final class Box<A> {
 }
 
 public enum Result<A> {
-    case Error(NSError)
-    case Value(Box<A>)
+    case error(NSError)
+    case value(Box<A>)
 }
 
 extension NightscoutAPIClient {
-    public func fetchServerConfiguration(callback: (Result<ServerConfiguration>) -> Void) {
+    public func fetchServerConfiguration(_ callback: @escaping (Result<ServerConfiguration>) -> Void) {
         let settingsUrl = self.urlForStatus
         
         self.fetchJSONWithURL(settingsUrl, callback: { (result) -> Void in
             switch result {
-            case let .Error(error):
+            case let .error(error):
                 // display error message
                 print("Recieved an error fetching Configuration: \(error)")
-                callback(.Error(error))
+                callback(.error(error))
                 
-            case let .Value(boxedConfiguration):
+            case let .value(boxedConfiguration):
                 let result: JSON = boxedConfiguration.value
                 if let settingsDictionary = result as? JSONDictionary {
                     let settingObject: ServerConfiguration = ServerConfiguration(jsonDictionary: settingsDictionary)
-                    callback(.Value(Box(settingObject)))
+                    callback(.value(Box(settingObject)))
                 }
             }
         })
@@ -324,33 +331,34 @@ extension NightscoutAPIClient {
 
 private extension NightscoutAPIClient {
     
-    func fetchJSONWithURL(url: NSURL!, callback: (Result<JSON>) -> Void) {
+    func fetchJSONWithURL(_ url: URL!, callback: @escaping (Result<JSON>) -> Void) {
         
-        task = sharedSession.downloadTaskWithURL(url, completionHandler: { (location, urlResponse, downloadError) -> Void in
+        task = session.downloadTask(with: url, completionHandler: { (location, urlResponse, downloadError) -> Void in
             
             // if the response returned an error send it to the callback
             if let err = downloadError {
                 print("Recieved an error DOWNLOADING: \(downloadError)")
-                callback(.Error(err))
+                callback(.error(err as NSError))
                 return
             }
             
-            if let httpResponse = urlResponse as? NSHTTPURLResponse {
+            if let httpResponse = urlResponse as? HTTPURLResponse {
                 switch httpResponse.statusCode {
                 case 200:
                     
-                    if let dataObject: NSData = NSData(contentsOfURL: location!) {
+                    if let dataObject: Data = try? Data(contentsOf: location!) {
                         // Converting data to a string, then removing bad characters found in the Nightscout JSON
-                        var dataConvertedToString = NSString(data: dataObject, encoding: NSUTF8StringEncoding)
+                        var dataConvertedToString = NSString(data: dataObject, encoding: String.Encoding.utf8.rawValue)
                         // Apple's JSON Serializer has a problem with + notation for large numbers. I've observed this happening in intercepts.
-                        dataConvertedToString = dataConvertedToString?.stringByReplacingOccurrencesOfString("+", withString: "")
+                        dataConvertedToString = dataConvertedToString?.replacingOccurrences(of: "+", with: "") as NSString?
                         
                         // Converting string back into data so it can be processed into JSON.
-                        if let newData: NSData = dataConvertedToString?.dataUsingEncoding(NSUTF8StringEncoding) {
+                        if let newData: Data = dataConvertedToString?.data(using: String.Encoding.utf8.rawValue) {
                             var jsonErrorOptional: NSError?
                             let jsonOptional: JSON!
                             do {
-                                jsonOptional = try NSJSONSerialization.JSONObjectWithData(newData, options: NSJSONReadingOptions(rawValue: 0))
+                                jsonOptional = try JSONSerialization.jsonObject(with: newData, options: JSONSerialization.ReadingOptions.allowFragments)
+//                                jsonOptional = try JSONSerialization.jsonObject(with: newData, options: JSONSerialization.ReadingOptions(rawValue: 0))
                             } catch let error as NSError {
                                 jsonErrorOptional = error
                                 jsonOptional = nil
@@ -360,23 +368,23 @@ private extension NightscoutAPIClient {
                             
                             // if there was an error parsing the JSON send it back
                             if let err = jsonErrorOptional {
-                                callback(.Error(err))
+                                callback(.error(err))
                                 return
                             }
                             
-                            callback(.Value(Box(jsonOptional)))
+                            callback(.value(Box(jsonOptional)))
                             return
                         }
                     }
                     
                 default:
                     // hhtpResonse other than 200
-                    callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -220, userInfo: nil)))
+                    callback(.error(NSError(domain: NightscoutAPIErrorDomain, code: -220, userInfo: nil)))
                 }
             }
             
             // if we couldn't parse all the properties then send back an error
-            callback(.Error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))
+            callback(.error(NSError(domain: NightscoutAPIErrorDomain, code: -420, userInfo: nil)))
         })
         
         task!.resume()
@@ -392,25 +400,44 @@ private extension NightscoutAPIClient {
  
  Inspired by debounce function from underscore.js ( http://underscorejs.org/#debounce )
  */
-public func dispatch_debounce_block(wait : NSTimeInterval, queue : dispatch_queue_t = dispatch_get_main_queue(), block : dispatch_block_t) -> dispatch_block_t {
-    var cancelable : dispatch_block_t!
+
+public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, action: @escaping (()->()) ) -> ()->() {
+    var lastFireTime   = DispatchTime.now()
+    let dispatchDelay  = DispatchTimeInterval.seconds(delay)
+    
     return {
-        cancelable?()
-        cancelable = dispatch_after_cancellable(dispatch_time(DISPATCH_TIME_NOW, Int64(wait * Double(NSEC_PER_SEC))), queue: queue, block: block)
+        lastFireTime     = DispatchTime.now()
+        let dispatchTime: DispatchTime = lastFireTime + dispatchDelay
+        queue.asyncAfter(deadline: dispatchTime) {
+            let when: DispatchTime = lastFireTime + dispatchDelay
+            let now = DispatchTime.now()
+            if now.rawValue >= when.rawValue {
+                action()
+            }
+        }
     }
 }
 
+
+//public func dispatch_debounce_block(_ wait : TimeInterval, queue : DispatchQueue = DispatchQueue.main, block : @escaping ()->()) -> ()->() {
+//    var cancelable : ()->()!
+//    return {
+//        cancelable()
+//        cancelable = dispatch_after_cancellable(DispatchTime.now() + Double(Int64(wait * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), queue: queue, block: block)
+//    }
+//}
+
 // Big thanks to Claus Höfele for this function
 // https://gist.github.com/choefele/5e5a981ed731472b80d9
-func dispatch_after_cancellable(when: dispatch_time_t, queue: dispatch_queue_t, block: dispatch_block_t) -> () -> Void {
-    var isCancelled = false
-    dispatch_after(when, queue) {
-        if !isCancelled {
-            block()
-        }
-    }
-    
-    return {
-        isCancelled = true
-    }
-}
+//func dispatch_after_cancellable(_ when: DispatchTime, queue: DispatchQueue, block: @escaping ()->()) -> () -> Void {
+//    var isCancelled = false
+//    queue.asyncAfter(deadline: when) {
+//        if !isCancelled {
+//            block()
+//        }
+//    }
+//    
+//    return {
+//        isCancelled = true
+//    }
+//}

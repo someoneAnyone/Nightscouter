@@ -12,7 +12,7 @@ extension NSUbiquitousKeyValueStore {
     public func resetStorage() -> Bool {
         for key in self.dictionaryRepresentation.keys
         {
-            self.removeObjectForKey(key)
+            self.removeObject(forKey: key)
         }
         
         // Sync back to iCloud
