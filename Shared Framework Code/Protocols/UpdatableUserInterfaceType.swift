@@ -24,7 +24,7 @@ import Foundation
 public protocol UpdatableUserInterfaceType {
     @objc optional func startUpdateUITimer()
     @objc optional var updateInterval: TimeInterval { get }
-    func updateUI(_ notif: Timer)
+    @objc func updateUI(_ notif: Timer)
 }
 
 public extension UpdatableUserInterfaceType where Self: ViewController {

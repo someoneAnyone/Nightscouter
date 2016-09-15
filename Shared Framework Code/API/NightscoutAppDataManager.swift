@@ -9,7 +9,8 @@
 import Foundation
 
 let updateInterval: TimeInterval = Constants.NotableTime.StandardRefreshTime
-public let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high)
+public let queue = DispatchQueue(label: "com.nothingonline.nightscouter")
+//public let queue = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high)
 
 
 /**

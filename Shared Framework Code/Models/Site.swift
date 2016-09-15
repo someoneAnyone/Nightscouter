@@ -77,14 +77,14 @@ open class Site: NSObject, NSCoding, DictionaryConvertible {
         return dictionary.description
     }
     
-    open var dictionaryRep: [String: AnyObject] {
+    open var dictionaryRep: [String: Any] {
 
-        var dict = Dictionary<String, AnyObject>()
+        var dict = Dictionary<String, Any>()
       
-        dict["urlString"] = url.absoluteString as AnyObject?
+        dict["urlString"] = url.absoluteString
         
         if let configuration = configuration {
-            dict["displayName"] = configuration.displayName as AnyObject?
+            dict["displayName"] = configuration.displayName
         }
         
         return dict

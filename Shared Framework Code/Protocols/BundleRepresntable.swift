@@ -13,7 +13,7 @@ public protocol BundleRepresentable {
     
     var sharedGroupIdentifier: String { get }
     
-    var infoDictionary: [String : AnyObject]? { get }
+    var infoDictionary: [String : Any]? { get }
     
     var bundleIdentifier: URL? { get }
 }
@@ -25,8 +25,8 @@ extension BundleRepresentable {
         return (group?.appendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
     }
     
-    public var infoDictionary: [String: AnyObject]? {
-        return Bundle.main.infoDictionary as [String : AnyObject]? // Grab the info.plist dictionary from the main bundle.
+    public var infoDictionary: [String: Any]? {
+        return Bundle.main.infoDictionary as [String : Any]? // Grab the info.plist dictionary from the main bundle.
     }
     
     public var bundleIdentifier: URL? {

@@ -9,6 +9,8 @@
 import Foundation
 
 extension NSUbiquitousKeyValueStore {
+    
+    @discardableResult
     public func resetStorage() -> Bool {
         for key in self.dictionaryRepresentation.keys
         {

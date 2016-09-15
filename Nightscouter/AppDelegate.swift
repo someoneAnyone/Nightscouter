@@ -21,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     var timer: Timer?
     
-    
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
     
@@ -31,7 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
             print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
-
+        
         AppThemeManager.themeApp
         window?.tintColor = Theme.Color.windowTintColor
         
@@ -264,7 +263,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
         localNotification.fireDate = Date().addingTimeInterval(TimeInterval(arc4random_uniform(UInt32(sites.count))))
         localNotification.soundName = UILocalNotificationDefaultSoundName;
         localNotification.category = "Nightscout_Category"
-        localNotification.userInfo = NSDictionary(object: site.uuid.uuidString, forKey: Site.PropertyKey.uuidKey as NSCopying) as! [AnyHashable: Any]
+        localNotification.userInfo = NSDictionary(object: site.uuid.uuidString, forKey: Site.PropertyKey.uuidKey as NSCopying) as? [AnyHashable: Any]
         localNotification.alertAction = "View Site"
         
         if let config = site.configuration {

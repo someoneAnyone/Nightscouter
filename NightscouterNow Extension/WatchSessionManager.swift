@@ -100,7 +100,7 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     
     open var models: [WatchModel] = [] {
         didSet {
-            let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
+            let models: [[String : Any]] = self.models.flatMap( { $0.dictionary } )
             
             defaults.set(models, forKey: DefaultKey.sites.rawValue)
             
@@ -157,7 +157,8 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
         return matched.first ?? models.first
     }
     
-    open func updateModel(_ model: WatchModel)  ->  Bool {
+    @discardableResult
+    open func updateModel(_ model: WatchModel) -> Bool {
         var success = false
         modelInfoQueue.sync {
             if let index = self.models.index(of: model) {
@@ -224,7 +225,7 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     // MARK: Save and Load Data
     open func saveData() {
         print("Saving Data")
-        let models: [[String : AnyObject]] = self.models.flatMap( { $0.dictionary } )
+        let models: [[String : Any]] = self.models.flatMap( { $0.dictionary } )
         
         defaults.set(models, forKey: DefaultKey.sites.rawValue)
         defaults.set(currentSiteIndex, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
@@ -234,7 +235,7 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     
     open func loadData() {
         
-        if let models = defaults.array(forKey: DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
+        if let models = defaults.array(forKey: DefaultKey.sites.rawValue) as? [[String : Any]] {
             self.models = models.flatMap{ WatchModel(fromDictionary: $0) }
         }
         

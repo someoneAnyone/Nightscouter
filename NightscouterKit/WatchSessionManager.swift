@@ -44,10 +44,10 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     open func sessionReachabilityDidChange(_ session: WCSession) {
         print("sessionReachabilityDidChange")
         //  print(session)
-        //let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-        //        AppDataManageriOS.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
-        //
-        //        }
+        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
+                AppDataManageriOS.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
+        
+                }
     }
     
     open func sessionWatchStateDidChange(_ session: WCSession) {
@@ -76,7 +76,7 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
 public extension WatchSessionManager {
     
     // Sender
-    public func updateApplicationContext(_ applicationContext: [String : AnyObject]) throws {
+    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         if let session = validSession {
             do {
                 cleanUpTransfers()
@@ -104,7 +104,7 @@ public extension WatchSessionManager {
 @available(iOSApplicationExtension 9.0, *)
 extension WatchSessionManager {
     
-    public func transferCurrentComplicationUserInfo(_ userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    public func transferCurrentComplicationUserInfo(_ userInfo: [String : Any]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferCurrentComplicationUserInfo")
             print("validSession?.complicationEnabled == \(validSession?.isComplicationEnabled)")
@@ -120,7 +120,7 @@ extension WatchSessionManager {
     }
     
     // Sender
-    public func transferUserInfo(_ userInfo: [String : AnyObject]) -> WCSessionUserInfoTransfer? {
+    public func transferUserInfo(_ userInfo: [String : Any]) -> WCSessionUserInfoTransfer? {
         #if DEBUG
             print("transferUserInfo")
             //print("transferUserInfo: \(userInfo)")
@@ -130,7 +130,9 @@ extension WatchSessionManager {
         return validSession?.transferUserInfo(userInfo)
     }
     
+    
     @objc(session:didFinishUserInfoTransfer:error:) public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
+        
     //public func session(_ session: WCSession, didFinish userInfoTransfer: WCSessionUserInfoTransfer, error: Error?) {
         #if DEBUG
             print("session \(session), didFinishUserInfoTransfer: \(userInfoTransfer), error: \(error)")

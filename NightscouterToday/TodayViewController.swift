@@ -31,10 +31,28 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
 
         sites = AppDataManageriOS.sharedInstance.sites
         
+        if #available(iOSApplicationExtension 10.0, *) {
+            extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+        } else {
+            preferredContentSize = tableView.contentSize
+        }
+        
         tableView.backgroundColor = UIColor.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-        preferredContentSize = tableView.contentSize
+    }
+    
+
+    
+    @available(iOSApplicationExtension 10.0, *)
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+    
+        if (activeDisplayMode == .compact) {
+            preferredContentSize = maxSize
+        }
+        else {
+            preferredContentSize = tableView.contentSize
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -77,7 +95,11 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         if sites.isEmpty {
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.CellIdentifiers.message, for: indexPath)
             
+            
+            
             cell.textLabel!.text = NSLocalizedString("No Nightscout sites were found.", comment: "")
+            
+            
             
             return cell
         } else {
@@ -86,6 +108,12 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
             
             contentCell.configureCell(site)
             
+            let os = ProcessInfo().operatingSystemVersion
+
+            if os.majorVersion >= 10 {
+                contentCell.contentView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+            }
+
             if site.updateNow {
                 refreshDataFor(site, index: (indexPath as NSIndexPath).row)
             }

@@ -36,7 +36,7 @@ public struct ComplicationModel: DictionaryConvertible {
         self.rawShort = rawShort
     }
     
-    public init?(fromDictionary d:[String : AnyObject]) {
+    public init?(fromDictionary d:[String : Any]) {
         guard let displayName = d["displayName"] as? String, let sgv = d["sgv"] as? String, let date = d["date"] as? Date, let sgvEmoji = d["sgvEmoji"] as? String, let tintString = d["tintString"] as? String, let delta = d["delta"] as? String, let deltaShort = d["deltaShort"] as? String else {
             return nil
         }

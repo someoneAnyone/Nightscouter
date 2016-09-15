@@ -10,12 +10,12 @@ import Foundation
 
 
 public protocol DictionaryConvertible {
-    var dictionary: [String: AnyObject] { get }
+    var dictionary: [String: Any] { get }
 }
 
 extension DictionaryConvertible {
-     public var dictionary: [String: AnyObject] {
-        var dict = [String :AnyObject] ()
+     public var dictionary: [String: Any] {
+        var dict = [String :Any] ()
         let mirror = Mirror(reflecting: self)
         for child in mirror.children {
             guard let key = child.label else {
@@ -29,7 +29,7 @@ extension DictionaryConvertible {
             
 
             // print("\(key): \(result)")
-            dict[key] = result as? AnyObject
+            dict[key] = result
         }
         
         return dict

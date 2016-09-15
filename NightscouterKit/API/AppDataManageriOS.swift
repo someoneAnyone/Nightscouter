@@ -12,7 +12,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
     
     open var sites: [Site] = [] {
         didSet{
-            let models: [[String : AnyObject]] = sites.flatMap( { $0.viewModel.dictionary } )
+            let models: [[String : Any]] = sites.flatMap( { $0.viewModel.dictionary } )
             
             if models.isEmpty {
                 defaultSiteUUID = nil
@@ -79,7 +79,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
     }
     
     
-    open static let sharedInstance = AppDataManageriOS()
+    public static let sharedInstance = AppDataManageriOS()
     
     fileprivate override init() {
         super.init()
@@ -155,7 +155,8 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
         //updateWatch(withAction: .AppContext)
     }
     
-    open func updateSite(_ site: Site)  ->  Bool {
+    @discardableResult
+    open func updateSite(_ site: Site) -> Bool {
         
         var success = false
         
@@ -255,7 +256,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
         
     }
     
-    fileprivate var currentPayload: [String: AnyObject] = [String: AnyObject]()
+    fileprivate var currentPayload: [String: Any] = [String: Any]()
     
     let transmitToWatch = debounce(delay: 4, action: {
         
@@ -296,18 +297,18 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
     })
     
     
-    open func genratePayloadForAction(_ action: WatchAction = .AppContext) -> [String: AnyObject] {
+    open func genratePayloadForAction(_ action: WatchAction = .AppContext) -> [String: Any] {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             // print("Please \(action) the watch with the \(sites)")
         #endif
         // Create a generic context to transfer to the watch.
-        var payload = [String: AnyObject]()
+        var payload = [String: Any]()
         // Tag the context with an action so that the watch can handle it if needed.
         // ["action" : "WatchAction.Create"] for example...
-        payload[WatchModel.PropertyKey.actionKey] = action.rawValue as AnyObject?
+        payload[WatchModel.PropertyKey.actionKey] = action.rawValue
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
-        payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource as AnyObject?
+        payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
         
         currentPayload = payload
         
@@ -345,7 +346,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
             }
         }
         
-        processingSiteDataGroup.notify(queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.low)) {
+        processingSiteDataGroup.notify(queue: .global()) {//.notify(queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.low)) {
             handler(updatedSites)
         }
     }
@@ -416,7 +417,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
                 // Update Data Source
                 
                 if key == DefaultKey.sites.rawValue {
-                    if let models = store.array(forKey: DefaultKey.sites.rawValue) as? [[String : AnyObject]] {
+                    if let models = store.array(forKey: DefaultKey.sites.rawValue) as? [[String : Any]] {
                         sites = models.flatMap( { WatchModel(fromDictionary: $0)?.generateSite() } )
                     }
                 }

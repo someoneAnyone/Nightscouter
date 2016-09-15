@@ -105,8 +105,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     // Is the SGV alarming?
     public var alarmForSGV: Bool = false
     
-    public var calibrations: [[String : AnyObject]] = []
-    public var complicationModels: [[String : AnyObject]] = []
+    public var calibrations: [[String : Any]] = []
+    public var complicationModels: [[String : Any]] = []
     
     public init?(fromDictionary: [String : Any]) {
         
@@ -149,8 +149,8 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         self.uuid = d["uuid"] as! String
         
-        self.complicationModels = d["complicationModels"] as? [[String: AnyObject]] ?? []
-        self.calibrations = d["calibrations"] as? [[String: AnyObject]] ?? []
+        self.complicationModels = d["complicationModels"] as? [[String: Any]] ?? []
+        self.calibrations = d["calibrations"] as? [[String: Any]] ?? []
 
     }
     

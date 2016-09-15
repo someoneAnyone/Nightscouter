@@ -17,7 +17,7 @@ public struct Calibration: DictionaryConvertible {
 }
 
 extension Calibration {
-    public init?(fromDictionary d:[String : AnyObject]){
+    public init?(fromDictionary d:[String : Any]){
         
         guard let slope = d["slope"] as? Double,
         let scale = d["scale"] as? Double,
