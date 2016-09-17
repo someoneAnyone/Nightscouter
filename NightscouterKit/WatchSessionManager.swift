@@ -104,17 +104,6 @@ public extension WatchSessionManager {
 @available(iOSApplicationExtension 9.0, *)
 extension WatchSessionManager {
     
-    public func transferCurrentComplicationUserInfo(_ userInfo: [String : Any]) -> WCSessionUserInfoTransfer? {
-        #if DEBUG
-            print("transferCurrentComplicationUserInfo")
-            print("validSession?.complicationEnabled == \(validSession?.isComplicationEnabled)")
-        #endif
-        
-        cleanUpTransfers()
-        
-        return validSession?.isComplicationEnabled == true ? validSession?.transferCurrentComplicationUserInfo(userInfo) : transferUserInfo(userInfo)
-    }
-    
     func cleanUpTransfers(){
         validSession?.outstandingUserInfoTransfers.forEach({ $0.cancel() })
     }
