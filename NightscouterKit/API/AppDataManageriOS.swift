@@ -237,7 +237,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
                     self.updateSite(site)
                     
                     if let replyHandler = replyHandler {
-                        replyHandler(self.genratePayloadForAction(action))
+                        replyHandler(self.generatePayloadForAction(action))
                     }
                 }
             })
@@ -249,55 +249,29 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
                 }
                 
                 if let replyHandler = replyHandler {
-                    replyHandler(self.genratePayloadForAction(action))
+                    replyHandler(self.generatePayloadForAction(action))
                 }
             })
         }
         
     }
     
-    fileprivate var currentPayload: [String: Any] = [String: Any]()
-    
     let transmitToWatch = debounce(delay: 4, action: {
-        
-//        dispatch_debounce_block(4.0, block: {
         
         print("Throttle how many times we send to the watch... only send every \(4.0) seconds!!!!!!!!!")
         
-        //        let currentPayload = AppDataManageriOS.sharedInstance.currentPayload
-        
-        //        guard let actionString = currentPayload[WatchModel.PropertyKey.actionKey] as? String, action = WatchAction(rawValue: actionString) else {
-        //            print("no action was found.")
-        //            return
-        //        }
-        //
-        //            switch action {
-        //            case .UpdateComplication:
-        //                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(currentPayload)
-        //
-        //                return
-        //            default:
-        WatchSessionManager.sharedManager.sendMessage(AppDataManageriOS.sharedInstance.genratePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
+        WatchSessionManager.sharedManager.sendMessage(AppDataManageriOS.sharedInstance.generatePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
             print("Sending error: \(error)")
             do {
                 print("Updating Application Context")
-                try WatchSessionManager.sharedManager.updateApplicationContext(AppDataManageriOS.sharedInstance.genratePayloadForAction())
-            } catch {
-                print("Couldn't update Application Context, transferCurrentComplicationUserInfo.")
-                
-                WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UserInfo))
+                try WatchSessionManager.sharedManager.updateApplicationContext(AppDataManageriOS.sharedInstance.generatePayloadForAction())
+            } catch let exception {
+                print("Exception when updating application context", exception)
             }
         })
-        print("Update transferCurrentComplicationUserInfo.")
-        // WatchSessionManager.sharedManager.transferCurrentComplicationUserInfo(AppDataManageriOS.sharedInstance.genratePayloadForAction(.UpdateComplication))
-        
-        return
-        
-        //        }
     })
     
-    
-    open func genratePayloadForAction(_ action: WatchAction = .AppContext) -> [String: Any] {
+    open func generatePayloadForAction(_ action: WatchAction = .AppContext) -> [String: Any] {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             // print("Please \(action) the watch with the \(sites)")
@@ -309,9 +283,6 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
         payload[WatchModel.PropertyKey.actionKey] = action.rawValue
         // WatchOS connectivity doesn't like custom data types and complex properties. So bundle this up as an array of standard dictionaries.
         payload[WatchModel.PropertyKey.contextKey] = dictionaryOfDataSource
-        
-        currentPayload = payload
-        
         return payload
     }
     
