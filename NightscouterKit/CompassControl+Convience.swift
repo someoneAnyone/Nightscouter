@@ -19,7 +19,7 @@ public extension CompassControl {
     
     public func configureWith(_ model: WatchModel){
         
-        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.replacingOccurrences(of: " ", with: "")), bgdelta: model.delta, units: model.units)
+        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.replacingOccurrences(of: " ", with: "")), bgdelta: Double(model.delta), units: model.units)
         self.shouldLookStale(look: model.warn)
     }
     

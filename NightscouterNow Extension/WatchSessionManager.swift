@@ -25,15 +25,13 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     
     fileprivate let modelInfoQueue = DispatchQueue(label: "com.nothingonline.nightscouter.watchsessionmanager", attributes: [])
     
-    let reloadComplications = debounce(delay: 10) { 
-        
-//    dispatch_debounce_block(10.0, block: {
+    let reloadComplications = debounce(delay: 10) {
         DispatchQueue.main.async {
             ComplicationController.reloadComplications()
         }
     }
     
-    let postNotificaitonForDefaults = debounce(delay: 4) { //dispatch_debounce_block(4.0, block: {
+    let postNotificaitonForDefaults = debounce(delay: 4) {
         OperationQueue.main.addOperation { () -> Void in
             NotificationCenter.default.post(name: Notification.Name(rawValue: AppDataManagerDidChangeNotification), object: nil)
         }
@@ -104,6 +102,8 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
             
             defaults.set(models, forKey: DefaultKey.sites.rawValue)
             
+            defaults.synchronize()
+            
             if models.isEmpty {
                 defaultSiteUUID = nil
                 currentSiteIndex = 0
@@ -116,7 +116,6 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
     open var currentSiteIndex: Int {
         set{
             defaults.set(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
-            
         }
         get{
             return defaults.integer(forKey: DefaultKey.lastViewedSiteIndex.rawValue)
@@ -127,8 +126,9 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
         set{
             defaults.set(newValue?.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
             
-            var payload = [String: AnyObject]()
-            payload[DefaultKey.primarySiteUUID.rawValue] = newValue?.uuidString as AnyObject?
+            var payload = [String: String]()
+            payload[DefaultKey.primarySiteUUID.rawValue] = newValue?.uuidString
+            
             session?.transferUserInfo(payload)
             
             updateComplication { complicationData in
@@ -349,6 +349,34 @@ extension WatchSessionManager {
             
             reloadComplications()
         }
+        
+        if let dicts = payload[DefaultKey.siteURLForWatch.rawValue] as? [[String: String]] {
+            
+            
+            let sites = dicts.flatMap({ (dictionary) -> Site? in
+                
+                guard let urlString = dictionary["url"], let uuidString = dictionary["uuid"], let url = URL(string: urlString) else {
+                    return nil
+                    
+                }
+                
+                return Site(url: url, apiSecret: "", uuid: UUID(uuidString: uuidString)!)
+            })
+            
+            
+            
+            self.models = sites.map({ $0.viewModel })
+            
+            if update {
+                updateDelegatesForModelChange(models)
+            }
+            
+            reloadComplications()
+            
+            
+        } else {
+            self.models.removeAll()
+        }
     }
     
 }
@@ -388,7 +416,7 @@ extension WatchSessionManager {
         }
         
         updateComplication { complicationData in
-            // ComplicationController.reloadComplications()
+
         }
     }
     
@@ -428,8 +456,6 @@ extension WatchSessionManager {
             defaults.set([Date()], forKey: requestReceived)
         }
         
-        let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.UpdateComplication.rawValue]
-        
         guard let model = self.defaultModel() else {
             print("No model was found... returning empty timline in \(#function)")
             
@@ -438,55 +464,17 @@ extension WatchSessionManager {
         }
         
         if model.updateNow {
-            
             print("Updating because: model needs updating: \(model.updateNow)")
             self.currentlySendingMessage = true
-            
-            guard let validSession = validSession else {
-                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                    completion(returnedSite.complicationModels)
-                })
-                
-                return
-            }
-            
-            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : Any]) -> Void in
-                // handle reply from iPhone app here
-                print("\(#function): recievedMessageReply from iPhone")
-                
+            fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
                 self.currentlySendingMessage = false
-                
-                DispatchQueue.main.async { [weak self] in
-                    print("updateComplication success...")
-                    self?.processApplicationContext(context)
-                    completion(self?.complicationData ?? [])
-                }
-                
-                }, errorHandler: {(error: Error ) -> Void in
-                    print("\(#function): recieved error from phone: \(error)")
-                    self.currentlySendingMessage = false
-                    
-                     let watchErrorCode =  WCError(_nsError: error as NSError).code
-                    
-                    switch watchErrorCode {
-                    case .sessionNotActivated:
-                        self.session?.activate()
-                    case .messageReplyTimedOut:
-                        print(error)
-                        
-                    default:
-                        fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                            WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                            completion(returnedSite.complicationModels)
-                        })
-                    }
+                WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
+                completion(returnedSite.complicationModels)
             })
             
         } else {
             completion(self.complicationData)
         }
-        
     }
     
     public func updateData(forceRefresh refresh: Bool) {
@@ -500,61 +488,39 @@ extension WatchSessionManager {
             
             print("Updating because: model needs updating: \(model.updateNow) or becasue force refresh is set to: \(refresh), currentlySending: \(currentlySendingMessage.description)")
             
-            let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-            
             self.currentlySendingMessage = true
-            
-            guard let validSession = validSession else {
-                print("No valid session...")
+            quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
                 
-                session?.transferUserInfo(messageToSend)
-                
-                let error = NSError(domain: "No session available.", code: 500, userInfo: nil)
-                self.updateDelegatesForError(error)
-                
-                return
-            }
-            
-            validSession.sendMessage(messageToSend, replyHandler: {(context:[String : Any]) -> Void in
-                // handle reply from iPhone app here
-                print("recievedMessageReply from iPhone")
-                DispatchQueue.main.async { [weak self] in
-                    print("WatchSession success...")
-                    self?.currentlySendingMessage = false
-                    self?.processApplicationContext(context)
+                switch error {
+                case .noError:
+                    OperationQueue.main.addOperation({ 
+                        self.currentlySendingMessage = false
+                        self.updateModel(returnedSite.viewModel)
+                    })
+                    
+                case .downloadErorr(let message),.jsonParseError(let message), .dataError(let message):
+                    
+                        let apiError = NSError(domain: message, code: 500, userInfo: nil)
+                 self.updateDelegatesForError(apiError)
                 }
                 
-                }, errorHandler: {(error: Error ) -> Void in
-                    print("WatchSession Transfer Error: \(error)")
-                    self.currentlySendingMessage = false
-                    
-                    let watchErrorCode =  WCError(_nsError: error as NSError).code
-                    
-                    
-                    switch watchErrorCode {
-                    case .sessionNotActivated:
-                        self.session?.activate()
-                    case .messageReplyTimedOut:
-                        print(error)
-                    default:
-                        self.updateDelegatesForError(error)
-                    }
+                
             })
         } else {
             self.currentlySendingMessage = false
         }
     }
     
+    
     // MARK: Storage Updates
+    
     
     // MARK: Defaults have Changed
     
     func userDefaultsDidChange(_ notification: Notification) {
-        //print("userDefaultsDidChange:")
         
         guard let _ = notification.object as? UserDefaults else { return }
         
         postNotificaitonForDefaults()
     }
-    
 }

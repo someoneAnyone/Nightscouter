@@ -56,6 +56,9 @@ class SiteRowController: NSObject {
                     self.siteBatteryLabel.setText(model.batteryString)
                     self.siteBatteryLabel.setTextColor(batteryColor)
                     
+                    self.siteBatteryHeader.setHidden(model.batteryVisible)
+                    self.siteBatteryLabel.setHidden(model.batteryVisible)
+                    
                     // Raw data
                     self.siteRawGroup.setHidden(!model.rawVisible)
                     self.siteRawLabel.setText(model.rawString)

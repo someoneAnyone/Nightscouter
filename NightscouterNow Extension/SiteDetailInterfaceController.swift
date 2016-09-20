@@ -128,7 +128,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             let batteryColor = UIColor(hexString: model.batteryColor)
             let lastReadingColor = UIColor(hexString: model.lastReadingColor)
             
-            let image = NSAssetKitWatchOS.imageOfWatchFace(groupFrame, arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, textSizeForSgv: 39, textSizeForDelta: 10, textSizeForRaw: 12, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle)
+            let image = NSAssetKitWatchOS.imageOfWatchFace(groupFrame, arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, textSizeForSgv: 39, textSizeForDelta: 10, textSizeForRaw: 12, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: CGFloat(model.angle.floatValue))
             
 //            imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, groupFramerawString: model.rawStringrawString, sgvString: model.sgvString: model.rawString, groupFrame, angle: model.angle)
             
@@ -141,13 +141,16 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             self.batteryLabel.setText(model.batteryString)
             self.batteryLabel.setTextColor(batteryColor)
             self.batteryLabel.setAlpha(compassAlpha)
+            self.batteryLabel.setHidden(model.batteryVisible)
+            self.batteryHeader.setHidden(model.batteryVisible)
+
             
-            let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+            let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate as Date)
             // Last reading label
             self.lastUpdateLabel.setText(date)//watchModel.lastReadingString)
             self.lastUpdateLabel.setTextColor(lastReadingColor)
             
-            self.siteUpdateTimer.setDate(model.lastReadingDate)
+            self.siteUpdateTimer.setDate(model.lastReadingDate as Date)
             self.siteUpdateTimer.setTextColor(lastReadingColor)
             
             // self.lastUpdatedTime = model.lastReadingDate

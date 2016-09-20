@@ -87,7 +87,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     // Delta between readings. Provided by the server. Color coded based on server provided thresholds.
     public let deltaString: String
     public let deltaStringShort: String
-    public let delta: Double
+    public let delta: NSNumber
     public let units: String
     
     public let deltaColor: String
@@ -95,7 +95,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
     // Used for configuring the Compass image.
     public let isArrowVisible : Bool
     public let isDoubleUp : Bool
-    public let angle: CGFloat
+    public let angle: NSNumber
     public fileprivate(set) var direction: String
     
     // Is data stale? Find out with this flags.
@@ -137,14 +137,14 @@ public struct WatchModel: DictionaryConvertible, Equatable {
         
         self.deltaString = d["deltaString"] as! String
         self.deltaStringShort = d["deltaStringShort"] as! String
-        self.delta = d["delta"] as! Double
+        self.delta = d["delta"] as! NSNumber
         self.units = d["units"] as! String
         
         self.deltaColor = d["deltaColor"] as! String
         
         self.isArrowVisible =  d["isArrowVisible"] as! Bool
         self.isDoubleUp = d["isDoubleUp"] as! Bool
-        self.angle = d["angle"] as! CGFloat
+        self.angle = d["angle"] as! NSNumber
         self.direction = d["direction"] as! String
         
         self.uuid = d["uuid"] as! String
@@ -219,7 +219,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             
             var isArrowVisible = true
             var isDoubleUp = false
-            var angle: CGFloat = 0
+            var angle: Float = 0
             
             self.direction = sgvValue.direction.description
             
@@ -299,7 +299,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
 
             self.displayName = displayName
             
-            self.lastReadingDate = watchEntry.date as Date
+            self.lastReadingDate = watchEntry.date
             
             self.lastReadingColor = lastUpdatedColor.toHexString()
             
@@ -320,12 +320,12 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.deltaStringShort = deltaStringShort
             self.deltaColor = sgvColor.toHexString()
             
-            self.delta = watchEntry.bgdelta
+            self.delta = NSNumber(value:watchEntry.bgdelta)
             self.units = configuration.displayUnits.description
             
             self.isArrowVisible = isArrowVisible
             self.isDoubleUp = isDoubleUp
-            self.angle = angle
+            self.angle = NSNumber(value: angle)
             
         } else {
             
@@ -358,7 +358,7 @@ public struct WatchModel: DictionaryConvertible, Equatable {
             self.deltaStringShort = PlaceHolderStrings.delta
             self.deltaColor = PlaceHolderStrings.defaultColor
             
-            self.delta = Double.infinity
+            self.delta = NSNumber(value: Double.infinity)
             self.units = PlaceHolderStrings.units
             
             self.isArrowVisible = false

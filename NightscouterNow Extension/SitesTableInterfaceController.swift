@@ -59,7 +59,6 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         self.lastUpdatedTime = model?.lastReadingDate ?? Date(timeIntervalSince1970: 0)
         
         //WatchSessionManager.sharedManager.updateData(forceRefresh: false)
-        
     }
     
     override func didDeactivate() {

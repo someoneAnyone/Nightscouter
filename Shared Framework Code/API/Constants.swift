@@ -30,7 +30,7 @@ public struct DefaultKey {
  */
 
 public enum DefaultKey: String, RawRepresentable, CustomStringConvertible {
-    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, osPlatform
+    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, osPlatform, siteURLForWatch
 
     static var payloadPhoneUpdate: [String : String] {
         return [DefaultKey.action.rawValue: DefaultKey.updateData.rawValue]

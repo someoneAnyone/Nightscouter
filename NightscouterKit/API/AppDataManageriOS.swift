@@ -71,9 +71,12 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
     
     var dictionaryOfDataSource:[String: Any] {
         var dictionaryOfData = [String: Any]()
-        dictionaryOfData[DefaultKey.sites.rawValue] = sites.flatMap( { $0.viewModel.dictionary } )
-        dictionaryOfData[DefaultKey.lastViewedSiteIndex.rawValue] = currentSiteIndex as AnyObject?
-        dictionaryOfData[DefaultKey.primarySiteUUID.rawValue] = defaultSiteUUID?.uuidString as AnyObject?
+
+        dictionaryOfData[DefaultKey.siteURLForWatch.rawValue] = sites.map( { ["url":$0.url.absoluteString, "uuid": $0.uuid.uuidString] })
+//        dictionaryOfData[DefaultKey.sites.rawValue] = sites.flatMap( { $0.viewModel.dictionary } )
+        dictionaryOfData[DefaultKey.lastViewedSiteIndex.rawValue] = currentSiteIndex
+        
+        dictionaryOfData[DefaultKey.primarySiteUUID.rawValue] = defaultSiteUUID?.uuidString ?? nil
         
         return dictionaryOfData
     }
