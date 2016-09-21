@@ -30,20 +30,20 @@ public class SitesDataSource: SiteStoreType {
     
     private init() {
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
-        
-//        let watchConnectivityManager = WatchSessionManager.sharedManager
-//        watchConnectivityManager.store = self
-//        watchConnectivityManager.startSession()
-        
+      
         let iCloudManager = iCloudKeyValueStore()
         iCloudManager.store = self
         iCloudManager.startSession()
+      
+        let watchConnectivityManager = WatchSessionManager.sharedManager
+        watchConnectivityManager.store = self
+        watchConnectivityManager.startSession()
         
         let alarmManager = AlarmManager.sharedManager
         alarmManager.store = self
         alarmManager.startSession()
         
-        self.sessionManagers = [iCloudManager, /*watchConnectivityManager,*/ alarmManager]
+        self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
     }
     
     private let defaults: UserDefaults
@@ -186,7 +186,7 @@ public class SitesDataSource: SiteStoreType {
         if let alarm = payload[DefaultKey.alarm.rawValue] as? String {
             print(alarm)
             
-            
+            FIXME()
             
             
         } else {

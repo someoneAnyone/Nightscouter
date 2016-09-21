@@ -219,20 +219,23 @@ extension AlarmManager: AudioCordinator {
     }
     
     open func playAlarmFor(_ urgent: Bool = false) {
-        let assetName = urgent ? "alarm2" : "alarm"
         
-        let bundle: Bundle = Bundle(for: AlarmManager.self)
-        let path: String = bundle.path(forResource: assetName, ofType: "mp3") ?? ""
-        let audioUrl = URL(fileURLWithPath: path)
+        FIXME()
         
-        do {
-//            self.audioPlayer = try AVAudioPlayer(contentsOf: audioUrl)
-            self.play()
-        } catch let error as NSError {
-            print(error.localizedDescription)
-        } catch {
-            print("AVAudioPlayer init failed")
-        }
+//        let assetName = urgent ? "alarm2" : "alarm"
+//        
+//        let bundle: Bundle = Bundle(for: AlarmManager.self)
+//        let path: String = bundle.path(forResource: assetName, ofType: "mp3") ?? ""
+//        let audioUrl = URL(fileURLWithPath: path)
+//        
+//        do {
+////            self.audioPlayer = try AVAudioPlayer(contentsOf: audioUrl)
+//            self.play()
+//        } catch let error as NSError {
+//            print(error.localizedDescription)
+//        } catch {
+//            print("AVAudioPlayer init failed")
+//        }
     }
     
 }

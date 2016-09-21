@@ -217,6 +217,9 @@ public class Nightscout {
                 sgvs = parseReadingsData.sensorGlucoseValues
                 mbgs = parseReadingsData.meteredGlucoseValues
                 cals = parseReadingsData.calibrations
+       
+                FIXME()
+                ///Need a task here to generate complication data.
                 
                 OperationQueue.main.addOperation {
                     completion(configuration, sgvs, cals, mbgs, device, nil)

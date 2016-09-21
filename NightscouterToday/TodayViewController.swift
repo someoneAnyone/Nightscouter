@@ -10,7 +10,7 @@ import UIKit
 import NotificationCenter
 import NightscouterKit
 
-class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWidgetProviding {
+class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSourceProvider  {
     
     struct TableViewConstants {
         static let baseRowCount = 2
@@ -25,34 +25,17 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
     var sites:[Site] {
         return SitesDataSource.sharedInstance.sites
     }
-    
-    var lastUpdatedTime: Date?
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        //sites = SitesDataSource.sharedInstance.sites
-        
-        if #available(iOSApplicationExtension 10.0, *) {
-            extensionContext?.widgetLargestAvailableDisplayMode = .expanded
-        } else {
-            preferredContentSize = tableView.contentSize
-        }
         
         tableView.backgroundColor = UIColor.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
-    }
-    
-
-    
-    @available(iOSApplicationExtension 10.0, *)
-    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
-    
-        if (activeDisplayMode == .compact) {
-            preferredContentSize = maxSize
-        }
-        else {
+        
+        if #available(iOSApplicationExtension 10.0, *) {
+            extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+        } else {
             preferredContentSize = tableView.contentSize
         }
     }
@@ -62,8 +45,8 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: NCWidgetProviding
 
+    // MARK: NCWidgetProviding
     
     func widgetMarginInsets(forProposedMarginInsets defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
         return UIEdgeInsets(top: defaultMarginInsets.top, left: 0, bottom: defaultMarginInsets.bottom, right: defaultMarginInsets.right)
@@ -79,6 +62,20 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
         completionHandler(NCUpdateResult.newData)
     }
     
+    @available(iOSApplicationExtension 10.0, *)
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        
+        if (activeDisplayMode == .compact) {
+            preferredContentSize = maxSize
+        }
+        else {
+            preferredContentSize = tableView.contentSize
+        }
+    }
+    
+    
+    // MARK: UITableViewDataSource
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -97,25 +94,21 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
         if sites.isEmpty {
             let cell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.CellIdentifiers.message, for: indexPath)
             
-            
-            
-            cell.textLabel!.text = NSLocalizedString("No Nightscout sites were found.", comment: "")
-            
-            
+            cell.textLabel!.text = LocalizedString.emptyTableViewCellTitle.localized
             
             return cell
         } else {
             let contentCell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.CellIdentifiers.content, for: indexPath) as! SiteNSNowTableViewCell
             let site = sites[(indexPath as NSIndexPath).row]
+            let model = site.summaryViewModel
             
-            contentCell.configureCell(site)
+            contentCell.configure(withDataSource: model, delegate: model)
             
             let os = ProcessInfo().operatingSystemVersion
-
             if os.majorVersion >= 10 {
                 contentCell.contentView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
             }
-
+            
             if site.updateNow {
                 refreshDataFor(site, index: (indexPath as NSIndexPath).row)
             }
@@ -131,7 +124,10 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         openApp(with: indexPath)
     }
+
     
+    // MARK: Private Methods
+
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
@@ -143,32 +139,13 @@ class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWid
     
     func refreshDataFor(_ site: Site, index: Int, completionHandler: ((NCUpdateResult) -> Void)? = nil){
         // Start up the API
-//        
-//        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
-//            
-//            switch error {
-//                
-//            case .noError :
-//                DispatchQueue.main.async(execute: { () -> Void in
-//                    SitesDataSource.sharedInstance.updateSite(returnedSite)
-//                    self.lastUpdatedTime = returnedSite.lastConnectedDate
-//                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-//                    self.preferredContentSize = self.tableView.contentSize
-//                })
-//            default:
-//                print("\(#function) ERROR recieved: \(error.description)")
-//            }
-//        }
+        FIXME()
     }
     
     func openApp(with indexPath: IndexPath) {
         if let context = extensionContext {
-    
             let site = sites[indexPath.row], _ = site.uuid.uuidString
             SitesDataSource.sharedInstance.lastViewedSiteIndex = indexPath.row
-//            SitesDataSource.sharedInstance.saveData()
-            
-//            let url = URL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
             
             let url = LinkBuilder.buildLink(forType: .link, withViewController: .siteListPageViewController)
             context.open(url, completionHandler: nil)

@@ -11,28 +11,33 @@
 import WatchKit
 import NightscouterWatchOSKit
 
-class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvider, SiteDetailViewDidUpdateItemDelegate {
-    
-    var sites: [Site] {
-        return SitesDataSource.sharedInstance.sites
-    }
+class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvider {//, SiteDetailViewDidUpdateItemDelegate {
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     @IBOutlet var sitesLoading: WKInterfaceLabel!
     
+    
+    var sites: [Site] = [] {
+        didSet{
+            updateTableData()
+        }
+    }
+    struct ControllerName {
+        static let SiteDetail: String = "SiteDetail"
+    }
+    
+    struct RowIdentifier {
+        static let rowSiteTypeIdentifier = "SiteRowController"
+        static let rowEmptyTypeIdentifier = "SiteEmptyRowController"
+        static let rowUpdateTypeIdentifier = "SiteUpdateRowController"
+    }
+    
+    
     // Whenever this changes, it updates the attributed title of the refresh control.
-    var lastUpdatedTime: Date? {
+    var milliseconds: Double? {
         didSet{
             
-            // Create and use a formatter.
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeStyle = DateFormatter.Style.short
-            dateFormatter.dateStyle = DateFormatter.Style.short
-            dateFormatter.timeZone = TimeZone.autoupdatingCurrent
-            
-            if let date = lastUpdatedTime {
-                timeStamp = dateFormatter.string(from: date)
-            }
+            timeStamp = AppConfiguration.lastUpdatedFromPhoneDateFormatter.string(from: date)
             
             sitesLoading.setHidden(!self.sites.isEmpty)
         }
@@ -44,32 +49,30 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     override func willActivate() {
         super.willActivate()
-//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         print(">>> Entering \(#function) <<<")
      
-//        self.models = WatchSessionManager.sharedManager.models
-        self.updateTableData()
-
-//        let model = models.min{ (lModel, rModel) -> Bool in
-//            return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .orderedAscending
-//        }
+        sites = SitesDataSource.sharedInstance.sites
         
-//        self.lastUpdatedTime = model?.lastReadingDate ?? Date(timeIntervalSince1970: 0)
-        
-        //WatchSessionManager.sharedManager.updateData(forceRefresh: false)
+        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+            self.sites = SitesDataSource.sharedInstance.sites
+            self.milliseconds = Date().timeIntervalSince1970.millisecond
+            self.updateTableData()
+        }
     }
     
     override func didDeactivate() {
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(#function) <<<")
         super.didDeactivate()
-        lastUpdatedTime = nil
-        
-        //WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
+
     }
     
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
@@ -77,54 +80,51 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         // push controller...
         print(">>> Entering \(#function) <<<")
         
-//        WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
+        SitesDataSource.sharedInstance.lastViewedSiteIndex = rowIndex
         
-//        pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
+        pushController(withName: ControllerName.SiteDetail, context: [DefaultKey.lastViewedSiteIndex.rawValue: rowIndex])
     }
     
     fileprivate func updateTableData() {
         print(">>> Entering \(#function) <<<")
-        DispatchQueue.main.async {
-
-        let rowSiteTypeIdentifier: String = "SiteRowController"
-        let rowEmptyTypeIdentifier: String = "SiteEmptyRowController"
-        let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
         
-            self.sitesTable.setNumberOfRows(0, withRowType: rowEmptyTypeIdentifier)
-/*
-            
-        if self.models.isEmpty {
+        if self.sites.isEmpty {
             self.sitesLoading.setHidden(true)
             
-            self.sitesTable.setNumberOfRows(1, withRowType: rowEmptyTypeIdentifier)
+            self.sitesTable.setNumberOfRows(1, withRowType: RowIdentifier.rowEmptyTypeIdentifier)
             let row = self.sitesTable.rowController(at: 0) as? SiteEmptyRowController
             if let row = row {
-                row.messageLabel.setText("No sites availble.")
+                row.messageLabel.setText(LocalizedString.emptyTableViewCellTitle.localized)
             }
             
         } else {
+            self.sitesLoading.setHidden(true)
             
-            var rowSiteType = self.models.map{ _ in rowSiteTypeIdentifier }
-            // datestamp/loading row
-            rowSiteType.append(rowUpdateTypeIdentifier)
+            var rowSiteType = self.sites.map{ _ in RowIdentifier.rowSiteTypeIdentifier }
+            rowSiteType.append(RowIdentifier.rowUpdateTypeIdentifier)
             
             self.sitesTable.setRowTypes(rowSiteType)
             
-            for (index, model) in self.models.enumerated() {
+            for (index, site) in self.sites.enumerated() {
                 if let row = self.sitesTable.rowController(at: index) as? SiteRowController {
-                    row.model = model
+                    let model = site.summaryViewModel
+                    row.configure(withDataSource: model, delegate: model)
                 }
             }
             
-            let updateRow = self.sitesTable.rowController(at: self.models.count) as? SiteUpdateRowController
+            let updateRow = self.sitesTable.rowController(at: self.sites.count) as? SiteUpdateRowController
+            
             if let updateRow = updateRow {
                 updateRow.siteLastReadingLabel.setText(self.timeStamp)
-                updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
+                updateRow.siteLastReadingLabelHeader.setText(LocalizedString.updateDateFromPhoneString.localized)
             }
-            }
-        }*/
+        }
     }
     
+    @IBAction func updateButton() {
+        FIXME()
+        WatchSessionManager.sharedManager.requestCompanionAppUpdate()
+    }
         /*
     func dataSourceDidUpdateAppContext(_ models: [WatchModel]) {
         print(">>> Entering \(#function) <<<")
@@ -185,9 +185,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         }
     }
     
-    @IBAction func updateButton() {
-        WatchSessionManager.sharedManager.updateData(forceRefresh: true)
-    }
+
     
     override func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
         print(">>> Entering \(#function) <<<")
@@ -210,5 +208,5 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     }
  */
     }
-}
+
 

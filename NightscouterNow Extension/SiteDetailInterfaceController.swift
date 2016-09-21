@@ -10,12 +10,12 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-protocol SiteDetailViewDidUpdateItemDelegate {
+//protocol SiteDetailViewDidUpdateItemDelegate {
 //    func didUpdateItem(_ model: WatchModel)
 //    func didSetItemAsDefault(_ model: WatchModel)
-}
+//}
 
-class SiteDetailInterfaceController: WKInterfaceController {//, DataSourceChangedDelegate {
+class SiteDetailInterfaceController: WKInterfaceController {
     
     @IBOutlet var compassGroup: WKInterfaceGroup!
     @IBOutlet var detailGroup: WKInterfaceGroup!
@@ -27,21 +27,123 @@ class SiteDetailInterfaceController: WKInterfaceController {//, DataSourceChange
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
     
-    var delegate: SiteDetailViewDidUpdateItemDelegate?
+    var site: Site? {
+        didSet {
+            self.configureView()
+        }
+    }
     
-//    var model: WatchModel? {
-//        didSet{
-//            self.configureView()
-//        }
-//    }
+    override func willActivate() {
+        super.willActivate()
+        print("willActivate")
+        
+        self.configureView()
+
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    // MARK: Interface Builder Actions
+    
+    @IBAction func updateButton() {
+        // TODO: Force update of site.
+        FIXME()
+    }
+    
+    @IBAction func setAsComplication() {
+        // TODO: Create icon and function that sets current site as the watch complication.
+        FIXME()
+        SitesDataSource.sharedInstance.primarySite = site
+    }
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         
-        let dictionary = context as! [String: Any]
+        if let context = context as? [String: AnyObject],let index = context[DefaultKey.lastViewedSiteIndex.rawValue] as? Int {
+            self.site = SitesDataSource.sharedInstance.sites[index]
+        }
         
-//        if let delegate = dictionary[WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+            self.configureView()
+        }
     }
+    
+    func configureView() {
+        
+        guard let site = self.site else {
+            
+            let image = NSAssetKitWatchOS.imageOfWatchFace()
+            compassImage.setImage(image)
+            compassImage.setAlpha(0.5)
+            
+            return
+        }
+        
+        let dataSource = SiteSummaryModelViewModel(withSite: site)
+        let compassAlpha: CGFloat = dataSource.lookStale ? 0.5 : 1.0
+        //let timerHidden: Bool = dataSource.lookStale
+        let image = self.createImage(dataSource: dataSource, delegate: dataSource, frame: calculateFrameForImage())
+        
+        OperationQueue.main.addOperation {
+            
+            self.setTitle(dataSource.nameLabel)
+            
+            // Compass Image
+            self.compassImage.setAlpha(compassAlpha)
+            self.compassImage.setImage(image)
+            
+            // Battery label
+            self.batteryLabel.setText(dataSource.batteryLabel)
+            self.batteryLabel.setTextColor(dataSource.batteryColor)
+            self.batteryHeader.setText(LocalizedString.batteryLabel.localized)
+            self.batteryHeader.setHidden(dataSource.batteryHidden)
+            self.batteryLabel.setHidden(dataSource.batteryHidden)
+            
+            // Last reading label
+            self.lastUpdateLabel.setText(PlaceHolderStrings.date)
+            self.lastUpdateLabel.setTextColor(PlaceHolderStrings.defaultColor.colorValue)
+            self.lastUpdateLabel.setHidden(true)
+            
+            self.siteUpdateTimer.setDate(dataSource.lastReadingDate)
+            self.siteUpdateTimer.setTextColor(dataSource.lastReadingColor)
+            self.siteUpdateTimer.setHidden(false)
+        }
+        
+    }
+    
+    func calculateFrameForImage() -> CGRect {
+        let frame = self.contentFrame
+        let smallest = min(min(frame.height, frame.width), 134)
+        let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
+        
+        return groupFrame
+    }
+    
+    func createImage(dataSource:CompassViewDataSource, delegate:CompassViewDelegate, frame: CGRect) -> UIImage {
+        let sgvColor = delegate.sgvColor
+        let rawColor = delegate.rawColor
+        
+        let image = NSAssetKitWatchOS.imageOfWatchFace(frame, arrowTintColor: sgvColor, rawColor: rawColor , isDoubleUp: dataSource.direction.isDoubleRingVisible, isArrowVisible: dataSource.direction.isArrowVisible, isRawEnabled: !dataSource.rawHidden, deltaString: dataSource.deltaLabel, sgvString: dataSource.sgvLabel, rawString: dataSource.rawLabel , angle: CGFloat(dataSource.direction.angleForCompass))
+        
+        return image
+    }
+    
+    override func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
+        print(">>> Entering \(#function) <<<")
+        
+        guard let indexOfSite = userInfo?[DefaultKey.lastViewedSiteIndex] as? Int else {
+            return
+        }
+        
+        SitesDataSource.sharedInstance.lastViewedSiteIndex = indexOfSite
+        
+        DispatchQueue.main.async {
+            self.site = SitesDataSource.sharedInstance.sites[indexOfSite]
+        }
+    }
+}
     
     /*
     override func willActivate() {
@@ -187,5 +289,4 @@ class SiteDetailInterfaceController: WKInterfaceController {//, DataSourceChange
     }
  */
     
-}
 

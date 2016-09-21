@@ -9,10 +9,12 @@
 import WatchConnectivity
 
 public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerType {
-    
     public static let sharedManager = WatchSessionManager()
     
+    /// The store that the session manager should interact with.
     public var store: SiteStoreType?
+    
+    let session: WCSession = WCSession.default()
     
     private override init() {
         super.init()
@@ -22,12 +24,10 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         stopSearching()
     }
     
-    private let session: WCSession = WCSession.defaultSession()
-    
     public func startSession() {
         if WCSession.isSupported() {
             session.delegate = self
-            session.activateSession()
+            session.activate()
             
             #if DEBUG
                 print("WCSession.isSupported: \(WCSession.isSupported()), Paired Phone Reachable: \(session.reachable)")
@@ -38,21 +38,68 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
     }
     
     private func startSearching() {
-        if !WCSession.defaultSession().receivedApplicationContext.isEmpty {
-            processApplicationContext(WCSession.defaultSession().receivedApplicationContext)
+        if !WCSession.default().receivedApplicationContext.isEmpty {
+            processApplicationContext(context: WCSession.default().receivedApplicationContext)
         }
-        
-        requestCompanionAppUpdate()
     }
     
     public func stopSearching() {
         session.delegate = nil
     }
+    
+    @available(watchOSApplicationExtension 2.2, *)
+    public func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
+        print(">>> Entering \(#function) <<<")
+        print(session)
+        print(activationState)
+        print(error)
+        
+        if activationState == .activated {
+            requestCompanionAppUpdate()
+        }
+    }
+    
+    
+    public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
+        print("didReceiveUserInfo")
+        // print(": \(userInfo)")
+        
+        DispatchQueue.main.async {
+            self.processApplicationContext(context: userInfo)
+        }
+    }
+    
+    public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
+        // print("didReceiveApplicationContext: \(applicationContext)")
+        DispatchQueue.main.async {
+            self.processApplicationContext(context: applicationContext)
+        }
+    }
+    
+    public func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+        DispatchQueue.main.async {
+            let success =  self.processApplicationContext(context: message)
+            replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
+        }
+    }
+    
+    
+    public func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
+        fatalError()
+    }
+    
+    public func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
+        fatalError()
+    }
+    
+    public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
+        fatalError()
+    }
 }
 
 extension WatchSessionManager {
     // Sender
-    public func updateApplicationContext(applicationContext: [String : AnyObject]) throws {
+    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
@@ -64,48 +111,12 @@ extension WatchSessionManager {
     }
 }
 
-// MARK: Application Context
-// use when your app needs only the latest information
-// if the data was not sent, it will be replaced
 extension WatchSessionManager {
-    public func session(session: WCSession, didReceiveFile file: WCSessionFile) {
-        // print("didReceiveFile: \(file)")
-        dispatch_async(dispatch_get_main_queue()) {
-            // make sure to put on the main queue to update UI!
-        }
-    }
-    
-    public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-        print("didReceiveUserInfo")
-        // print(": \(userInfo)")
-        
-        dispatch_async(dispatch_get_main_queue()) {
-            self.processApplicationContext(userInfo)
-        }
-    }
-    
-    // Receiver
-    public func session(session: WCSession, didReceiveApplicationContext applicationContext: [String : AnyObject]) {
-        // print("didReceiveApplicationContext: \(applicationContext)")
-        dispatch_async(dispatch_get_main_queue()) {
-            self.processApplicationContext(applicationContext)
-        }
-    }
-    
-    public func session(session: WCSession, didReceiveMessage message: [String : AnyObject], replyHandler: ([String : AnyObject]) -> Void) {
-        let success =  processApplicationContext(message)
-        replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
-    }
-    
-}
-
-extension WatchSessionManager {
-    
-    func processApplicationContext(context: [String : AnyObject]) -> Bool {
+    @discardableResult
+    func processApplicationContext(context: [String : Any]) -> Bool {
         print(">>> Entering \(#function) <<<")
-        //print("processApplicationContext \(context)")
         
-        //print("Did receive payload: \(context)")
+        print("Did receive payload: \(context)")
         
         guard let store = store else {
             print("No Store")
@@ -114,28 +125,37 @@ extension WatchSessionManager {
         
         store.handleApplicationContextPayload(context)
         
+        ///Complications need to be updated smartly... also backgroun refresh needs to be taken into account
+        FIXME()
+        let complicationServer = CLKComplicationServer.sharedInstance()
+        if let activeComplications = complicationServer.activeComplications {
+            for complication in activeComplications {
+                complicationServer.reloadTimeline(for: complication)
+            }
+        }
+        
         return true
     }
 }
 
-extension WatchSessionManager { 
+extension WatchSessionManager {
     public func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         
         let messageToSend = DefaultKey.payloadPhoneUpdate
         
-        self.session.sendMessage(messageToSend, replyHandler: {(context:[String : AnyObject]) -> Void in
-            // handle reply from iPhone app here
+        session.sendMessage(messageToSend, replyHandler: { (context:[String : Any]) in
             print("recievedMessageReply from iPhone")
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 print("WatchSession success...")
-                let success = self.processApplicationContext(context)
+                let success = self.processApplicationContext(context: context)
                 print(success)
             }
-            }, errorHandler: {(error: NSError ) -> Void in
-                print("WatchSession Transfer Error: \(error)")
-                self.processApplicationContext(DefaultKey.payloadPhoneUpdateError)
-        })
+            
+        }) { (error) in
+            print("WatchSession Transfer Error: \(error)")
+            
+            self.processApplicationContext(context: DefaultKey.payloadPhoneUpdateError)
+        }
     }
-    
 }

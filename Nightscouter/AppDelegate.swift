@@ -225,9 +225,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         
         OperationQueue.main.addOperation { () -> Void in
             NotificationCenter.default.post(.init(name: .NightscoutDataStaleNotification))
-            
-            //SitesDataSource.sharedInstance.updateWatch(withAction: .UserInfo
         }
+        
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }

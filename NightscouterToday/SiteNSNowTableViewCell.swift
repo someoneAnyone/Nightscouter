@@ -13,24 +13,14 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     @IBOutlet weak var siteLastReadingHeader: UILabel!
     @IBOutlet weak var siteLastReadingLabel: UILabel!
-    
     @IBOutlet weak var siteBatteryHeader: UILabel!
     @IBOutlet weak var siteBatteryLabel: UILabel!
-    
     @IBOutlet weak var siteRawHeader: UILabel!
     @IBOutlet weak var siteRawLabel: UILabel!
-    
     @IBOutlet weak var siteNameLabel: UILabel!
-    
     @IBOutlet weak var siteColorBlockView: UIView!
-    // @IBOutlet weak var siteCompassControl: CompassControl!
-    
     @IBOutlet weak var siteSgvLabel: UILabel!
     @IBOutlet weak var siteDirectionLabel: UILabel!
-    
-    // @IBOutlet weak var siteDeltaHeader: UILabel!
-    // @IBOutlet weak var siteDeltaLabel: UILabel!
-    // @IBOutlet weak var siteUrlLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -38,37 +28,34 @@ class SiteNSNowTableViewCell: UITableViewCell {
         self.backgroundColor = UIColor.clear
     }
     
-    func configureCell(_ site: Site) {
+    func configure(withDataSource dataSource: TableViewRowWithCompassDataSource, delegate: TableViewRowWithCompassDelegate?) {
         
-        let model = site.summaryViewModel
+        siteLastReadingHeader.text = LocalizedString.lastReadingLabel.localized
+        siteLastReadingLabel.text = dataSource.lastReadingDate.timeAgoSinceNow
+        siteLastReadingLabel.textColor = delegate?.lastReadingColor
         
-        let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+        siteBatteryHeader.text = LocalizedString.batteryLabel.localized
+        siteBatteryHeader.isHidden = dataSource.batteryHidden
+        siteBatteryLabel.isHidden = dataSource.batteryHidden
+        siteBatteryLabel.text = dataSource.batteryLabel
+        siteBatteryLabel.textColor = delegate?.batteryColor
         
-        siteLastReadingLabel.text = date
-        siteLastReadingLabel.textColor = model.lastReadingColor
+        siteRawHeader.text = LocalizedString.rawLabel.localized
+        siteRawLabel?.isHidden = dataSource.rawHidden
+        siteRawHeader?.isHidden = dataSource.rawHidden
         
-        siteBatteryHeader.isHidden = model.batteryHidden
-        siteBatteryLabel.isHidden = model.batteryHidden
-        siteBatteryLabel.text = model.batteryLabel
-        siteBatteryLabel.textColor = model.batteryColor
+        siteRawLabel.text = dataSource.rawLabel
+        siteRawLabel.textColor = delegate?.rawColor
         
-        siteRawLabel?.isHidden = model.rawHidden
-        siteRawHeader?.isHidden = model.rawHidden
+        siteNameLabel.text = dataSource.nameLabel
         
-        siteRawLabel.text = model.rawLabel
-        siteRawLabel.textColor = model.rawColor
+        siteColorBlockView.backgroundColor = delegate?.sgvColor
+
+        siteSgvLabel.text = dataSource.sgvLabel + " " + dataSource.direction.emojiForDirection
+        siteSgvLabel.textColor = delegate?.sgvColor
         
-        siteNameLabel.text = model.nameLabel
-        
-        siteColorBlockView.backgroundColor = model.sgvColor
-        
-        siteSgvLabel.textColor = model.sgvColor
-        
-        //:warn /// EMJOI?
-        siteSgvLabel.text = model.sgvLabel
-        
-        siteDirectionLabel.text = model.deltaLabel
-        siteDirectionLabel.textColor = model.deltaColor
+        siteDirectionLabel.text = dataSource.deltaLabel
+        siteDirectionLabel.textColor = delegate?.deltaColor
     }
     
     override func prepareForReuse() {
@@ -79,18 +66,14 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
         siteColorBlockView.backgroundColor = DesiredColorState.neutral.colorValue
-        
         siteSgvLabel.text = nil
-//        siteSgvLabel.textColor = Theme.Color.labelTextColor
-        
+        siteSgvLabel.textColor = Theme.AppColor.labelTextColor
         siteDirectionLabel.text = nil
-//        siteDirectionLabel.textColor = Theme.Color.labelTextColor
-        
-//        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
-//        siteLastReadingLabel.textColor = Theme.Color.labelTextColor
-        
+        siteDirectionLabel.textColor = Theme.AppColor.labelTextColor
+        siteLastReadingLabel.text = LocalizedString.tableViewCellLoading.localized
+        siteLastReadingLabel.textColor = Theme.AppColor.labelTextColor
         siteRawHeader.isHidden = false
         siteRawLabel.isHidden = false
-//        siteRawLabel.textColor = Theme.Color.labelTextColor
+        siteRawLabel.textColor = Theme.AppColor.labelTextColor
     }
 }

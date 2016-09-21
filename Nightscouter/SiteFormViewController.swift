@@ -19,9 +19,9 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     @IBOutlet weak var middleLayoutContraint: NSLayoutConstraint!
     
     /*
-    This value is either passed by `SiteListTableViewController` in `prepareForSegue(_:sender:)`
-    or constructed as part of adding a new site.
-    */
+     This value is either passed by `SiteListTableViewController` in `prepareForSegue(_:sender:)`
+     or constructed as part of adding a new site.
+     */
     var site: Site?
     
     var currentOrientation: UIDeviceOrientation?
@@ -42,7 +42,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             urlTextField.text   = site.url.absoluteString
         }
         checkValidSiteName()
-
+        
         // Or you can do it the old way
         let offset = 2.0
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(offset * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
@@ -76,7 +76,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     func checkValidSiteName() {
         // Remove Spaces
         urlTextField.text = urlTextField.text!.replacingOccurrences(of: " ", with: "", options: [], range: nil)
-
+        
         // Or you can do it the old way
         let offset = 0.5
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(offset * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
@@ -98,14 +98,14 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
                 })
             })
         })
-
+        
     }
     
     // MARK: UITextFieldDelegate
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if self.nextButton.isEnabled {
-        // Hide the keyboard
-        textField.resignFirstResponder()
+            // Hide the keyboard
+            textField.resignFirstResponder()
             self.view.endEditing(true)
             performSegue(withIdentifier: SiteListTableViewController.SegueIdentifier.unwindToSiteList.rawValue, sender: nextButton)
         }
@@ -149,13 +149,13 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     }
     
     /*
-    func validateUrl (stringURL : NSString) -> Bool {
-        let urlRegEx = "(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
-        let predicate = NSPredicate(format:"SELF MATCHES %@", argumentArray:[urlRegEx])
-        //        var urlTest = NSPredicate.predicateWithSubstitutionVariables(predicate)
-        return predicate.evaluateWithObject(stringURL)
-    }
-    */
+     func validateUrl (stringURL : NSString) -> Bool {
+     let urlRegEx = "(http|https)://((\\w)*|([0-9]*)|([-|_])*)+([\\.|/]((\\w)*|([0-9]*)|([-|_])*))+"
+     let predicate = NSPredicate(format:"SELF MATCHES %@", argumentArray:[urlRegEx])
+     //        var urlTest = NSPredicate.predicateWithSubstitutionVariables(predicate)
+     return predicate.evaluateWithObject(stringURL)
+     }
+     */
     
     // MARK: Keyboard Notifications
     

@@ -30,11 +30,10 @@ class SiteTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        self.backgroundColor = UIColor.clear
+        self.backgroundColor = Color.clear
     }
     
     func configure(withDataSource dataSource: TableViewRowWithCompassDataSource, delegate: TableViewRowWithCompassDelegate?) {
-        
 
         siteLastReadingHeader.text = LocalizedString.lastReadingLabel.localized
         siteLastReadingLabel.text = dataSource.lastReadingDate.timeAgoSinceNow
@@ -52,7 +51,6 @@ class SiteTableViewCell: UITableViewCell {
         
         siteRawLabel.text = dataSource.rawLabel
         siteRawLabel.textColor = delegate?.rawColor
-        
         
         siteNameLabel.text = dataSource.nameLabel
         siteUrlLabel.text = dataSource.urlLabel

@@ -19,94 +19,79 @@ class GlanceController: WKInterfaceController {
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     
-    var updateUITimer: Timer?
-    
-    /*
-    var model: WatchModel? {
-        return WatchSessionManager.sharedManager.defaultModel()
-    }
- */
-    var model: SiteSummaryModelViewModel? {
-        didSet{
-            DispatchQueue.main.async {
-                self.configureView()
-            }
+    var site: Site? {
+        didSet {
+            self.configureView()
         }
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     override func willActivate() {
-        
-        updateUITimer = Timer.scheduledTimer(timeInterval: 60.0 , target: self, selector: #selector(GlanceController.configureView), userInfo: nil, repeats: true)
+        super.willActivate()
         
         beginGlanceUpdates()
+        //Update data.
+        FIXME()
+        endGlanceUpdates()
         
-        // self.configureView()
-//        WatchSessionManager.sharedManager.updateComplication { (timline) in
-//            self.model = WatchSessionManager.sharedManager.defaultModel()
-//            self.endGlanceUpdates()
-//        }
     }
+    
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
-        // Configure interface objects here.
-    }
-    
-    override func didDeactivate() {
-        // This method is called when watch view controller is no longer visible
-        super.didDeactivate()
         
-        updateUITimer?.invalidate()
+        self.configureView()
+        
+        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+            
+            self.site = SitesDataSource.sharedInstance.primarySite
+        }
     }
     
     func configureView() {
         
-        guard let model = self.model else {
-            OperationQueue.main.addOperation {
-                self.siteDeltaLabel.setText("Launch Nightscouter")
-                self.siteRawLabel.setText("and add a site.")
-                self.siteNameLabel.setText("")
-                self.siteSgvLabel.setText("")
-            }
-            
-            self.invalidateUserActivity()
+        guard let site = self.site else {
             return
         }
         
+        let  dataSource = SiteSummaryModelViewModel(withSite: site)
         
-            let dateString = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-            
-            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: model.lastReadingColor, textHeader: "LR")
-            
-            let formattedRaw = self.formattedStringWithHeaderFor(model.rawLabel, textColor: model.rawColor, textHeader: "R")
-            
-            let formattedBattery = self.formattedStringWithHeaderFor(model.batteryLabel, textColor: model.batteryColor, textHeader: "B")
-            
-            let sgvString = String(stringInterpolation:model.sgvLabel.replacingOccurrences(of: " ", with: ""))
-
         OperationQueue.main.addOperation {
-
+            
+            let dateString = NSCalendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(dataSource.lastReadingDate)
+            
+            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: dataSource.lastReadingColor, textHeader: LocalizedString.lastReadingLabelShort.localized)
+            
+            let formattedRaw = self.formattedStringWithHeaderFor(dataSource.rawLabel, textColor: dataSource.rawColor, textHeader: LocalizedString.rawLabelShort.localized)
+            
+            let formattedBattery = self.formattedStringWithHeaderFor(dataSource.batteryLabel, textColor: dataSource.batteryColor, textHeader: LocalizedString.batteryLabelShort.localized)
+            
+            let sgvString = String(stringInterpolation:dataSource.sgvLabel, dataSource.direction.emojiForDirection)
+            
             // Battery
             self.batteryLabel.setAttributedText(formattedBattery)
             self.lastUpdateLabel.setAttributedText(formattedLastUpdateString)
             
             // Delta
-            self.siteDeltaLabel.setText(model.deltaLabel)
-            self.siteDeltaLabel.setTextColor(model.deltaColor)
+            self.siteDeltaLabel.setText(dataSource.deltaLabel)
+            self.siteDeltaLabel.setTextColor(dataSource.deltaColor)
             
             // Name
-            self.siteNameLabel.setText(model.nameLabel)
+            self.siteNameLabel.setText(dataSource.nameLabel)
             
             // Sgv
             self.siteSgvLabel.setText(sgvString)
-            self.siteSgvLabel.setTextColor(model.sgvColor)
+            self.siteSgvLabel.setTextColor(dataSource.sgvColor)
             
             // Raw
             self.siteRawLabel.setAttributedText(formattedRaw)
-            self.siteRawLabel.setHidden(model.rawHidden)
-            
-//            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: URL(string: model.urlString)!)
+            self.siteRawLabel.setHidden(dataSource.rawHidden)
         }
+        
+        self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [DefaultKey.lastViewedSiteIndex: SitesDataSource.sharedInstance.sites.index(of: site)], webpageURL: URL(string: dataSource.urlLabel))
     }
     
     func formattedStringWithHeaderFor(_ textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {

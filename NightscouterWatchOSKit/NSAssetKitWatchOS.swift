@@ -241,7 +241,7 @@ open class NSAssetKitWatchOS : NSObject {
         let logoShadowColor = NSAssetKitWatchOS.appLogoTintColor.colorWithShadow(0.218)
 
         //// Gradient Declarations
-        let logoGradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: [NSAssetKitWatchOS.appLogoTintColor.cgColor, logoShadowColor.cgColor] as! CFArray, locations: [0, 1])!
+        let logoGradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(), colors: [NSAssetKitWatchOS.appLogoTintColor.cgColor, logoShadowColor.cgColor] as CFArray, locations: [0, 1])!
 
         //// Group
         //// Rectangle Drawing

@@ -17,6 +17,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         static let SiteTableViewStyle = "siteCell"
     }
     
+    let network = Nightscout()
+    
     @IBOutlet fileprivate weak var snoozeAlarmButton: UIBarButtonItem!
     
     @IBOutlet fileprivate weak var headerView: BannerMessage!
@@ -368,7 +370,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        Nightscout().networkRequest(forNightscoutURL: site.url, apiPassword: site.apiSecret, userInitiated: false) { (config, sgvs, cals, mbgs, devices, err) in
+        network.networkRequest(forNightscoutURL: site.url, apiPassword: site.apiSecret, userInitiated: false) { (config, sgvs, cals, mbgs, devices, err) in
             
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
@@ -429,6 +431,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 
             }
         }
+        
+        FIXME()
         /*
         fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             defer {

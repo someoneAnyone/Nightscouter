@@ -12,11 +12,12 @@ import Foundation
 public extension Notification.Name {
     static public let NightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updated")
     static public let NightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.stale")
-
 }
 
 public typealias ArrayOfDictionaries = [[String: AnyObject]]
 
+@available(*, deprecated: 1.0, message: "I'm not deprecated, please ***FIXME**")
+public func FIXME() { }
 
 // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
 public struct PlaceHolderStrings {

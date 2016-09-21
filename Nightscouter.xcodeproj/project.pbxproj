@@ -100,14 +100,17 @@
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B05A1B75235C006C1F5E /* NightscouterKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B0891B75251A006C1F5E /* ColorBlockView.swift */; };
-		1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1771B08A1B75251A006C1F5E /* CompassControl.swift */; };
+		177FAB961D92BE7400B612B3 /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB931D92BE7400B612B3 /* CompassControl+Convience.swift */; };
+		177FAB971D92BE7400B612B3 /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB941D92BE7400B612B3 /* ColorBlockView.swift */; };
+		177FAB981D92BE7400B612B3 /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB951D92BE7400B612B3 /* CompassControl.swift */; };
+		177FAB991D92BF8000B612B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
+		177FAB9A1D92BF8100B612B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
+		177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */; };
+		177FAB9D1D92C71D00B612B3 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */; };
 		178A9BFC1D6C8EC100267FCA /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */; };
 		178A9BFE1D6C8EF700267FCA /* BannerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
-		17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C2D1BF0ED190014EE38 /* NSAssetKit.swift */; };
-		17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
@@ -308,6 +311,10 @@
 		1771B0711B7524D5006C1F5E /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "NSURL-Extensions.swift"; path = "Extensions/NSURL-Extensions.swift"; sourceTree = "<group>"; };
 		1771B0891B75251A006C1F5E /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
 		1771B08A1B75251A006C1F5E /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
+		177FAB931D92BE7400B612B3 /* CompassControl+Convience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CompassControl+Convience.swift"; path = "Views/CompassControl+Convience.swift"; sourceTree = "<group>"; };
+		177FAB941D92BE7400B612B3 /* ColorBlockView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ColorBlockView.swift; path = Views/ColorBlockView.swift; sourceTree = "<group>"; };
+		177FAB951D92BE7400B612B3 /* CompassControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CompassControl.swift; path = Views/CompassControl.swift; sourceTree = "<group>"; };
+		177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSAssetKit.swift; sourceTree = "<group>"; };
 		1781AA3C1C91C4F100AE1A52 /* UpdatableUserInterfaceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UpdatableUserInterfaceType.swift; path = "Shared Framework Code/Protocols/UpdatableUserInterfaceType.swift"; sourceTree = SOURCE_ROOT; };
 		178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteListTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerMessage.swift; sourceTree = "<group>"; };
@@ -374,7 +381,7 @@
 		83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterNow.entitlements; sourceTree = "<group>"; };
 		83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SitesTableInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83883DAB1BC2089000BD1A9C /* SiteRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteRowController.swift; sourceTree = "<group>"; };
-		8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WatchSessionManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = WatchSessionManager.swift; path = "../NightscouterNow Extension/WatchSessionManager.swift"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		8389AC6A1BEB05B300B81A18 /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = WatchSessionManager.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		839DBD081BC0170300691B75 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
@@ -482,6 +489,7 @@
 			children = (
 				171CDB4E1D91C56500D7D52D /* AppConfiguration.swift */,
 				171CDBD51D91C99700D7D52D /* AppTheme.swift */,
+				177FAB911D92BC6800B612B3 /* Views */,
 				171CDB4F1D91C56500D7D52D /* Extensions */,
 				171CDB581D91C56500D7D52D /* Models */,
 				171CDB621D91C56500D7D52D /* Operations */,
@@ -562,6 +570,7 @@
 		171CDB721D91C56500D7D52D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */,
 				171CDB731D91C56500D7D52D /* alarm.mp3 */,
 				171CDB741D91C56500D7D52D /* alarm2.mp3 */,
 				171CDB751D91C56500D7D52D /* Localizable.strings */,
@@ -573,11 +582,11 @@
 		171CDB781D91C56500D7D52D /* Stores */ = {
 			isa = PBXGroup;
 			children = (
+				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
 				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
-				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
-				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
 				171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */,
+				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */,
 			);
 			path = Stores;
@@ -717,10 +726,27 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		178AACCD1BEFE76C00B0DEBC /* View Controllers */ = {
+		177FAB911D92BC6800B612B3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				177FAB931D92BE7400B612B3 /* CompassControl+Convience.swift */,
+				177FAB941D92BE7400B612B3 /* ColorBlockView.swift */,
+				177FAB951D92BE7400B612B3 /* CompassControl.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		177FAB921D92BCA800B612B3 /* oldWatchFramework */ = {
 			isa = PBXGroup;
 			children = (
 				8389AC661BEB044F00B81A18 /* WatchSessionManager.swift */,
+			);
+			name = oldWatchFramework;
+			sourceTree = "<group>";
+		};
+		178AACCD1BEFE76C00B0DEBC /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
 				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
 				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
 				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
@@ -742,9 +768,10 @@
 			isa = PBXGroup;
 			children = (
 				17336D541B42F81B0063FB70 /* Localizable.strings */,
-				1771B0891B75251A006C1F5E /* ColorBlockView.swift */,
 				17BD1C331BF0ED650014EE38 /* CompassControl+Convience.swift */,
 				1771B08A1B75251A006C1F5E /* CompassControl.swift */,
+				1771B0891B75251A006C1F5E /* ColorBlockView.swift */,
+				177FAB921D92BCA800B612B3 /* oldWatchFramework */,
 				1771B0431B75235B006C1F5E /* oldiOS Framework */,
 				17ABD9031D79E6A400FEB743 /* Stores */,
 				1771B06A1B7524AF006C1F5E /* API */,
@@ -1099,7 +1126,7 @@
 								enabled = 0;
 							};
 							com.apple.iCloud = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -1192,6 +1219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */,
+				177FAB9A1D92BF8100B612B3 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1200,6 +1228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83F4C58C1B7C23F200C74285 /* MainInterface.storyboard in Resources */,
+				177FAB991D92BF8000B612B3 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1299,6 +1328,7 @@
 				171CDBA11D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				171CDB951D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
+				177FAB971D92BE7400B612B3 /* ColorBlockView.swift in Sources */,
 				171CDBB91D91C56500D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
 				171CDBCF1D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
 				171CDB971D91C56500D7D52D /* DeviceStatus.swift in Sources */,
@@ -1310,21 +1340,20 @@
 				171CDBC31D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
 				171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				171CDBA31D91C56500D7D52D /* Nightscout.swift in Sources */,
-				17BD1C2E1BF0ED190014EE38 /* NSAssetKit.swift in Sources */,
+				177FAB981D92BE7400B612B3 /* CompassControl.swift in Sources */,
 				171CDB911D91C56500D7D52D /* AlarmRule.swift in Sources */,
 				171CDBB51D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
 				171CDB891D91C56500D7D52D /* NSCalendar-Extension.swift in Sources */,
+				177FAB961D92BE7400B612B3 /* CompassControl+Convience.swift in Sources */,
 				171CDBBB1D91C56600D7D52D /* ViewModelProtocols.swift in Sources */,
 				171CDB871D91C56500D7D52D /* Extensions.swift in Sources */,
 				171CDBCB1D91C56600D7D52D /* PhoneSessionManager.swift in Sources */,
 				171CDB8D1D91C56500D7D52D /* NSURL-Extensions.swift in Sources */,
-				17BD1C341BF0ED650014EE38 /* CompassControl+Convience.swift in Sources */,
 				171CDB9B1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB831D91C56500D7D52D /* Color-Extensions.swift in Sources */,
-				1771B08C1B75251A006C1F5E /* CompassControl.swift in Sources */,
 				171CDBA91D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */,
+				177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */,
 				171CDBA71D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
-				1771B08B1B75251A006C1F5E /* ColorBlockView.swift in Sources */,
 				171CDB9F1D91C56500D7D52D /* Site.swift in Sources */,
 				171CDB9D1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
 			);
@@ -1345,6 +1374,7 @@
 				171CDB8C1D91C56500D7D52D /* NSDate-Extensions.swift in Sources */,
 				171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
 				171CDBA81D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
+				177FAB9D1D92C71D00B612B3 /* WatchSessionManager.swift in Sources */,
 				171CDB901D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDBA61D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDB981D91C56500D7D52D /* DeviceStatus.swift in Sources */,

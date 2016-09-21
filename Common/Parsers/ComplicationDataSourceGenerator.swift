@@ -13,8 +13,12 @@ public protocol ComplicationDataSourceGenerator {
     var latestComplicationData: ComplicationTimelineEntry? { get }
     var complicationUpdateInterval: TimeInterval { get }
     func nearest(calibration cals: [Calibration], forDate date: Date) -> Calibration?
-    mutating func generateComplicationData() -> [ComplicationTimelineEntry]
+    
+    func generateComplicationData(with serverConfiguration: ServerConfiguration, sensorGlucoseValues: [SensorGlucoseValue], calibrations: [Calibration]) -> [ComplicationTimelineEntry]
 }
+
+// MARK: Complication Data Source
+
 
 public extension ComplicationDataSourceGenerator {
     var complicationUpdateInterval: TimeInterval { return 60.0 * 30.0 }
@@ -28,6 +32,10 @@ public extension ComplicationDataSourceGenerator {
     }
     
     func nearest(calibration cals: [Calibration], forDate date: Date) -> Calibration? {
+        if cals.isEmpty {
+            return nil
+        }
+        
         var desiredIndex: Int?
         var minDate: TimeInterval = fabs(Date().timeIntervalSinceNow)
         for (index, cal) in cals.enumerated() {
@@ -44,22 +52,11 @@ public extension ComplicationDataSourceGenerator {
         }
         return cals[safe: index]
     }
-}
-
-
-// MARK: Complication Data Source
-
-extension Site: ComplicationDataSourceGenerator {
     
-    @discardableResult
-    public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
-
-        guard let configuration = self.configuration, !self.cals.isEmpty else {
-            return []
-        }
+    public func generateComplicationData(with serverConfiguration: ServerConfiguration, sensorGlucoseValues: [SensorGlucoseValue], calibrations: [Calibration]) -> [ComplicationTimelineEntry] {
         
-        let sgvs = self.sgvs
-        let calibrations = self.cals
+        let configuration = serverConfiguration
+        let sgvs = sensorGlucoseValues
         
         // Init Complication Model Array for return as Timeline.
         var compModels: [ComplicationTimelineEntry] = []
@@ -161,8 +158,22 @@ extension Site: ComplicationDataSourceGenerator {
         
         compModels.sorted()
         
-        self.complicationTimeline = compModels
         return compModels
+    }
+
+}
+
+
+extension Site: ComplicationDataSourceGenerator {
+    @discardableResult
+     public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
+        
+        guard let configuration = self.configuration else {
+            return []
+        }
+        self.complicationTimeline = generateComplicationData(with: configuration, sensorGlucoseValues: sgvs, calibrations: cals)
+        
+        return self.complicationTimeline
     }
     
     public var latestComplicationData: ComplicationTimelineEntry? {
