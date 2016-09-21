@@ -34,11 +34,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         }
     }
 
-    var data: [String] = [] {
-        didSet{
-            loadWebView()
-        }
-    }
+    var data = [AnyObjectd]()
     
     // MARK: View Lifecycle
     override func viewDidLoad() {
@@ -50,7 +46,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
             self.view.backgroundColor = UIColor.clear
             self.siteNameLabel?.removeFromSuperview()
         }
-        
+        loadWebView()
+ 
         configureView(withSite: site ?? Site())
     }
    
@@ -155,44 +152,6 @@ extension SiteDetailViewController {
                 
             })
         }
-        
-        guard let site = site else { return }
-        self.updateTitles(site.summaryViewModel.nameLabel)
-        
-        data = site.sgvs.map{ $0.jsonForChart }
-
-        
-        DispatchQueue.main.async(execute: { () -> Void in
-            let model = site.summaryViewModel
-            
-            // Configure the Compass
-//            self.siteCompassControl?.configureWith(model)
-            
-            // Battery label
-            self.siteBatteryHeader?.isHidden = model.batteryHidden
-            self.siteBatteryLabel?.isHidden =  model.batteryHidden
-            self.siteBatteryLabel?.text = model.batteryLabel
-            self.siteBatteryLabel?.textColor = model.batteryColor
-            
-            // Get date object as string.
-            let dateString = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-            
-            // Last reading label
-            self.siteLastReadingLabel?.text = dateString
-            self.siteLastReadingLabel?.textColor = model.lastReadingColor
-            
-            self.siteRawLabel?.isHidden = model.rawHidden
-            self.siteRawHeader?.isHidden = model.rawHidden
-            
-            self.siteRawLabel?.text = model.rawLabel
-            self.siteRawLabel?.textColor = model.rawColor
-            
-            //self.updateTitles(model.displayName)
-            
-            // Reload the webview.
-            self.siteWebView?.reload()
-        })
-        
     }
    
     @IBAction func manageAlarm(_ sender: AnyObject?) {
@@ -285,7 +244,11 @@ extension SiteDetailViewController {
             
             self.updateTitles(dataSource.nameLabel)
             
-            data = site.sgvs.map{ $0.jsonForChart }
+            for entry in site.sgvs {
+                data.append(entry.jsonForChart as AnyObject)
+            }
+            
+//            data = site.sgvs.map{ $0.jsonForChart }
             self.siteWebView?.reload()
 
         }
