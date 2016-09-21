@@ -34,7 +34,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate {
         }
     }
 
-    var data = [AnyObjectd]()
+    var data = [AnyObject]()
     
     // MARK: View Lifecycle
     override func viewDidLoad() {
