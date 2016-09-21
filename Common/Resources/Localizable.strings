@@ -1,0 +1,75 @@
+/* 
+  Strings.strings
+  Nightscouter
+
+  Created by Peter Ina on 6/30/15.
+  Copyright (c) 2015 Peter Ina. All rights reserved.
+*/
+
+"viewTitleSettings" = "Settings";
+
+"tableViewCellRemove" = "Remove";
+
+"batteryLabel" = "BATTERY"; // not implemented.
+"batteryLabelShort" = "B";
+
+"rawLabel" = "RAW"; // not implemented.
+"rawLabelShort" = "R";
+
+"lastReadingLabel" = "LAST READING";
+"lastReadingLabelShort" = "LR";
+
+"lastUpdatedDateLabel" = "Updated on: ";
+"tableViewCellLoading" = "Loading...";
+
+"generalEditLabel" = "Edit";
+"generalCancelLabel" = "Cancel";
+"generalRetryLabel" = "Retry";
+"generalNoLabel" = "No";
+"generalYesLabel" = "Yes";
+
+"uiAlertBadSiteTitle" = "Cannot Reach Nightscout Site";
+"uiAlertBadSiteMessage" = "A connection to %@ was not successfull.\n\nReason: %@\n\nPlease check the URL and try again.";
+"uiAlertScreenOverrideTitle" = "Prevent Screen from Locking?";
+"uiAlertScreenOverrideMessage" = "Selecting Yes will prevent the application from going to sleep and locking while viewing this site.";
+
+"sgvLowString" = "Low";
+
+"sgvWithEmojiString" = "%@ %@";
+
+"nightscoutTitleString" = "Nightscouter";
+
+"directionRateOutOfRange" = "Rate Out of Range";
+"directionNotComputable" = "Not Computable";
+"directionNone" = "None";
+"directionDoubleUp" = "Double Up";
+"directionSingleUp" = "Single Up";
+"directionFortyFiveUp" = "Forty Five Up";
+"directionFlat" = "Flat";
+"directionFortyFiveDown" = "Forty Five Down";
+"directionSingleDown" = "Single Down";
+"directionDoubleDown" = "Doublue Down";
+
+"settingsPreventLocking" = "Prevent Screen from Locking?";
+"settingsDefaultSite" = "Use as Default Site";
+"settingsDefaultSiteSubTitle" = "When enabled, this site's information will be proiritized for the watch.";
+"settingsEditSite" = "Edit";
+"settingsEditSiteSubTitle" = "Change any available settings for connecting to the site.";
+"settingsGoToWeb" = "Goto Website";
+
+"emptyTableViewCellTitle" = "No Nightscout sites were found.";
+
+"updateDateFromPhoneString" = "LAST UPDATE FROM PHONE";
+
+"sitePlural" = "Sites";
+"siteSingle" = "Site";
+"selectASite" = "Select a Site";
+"selected" = "Selected";
+
+"snoozeLabel" = "Snooze";
+"snoozedForLabel" = "Alarmed snoozed for %@ min.";
+"snoozeMessage" = "How long should the alarm be ignored?";
+"minutes" = "Minutes";
+"hour" = "Hour";
+"hours" = "Hours";
+"min" = "min";

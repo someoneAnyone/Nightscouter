@@ -14,7 +14,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     override init() {
         print(">>> Entering \(#function) in ExtensionDelegate) <<<")
-        WatchSessionManager.sharedManager.startSession()
+//        WatchSessionManager.sharedManager.startSession()
         
         super.init()
     }
@@ -40,11 +40,11 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         self.timer?.invalidate()
         self.timer = nil
         
-        WatchSessionManager.sharedManager.saveData()
+//        WatchSessionManager.sharedManager.saveData()
     }
     
     func createUpdateTimer() -> Timer {
-        let localTimer = Timer.scheduledTimer(timeInterval: Constants.StandardTimeFrame.FourMinutesInSeconds, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
+        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutesInSeconds, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
         return localTimer
     }
     
@@ -59,8 +59,8 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         let delayedStart:Double=(Double)(10 - components.second!)
         let dispatchTime: DispatchTime = DispatchTime.now() + Double(Int64(delayedStart * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
         DispatchQueue.main.asyncAfter(deadline: dispatchTime, execute: {
-            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(Date())")
-            NotificationCenter.default.post(Notification(name: Notification.Name(rawValue: NightscoutAPIClientNotification.DataIsStaleUpdateNow), object: self))
+//            print("ExtensionDelegate:   Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) notification at \(Date())")
+            NotificationCenter.default.post(Notification(name: .NightscoutDataStaleNotification, object: self))
             
             if (self.timer == nil) {
                 self.timer = self.createUpdateTimer()

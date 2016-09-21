@@ -45,7 +45,7 @@ open class WatchSessionManager: NSObject, WCSessionDelegate {
         print("sessionReachabilityDidChange")
         //  print(session)
         let messageToSend = [WatchModel.PropertyKey.actionKey: WatchAction.AppContext.rawValue]
-                AppDataManageriOS.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
+                SitesDataSource.sharedInstance.processApplicationContext(messageToSend) { (dictionary) in
         
                 }
     }
@@ -93,7 +93,7 @@ public extension WatchSessionManager {
         
         DispatchQueue.main.async {
             // make sure to put on the main queue to update UI!
-            AppDataManageriOS.sharedInstance.processApplicationContext(applicationContext)
+            SitesDataSource.sharedInstance.processApplicationContext(applicationContext)
         }
     }
 }
@@ -140,7 +140,7 @@ extension WatchSessionManager {
         // handle receiving user info
         DispatchQueue.main.async {
             // make sure to put on the main queue to update UI!
-            AppDataManageriOS.sharedInstance.processApplicationContext(userInfo)
+            SitesDataSource.sharedInstance.processApplicationContext(userInfo)
         }
     }
     
@@ -174,7 +174,7 @@ public extension WatchSessionManager {
         // replyHandler([WatchModel.PropertyKey.successfullyRecieved: true])
         
         DispatchQueue.main.async {
-            AppDataManageriOS.sharedInstance.processApplicationContext(message, replyHandler: replyHandler)
+            SitesDataSource.sharedInstance.processApplicationContext(message, replyHandler: replyHandler)
         }
     }
 }

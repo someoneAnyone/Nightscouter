@@ -26,7 +26,7 @@ class GlanceController: WKInterfaceController {
         return WatchSessionManager.sharedManager.defaultModel()
     }
  */
-    var model: WatchModel? {
+    var model: SiteSummaryModelViewModel? {
         didSet{
             DispatchQueue.main.async {
                 self.configureView()
@@ -41,10 +41,10 @@ class GlanceController: WKInterfaceController {
         beginGlanceUpdates()
         
         // self.configureView()
-        WatchSessionManager.sharedManager.updateComplication { (timline) in
-            self.model = WatchSessionManager.sharedManager.defaultModel()
-            self.endGlanceUpdates()
-        }
+//        WatchSessionManager.sharedManager.updateComplication { (timline) in
+//            self.model = WatchSessionManager.sharedManager.defaultModel()
+//            self.endGlanceUpdates()
+//        }
     }
     
     override func awake(withContext context: Any?) {
@@ -76,13 +76,13 @@ class GlanceController: WKInterfaceController {
         
             let dateString = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             
-            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: UIColor(hexString: model.lastReadingColor), textHeader: "LR")
+            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: model.lastReadingColor, textHeader: "LR")
             
-            let formattedRaw = self.formattedStringWithHeaderFor(model.rawString, textColor:  UIColor(hexString: model.rawColor), textHeader: "R")
+            let formattedRaw = self.formattedStringWithHeaderFor(model.rawLabel, textColor: model.rawColor, textHeader: "R")
             
-            let formattedBattery = self.formattedStringWithHeaderFor(model.batteryString, textColor:  UIColor(hexString: model.batteryColor), textHeader: "B")
+            let formattedBattery = self.formattedStringWithHeaderFor(model.batteryLabel, textColor: model.batteryColor, textHeader: "B")
             
-            let sgvString = String(stringInterpolation:model.sgvStringWithEmoji.replacingOccurrences(of: " ", with: ""))
+            let sgvString = String(stringInterpolation:model.sgvLabel.replacingOccurrences(of: " ", with: ""))
 
         OperationQueue.main.addOperation {
 
@@ -91,21 +91,21 @@ class GlanceController: WKInterfaceController {
             self.lastUpdateLabel.setAttributedText(formattedLastUpdateString)
             
             // Delta
-            self.siteDeltaLabel.setText(model.deltaString)
-            self.siteDeltaLabel.setTextColor(UIColor(hexString: model.deltaColor))
+            self.siteDeltaLabel.setText(model.deltaLabel)
+            self.siteDeltaLabel.setTextColor(model.deltaColor)
             
             // Name
-            self.siteNameLabel.setText(model.displayName)
+            self.siteNameLabel.setText(model.nameLabel)
             
             // Sgv
             self.siteSgvLabel.setText(sgvString)
-            self.siteSgvLabel.setTextColor(UIColor(hexString: model.sgvColor))
+            self.siteSgvLabel.setTextColor(model.sgvColor)
             
             // Raw
             self.siteRawLabel.setAttributedText(formattedRaw)
-            self.siteRawLabel.setHidden(!model.rawVisible)
+            self.siteRawLabel.setHidden(model.rawHidden)
             
-            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: URL(string: model.urlString)!)
+//            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: URL(string: model.urlString)!)
         }
     }
     

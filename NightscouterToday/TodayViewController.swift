@@ -10,7 +10,7 @@ import UIKit
 import NotificationCenter
 import NightscouterKit
 
-class TodayViewController: UITableViewController, NCWidgetProviding {
+class TodayViewController: UITableViewController, SitesDataSourceProvider, NCWidgetProviding {
     
     struct TableViewConstants {
         static let baseRowCount = 2
@@ -22,14 +22,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
         }
     }
     
-    var sites:[Site] = []
+    var sites:[Site] {
+        return SitesDataSource.sharedInstance.sites
+    }
     
     var lastUpdatedTime: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        sites = AppDataManageriOS.sharedInstance.sites
+        //sites = SitesDataSource.sharedInstance.sites
         
         if #available(iOSApplicationExtension 10.0, *) {
             extensionContext?.widgetLargestAvailableDisplayMode = .expanded
@@ -141,34 +143,35 @@ class TodayViewController: UITableViewController, NCWidgetProviding {
     
     func refreshDataFor(_ site: Site, index: Int, completionHandler: ((NCUpdateResult) -> Void)? = nil){
         // Start up the API
-        
-        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
-            
-            switch error {
-                
-            case .noError :
-                DispatchQueue.main.async(execute: { () -> Void in
-                    AppDataManageriOS.sharedInstance.updateSite(returnedSite)
-                    self.lastUpdatedTime = returnedSite.lastConnectedDate
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                    self.preferredContentSize = self.tableView.contentSize
-                })
-            default:
-                print("\(#function) ERROR recieved: \(error.description)")
-            }
-        }
+//        
+//        fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
+//            
+//            switch error {
+//                
+//            case .noError :
+//                DispatchQueue.main.async(execute: { () -> Void in
+//                    SitesDataSource.sharedInstance.updateSite(returnedSite)
+//                    self.lastUpdatedTime = returnedSite.lastConnectedDate
+//                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+//                    self.preferredContentSize = self.tableView.contentSize
+//                })
+//            default:
+//                print("\(#function) ERROR recieved: \(error.description)")
+//            }
+//        }
     }
     
     func openApp(with indexPath: IndexPath) {
         if let context = extensionContext {
     
-            let site = sites[(indexPath as NSIndexPath).row], _ = site.uuid.uuidString
-            AppDataManageriOS.sharedInstance.currentSiteIndex = (indexPath as NSIndexPath).row
-            AppDataManageriOS.sharedInstance.saveData()
+            let site = sites[indexPath.row], _ = site.uuid.uuidString
+            SitesDataSource.sharedInstance.lastViewedSiteIndex = indexPath.row
+//            SitesDataSource.sharedInstance.saveData()
             
-            let url = URL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
+//            let url = URL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
             
-            context.open(url!, completionHandler: nil)
+            let url = LinkBuilder.buildLink(forType: .link, withViewController: .siteListPageViewController)
+            context.open(url, completionHandler: nil)
         }
     }
 }

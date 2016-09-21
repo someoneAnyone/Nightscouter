@@ -11,38 +11,32 @@ import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
+class SiteListTableViewController: UITableViewController, SitesDataSourceProvider, SegueHandlerType {
+    
+    struct CellIdentifier {
+        static let SiteTableViewStyle = "siteCell"
+    }
     
     @IBOutlet fileprivate weak var snoozeAlarmButton: UIBarButtonItem!
     
     @IBOutlet fileprivate weak var headerView: BannerMessage!
     
+    enum SegueIdentifier: String {
+        case EditExisting, ShowDetail, AddNew, AddNewWhenEmpty, LaunchLabs, ShowPageView, UnwindToSiteList
+    }
+    
     // MARK: Properties
     
     // Computed Property: Grabs the common set of sites from the data manager.
     var sites: [Site] {
-        editButtonItem.isEnabled = !AppDataManageriOS.sharedInstance.sites.isEmpty
-        return AppDataManageriOS.sharedInstance.sites
+        return SitesDataSource.sharedInstance.sites
     }
     
-    // Whenever this changes, it updates the attributed title of the refresh control.
-    var lastUpdatedTime: Date? {
+    var milliseconds: Double = 0 {
         didSet{
-            // Create and use a formatter.
-            let dateFormatter = DateFormatter()
-            dateFormatter.timeStyle = DateFormatter.Style.medium
-            dateFormatter.dateStyle = DateFormatter.Style.medium
-            dateFormatter.timeZone = TimeZone.autoupdatingCurrent
-            
-            if let date = lastUpdatedTime {
-                let str = String(stringInterpolation:Constants.LocalizedString.lastUpdatedDateLabel.localized, dateFormatter.string(from: date))
-                self.refreshControl!.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName:UIColor.white])
-            }
-            
-//            if let headerView = tableView.tableHeaderView as? BannerMessage {
-//                headerView.hidden = false
-//                headerView.message = AlarmManager.sharedManager.snoozeText
-//            }
+            let str = String(stringInterpolation:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date))
+            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName: Color.white])
+            self.refreshControl?.endRefreshing()
         }
     }
     
@@ -57,9 +51,9 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         super.viewDidLoad()
         
         if let site = siteToDisplay {
-            performSegue(withIdentifier: Constants.SegueIdentifier.ShowPageView.rawValue, sender: site)
+            performSegue(withIdentifier: SegueIdentifier.ShowPageView.rawValue, sender: site)
         }
-        
+        tableView.tableHeaderView = nil
         // Common setup.
         configureView()
     }
@@ -69,35 +63,6 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-        
-    }
-    
-    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
-        
-        if alarm == true || snoozed {
-            let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-            
-            snoozeAlarmButton.isEnabled = true
-            snoozeAlarmButton.tintColor = activeColor
-            
-            tableView.tableHeaderView = headerView
-            tableView.reloadData()
-            
-            if let headerView = tableView.tableHeaderView as? BannerMessage {
-                headerView.isHidden = false
-                headerView.tintColor = activeColor
-                headerView.message = snoozed ? AlarmManager.sharedManager.snoozeText : "One or more of your sites are sounding an alarm."
-            }
-            
-        } else if alarm == false && !snoozed {
-            snoozeAlarmButton.isEnabled = false
-            snoozeAlarmButton.tintColor = nil
-            tableView.tableHeaderView = nil
-            
-        } else {
-            snoozeAlarmButton.image = UIImage(named: "alarmIcon")
-            tableView.tableHeaderView = nil
-        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -106,8 +71,6 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     }
     
     deinit {
-        AlarmManager.sharedManager.removeAlarmManagerDelgate(self)
-        
         // Remove this class from the observer list. Was listening for a global update timer.
         NotificationCenter.default.removeObserver(self)
     }
@@ -125,7 +88,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = Constants.CellIdentifiers.SiteTableViewStyle
+        let cellIdentifier = CellIdentifier.SiteTableViewStyle
         
         // Configure the cell...
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! SiteTableViewCell
@@ -139,7 +102,9 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            AppDataManageriOS.sharedInstance.deleteSiteAtIndex((indexPath as NSIndexPath).row)
+            
+            let site = sites[indexPath.row]
+            SitesDataSource.sharedInstance.deleteSite(site)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             shouldIShowNewSiteForm()
         } else if editingStyle == .insert {
@@ -151,9 +116,9 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to toIndexPath: IndexPath) {
         // update the item in my data source by first removing at the from index, then inserting at the to index.
-        let site = sites[(fromIndexPath as NSIndexPath).row]
-        AppDataManageriOS.sharedInstance.deleteSiteAtIndex((fromIndexPath as NSIndexPath).row)
-        AppDataManageriOS.sharedInstance.addSite(site, index: (toIndexPath as NSIndexPath).row)
+        let site = sites[fromIndexPath.row]
+        SitesDataSource.sharedInstance.deleteSite(site)
+        SitesDataSource.sharedInstance.createSite(site, atIndex: toIndexPath.row)
     }
     
     // Override to support conditional rearranging of the table view.
@@ -170,7 +135,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     }
     
     override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
-        return Constants.LocalizedString.tableViewCellRemove.localized
+        return LocalizedString.tableViewCellRemove.localized
     }
     
     override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
@@ -193,10 +158,10 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        if let identifier = Constants.SegueIdentifier(rawValue: segue.identifier!) {
+        if let identifier = SegueIdentifier(rawValue: segue.identifier!) {
             switch identifier {
                 
-            case .EditSite:
+            case .EditExisting:
                 #if DEBUG
                     print("Editing existing site", terminator: "")
                 #endif
@@ -205,7 +170,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPath(for: selectedSiteCell)!
-                    let selectedSite = sites[(indexPath as NSIndexPath).row]
+                    let selectedSite = sites[indexPath.row]
                     siteDetailViewController.site = selectedSite
                 }
                 
@@ -227,7 +192,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPath(for: selectedSiteCell)!
-                    let selectedSite = sites[(indexPath as NSIndexPath).row]
+                    let selectedSite = sites[indexPath.row]
                     siteDetailViewController.site = selectedSite
                 }
                 
@@ -236,12 +201,12 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 // Get the cell that generated this segue.
                 if let selectedSiteCell = sender as? UITableViewCell {
                     let indexPath = tableView.indexPath(for: selectedSiteCell)!
-                    AppDataManageriOS.sharedInstance.currentSiteIndex = (indexPath as NSIndexPath).row
+                    SitesDataSource.sharedInstance.lastViewedSiteIndex = indexPath.row
                 }
                 
                 if let incomingSite = sender as? Site{
                     if let indexOfSite = sites.index(of: incomingSite) {
-                        AppDataManageriOS.sharedInstance.currentSiteIndex = indexOfSite
+                        SitesDataSource.sharedInstance.lastViewedSiteIndex = indexOfSite
                     }
                 }
                 
@@ -260,7 +225,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     }
     
     @IBAction func manageAlarm(_ sender: AnyObject?) {
-        AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
+//        AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
     }
     
     @IBAction func goToSettings(_ sender: AnyObject?) {
@@ -271,19 +236,22 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     @IBAction func unwindToSiteList(_ sender: UIStoryboardSegue) {
         
         if let sourceViewController = sender.source as? SiteFormViewController, let site = sourceViewController.site {
-            site.disabled = false
+            
+            var newSite = site
+            
+            newSite.disabled = false
             // This segue is triggered when we "save" or "next" out of the url form.
             if let selectedIndexPath = accessoryIndexPath {
                 // Update an existing site.
-                AppDataManageriOS.sharedInstance.updateSite(site)
-                self.refreshDataFor(site, index: (selectedIndexPath as NSIndexPath).row)
+                SitesDataSource.sharedInstance.updateSite(newSite)
+                self.refreshDataFor(site, index: selectedIndexPath.row)
                 //tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: .None)
                 accessoryIndexPath = nil
             } else {
                 // Add a new site.
                 isEditing = false
                 let newIndexPath = IndexPath(row: 0, section: 0)
-                AppDataManageriOS.sharedInstance.addSite(site, index: (newIndexPath as NSIndexPath).row)
+                SitesDataSource.sharedInstance.createSite(site, atIndex: newIndexPath.row)
                 
                 accessoryIndexPath = nil
                 guard let _ = tableView.cellForRow(at: newIndexPath) else {
@@ -324,18 +292,23 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         refreshControl?.tintColor = UIColor.white
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
+      
         
-        let triggerTime = (Int64(NSEC_PER_SEC) * 5)
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(triggerTime) / Double(NSEC_PER_SEC), execute: { () -> Void in
-            self.setupNotifications()
-            self.timer = Timer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
-        })
+        self.setupNotifications()
+      
+        self.timer = Timer(timeInterval: 60.0, target: self, selector: #selector(SiteListTableViewController.updateUI as (SiteListTableViewController) -> () -> ()), userInfo: nil, repeats: true)
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.shared.isIdleTimerDisabled = false
         
         
-        AlarmManager.sharedManager.addAlarmManagerDelgate(self)
+        
+        // TODO: If there is only one site in the array, push to the detail controller right away. If a new or second one is added dismiss and return to table view.
+        // TODO: Faking a data transfter date.
+        // TODO: Need to update the table when data changes... also need to call updateTable if empty to show an empty row.
+        //        NSNotificationCenter.defaultCenter().addObserverForName(DataUpdatedNotification, object: nil, queue: NSOperationQueue.mainQueue()) { (_) -> Void in
+        //            self.tableView.reloadData()
+        //        }
     }
     
     func updateUI() {
@@ -344,23 +317,24 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
     
     func setupNotifications() {
         // Listen for global update timer.
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: NSNotification.Name(rawValue: NightscoutAPIClientNotification.DataIsStaleUpdateNow), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
     func configureCell(_ cell: SiteTableViewCell, indexPath: IndexPath) -> Void {
-        let site = sites[(indexPath as NSIndexPath).row]
-        cell.configureCell(site)
+        let site = sites[indexPath.row]
+        let model = site.summaryViewModel
+        cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if (site.updateNow || lastUpdatedTime == nil || site.configuration == nil) {
-            refreshDataFor(site, index: (indexPath as NSIndexPath).row)
+        if (site.updateNow || site.configuration == nil) {
+            refreshDataFor(site, index: indexPath.row)
         }
     }
     
     func shouldIShowNewSiteForm() {
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
-            let vc = storyboard?.instantiateViewController(withIdentifier: Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue) as! SiteFormViewController
+            let vc = storyboard?.instantiateViewController(withIdentifier: StoryboardIdentifier.formViewController.rawValue) as! SiteFormViewController
             self.parent!.present(vc, animated: true, completion: { () -> Void in
                 // println("Finished presenting SiteFormViewController.")
             })
@@ -378,7 +352,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         if sites.isEmpty == false {
             if refreshControl?.isRefreshing == false {
                 refreshControl?.beginRefreshing()
-                tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
+             //   tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
             }
             for (index, site) in sites.enumerated() {
                 refreshDataFor(site, index: index)
@@ -394,10 +368,72 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
+        Nightscout().networkRequest(forNightscoutURL: site.url, apiPassword: site.apiSecret, userInitiated: false) { (config, sgvs, cals, mbgs, devices, err) in
+            
+            defer {
+                print("setting networkActivityIndicatorVisible: false and stopping animation.")
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                
+                if (self.refreshControl?.isRefreshing != nil) {
+                    self.refreshControl?.endRefreshing()
+                }
+            }
+            
+            if let error = err {
+                print(error.kind)
+                fatalError()
+            }
+            
+            // Process the updates to the site.
+            var updatedSite = site
+            
+            if let conf = config {
+                updatedSite.configuration = conf
+                
+            }
+            
+            if let sgvs = sgvs {
+                updatedSite.sgvs = sgvs
+            }
+            
+            if let mbgs = mbgs {
+                updatedSite.mbgs = mbgs
+            }
+            
+            if let cals = cals {
+                updatedSite.cals = cals
+            }
+            
+            if let deviceStatus = devices {
+                updatedSite.deviceStatuses = deviceStatus
+            }
+            
+            self.milliseconds = Date().timeIntervalSince1970.millisecond
+            updatedSite.lastUpdatedDate =  self.milliseconds.toDateUsingMilliseconds()
+            updatedSite.generateComplicationData()
+            
+            OperationQueue.main.addOperation {
+                //self.sites[indexPath.item] = updatedSite
+            
+                
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+
+                if let _ = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) , self.tableView.numberOfRows(inSection: 0)<0 {
+                    
+                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+                } else {
+                    self.tableView.reloadData()
+                }
+
+                
+            }
+        }
+        /*
         fetchSiteData(site) { (returnedSite, error: NightscoutAPIError) -> Void in
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
-                AppDataManageriOS.sharedInstance.updateSite(returnedSite)
+                SitesDataSource.sharedInstance.updateSite(returnedSite)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
                 if (self.refreshControl?.isRefreshing != nil) {
@@ -421,40 +457,43 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
                 self.presentAlertDialog(site.url, index: index, error: err.description)
             }
         }
+         */
     }
     
     // Attempt to handle an error.
     func presentAlertDialog(_ siteURL:URL, index: Int, error: String) {
         
-        let alertController = UIAlertController(title: Constants.LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: Constants.LocalizedString.uiAlertBadSiteMessage.localized, siteURL as CVarArg, error), preferredStyle: .alert)
+        let alertController = UIAlertController(title: LocalizedString.uiAlertBadSiteTitle.localized, message: String(format: LocalizedString.uiAlertBadSiteMessage.localized, siteURL as CVarArg, error), preferredStyle: .alert)
         
-        let cancelAction = UIAlertAction(title: Constants.LocalizedString.generalCancelLabel.localized, style: .cancel) { (action) in
+        let cancelAction = UIAlertAction(title: LocalizedString.generalCancelLabel.localized, style: .cancel) { (action) in
             // ...
         }
         alertController.addAction(cancelAction)
         
-        let retryAction = UIAlertAction(title: Constants.LocalizedString.generalRetryLabel.localized, style: .default) { (action) in
+        let retryAction = UIAlertAction(title: LocalizedString.generalRetryLabel.localized, style: .default) { (action) in
             let indexPath = IndexPath(row: index, section: 0)
-            let site = AppDataManageriOS.sharedInstance.sites[(indexPath as NSIndexPath).row]
+            var site = SitesDataSource.sharedInstance.sites[indexPath.row]
             site.disabled = false
-            AppDataManageriOS.sharedInstance.updateSite(site)
+            SitesDataSource.sharedInstance.updateSite(site)
             
-            self.refreshDataFor(site, index: (indexPath as NSIndexPath).row)
+            self.refreshDataFor(site, index: indexPath.row)
             // self.tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
         alertController.addAction(retryAction)
         
-        let editAction = UIAlertAction(title: Constants.LocalizedString.generalEditLabel.localized, style: .default) { (action) in
+        let editAction = UIAlertAction(title: LocalizedString.generalEditLabel.localized, style: .default) { (action) in
             let indexPath = IndexPath(row: index, section: 0)
             let tableViewCell = self.tableView.cellForRow(at: indexPath)
             self.accessoryIndexPath = indexPath
-            self.performSegue(withIdentifier: Constants.SegueIdentifier.EditSite.rawValue, sender:tableViewCell)
+            self.performSegue(withIdentifier: SegueIdentifier.EditExisting.rawValue, sender:tableViewCell)
         }
         alertController.addAction(editAction)
         
-        let removeAction = UIAlertAction(title: Constants.LocalizedString.tableViewCellRemove.localized, style: .destructive) { (action) in
+        let removeAction = UIAlertAction(title: LocalizedString.tableViewCellRemove.localized, style: .destructive) { (action) in
             self.tableView.beginUpdates()
-            AppDataManageriOS.sharedInstance.deleteSiteAtIndex(index)
+            
+            let site = SitesDataSource.sharedInstance.sites[index]
+            SitesDataSource.sharedInstance.deleteSite(site)
             self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
             self.tableView.endUpdates()
         }
@@ -464,7 +503,7 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
         
         self.view.window?.tintColor = nil
         
-        self.navigationController?.popToRootViewController(animated: true)
+        let _ = self.navigationController?.popToRootViewController(animated: true)
         
         self.present(alertController, animated: true) {
             // remove nsnotification observer?
@@ -476,6 +515,36 @@ class SiteListTableViewController: UITableViewController, AlarmManagerDelgate {
 }
 
 
+
+//    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
+//
+//        if alarm == true || snoozed {
+//            let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+//
+//            snoozeAlarmButton.isEnabled = true
+//            snoozeAlarmButton.tintColor = activeColor
+//
+//            tableView.tableHeaderView = headerView
+//            tableView.reloadData()
+//
+//            if let headerView = tableView.tableHeaderView as? BannerMessage {
+//                headerView.isHidden = false
+//                headerView.tintColor = activeColor
+////                headerView.message = snoozed ? AlarmManager.sharedManager.snoozeText : "One or more of your sites are sounding an alarm."
+//            }
+//
+//        } else if alarm == false && !snoozed {
+//            snoozeAlarmButton.isEnabled = false
+//            snoozeAlarmButton.tintColor = nil
+//            tableView.tableHeaderView = nil
+//
+//        } else {
+//            snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+//            tableView.tableHeaderView = nil
+//        }
+//    }
+
+/*
 extension SiteListTableViewController: UpdatableUserInterfaceType {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -492,5 +561,5 @@ extension SiteListTableViewController: UpdatableUserInterfaceType {
         updateUITimer.invalidate()
     }
 }
-
+*/
 

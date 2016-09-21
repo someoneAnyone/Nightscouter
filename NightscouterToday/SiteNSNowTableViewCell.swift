@@ -40,33 +40,35 @@ class SiteNSNowTableViewCell: UITableViewCell {
     
     func configureCell(_ site: Site) {
         
-        let model = site.viewModel
+        let model = site.summaryViewModel
         
         let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
         
         siteLastReadingLabel.text = date
-        siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
+        siteLastReadingLabel.textColor = model.lastReadingColor
         
-        siteBatteryHeader.isHidden = !model.batteryVisible
-        siteBatteryLabel.isHidden = !model.batteryVisible
-        siteBatteryLabel.text = model.batteryString
-        siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
+        siteBatteryHeader.isHidden = model.batteryHidden
+        siteBatteryLabel.isHidden = model.batteryHidden
+        siteBatteryLabel.text = model.batteryLabel
+        siteBatteryLabel.textColor = model.batteryColor
         
-        siteRawLabel?.isHidden = !model.rawVisible
-        siteRawHeader?.isHidden = !model.rawVisible
+        siteRawLabel?.isHidden = model.rawHidden
+        siteRawHeader?.isHidden = model.rawHidden
         
-        siteRawLabel.text = model.rawString
-        siteRawLabel.textColor = UIColor(hexString: model.rawColor)
+        siteRawLabel.text = model.rawLabel
+        siteRawLabel.textColor = model.rawColor
         
-        siteNameLabel.text = model.displayName
+        siteNameLabel.text = model.nameLabel
         
-        siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
+        siteColorBlockView.backgroundColor = model.sgvColor
         
-        siteSgvLabel.textColor = UIColor(hexString: model.sgvColor)
-        siteSgvLabel.text = model.sgvStringWithEmoji
+        siteSgvLabel.textColor = model.sgvColor
         
-        siteDirectionLabel.text = model.deltaString
-        siteDirectionLabel.textColor = UIColor(hexString: model.deltaColor)
+        //:warn /// EMJOI?
+        siteSgvLabel.text = model.sgvLabel
+        
+        siteDirectionLabel.text = model.deltaLabel
+        siteDirectionLabel.textColor = model.deltaColor
     }
     
     override func prepareForReuse() {
@@ -76,19 +78,19 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteBatteryLabel.text = nil
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
-        siteColorBlockView.backgroundColor = colorForDesiredColorState(DesiredColorState.Neutral)
+        siteColorBlockView.backgroundColor = DesiredColorState.neutral.colorValue
         
         siteSgvLabel.text = nil
-        siteSgvLabel.textColor = Theme.Color.labelTextColor
+//        siteSgvLabel.textColor = Theme.Color.labelTextColor
         
         siteDirectionLabel.text = nil
-        siteDirectionLabel.textColor = Theme.Color.labelTextColor
+//        siteDirectionLabel.textColor = Theme.Color.labelTextColor
         
-        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
-        siteLastReadingLabel.textColor = Theme.Color.labelTextColor
+//        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
+//        siteLastReadingLabel.textColor = Theme.Color.labelTextColor
         
         siteRawHeader.isHidden = false
         siteRawLabel.isHidden = false
-        siteRawLabel.textColor = Theme.Color.labelTextColor
+//        siteRawLabel.textColor = Theme.Color.labelTextColor
     }
 }

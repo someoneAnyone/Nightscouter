@@ -35,7 +35,7 @@ public class CompassControl: UIView {
         let fullSize = CGSize(width: 156, height: 200)
         
         switch direction {
-        case .None, .NotComputable, .Not_Computable:
+        case .none, .NotComputable, .Not_Computable:
             return compactSize
         case .FortyFiveUp, .FortyFiveDown, .Flat:
             return compactSize
@@ -53,10 +53,10 @@ public class CompassControl: UIView {
         }
     }
     
-    open var direction: Direction = .None {
+    open var direction: Direction = .none {
         didSet {
             switch direction {
-            case .None:
+            case .none:
                 configireDrawRect(isArrowVisible: false)
             case .DoubleUp:
                 configireDrawRect(true)

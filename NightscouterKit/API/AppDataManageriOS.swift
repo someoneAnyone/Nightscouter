@@ -8,7 +8,7 @@
 import Foundation
 
 
-open class AppDataManageriOS: NSObject, BundleRepresentable {
+open class SitesDataSource: NSObject, BundleRepresentable {
     
     open var sites: [Site] = [] {
         didSet{
@@ -82,7 +82,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
     }
     
     
-    public static let sharedInstance = AppDataManageriOS()
+    public static let sharedInstance = SitesDataSource()
     
     fileprivate override init() {
         super.init()
@@ -129,13 +129,13 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
         // Register for settings changes as store might have changed
         NotificationCenter.default
             .addObserver(self,
-                         selector: #selector(AppDataManageriOS.userDefaultsDidChange(_:)),
+                         selector: #selector(SitesDataSource.userDefaultsDidChange(_:)),
                          name: UserDefaults.didChangeNotification,
                          object: defaults)
         
         NotificationCenter.default
             .addObserver(self,
-                         selector: #selector(AppDataManageriOS.ubiquitousKeyValueStoreDidChange(_:)),
+                         selector: #selector(SitesDataSource.ubiquitousKeyValueStoreDidChange(_:)),
                          name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
                          object: iCloudKeyStore)
         
@@ -263,11 +263,11 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
         
         print("Throttle how many times we send to the watch... only send every \(4.0) seconds!!!!!!!!!")
         
-        WatchSessionManager.sharedManager.sendMessage(AppDataManageriOS.sharedInstance.generatePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
+        WatchSessionManager.sharedManager.sendMessage(SitesDataSource.sharedInstance.generatePayloadForAction(), replyHandler: nil, errorHandler: { (error) in
             print("Sending error: \(error)")
             do {
                 print("Updating Application Context")
-                try WatchSessionManager.sharedManager.updateApplicationContext(AppDataManageriOS.sharedInstance.generatePayloadForAction())
+                try WatchSessionManager.sharedManager.updateApplicationContext(SitesDataSource.sharedInstance.generatePayloadForAction())
             } catch let exception {
                 print("Exception when updating application context", exception)
             }
@@ -356,7 +356,7 @@ open class AppDataManageriOS: NSObject, BundleRepresentable {
             //dispatch_debounce_block(1.0)
         //            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
         print("Posting: AppDataManagerDidChangeNotification")
-        NotificationCenter.default.post(name: Notification.Name(rawValue: AppDataManagerDidChangeNotification), object: AppDataManageriOS.sharedInstance
+        NotificationCenter.default.post(name: Notification.Name(rawValue: AppDataManagerDidChangeNotification), object: SitesDataSource.sharedInstance
             .sites)
         //            }
     }

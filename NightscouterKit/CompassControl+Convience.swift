@@ -10,17 +10,19 @@ import UIKit
 
 public extension CompassControl {
     
-    func configure(_ sgvText: String, color: UIColor, direction: Direction, bgdelta: Double, units: String) -> Void {
+    func configure(_ sgvText: String, color: UIColor, direction: Direction, bgdelta: String, units: String) -> Void {
         self.sgvText = sgvText
         self.color = color
         self.direction = direction
-        self.delta = bgdelta.formattedBGDelta(forUnits: Units(string: units))//"\(bgdelta.formattedForBGDelta) \(units)"
+        self.delta = bgdelta//bgdelta.formattedBGDelta(forUnits: GlucoseUnit(rawValue: units))//"\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    public func configureWith(_ model: WatchModel){
-        
-        configure(model.sgvString, color: UIColor(hexString: model.sgvColor), direction: Direction.directionForString(model.direction.replacingOccurrences(of: " ", with: "")), bgdelta: Double(model.delta), units: model.units)
-        self.shouldLookStale(look: model.warn)
+    public func configure(withDataSource dataSource: CompassViewDataSource, delegate: CompassViewDelegate?) {
+        direction = dataSource.direction
+        delta = dataSource.detailText
+        sgvText = dataSource.text
+        color = delegate?.desiredColor.colorValue ?? DesiredColorState.neutral.colorValue
+        shouldLookStale(look: dataSource.lookStale)
     }
     
     public func shouldLookStale(look stale: Bool = true) {

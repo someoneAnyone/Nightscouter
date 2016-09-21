@@ -33,33 +33,33 @@ class SiteTableViewCell: UITableViewCell {
         self.backgroundColor = UIColor.clear
     }
     
-    func configureCell(_ site: Site) {
+    func configure(withDataSource dataSource: TableViewRowWithCompassDataSource, delegate: TableViewRowWithCompassDelegate?) {
         
-        let model = site.viewModel
-        
-        let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-                
-        siteLastReadingLabel.text = date
-        siteLastReadingLabel.textColor = UIColor(hexString: model.lastReadingColor)
 
-        siteBatteryHeader.isHidden = !model.batteryVisible
-        siteBatteryLabel.isHidden = !model.batteryVisible
-        siteBatteryLabel.text = model.batteryString
-        siteBatteryLabel.textColor = UIColor(hexString: model.batteryColor)
+        siteLastReadingHeader.text = LocalizedString.lastReadingLabel.localized
+        siteLastReadingLabel.text = dataSource.lastReadingDate.timeAgoSinceNow
+        siteLastReadingLabel.textColor = delegate?.lastReadingColor
+
+        siteBatteryHeader.text = LocalizedString.batteryLabel.localized
+        siteBatteryHeader.isHidden = dataSource.batteryHidden
+        siteBatteryLabel.isHidden = dataSource.batteryHidden
+        siteBatteryLabel.text = dataSource.batteryLabel
+        siteBatteryLabel.textColor = delegate?.batteryColor
         
-        siteRawLabel?.isHidden = !model.rawVisible
-        siteRawHeader?.isHidden = !model.rawVisible
+        siteRawHeader.text = LocalizedString.rawLabel.localized
+        siteRawLabel?.isHidden = dataSource.rawHidden
+        siteRawHeader?.isHidden = dataSource.rawHidden
         
-        siteRawLabel.text = model.rawString
-        siteRawLabel.textColor = UIColor(hexString: model.rawColor)
+        siteRawLabel.text = dataSource.rawLabel
+        siteRawLabel.textColor = delegate?.rawColor
         
         
-        siteNameLabel.text = model.displayName
-        siteUrlLabel.text = model.displayUrlString
+        siteNameLabel.text = dataSource.nameLabel
+        siteUrlLabel.text = dataSource.urlLabel
         
-        siteColorBlockView.backgroundColor = UIColor(hexString: model.sgvColor)
+        siteColorBlockView.backgroundColor = delegate?.sgvColor
         
-        siteCompassControl.configureWith(model)
+        siteCompassControl.configure(withDataSource: dataSource, delegate: delegate)
         
         setNeedsLayout()
         layoutIfNeeded()
@@ -79,11 +79,11 @@ class SiteTableViewCell: UITableViewCell {
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
         siteColorBlockView.backgroundColor = siteCompassControl.color
-        siteLastReadingLabel.text = Constants.LocalizedString.tableViewCellLoading.localized
-        siteLastReadingLabel.textColor = Theme.Color.labelTextColor
+        siteLastReadingLabel.text = LocalizedString.tableViewCellLoading.localized
+        siteLastReadingLabel.textColor = Theme.AppColor.labelTextColor
         
         siteRawHeader.isHidden = false
         siteRawLabel.isHidden = false
-        siteRawLabel.textColor = Theme.Color.labelTextColor
+        siteRawLabel.textColor = Theme.AppColor.labelTextColor
     }
 }

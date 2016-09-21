@@ -11,11 +11,11 @@ import Foundation
 import NightscouterWatchOSKit
 
 protocol SiteDetailViewDidUpdateItemDelegate {
-    func didUpdateItem(_ model: WatchModel)
-    func didSetItemAsDefault(_ model: WatchModel)
+//    func didUpdateItem(_ model: WatchModel)
+//    func didSetItemAsDefault(_ model: WatchModel)
 }
 
-class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDelegate {
+class SiteDetailInterfaceController: WKInterfaceController {//, DataSourceChangedDelegate {
     
     @IBOutlet var compassGroup: WKInterfaceGroup!
     @IBOutlet var detailGroup: WKInterfaceGroup!
@@ -29,20 +29,21 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     var delegate: SiteDetailViewDidUpdateItemDelegate?
     
-    var model: WatchModel? {
-        didSet{
-            self.configureView()
-        }
-    }
+//    var model: WatchModel? {
+//        didSet{
+//            self.configureView()
+//        }
+//    }
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         
         let dictionary = context as! [String: Any]
         
-        if let delegate = dictionary[WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
+//        if let delegate = dictionary[WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
     }
     
+    /*
     override func willActivate() {
         super.willActivate()
         print("willActivate")
@@ -184,6 +185,7 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
             self.model = WatchModel(fromDictionary: modelDict)
         }
     }
+ */
     
 }
 

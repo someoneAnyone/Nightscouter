@@ -71,7 +71,7 @@ open class AlarmManager: AudioCordinator, Snoozable {
     }
     
     fileprivate func createTimer() {
-        let snoozeTimer = Timer.scheduledTimer(timeInterval: Constants.StandardTimeFrame.OneMinuteInSeconds, target: self, selector: #selector(AlarmManager.updateDelegates(_:)), userInfo: nil, repeats: true)
+        let snoozeTimer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinuteInSeconds, target: self, selector: #selector(AlarmManager.updateDelegates(_:)), userInfo: nil, repeats: true)
         
         updateTimer = snoozeTimer
     }

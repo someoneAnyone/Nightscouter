@@ -9,8 +9,16 @@
 import ClockKit
 import NightscouterWatchOSKit
 
-class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceChangedDelegate {
+class ComplicationController: NSObject, CLKComplicationDataSource {
+    public func getCurrentTimelineEntry(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
+        
+    }
+
+    public func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
+    }
     
+//, DataSourceChangedDelegate {
+    /*
     override init() {
         super.init()
 
@@ -347,4 +355,5 @@ class ComplicationController: NSObject, CLKComplicationDataSource, DataSourceCha
         
         return template
     }
+*/
 }

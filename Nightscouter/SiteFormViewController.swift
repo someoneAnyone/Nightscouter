@@ -109,7 +109,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         
 
             self.view.endEditing(true)
-            performSegue(withIdentifier: Constants.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
+            performSegue(withIdentifier: SiteListTableViewController.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
         }
         
         return self.nextButton.isEnabled // validateUrl(textField.text!)
@@ -124,11 +124,11 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             
             if let url = URL(string: urlString) {
                 
-                if let siteOptional = site {
+                if var siteOptional = site {
                     siteOptional.url = url
                     site = siteOptional
                 } else {
-                    site = Site(url: url, apiSecret: nil)
+                    site = Site(url: url, apiSecret: "")
                 }
                 // Hide the keyboard
                 urlTextField.resignFirstResponder()

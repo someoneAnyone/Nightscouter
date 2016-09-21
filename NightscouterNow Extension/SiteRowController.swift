@@ -28,20 +28,20 @@ class SiteRowController: NSObject {
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
     
-    var model: WatchModel? {
+    var model: SiteSummaryModelViewModel? {
         didSet {
             
             if let model = model {
                 // Site name in row
                 OperationQueue.main.addOperation({ () -> Void in
                     
-                    let sgvColor = UIColor(hexString: model.sgvColor)
-                    let rawColor = UIColor(hexString: model.rawColor)
-                    let batteryColor = UIColor(hexString: model.batteryColor)
-                    let lastReadingColor = UIColor(hexString: model.lastReadingColor)
+                    let sgvColor = model.sgvColor
+                    let rawColor = model.rawColor
+                    let batteryColor = model.batteryColor
+                    let lastReadingColor = model.lastReadingColor
                     
                     
-                    self.siteNameLabel.setText(model.displayName)
+                    self.siteNameLabel.setText(model.nameLabel)
                     
                     let date = Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
                     
@@ -53,23 +53,23 @@ class SiteRowController: NSObject {
                     self.siteUpdateTimer.setTextColor(lastReadingColor)
                     
                     // Battery label
-                    self.siteBatteryLabel.setText(model.batteryString)
+                    self.siteBatteryLabel.setText(model.batteryLabel)
                     self.siteBatteryLabel.setTextColor(batteryColor)
                     
-                    self.siteBatteryHeader.setHidden(model.batteryVisible)
-                    self.siteBatteryLabel.setHidden(model.batteryVisible)
+                    self.siteBatteryHeader.setHidden(model.batteryHidden)
+                    self.siteBatteryLabel.setHidden(model.batteryHidden)
                     
                     // Raw data
-                    self.siteRawGroup.setHidden(!model.rawVisible)
-                    self.siteRawLabel.setText(model.rawString)
+                    self.siteRawGroup.setHidden(model.rawHidden)
+                    self.siteRawLabel.setText(model.rawLabel)
                     self.siteRawLabel.setTextColor(rawColor)
                     
                     // SGV formatted value
-                    self.siteSgvLabel.setText(model.sgvStringWithEmoji)
+                    self.siteSgvLabel.setText(model.sgvLabel)
                     self.siteSgvLabel.setTextColor(sgvColor)
                     
                     // Delta
-                    self.siteDirectionLabel.setText(model.deltaString)
+                    self.siteDirectionLabel.setText(model.deltaLabel)
                     self.siteDirectionLabel.setTextColor(sgvColor)
                     self.backgroundGroup.setBackgroundColor(sgvColor.withAlphaComponent(0.2))
                     

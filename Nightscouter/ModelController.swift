@@ -19,12 +19,12 @@ import NightscouterKit
  */
 
 
-class ModelController: NSObject, UIPageViewControllerDataSource {
+class ModelController: NSObject, SitesDataSourceProvider, UIPageViewControllerDataSource {
 
     var sites: [Site]
     var currentIndex: Int {
         didSet{
-            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
+            SitesDataSource.sharedInstance.lastViewedSiteIndex = currentIndex
         }
     }
     
@@ -41,7 +41,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         }
 
         // Create a new view controller and pass suitable data.
-        let dataViewController = storyboard.instantiateViewController(withIdentifier: Constants.StoryboardViewControllerIdentifier.SiteDetailViewController.rawValue) as! SiteDetailViewController
+        let dataViewController = storyboard.instantiateViewController(withIdentifier: StoryboardIdentifier.siteDetailViewController.rawValue) as! SiteDetailViewController
         dataViewController.site = self.sites[index]
         return dataViewController
     }

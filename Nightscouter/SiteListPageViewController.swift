@@ -14,15 +14,15 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     var pageViewController: UIPageViewController?
     
     var sites: [Site] {
-        return AppDataManageriOS.sharedInstance.sites
+        return SitesDataSource.sharedInstance.sites
     }
     
     var currentIndex: Int {
         set {
-            AppDataManageriOS.sharedInstance.currentSiteIndex = currentIndex
+            SitesDataSource.sharedInstance.lastViewedSiteIndex = currentIndex
         }
         get {
-            return AppDataManageriOS.sharedInstance.currentSiteIndex
+            return SitesDataSource.sharedInstance.lastViewedSiteIndex
         }
     }
     
@@ -126,7 +126,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     func setupNotifications() {
         // Listen for global update timer.
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: NSNotification.Name(rawValue: NightscoutAPIClientNotification.DataUpdateSuccessful), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: .NightscoutDataUpdatedNotification, object: nil)
     }
     
     func updateNavigationController() {

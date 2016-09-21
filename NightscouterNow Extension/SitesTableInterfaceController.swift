@@ -11,12 +11,14 @@
 import WatchKit
 import NightscouterWatchOSKit
 
-class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDelegate, SiteDetailViewDidUpdateItemDelegate {
+class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvider, SiteDetailViewDidUpdateItemDelegate {
+    
+    var sites: [Site] {
+        return SitesDataSource.sharedInstance.sites
+    }
     
     @IBOutlet var sitesTable: WKInterfaceTable!
     @IBOutlet var sitesLoading: WKInterfaceLabel!
-    
-    var models: [WatchModel] = []
     
     // Whenever this changes, it updates the attributed title of the refresh control.
     var lastUpdatedTime: Date? {
@@ -32,7 +34,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 timeStamp = dateFormatter.string(from: date)
             }
             
-            sitesLoading.setHidden(!self.models.isEmpty)
+            sitesLoading.setHidden(!self.sites.isEmpty)
         }
     }
     
@@ -42,21 +44,21 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     override func willActivate() {
         super.willActivate()
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
+//        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
     }
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         print(">>> Entering \(#function) <<<")
      
-        self.models = WatchSessionManager.sharedManager.models
+//        self.models = WatchSessionManager.sharedManager.models
         self.updateTableData()
 
-        let model = models.min{ (lModel, rModel) -> Bool in
-            return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .orderedAscending
-        }
+//        let model = models.min{ (lModel, rModel) -> Bool in
+//            return rModel.lastReadingDate.compare(lModel.lastReadingDate) == .orderedAscending
+//        }
         
-        self.lastUpdatedTime = model?.lastReadingDate ?? Date(timeIntervalSince1970: 0)
+//        self.lastUpdatedTime = model?.lastReadingDate ?? Date(timeIntervalSince1970: 0)
         
         //WatchSessionManager.sharedManager.updateData(forceRefresh: false)
     }
@@ -75,9 +77,9 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         // push controller...
         print(">>> Entering \(#function) <<<")
         
-        WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
+//        WatchSessionManager.sharedManager.currentSiteIndex = rowIndex
         
-        pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
+//        pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self])
     }
     
     fileprivate func updateTableData() {
@@ -89,7 +91,7 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
         let rowUpdateTypeIdentifier: String = "SiteUpdateRowController"
         
             self.sitesTable.setNumberOfRows(0, withRowType: rowEmptyTypeIdentifier)
-
+/*
             
         if self.models.isEmpty {
             self.sitesLoading.setHidden(true)
@@ -120,9 +122,10 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
                 updateRow.siteLastReadingLabelHeader.setText("LAST UPDATE FROM PHONE")
             }
             }
-        }
+        }*/
     }
     
+        /*
     func dataSourceDidUpdateAppContext(_ models: [WatchModel]) {
         print(">>> Entering \(#function) <<<")
         OperationQueue.main.addOperation { 
@@ -204,6 +207,8 @@ class SitesTableInterfaceController: WKInterfaceController, DataSourceChangedDel
             
             self.pushController(withName: "SiteDetail", context: [WatchModel.PropertyKey.delegateKey: self, WatchModel.PropertyKey.modelKey: incomingModel.dictionary])
         }
+    }
+ */
     }
 }
 
