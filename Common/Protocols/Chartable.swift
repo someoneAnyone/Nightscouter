@@ -17,7 +17,7 @@ public protocol Chartable {
 
 extension Chartable {
     public var chartColor: String {
-        return "white"
+        return "grey"
     }
     public var chartDateFormatter: DateFormatter {
         let nsDateFormatter = DateFormatter()
