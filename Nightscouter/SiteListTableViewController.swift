@@ -22,7 +22,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     @IBOutlet fileprivate weak var headerView: BannerMessage!
     
     enum SegueIdentifier: String {
-        case EditExisting, ShowDetail, AddNew, AddNewWhenEmpty, LaunchLabs, ShowPageView, UnwindToSiteList
+        case EditExisting, ShowDetail, AddNew, AddNewWhenEmpty, LaunchLabs, ShowPageView, unwindToSiteList
     }
     
     // MARK: Properties
@@ -372,7 +372,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
             defer {
                 print("setting networkActivityIndicatorVisible: false and stopping animation.")
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 
                 if (self.refreshControl?.isRefreshing != nil) {
@@ -413,18 +412,19 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             updatedSite.lastUpdatedDate =  self.milliseconds.toDateUsingMilliseconds()
             updatedSite.generateComplicationData()
             
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+
             OperationQueue.main.addOperation {
                 //self.sites[indexPath.item] = updatedSite
             
                 
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
 
-                if let _ = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) , self.tableView.numberOfRows(inSection: 0)<0 {
-                    
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                } else {
+//                if let _ = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) , self.tableView.numberOfRows(inSection: 0)<0 {
+//                    
+//                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+//                } else {
                     self.tableView.reloadData()
-                }
+//                }
 
                 
             }

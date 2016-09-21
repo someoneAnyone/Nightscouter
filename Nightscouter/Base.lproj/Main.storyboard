@@ -38,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="136" width="375" height="200"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <frame key="frameInset" width="375" height="199.5"/>
+                                    <frame key="frameInset" width="375" height="199"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="lh2-gJ-TwC">
@@ -174,7 +174,7 @@
                                         <segue key="commit" inheritsFrom="parent" id="FnN-qE-Vlp"/>
                                         <segue key="preview" inheritsFrom="commit" id="dC6-em-eSv"/>
                                     </segue>
-                                    <segue destination="p8y-7x-GHH" kind="show" identifier="EditSite" trigger="accessoryAction" id="ahu-F9-TDu"/>
+                                    <segue destination="p8y-7x-GHH" kind="show" identifier="EditExisting" trigger="accessoryAction" id="ahu-F9-TDu"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -539,7 +539,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZIn-pJ-wVZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3465" y="770"/>
+            <point key="canvasLocation" x="3753" y="770"/>
         </scene>
     </scenes>
     <resources>
@@ -548,7 +548,7 @@
         <image name="settingsIcon" width="22" height="22"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="VUV-Ph-2hx"/>
         <segue reference="fup-S8-v45"/>
+        <segue reference="G7S-TT-kXe"/>
     </inferredMetricsTieBreakers>
 </document>

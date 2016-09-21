@@ -218,9 +218,9 @@ public class Nightscout {
                 mbgs = parseReadingsData.meteredGlucoseValues
                 cals = parseReadingsData.calibrations
                 
-//                OperationQueue.main.addOperation {
-//                    completion(configuration, sgvs, cals, mbgs, device, nil)
-//                }
+                OperationQueue.main.addOperation {
+                    completion(configuration, sgvs, cals, mbgs, device, nil)
+                }
             }
             
             self.processingQueue.addOperation(parseReadingsData)

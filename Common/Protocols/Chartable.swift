@@ -9,7 +9,7 @@
 import Foundation
 
 public protocol Chartable {
-    var chartDictionary: [String: AnyObject] { get }
+    var chartDictionary: NSDictionary { get }
     var chartColor: String { get }
     var chartDateFormatter: DateFormatter { get }
     var jsonForChart: String { get }
@@ -28,7 +28,7 @@ extension Chartable {
     }
     
     public var jsonForChart: String {
-        let jsObj =  try? JSONSerialization.data(withJSONObject: chartDictionary, options: JSONSerialization.WritingOptions.prettyPrinted)
+        let jsObj =  try? JSONSerialization.data(withJSONObject: chartDictionary, options:[])
         
 //        let str = String(data: jsObj!, encoding: .utf8)
         let str = String(bytes: jsObj!, encoding: String.Encoding.utf8)
@@ -38,11 +38,11 @@ extension Chartable {
 }
 
 extension SensorGlucoseValue: Chartable {
-    public var chartDictionary: [String: AnyObject] {
+    public var chartDictionary: NSDictionary {
         get{
             let entry: SensorGlucoseValue = self
             let dateForJson = chartDateFormatter.string(from: entry.date)
-            let dict: [String: AnyObject] = ["color" : chartColor as AnyObject, "date" : dateForJson as AnyObject, "filtered" : entry.filtered as AnyObject, "noise": entry.noise.rawValue as AnyObject, "sgv" : entry.mgdl as AnyObject, "type" : "sgv" as AnyObject, "unfiltered" : entry.unfiltered as AnyObject, "y" : entry.mgdl as AnyObject, "direction" : entry.direction.rawValue as AnyObject]
+            let dict: NSDictionary = ["color" : chartColor, "date" : dateForJson, "filtered" : entry.filtered, "noise": entry.noise.rawValue, "sgv" : entry.mgdl, "type" : "sgv", "unfiltered" : entry.unfiltered, "y" : entry.mgdl, "direction" : entry.direction.rawValue]
             
             return dict
         }

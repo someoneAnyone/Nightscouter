@@ -106,10 +106,8 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         if self.nextButton.isEnabled {
         // Hide the keyboard
         textField.resignFirstResponder()
-        
-
             self.view.endEditing(true)
-            performSegue(withIdentifier: SiteListTableViewController.SegueIdentifier.UnwindToSiteList.rawValue, sender: nextButton)
+            performSegue(withIdentifier: SiteListTableViewController.SegueIdentifier.unwindToSiteList.rawValue, sender: nextButton)
         }
         
         return self.nextButton.isEnabled // validateUrl(textField.text!)
