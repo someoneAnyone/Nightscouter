@@ -38,7 +38,7 @@
                                 <rect key="frame" x="0.0" y="136" width="375" height="200"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <frame key="frameInset" width="375" height="199"/>
+                                    <frame key="frameInset" width="375" height="199.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="lh2-gJ-TwC">
@@ -476,7 +476,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalCompressionResistancePriority="751" text="We need some information before we get going. Can you give us your Nightscout site's URL?" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vcd-1w-nRk">
-                                        <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -493,13 +493,16 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="cSf-RU-SgM"/>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="ig3-Gu-3hC" firstAttribute="centerX" secondItem="Mlo-fN-lBh" secondAttribute="centerX" id="Dci-Ez-3lN"/>
                             <constraint firstItem="ig3-Gu-3hC" firstAttribute="leading" secondItem="Mlo-fN-lBh" secondAttribute="leadingMargin" constant="30" id="NUA-Ey-pvT"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ig3-Gu-3hC" secondAttribute="trailing" constant="30" id="SwQ-JC-St9"/>
+                            <constraint firstItem="cSf-RU-SgM" firstAttribute="centerY" secondItem="gNf-Er-UDh" secondAttribute="centerY" id="cxa-aG-oYM"/>
                             <constraint firstItem="ig3-Gu-3hC" firstAttribute="centerY" secondItem="Mlo-fN-lBh" secondAttribute="centerY" id="f4e-za-IcU"/>
+                            <constraint firstItem="gNf-Er-UDh" firstAttribute="leading" secondItem="cSf-RU-SgM" secondAttribute="leading" constant="-8" id="hXV-SX-JWo"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="d3K-mE-Hbi">
@@ -510,6 +513,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="activityIndicator" destination="cSf-RU-SgM" id="jsT-yc-qm4"/>
                         <outlet property="cancelButton" destination="Kgg-gY-Ipk" id="Y8W-Wt-p9g"/>
                         <outlet property="formDescription" destination="Vcd-1w-nRk" id="jmA-ai-A1x"/>
                         <outlet property="formLabel" destination="4yh-IX-nle" id="i1z-iT-4JG"/>

@@ -6,6 +6,8 @@
   Copyright (c) 2015 Peter Ina. All rights reserved.
 */
 
+"newSiteFormLabel" = "We need some information before we get going.\n\nCan you give us your Nightscout site's URL?";
+
 "viewTitleSettings" = "Settings";
 
 "tableViewCellRemove" = "Remove";
@@ -22,6 +24,8 @@
 "lastUpdatedDateLabel" = "Updated on: ";
 "tableViewCellLoading" = "Loading...";
 
+"genericURLLabel" = "https://somesite.host.com";
+"generalNextLabel" = "Next";
 "generalEditLabel" = "Edit";
 "generalCancelLabel" = "Cancel";
 "generalRetryLabel" = "Retry";

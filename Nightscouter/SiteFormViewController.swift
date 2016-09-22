@@ -18,6 +18,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var middleLayoutContraint: NSLayoutConstraint!
     
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     /*
      This value is either passed by `SiteListTableViewController` in `prepareForSegue(_:sender:)`
      or constructed as part of adding a new site.
@@ -31,6 +32,12 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        formLabel.text = LocalizedString.nightscoutTitleString.localized
+        formDescription.text = LocalizedString.newSiteFormLabel.localized
+        nextButton.setTitle(LocalizedString.generalNextLabel.localized, for: .normal)
+        cancelButton.title = LocalizedString.generalCancelLabel.localized
+        urlTextField.placeholder = LocalizedString.genericURLLabel.localized
+        
         // Add notification observer for text field updates
         urlTextField.addTarget(self, action: #selector(SiteFormViewController.textFieldDidUpdate(_:)), for: UIControlEvents.editingChanged)
         
@@ -40,8 +47,11 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         if let site = site {
             navigationItem.title = site.url.host
             urlTextField.text   = site.url.absoluteString
+            
+            checkValidSiteName()
         }
-        checkValidSiteName()
+        
+        nextButton.isEnabled = (site != nil)
         
         // Or you can do it the old way
         let offset = 2.0
@@ -77,9 +87,11 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         // Remove Spaces
         urlTextField.text = urlTextField.text!.replacingOccurrences(of: " ", with: "", options: [], range: nil)
         
-        // Or you can do it the old way
-        let offset = 0.5
+
+        let offset = 1.0
         DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double(Int64(offset * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC), execute: {
+            self.activityIndicator.startAnimating()
+
             // Validate URL
             URL.validateUrl(self.urlTextField.text, completion: { (success, urlString, error) -> Void in
                 print("validateURL Error: \(error)")
@@ -95,6 +107,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
                         self.validatedUrlString = nil
                     }
                     self.nextButton.isEnabled = success
+                    self.activityIndicator.stopAnimating()
                 })
             })
         })
@@ -117,7 +130,6 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if nextButton === sender as! UIButton {
             // Set the site to be passed to SiteListTableViewController after the unwind segue.
-            //            let urlString = urlTextField.text ?? ""
             let urlString = validatedUrlString ?? ""
             
             if let url = URL(string: urlString) {

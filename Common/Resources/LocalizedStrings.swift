@@ -9,7 +9,8 @@
 import Foundation
 
 public enum LocalizedString: String {
-    case tableViewCellRemove,
+    case newSiteFormLabel,
+    tableViewCellRemove,
     tableViewCellLoading,
     lastUpdatedDateLabel,
     lastReadingLabelShort,
@@ -38,6 +39,8 @@ public enum LocalizedString: String {
     directionDoubleDown,
     viewTitleSettings,
     settingsPreventLocking,
+    genericURLLabel,
+    generalNextLabel,
     settingsDefaultSite,
     settingsDefaultSiteSubTitle,
     settingsEditSite,
