@@ -199,7 +199,10 @@ extension Settings: Encodable, Decodable {
     public static func decode(_ dict: [String: Any]) -> Settings? {
         let json = dict
         
-        let units = GlucoseUnit(rawValue: (json[Settings.JSONKey.units] as? String ?? ""))
+        var units: GlucoseUnit = .mgdl
+        if let unitString = json[Settings.JSONKey.units] as? String {
+            units = GlucoseUnit(rawValue: (unitString))
+        }
         
         let timeFormat = json[Settings.JSONKey.timeFormat] as? Int ?? 12
         

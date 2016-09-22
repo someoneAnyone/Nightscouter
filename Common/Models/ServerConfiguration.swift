@@ -202,7 +202,7 @@ public enum GlucoseUnit: String, RawRepresentable, CustomStringConvertible {
     
     public init(rawValue: String) {
         switch rawValue {
-        case GlucoseUnit.mmol.rawValue :
+        case GlucoseUnit.mmol.rawValue, "mmol/L":
             self = .mmol
         default:
             self = .mgdl
