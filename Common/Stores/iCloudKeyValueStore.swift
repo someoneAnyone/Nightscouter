@@ -9,7 +9,7 @@
 import Foundation
 
 class iCloudKeyValueStore: NSObject, SessionManagerType {
-  
+    
     private let iCloudKeyValueStore: NSUbiquitousKeyValueStore
     
     override init() {
@@ -18,8 +18,8 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
         super.init()
         
         NotificationCenter.default.addObserver(self, selector: #selector(ubiquitousKeyValueStoreDidChange(_:)),
-            name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
-            object: iCloudKeyValueStore)
+                                               name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+                                               object: iCloudKeyValueStore)
     }
     
     func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
@@ -56,8 +56,8 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
     var store: SiteStoreType?
     
     func startSession() {
-        let lazyMap = Array(iCloudKeyValueStore.dictionaryRepresentation.keys)
-        print("keys in \(iCloudKeyValueStore): " + lazyMap.description)
+        // let lazyMap = Array(iCloudKeyValueStore.dictionaryRepresentation.keys)
+        // print("keys in \(iCloudKeyValueStore): " + lazyMap.description)
         
         iCloudKeyValueStore.synchronize()
     }
@@ -69,4 +69,4 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
         
         iCloudKeyValueStore.synchronize()
     }
-    }
+}
