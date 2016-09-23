@@ -85,3 +85,16 @@ public func sortByDate<T: Dateable>(_ a: [T], orderDescending descending: Bool =
         d1.date.compare(d2.date as Date) == compare
     })
 }
+
+enum ArrayError: Error {
+    case OutOfRange
+}
+
+extension Array {
+    mutating func move(fromIndex oldIndex: Int, toIndex newIndex: Int) throws {
+        if newIndex >= count || newIndex < 0 {
+            throw ArrayError.OutOfRange
+        }
+        insert(remove(at: oldIndex), at: newIndex)
+    }
+}

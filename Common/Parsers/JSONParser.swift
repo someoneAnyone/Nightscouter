@@ -63,9 +63,11 @@ extension Site: Encodable, Decodable {
         if let sgvs = rootDictForData[JSONKey.sgvs] as? [[String: Any]] {
             site.sgvs = sgvs.flatMap { SensorGlucoseValue.decode($0) }
         }
+        
         if let mbgs = rootDictForData[JSONKey.mbgs] as? [[String: Any]] {
             site.mbgs = mbgs.flatMap { MeteredGlucoseValue.decode($0) }
         }
+        
         if let cals = rootDictForData[JSONKey.cals] as? [[String: Any]] {
             site.cals = cals.flatMap { Calibration.decode($0) }
         }
