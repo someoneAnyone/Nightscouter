@@ -52,6 +52,7 @@ public class SitesDataSource: SiteStoreType {
         self.timer?.invalidate()
     }
     
+    /// Defaults holds the user defaults for the application. This will be intialized during the init() of this class with "initWithSuiteName:(_:)". If that is not successful it will be the standard defaults container.
     private let defaults: UserDefaults
     
     private var sessionManagers: [SessionManagerType] = []
@@ -63,11 +64,23 @@ public class SitesDataSource: SiteStoreType {
     public var otherStorageLocations: SiteStoreType?
     
     public var sites: [Site] {
+        get {
+            if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
+                return sites.flatMap { Site.decode($0) }
+            }
+            
+            return []
+        }
+    }
+    
+    
+    /*{
         if let loaded = loadData() {
             return loaded
         }
         return []
     }
+ */
     
     public var lastViewedSiteIndex: Int {
         set {
@@ -133,6 +146,19 @@ public class SitesDataSource: SiteStoreType {
         saveData([DefaultKey.sites.rawValue: siteDict])
         
         return success
+    }
+    
+    @discardableResult
+    public func moveSite(fromIndex oldIndex: Int, toIndex newIndex: Int) -> Bool {
+        var initial = sites
+        do {
+            try initial.move(fromIndex: oldIndex, toIndex: newIndex)
+            let siteDict = initial.map { $0.encode() }
+            saveData([DefaultKey.sites.rawValue: siteDict])
+            return true
+        } catch {
+            return false
+        }
     }
     
     @discardableResult
@@ -238,17 +264,21 @@ public class SitesDataSource: SiteStoreType {
         
         return []
     }
-    
-    let postToObservers = debounce(delay: 1, action: {
+
+    /*
+    let postToObservers = debounce(delay: 3, action: {
         print(">>> Entering \(#function) <<<")
         NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
     })
     
     let postStaleNotifcation = debounce(delay: 1, action: {
+        print(">>> Entering \(#function) <<<")
         NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
     })
+     */
     
     func createUpdateTimer() -> Timer {
+        print(">>> Entering \(#function) <<<")
         let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(SitesDataSource.updateDataNotification(_:)), userInfo: nil, repeats: true)
         
         return localTimer
@@ -260,7 +290,9 @@ public class SitesDataSource: SiteStoreType {
             print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
-        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
+        OperationQueue.main.addOperation {
+            NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
+        }
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
@@ -293,11 +325,14 @@ public class SitesDataSource: SiteStoreType {
             }
         })
         
-        postToObservers()
+        OperationQueue.main.addOperation {
+            NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
+        }
         
         return (successfullSave, successfullAppContextUpdate)
     }
 }
+
 
 public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, action: @escaping (()->()) ) -> ()->() {
     var lastFireTime   = DispatchTime.now()
@@ -309,7 +344,7 @@ public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, acti
         queue.asyncAfter(deadline: dispatchTime) {
             let when: DispatchTime = lastFireTime + dispatchDelay
             let now = DispatchTime.now()
-            if now.rawValue >= when.rawValue {
+            if now >= when {
                 action()
             }
         }

@@ -122,9 +122,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to toIndexPath: IndexPath) {
         // update the item in my data source by first removing at the from index, then inserting at the to index.
-        let site = sites[fromIndexPath.row]
-        SitesDataSource.sharedInstance.deleteSite(site)
-        SitesDataSource.sharedInstance.createSite(site, atIndex: toIndexPath.row)
+        SitesDataSource.sharedInstance.moveSite(fromIndex: fromIndexPath.row, toIndex: toIndexPath.row)
     }
     
     // Override to support conditional rearranging of the table view.
@@ -255,7 +253,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         if let pageViewController = sender.source as? SiteListPageViewController {
             tableView.reloadRows(at: [IndexPath(row: pageViewController.currentIndex, section: 0)], with: .none)
         }
-
+        
         shouldIShowNewSiteForm()
     }
     
@@ -300,25 +298,35 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         self.setupNotifications()
         
-        self.timer = Timer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI), userInfo: nil, repeats: true)
+        if #available(iOS 10.0, *) {
+            self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
+                self.updateUI(timer: timer)
+            })
+        } else {
+            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
+        }
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    func updateUI() {
+    func updateUI(timer: Timer?) {
+        print(">>> Entering \(#function) <<<")
+        print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
     }
     
     func setupNotifications() {
         // Listen for global update timer.
         NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+        //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
     }
     
     // For a given cell and index path get the appropriate site object and assign various properties.
     func configureCell(_ cell: SiteTableViewCell, indexPath: IndexPath) -> Void {
         let site = sites[indexPath.row]
         let model = site.summaryViewModel
+        
         cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
         FIXME()
@@ -364,10 +372,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     func refreshDataFor(_ site: Site, index: Int){
         /// Tie into networking code.
         FIXME()
-        var site = site
+        var siteToUpdate = site
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        site.fetchDataFromNetwrok(userInitiated: false) { (success, updatedsite, err) in
+        siteToUpdate.fetchDataFromNetwrok(userInitiated: false) { (success, updatedsite, err) in
             
             UIApplication.shared.isNetworkActivityIndicatorVisible = false
             
@@ -375,9 +383,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.presentAlertDialog(site.url, index: index, error: error.kind.description)
             }
             
-            if let site = updatedsite {
-                SitesDataSource.sharedInstance.updateSite(site)
+            if let upSite = updatedsite {
+                SitesDataSource.sharedInstance.updateSite(upSite)
             }
+            
             if (self.refreshControl?.isRefreshing != nil) {
                 self.refreshControl?.endRefreshing()
             }
