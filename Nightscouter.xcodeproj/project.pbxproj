@@ -526,12 +526,12 @@
 		171CDB721D91C56500D7D52D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				171CDB771D91C56500D7D52D /* Shared Assets.xcassets */,
-				177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */,
 				171CDB731D91C56500D7D52D /* alarm.mp3 */,
 				171CDB741D91C56500D7D52D /* alarm2.mp3 */,
 				171CDB751D91C56500D7D52D /* Localizable.strings */,
 				171CDB761D91C56500D7D52D /* LocalizedStrings.swift */,
+				177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */,
+				171CDB771D91C56500D7D52D /* Shared Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";

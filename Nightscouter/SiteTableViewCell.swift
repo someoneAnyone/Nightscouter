@@ -11,26 +11,25 @@ import NightscouterKit
 
 class SiteTableViewCell: UITableViewCell {
     
-    @IBOutlet weak var siteLastReadingHeader: UILabel!
-    @IBOutlet weak var siteLastReadingLabel: UILabel!
-    
-    @IBOutlet weak var siteBatteryHeader: UILabel!
-    @IBOutlet weak var siteBatteryLabel: UILabel!
-    
-    @IBOutlet weak var siteRawHeader: UILabel!
-    @IBOutlet weak var siteRawLabel: UILabel!
-    
-    @IBOutlet weak var siteNameLabel: UILabel!
-    
-    @IBOutlet weak var siteColorBlockView: UIView!
-    @IBOutlet weak var siteCompassControl: CompassControl!
-    
-    @IBOutlet weak var siteUrlLabel: UILabel!
+    @IBOutlet fileprivate weak var siteLastReadingHeader: UILabel!
+    @IBOutlet fileprivate weak var siteLastReadingLabel: UILabel!
+    @IBOutlet fileprivate weak var siteBatteryHeader: UILabel!
+    @IBOutlet fileprivate weak var siteBatteryLabel: UILabel!
+    @IBOutlet fileprivate weak var siteRawHeader: UILabel!
+    @IBOutlet fileprivate weak var siteRawLabel: UILabel!
+    @IBOutlet fileprivate weak var siteNameLabel: UILabel!
+    @IBOutlet fileprivate weak var siteColorBlockView: UIView!
+    @IBOutlet fileprivate weak var siteCompassControl: CompassControl!
+    @IBOutlet fileprivate weak var siteUrlLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
         self.backgroundColor = Color.clear
+        
+        let highlightView = UIView()
+        highlightView.backgroundColor = NSAssetKit.darkNavColor
+        selectedBackgroundView = highlightView
     }
     
     func configure(withDataSource dataSource: TableViewRowWithCompassDataSource, delegate: TableViewRowWithCompassDelegate?) {
@@ -58,15 +57,17 @@ class SiteTableViewCell: UITableViewCell {
         siteColorBlockView.backgroundColor = delegate?.sgvColor
         
         siteCompassControl.configure(withDataSource: dataSource, delegate: delegate)
-        
-        setNeedsLayout()
-        layoutIfNeeded()
-        
+    }
+    
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        // siteCompassControl.isHidden = editing
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         // Configure the view for the selected state
+        
     }
     
     override func prepareForReuse() {
@@ -76,6 +77,7 @@ class SiteTableViewCell: UITableViewCell {
         siteBatteryLabel.text = nil
         siteRawLabel.text = nil
         siteLastReadingLabel.text = nil
+        
         siteColorBlockView.backgroundColor = siteCompassControl.color
         siteLastReadingLabel.text = LocalizedString.tableViewCellLoading.localized
         siteLastReadingLabel.textColor = Theme.AppColor.labelTextColor

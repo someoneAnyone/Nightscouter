@@ -136,6 +136,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
                 
                 if var siteOptional = site {
                     siteOptional.url = url
+                    siteOptional.disabled = false
                     site = siteOptional
                 } else {
                     site = Site(url: url, apiSecret: "")

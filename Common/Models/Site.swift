@@ -91,7 +91,7 @@ public struct Site: Dateable, CustomStringConvertible {
 
 extension Site: Equatable { }
 public func ==(lhs: Site, rhs: Site) -> Bool {
-    return (lhs.uuid == rhs.uuid && lhs.url == rhs.url)
+    return (lhs.uuid == rhs.uuid)
 }
 
 extension Site: Hashable {

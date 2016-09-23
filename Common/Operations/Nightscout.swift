@@ -217,7 +217,7 @@ public class Nightscout {
                 sgvs = parseReadingsData.sensorGlucoseValues
                 mbgs = parseReadingsData.meteredGlucoseValues
                 cals = parseReadingsData.calibrations
-       
+                
                 FIXME()
                 ///Need a task here to generate complication data.
                 
@@ -272,4 +272,50 @@ public class Nightscout {
     }
     
     
+}
+
+public extension Site {
+    public mutating func fetchDataFromNetwrok(userInitiated: Bool = false, completion:@escaping (_ complete: Bool,_ updatedSite: Site?, _ error: NightscoutRESTClientError?) -> Void) {
+        
+        var updatedSite = self
+        
+        Nightscout().networkRequest(forNightscoutURL: self.url, apiPassword: self.apiSecret, userInitiated: userInitiated) { (config, sgvs, cals, mbgs, devices, err) in
+            
+            if let error = err {
+                print(error.kind)
+                FIXME()
+                // We need to propogate the error to UI.
+                completion(true, nil, error)
+
+                fatalError()
+            }
+            
+            // Process the updates to the site.
+            
+            if let conf = config {
+                updatedSite.configuration = conf
+            }
+            
+            if let sgvs = sgvs {
+                updatedSite.sgvs = sgvs
+            }
+            
+            if let mbgs = mbgs {
+                updatedSite.mbgs = mbgs
+            }
+            
+            if let cals = cals {
+                updatedSite.cals = cals
+            }
+            
+            if let deviceStatus = devices {
+                updatedSite.deviceStatuses = deviceStatus
+            }
+            
+            updatedSite.lastUpdatedDate = Date()
+            updatedSite.generateComplicationData()
+            
+            completion(true, updatedSite, nil)
+        }
+    }
 }

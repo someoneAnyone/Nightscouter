@@ -103,7 +103,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     
     // MARK: - Placeholder Templates
-    
+    /*
+    func getLocalizableSampleTemplate(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
+        FIXME()
+        handler(nil)
+    }
+     */
     
     func getPlaceholderTemplate(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
         
@@ -113,7 +118,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         
         let utilLargeSting = PlaceHolderStrings.sgv + " " + PlaceHolderStrings.delta + " " + PlaceHolderStrings.raw
         
-        switch complication.family {
+        switch complication.family {    
         case .modularSmall:
             let modularSmall = CLKComplicationTemplateModularSmallStackText()
             modularSmall.line1TextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.sgv)

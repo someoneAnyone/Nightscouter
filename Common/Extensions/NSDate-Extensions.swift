@@ -8,41 +8,11 @@
 
 import Foundation
 
-
 public extension Date {
     var timeAgoSinceNow: String {
         return Calendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(self)
     }
 }
-
-//MARK: OPERATIONS WITH DATES (==,!=,<,>,<=,>=)
-/*
-extension Date : Comparable {}
-
-public func == (left: Date, right: Date) -> Bool {
-    return (left.compare(right) == ComparisonResult.orderedSame)
-}
-
-public func != (left: Date, right: Date) -> Bool {
-    return !(left == right)
-}
-
-public func < (left: Date, right: Date) -> Bool {
-    return (left.compare(right) == ComparisonResult.orderedAscending)
-}
-
-public func > (left: Date, right: Date) -> Bool {
-    return (left.compare(right) == ComparisonResult.orderedDescending)
-}
-
-public func <= (left: Date, right: Date) -> Bool {
-    return !(left > right)
-}
-
-public func >= (left: Date, right: Date) -> Bool {
-    return !(left < right)
-}
-*/
 
 //MARK: ARITHMETIC OPERATIONS WITH DATES (-,-=,+,+=)
 
@@ -64,11 +34,11 @@ public func += (left: inout Date, right: TimeInterval) {
 
 
 extension TimeInterval {
-    public static let OneMinuteInSeconds: TimeInterval = 60.0
-    public static let TwoAndHalfMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 2.5
-    public static let FourMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 4
-    public static let TenMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 10
-    public static let ThirtyMinutesInSeconds: TimeInterval = OneMinuteInSeconds * 30
-    public static let OneHourInSeconds: TimeInterval = OneMinuteInSeconds * 60
-    public static let TwoHoursInSeconds: TimeInterval = OneMinuteInSeconds * 120
+    public static let OneMinute: TimeInterval = 60.0
+    public static let TwoAndHalfMinutes: TimeInterval = OneMinute * 2.5
+    public static let FourMinutes: TimeInterval = OneMinute * 4
+    public static let TenMinutes: TimeInterval = OneMinute * 10
+    public static let ThirtyMinutes: TimeInterval = OneMinute * 30
+    public static let OneHour: TimeInterval = OneMinute * 60
+    public static let TwoHours: TimeInterval = OneMinute * 120
 }

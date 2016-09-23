@@ -212,7 +212,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     }
     
     func createUpdateTimer() -> Timer {
-        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutesInSeconds, target: self, selector: #selector(AppDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
+        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(AppDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
         
         return localTimer
     }
