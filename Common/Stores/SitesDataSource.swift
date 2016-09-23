@@ -44,12 +44,20 @@ public class SitesDataSource: SiteStoreType {
         alarmManager.startSession()
         
         self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
+        
+        updateDataNotification(nil)
+    }
+    
+    deinit {
+        self.timer?.invalidate()
     }
     
     private let defaults: UserDefaults
     
     private var sessionManagers: [SessionManagerType] = []
     
+    private var timer: Timer?
+
     public var storageLocation: StorageLocation { return .localKeyValueStore }
     
     public var otherStorageLocations: SiteStoreType?
@@ -77,6 +85,8 @@ public class SitesDataSource: SiteStoreType {
         set{
             if let site = newValue {
                 saveData([DefaultKey.primarySiteUUID.rawValue: site.uuid.uuidString])
+            } else {
+                saveData([DefaultKey.primarySiteUUID.rawValue: ""])
             }
         }
         get {
@@ -145,6 +155,8 @@ public class SitesDataSource: SiteStoreType {
         if initial.isEmpty {
             lastViewedSiteIndex = 0
             primarySite = nil
+            
+            // clearAllSites()
         }
         
         let siteDict = initial.map { $0.encode() }
@@ -158,8 +170,10 @@ public class SitesDataSource: SiteStoreType {
         var initial = sites
         initial.removeAll()
         
+        saveData(["currentSiteIndexInt": 0])
+        saveData(["siteModelArray": []])
+
         saveData([DefaultKey.sites.rawValue: []])
-        
         return initial.isEmpty
     }
     
@@ -180,6 +194,7 @@ public class SitesDataSource: SiteStoreType {
         if let uuidString = payload[DefaultKey.primarySiteUUID.rawValue] as? String {
             self.primarySite = sites.filter{ $0.uuid.uuidString == uuidString }.first
         } else {
+            self.primarySite = nil
             print("No primarySiteUUID was found.")
         }
         
@@ -187,7 +202,6 @@ public class SitesDataSource: SiteStoreType {
             print(alarm)
             
             FIXME()
-            
             
         } else {
             print("No alarm update was found.")
@@ -218,7 +232,6 @@ public class SitesDataSource: SiteStoreType {
     }
     
     public func loadData() -> [Site]? {
-        
         if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
             return sites.flatMap { Site.decode($0) }
         }
@@ -230,6 +243,29 @@ public class SitesDataSource: SiteStoreType {
         print(">>> Entering \(#function) <<<")
         NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
     })
+    
+    let postStaleNotifcation = debounce(delay: 1, action: {
+        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
+    })
+    
+    func createUpdateTimer() -> Timer {
+        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(SitesDataSource.updateDataNotification(_:)), userInfo: nil, repeats: true)
+        
+        return localTimer
+    }
+    
+    @objc func updateDataNotification(_ timer: Timer?) -> Void {
+        #if DEBUG
+            print(">>> Entering \(#function) <<<")
+            print("Posting NightscoutDataStaleNotification Notification at \(Date())")
+        #endif
+        
+        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
+        
+        if (self.timer == nil) {
+            self.timer = createUpdateTimer()
+        }
+    }
     
     @discardableResult
     public func saveData(_ dictionary: [String: Any]) -> (savedLocally: Bool, updatedApplicationContext: Bool) {
@@ -262,7 +298,6 @@ public class SitesDataSource: SiteStoreType {
         return (successfullSave, successfullAppContextUpdate)
     }
 }
-
 
 public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, action: @escaping (()->()) ) -> ()->() {
     var lastFireTime   = DispatchTime.now()

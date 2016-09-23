@@ -543,8 +543,8 @@
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
 				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
-				171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */,
 				171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */,
+				171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";

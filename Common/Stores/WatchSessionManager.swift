@@ -59,7 +59,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         }
     }
     
-    
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
         print("didReceiveUserInfo")
         // print(": \(userInfo)")
@@ -82,7 +81,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
             replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
         }
     }
-    
     
     public func session(_ session: WCSession, didReceiveUserInfo userInfo: [String : Any] = [:]) {
         fatalError()

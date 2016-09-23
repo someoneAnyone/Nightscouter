@@ -17,9 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     var sites: [Site] {
         return SitesDataSource.sharedInstance.sites
     }
-    
-    var timer: Timer?
-    
+        
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
     
@@ -46,8 +44,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
-        
-        self.timer?.invalidate()
     }
     
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -55,8 +51,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
             print(">>> Entering \(#function) <<<")
         #endif
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        
-        updateDataNotification(nil)
     }
     
     func applicationWillTerminate(_ application: UIApplication) {
@@ -93,8 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         print(">>> Entering \(#function) <<<")
         print("Received a local notification payload: \(notification) with application: \(application)")
-        
-        processLocalNotification(notification)
+    
     }
     
     @available(iOS 9.0, *)
@@ -147,10 +140,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     
     
     // MARK: Custom Methods
-    func processLocalNotification(_ notification: UILocalNotification) {
-        
-    }
-    
+
     func deepLinkToURL(_ url: URL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
         let pathComponents = url.pathComponents
@@ -208,31 +198,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
             navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
         }
         
-    
-    }
-    
-    func createUpdateTimer() -> Timer {
-        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(AppDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
-        
-        return localTimer
-    }
-    
-    func updateDataNotification(_ timer: Timer?) -> Void {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-            print("Posting NightscoutAPIClientNotification.DataIsStaleUpdateNow Notification at \(Date())")
-        #endif
-        
-        OperationQueue.main.addOperation { () -> Void in
-            NotificationCenter.default.post(.init(name: .NightscoutDataStaleNotification))
-        }
-        
-        if (self.timer == nil) {
-            self.timer = createUpdateTimer()
-        }
-    }
-    
-    func scheduleLocalNotification(_ site: Site) {
     
     }
     

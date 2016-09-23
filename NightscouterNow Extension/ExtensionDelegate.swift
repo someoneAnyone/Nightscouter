@@ -10,7 +10,6 @@ import WatchKit
 import NightscouterWatchOSKit
 
 class ExtensionDelegate: NSObject, WKExtensionDelegate {
-    var timer: Timer?
     
     override init() {
         #if DEBUG
@@ -31,37 +30,12 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
-
-        updateDataNotification(nil)
     }
     
     func applicationWillResignActive() {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
-        
-        self.timer?.invalidate()
-        self.timer = nil
-    }
-    
-    func createUpdateTimer() -> Timer {
-        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(ExtensionDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
-        
-        return localTimer
-    }
-    
-    func updateDataNotification(_ timer: Timer?) -> Void {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-        #endif
-        
-        OperationQueue.main.addOperation { () -> Void in
-            NotificationCenter.default.post(.init(name: .NightscoutDataStaleNotification))
-        }
-        
-        if (self.timer == nil) {
-            self.timer = createUpdateTimer()
-        }
     }
     
     @available(watchOSApplicationExtension 3.0, *)
