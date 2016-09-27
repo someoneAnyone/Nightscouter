@@ -11,7 +11,7 @@ import NightscouterKit
 
 //TODO:// Add an updating mechanism, like pull to refresh, button and or timer. Maybe consider moving a timer to the API that observers can subscribe to.
 
-class SiteListTableViewController: UITableViewController, SitesDataSourceProvider, SegueHandlerType {
+class SiteListTableViewController: UITableViewController, SitesDataSourceProvider, SegueHandlerType, AlarmStuff {
     
     @IBOutlet fileprivate weak var snoozeAlarmButton: UIBarButtonItem!
     @IBOutlet fileprivate weak var headerView: BannerMessage!
@@ -23,8 +23,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     enum SegueIdentifier: String {
         case EditExisting, ShowDetail, AddNew, AddNewWhenEmpty, ShowPageView, unwindToSiteList
     }
-    
-    let network = Nightscout()
     
     // MARK: Properties
     
@@ -49,6 +47,39 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var timer: Timer?
     
+    var alarmObject: AlarmObject? {
+        didSet {
+            guard let alarmObject = alarmObject else {
+                return
+            }
+                        
+            if alarmObject.warning == true || alarmObject.isSnoozed {
+                let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+                
+                self.snoozeAlarmButton.isEnabled = true
+                self.snoozeAlarmButton.tintColor = activeColor
+                
+                self.tableView.tableHeaderView = self.headerView
+                self.tableView.reloadData()
+                
+                if let headerView = self.tableView.tableHeaderView as? BannerMessage {
+                    headerView.isHidden = false
+                    headerView.tintColor = activeColor
+                    headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+                }
+                
+            } else if alarmObject.warning == false && !alarmObject.isSnoozed {
+                self.snoozeAlarmButton.isEnabled = false
+                self.snoozeAlarmButton.tintColor = nil
+                self.tableView.tableHeaderView = nil
+                
+            } else {
+                self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+                self.tableView.tableHeaderView = nil
+            }
+            
+        }
+    }
     
     // MARK: View controller lifecycle
     
@@ -68,11 +99,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         // Check if we should display a form.
         shouldIShowNewSiteForm()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     override var preferredStatusBarStyle : UIStatusBarStyle {
@@ -161,7 +187,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
         
-        switch segueIdentifierForSegue(segue: segue) {
+        switch segueIdentifierForSegue(segue) {
         case .EditExisting:
             #if DEBUG
                 print("Editing existing site")
@@ -198,6 +224,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 let indexPath = tableView.indexPath(for: selectedSiteCell)!
                 let selectedSite = sites[indexPath.row]
                 siteDetailViewController.site = selectedSite
+                siteDetailViewController.alarmObject = alarmObject
             }
             
         case .ShowPageView:
@@ -240,13 +267,11 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 
                 accessoryIndexPath = nil
                 guard let _ = tableView.cellForRow(at: newIndexPath) else {
-                    
                     tableView.reloadData()
                     return
                 }
                 
                 tableView.insertRows(at: [newIndexPath], with: .automatic)
-                
             }
         }
         
@@ -266,7 +291,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     @IBAction func manageAlarm(_ sender: UIBarButtonItem?) {
         print(">>> Entering \(#function) <<<")
         FIXME()
-        // AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
+        presentSnoozePopup(forViewController: self)
     }
     
     @IBAction func goToSettings(_ sender: AnyObject?) {
@@ -319,6 +344,12 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     func setupNotifications() {
         // Listen for global update timer.
         NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
+            if let alarmObject = notif.object as? AlarmObject {
+                self.alarmObject = alarmObject
+            }
+        }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
     }
     
@@ -330,7 +361,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
         FIXME()
-        if (site.updateNow || site.configuration == nil) {
+        if site.updateNow {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -346,6 +377,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             dismiss(animated: true, completion: { () -> Void in
                 self.updateData()
             })
+            
         }
     }
     
@@ -369,33 +401,32 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         }
     }
     
-    func refreshDataFor(_ site: Site, index: Int){
+    func refreshDataFor(_ site: Site, index: Int, userInitiated: Bool = false){
         /// Tie into networking code.
         FIXME()
-        var siteToUpdate = site
+        
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        siteToUpdate.fetchDataFromNetwrok(userInitiated: false) { (success, updatedsite, err) in
-            
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
-            
+        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
             if let error = err {
-                self.presentAlertDialog(site.url, index: index, error: error.kind.description)
+                OperationQueue.main.addOperation {
+                    self.presentAlertDialog(site.url, index: index, error: error.kind.description)
+                }
+                return
             }
             
-            if let upSite = updatedsite {
-                SitesDataSource.sharedInstance.updateSite(upSite)
-            }
-            
-            if (self.refreshControl?.isRefreshing != nil) {
-                self.refreshControl?.endRefreshing()
-            }
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
             
             OperationQueue.main.addOperation {
-                if let _ = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) , self.tableView.numberOfRows(inSection: 0)<0 {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
                     self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
                 } else {
                     self.tableView.reloadData()
+                }
+                
+                if (self.refreshControl?.isRefreshing != nil) {
+                    self.refreshControl?.endRefreshing()
                 }
             }
         }
@@ -413,7 +444,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         let retryAction = UIAlertAction(title: LocalizedString.generalRetryLabel.localized, style: .default) { (action) in
             let indexPath = IndexPath(row: index, section: 0)
-            var site = SitesDataSource.sharedInstance.sites[indexPath.row]
+            var site = self.sites[indexPath.row]
             site.disabled = false
             SitesDataSource.sharedInstance.updateSite(site)
             
@@ -426,14 +457,14 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             let indexPath = IndexPath(row: index, section: 0)
             let tableViewCell = self.tableView.cellForRow(at: indexPath)
             self.accessoryIndexPath = indexPath
-            self.performSegue(withIdentifier: SegueIdentifier.EditExisting.rawValue, sender:tableViewCell)
+            self.performSegue(withIdentifier: .EditExisting, sender: tableViewCell)
         }
         alertController.addAction(editAction)
         
         let removeAction = UIAlertAction(title: LocalizedString.tableViewCellRemove.localized, style: .destructive) { (action) in
             self.tableView.beginUpdates()
             
-            let site = SitesDataSource.sharedInstance.sites[index]
+            let site = self.sites[index]
             SitesDataSource.sharedInstance.deleteSite(site)
             self.tableView.deleteRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
             self.tableView.endUpdates()
@@ -452,53 +483,3 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         }
     }
 }
-
-
-
-//    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool) {
-//
-//        if alarm == true || snoozed {
-//            let activeColor = urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-//
-//            snoozeAlarmButton.isEnabled = true
-//            snoozeAlarmButton.tintColor = activeColor
-//
-//            tableView.tableHeaderView = headerView
-//            tableView.reloadData()
-//
-//            if let headerView = tableView.tableHeaderView as? BannerMessage {
-//                headerView.isHidden = false
-//                headerView.tintColor = activeColor
-////                headerView.message = snoozed ? AlarmManager.sharedManager.snoozeText : "One or more of your sites are sounding an alarm."
-//            }
-//
-//        } else if alarm == false && !snoozed {
-//            snoozeAlarmButton.isEnabled = false
-//            snoozeAlarmButton.tintColor = nil
-//            tableView.tableHeaderView = nil
-//
-//        } else {
-//            snoozeAlarmButton.image = UIImage(named: "alarmIcon")
-//            tableView.tableHeaderView = nil
-//        }
-//    }
-
-/*
- extension SiteListTableViewController: UpdatableUserInterfaceType {
- override func viewWillAppear(_ animated: Bool) {
- super.viewWillAppear(animated)
- startUpdateUITimer()
- }
- 
- func updateUI(_ notif: Timer) {
- print("updating ui for: \(notif)")
- self.tableView.reloadData()
- }
- 
- override func viewWillDisappear(_ animated: Bool) {
- super.viewWillDisappear(animated)
- updateUITimer.invalidate()
- }
- }
- */
-
