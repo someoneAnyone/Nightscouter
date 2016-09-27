@@ -73,6 +73,7 @@
 "snoozeLabel" = "Snooze";
 "snoozedForLabel" = "Alarmed snoozed for %@ min.";
 "snoozeMessage" = "How long should the alarm be ignored?";
+"generalAlarmMessage" = "One or more of your sites are sounding an alarm.";
 "minutes" = "Minutes";
 "hour" = "Hour";
 "hours" = "Hours";

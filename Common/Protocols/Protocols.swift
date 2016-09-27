@@ -203,28 +203,3 @@ func iterateEnum<T: Hashable>(_: T.Type) -> AnyIterator<T> {
 }*/
 
 
-#if os(iOS) || os(watchOS) || os(tvOS)
-public protocol SegueHandlerType {
-    associatedtype SegueIdentifier: RawRepresentable
-}
-#endif
-
-#if os(iOS)
-public extension SegueHandlerType where Self: UIViewController,
-    SegueIdentifier.RawValue == String
-{
-    
-    public func performSegue(withIdentifier segueIdentifier: SegueIdentifier,
-                                    sender: Any?) {
-        performSegue(withIdentifier: segueIdentifier.rawValue, sender: sender)
-    }
-    
-    public func segueIdentifierForSegue(segue: UIStoryboardSegue) -> SegueIdentifier {
-        
-        guard let identifier = segue.identifier,
-            let segueIdentifier = SegueIdentifier(rawValue: identifier) else { fatalError("Invalid segue identifier \(segue.identifier).") }
-        
-        return segueIdentifier
-    }
-}
-#endif

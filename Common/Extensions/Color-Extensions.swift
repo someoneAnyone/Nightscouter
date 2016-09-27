@@ -27,7 +27,7 @@ public extension Color {
         return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
     }
     
-    class func generateRandomArray(with count: Int) -> [UIColor] {
+    class func generateRandom(arrayWith count: Int) -> [UIColor] {
         let colors = (0..<count).map { _ in return UIColor.random }
         return colors
     }

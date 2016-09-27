@@ -118,7 +118,7 @@ public extension URL {
         return self.absoluteString.hasSuffix("/")
     }
     
-    public var URLByAppendingTrailingSlash: URL? {
+    public var appendTrailingSlash: URL? {
         
         if !self.hasTrailingSlash, let newURL = URL(string: self.absoluteString + "/") {
             return newURL
@@ -127,7 +127,7 @@ public extension URL {
         return nil
     }
     
-    public var URLByDeletingTrailingSlash: URL? {
+    public var deletedTrailingSlash: URL? {
         var urlString = self.absoluteString
         if let i = urlString.characters.index(of: "/") {
                      urlString.remove(at: i)

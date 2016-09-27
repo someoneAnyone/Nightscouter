@@ -22,22 +22,33 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
     }
     
-    var sites:[Site] {
-        return SitesDataSource.sharedInstance.sites
-    }
-        
+    var sites:[Site] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.backgroundColor = UIColor.clear
+    
+        self.sites = SitesDataSource.sharedInstance.sites
+
+        tableView.backgroundColor = Color.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.separatorStyle = .singleLine
+        tableView.separatorColor = Color(white: 1.0, alpha: 0.5)
         
         if #available(iOSApplicationExtension 10.0, *) {
             extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+            
+            let effect = UIVibrancyEffect.widgetPrimary()
+            tableView.separatorEffect = effect
         } else {
+            
+            let effect = UIVibrancyEffect.notificationCenter()
+            tableView.separatorEffect = effect
             preferredContentSize = tableView.contentSize
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -45,7 +56,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         // Dispose of any resources that can be recreated.
     }
     
-
+    
     // MARK: NCWidgetProviding
     
     func widgetMarginInsets(forProposedMarginInsets defaultMarginInsets: UIEdgeInsets) -> UIEdgeInsets {
@@ -64,7 +75,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     @available(iOSApplicationExtension 10.0, *)
     func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
-        
         if (activeDisplayMode == .compact) {
             preferredContentSize = maxSize
         }
@@ -75,7 +85,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     
     // MARK: UITableViewDataSource
-
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -99,18 +109,18 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
             return cell
         } else {
             let contentCell = tableView.dequeueReusableCell(withIdentifier: TableViewConstants.CellIdentifiers.content, for: indexPath) as! SiteNSNowTableViewCell
-            let site = sites[(indexPath as NSIndexPath).row]
+            let site = sites[indexPath.row]
             let model = site.summaryViewModel
             
             contentCell.configure(withDataSource: model, delegate: model)
             
             let os = ProcessInfo().operatingSystemVersion
             if os.majorVersion >= 10 {
-                contentCell.contentView.backgroundColor = UIColor.black.withAlphaComponent(0.7)
+                contentCell.contentView.backgroundColor = Color(hexString: "1e1e1f")//Color.black.withAlphaComponent(0.7)
             }
             
             if site.updateNow {
-                refreshDataFor(site, index: (indexPath as NSIndexPath).row)
+                refreshDataFor(site, index: indexPath.row)
             }
             
             return contentCell
@@ -124,10 +134,10 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         openApp(with: indexPath)
     }
-
+    
     
     // MARK: Private Methods
-
+    
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
@@ -140,6 +150,22 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     func refreshDataFor(_ site: Site, index: Int, completionHandler: ((NCUpdateResult) -> Void)? = nil){
         // Start up the API
         FIXME()
+        site.fetchDataFromNetwrok(userInitiated: true) { (updatedSite, err) in
+            if let _ = err {
+              
+                return
+            }
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            
+            OperationQueue.main.addOperation {
+                self.tableView.reloadData()
+                
+                if (self.refreshControl?.isRefreshing != nil) {
+                    self.refreshControl?.endRefreshing()
+                }
+            }
+        }
     }
     
     func openApp(with indexPath: IndexPath) {

@@ -25,20 +25,17 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="224" sectionHeaderHeight="22" sectionFooterHeight="22" id="xCs-jc-YHh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <view key="tableHeaderView" hidden="YES" contentMode="scaleToFill" id="DZz-Wf-Lx4" customClass="BannerMessage" customModule="Nightscouter" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="64" width="375" height="50"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="Lxo-8M-7Wn" customClass="BannerMessage" customModule="Nightscouter" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="64" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="message" value="No alarms at the moment."/>
-                            </userDefinedRuntimeAttributes>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="0.0" reuseIdentifier="siteCell" editingAccessoryType="detailButton" rowHeight="180" id="fmw-B0-bF1" customClass="SiteTableViewCell" customModule="Nightscouter" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="136" width="375" height="180"/>
+                                <rect key="frame" x="0.0" y="130" width="375" height="180"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <frame key="frameInset" width="375" height="180"/>
+                                    <frame key="frameInset" width="375" height="179.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lh2-gJ-TwC">
@@ -47,7 +44,7 @@
                                                     <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="12" id="0OT-ix-NZR"/>
-                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="180" id="myS-Tt-TUb"/>
+                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" priority="250" constant="180" id="myS-Tt-TUb"/>
                                                     </constraints>
                                                 </view>
                                                 <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="jtu-Tk-96q">
@@ -199,7 +196,7 @@
                         </connections>
                     </refreshControl>
                     <connections>
-                        <outlet property="headerView" destination="DZz-Wf-Lx4" id="Sob-KS-Y10"/>
+                        <outlet property="headerView" destination="Lxo-8M-7Wn" id="BSA-vs-Y7a"/>
                         <outlet property="snoozeAlarmButton" destination="iJD-mO-4rK" id="vsl-XD-0RI"/>
                         <segue destination="p8y-7x-GHH" kind="presentation" identifier="AddNewWhenEmpty" id="VUV-Ph-2hx"/>
                     </connections>
@@ -273,8 +270,8 @@
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="oca-oF-j9U">
                                 <subviews>
-                                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sLK-ar-lt1" customClass="BannerMessage" customModule="Nightscouter" customModuleProvider="target">
-                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sLK-ar-lt1" customClass="BannerMessage" customModule="Nightscouter">
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="gUm-U8-LOm">
                                         <subviews>
@@ -433,7 +430,7 @@
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" translucent="NO" prompted="NO"/>
                     <connections>
-                        <outlet property="headerView" destination="sLK-ar-lt1" id="fWI-57-cYh"/>
+                        <outlet property="headerView" destination="sLK-ar-lt1" id="dQb-Ks-Xbo"/>
                         <outlet property="siteActivityView" destination="VCK-LB-chS" id="oVa-eB-qFC"/>
                         <outlet property="siteBatteryHeader" destination="0no-ma-76y" id="rbm-bJ-3vl"/>
                         <outlet property="siteBatteryLabel" destination="pep-C1-XZA" id="OSv-2Q-u9g"/>

@@ -11,7 +11,6 @@
 		170825E91B2CBABB00304F8F /* SiteFormViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170825E81B2CBABB00304F8F /* SiteFormViewController.swift */; };
 		170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170825EA1B2CBABB00304F8F /* Main.storyboard */; };
 		170D4D291C225DF400E6B800 /* ComplicationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */; };
-		1713D5A71C11388700A52345 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 1713D5A61C11388700A52345 /* LICENSE */; };
 		171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB4E1D91C56500D7D52D /* AppConfiguration.swift */; };
 		171CDB801D91C56500D7D52D /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB4E1D91C56500D7D52D /* AppConfiguration.swift */; };
 		171CDB811D91C56500D7D52D /* Array-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB501D91C56500D7D52D /* Array-Extensions.swift */; };
@@ -21,12 +20,12 @@
 		171CDB851D91C56500D7D52D /* Double-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB521D91C56500D7D52D /* Double-Extension.swift */; };
 		171CDB861D91C56500D7D52D /* Double-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB521D91C56500D7D52D /* Double-Extension.swift */; };
 		171CDB871D91C56500D7D52D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB531D91C56500D7D52D /* Extensions.swift */; };
-		171CDB891D91C56500D7D52D /* NSCalendar-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB541D91C56500D7D52D /* NSCalendar-Extension.swift */; };
-		171CDB8A1D91C56500D7D52D /* NSCalendar-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB541D91C56500D7D52D /* NSCalendar-Extension.swift */; };
-		171CDB8B1D91C56500D7D52D /* NSDate-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB551D91C56500D7D52D /* NSDate-Extensions.swift */; };
-		171CDB8C1D91C56500D7D52D /* NSDate-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB551D91C56500D7D52D /* NSDate-Extensions.swift */; };
-		171CDB8D1D91C56500D7D52D /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB561D91C56500D7D52D /* NSURL-Extensions.swift */; };
-		171CDB8E1D91C56500D7D52D /* NSURL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB561D91C56500D7D52D /* NSURL-Extensions.swift */; };
+		171CDB891D91C56500D7D52D /* Calendar-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB541D91C56500D7D52D /* Calendar-Extension.swift */; };
+		171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB541D91C56500D7D52D /* Calendar-Extension.swift */; };
+		171CDB8B1D91C56500D7D52D /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB551D91C56500D7D52D /* Date-Extensions.swift */; };
+		171CDB8C1D91C56500D7D52D /* Date-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB551D91C56500D7D52D /* Date-Extensions.swift */; };
+		171CDB8D1D91C56500D7D52D /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB561D91C56500D7D52D /* URL-Extensions.swift */; };
+		171CDB8E1D91C56500D7D52D /* URL-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB561D91C56500D7D52D /* URL-Extensions.swift */; };
 		171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB571D91C56500D7D52D /* String-Extensions.swift */; };
 		171CDB901D91C56500D7D52D /* String-Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB571D91C56500D7D52D /* String-Extensions.swift */; };
 		171CDB911D91C56500D7D52D /* AlarmRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB591D91C56500D7D52D /* AlarmRule.swift */; };
@@ -80,8 +79,6 @@
 		171CDBC21D91C56600D7D52D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
 		171CDBC31D91C56600D7D52D /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB761D91C56500D7D52D /* LocalizedStrings.swift */; };
 		171CDBC41D91C56600D7D52D /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB761D91C56500D7D52D /* LocalizedStrings.swift */; };
-		171CDBC51D91C56600D7D52D /* Shared Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB771D91C56500D7D52D /* Shared Assets.xcassets */; };
-		171CDBC61D91C56600D7D52D /* Shared Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB771D91C56500D7D52D /* Shared Assets.xcassets */; };
 		171CDBC71D91C56600D7D52D /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB791D91C56500D7D52D /* AlarmManager.swift */; };
 		171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB791D91C56500D7D52D /* AlarmManager.swift */; };
 		171CDBC91D91C56600D7D52D /* iCloudKeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */; };
@@ -110,6 +107,7 @@
 		178A9BFC1D6C8EC100267FCA /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */; };
 		178A9BFE1D6C8EF700267FCA /* BannerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
+		178E0A701D9959A700918B3C /* SegueHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */; };
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
@@ -121,6 +119,10 @@
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
+		8366F57B1D99FC6A000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
+		8366F57C1D99FC6B000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
+		8366F57F1D9A1735000A800A /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB741D91C56500D7D52D /* alarm2.mp3 */; };
+		8366F5801D9A1776000A800A /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB741D91C56500D7D52D /* alarm2.mp3 */; };
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -257,9 +259,9 @@
 		171CDB511D91C56500D7D52D /* Color-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Color-Extensions.swift"; sourceTree = "<group>"; };
 		171CDB521D91C56500D7D52D /* Double-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Double-Extension.swift"; sourceTree = "<group>"; };
 		171CDB531D91C56500D7D52D /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		171CDB541D91C56500D7D52D /* NSCalendar-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSCalendar-Extension.swift"; sourceTree = "<group>"; };
-		171CDB551D91C56500D7D52D /* NSDate-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSDate-Extensions.swift"; sourceTree = "<group>"; };
-		171CDB561D91C56500D7D52D /* NSURL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSURL-Extensions.swift"; sourceTree = "<group>"; };
+		171CDB541D91C56500D7D52D /* Calendar-Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Calendar-Extension.swift"; sourceTree = "<group>"; };
+		171CDB551D91C56500D7D52D /* Date-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date-Extensions.swift"; sourceTree = "<group>"; };
+		171CDB561D91C56500D7D52D /* URL-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL-Extensions.swift"; sourceTree = "<group>"; };
 		171CDB571D91C56500D7D52D /* String-Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String-Extensions.swift"; sourceTree = "<group>"; };
 		171CDB591D91C56500D7D52D /* AlarmRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmRule.swift; sourceTree = "<group>"; };
 		171CDB5A1D91C56500D7D52D /* Calibration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Calibration.swift; sourceTree = "<group>"; };
@@ -287,12 +289,11 @@
 		171CDB741D91C56500D7D52D /* alarm2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = alarm2.mp3; sourceTree = "<group>"; };
 		171CDB751D91C56500D7D52D /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		171CDB761D91C56500D7D52D /* LocalizedStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
-		171CDB771D91C56500D7D52D /* Shared Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = "Shared Assets.xcassets"; path = "../Shared Assets.xcassets"; sourceTree = "<group>"; };
 		171CDB791D91C56500D7D52D /* AlarmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmManager.swift; sourceTree = "<group>"; };
 		171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iCloudKeyValueStore.swift; sourceTree = "<group>"; };
 		171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesDataSource.swift; sourceTree = "<group>"; };
-		171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteStoreTypeProtocols.swift; sourceTree = "<group>"; };
+		171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SiteStoreTypeProtocols.swift; path = ../Stores/SiteStoreTypeProtocols.swift; sourceTree = "<group>"; };
 		171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		171CDBD51D91C99700D7D52D /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
@@ -309,6 +310,7 @@
 		178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteListTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerMessage.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueHandlerType.swift; sourceTree = "<group>"; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		17BD1C361BF0EEAB0014EE38 /* NightscouteriOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouteriOSAssets.pcvd; sourceTree = "<group>"; };
 		17BD1C371BF0EEAB0014EE38 /* NightscouterWatchOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterWatchOSAssets.pcvd; sourceTree = "<group>"; };
@@ -464,10 +466,11 @@
 				171CDB501D91C56500D7D52D /* Array-Extensions.swift */,
 				171CDB511D91C56500D7D52D /* Color-Extensions.swift */,
 				171CDB521D91C56500D7D52D /* Double-Extension.swift */,
+				178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */,
 				171CDB531D91C56500D7D52D /* Extensions.swift */,
-				171CDB541D91C56500D7D52D /* NSCalendar-Extension.swift */,
-				171CDB551D91C56500D7D52D /* NSDate-Extensions.swift */,
-				171CDB561D91C56500D7D52D /* NSURL-Extensions.swift */,
+				171CDB541D91C56500D7D52D /* Calendar-Extension.swift */,
+				171CDB551D91C56500D7D52D /* Date-Extensions.swift */,
+				171CDB561D91C56500D7D52D /* URL-Extensions.swift */,
 				171CDB571D91C56500D7D52D /* String-Extensions.swift */,
 			);
 			path = Extensions;
@@ -519,6 +522,7 @@
 				171CDB6F1D91C56500D7D52D /* Protocols.swift */,
 				171CDB701D91C56500D7D52D /* UpdatableUserInterfaceType.swift */,
 				171CDB711D91C56500D7D52D /* ViewModelProtocols.swift */,
+				171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -531,7 +535,6 @@
 				171CDB751D91C56500D7D52D /* Localizable.strings */,
 				171CDB761D91C56500D7D52D /* LocalizedStrings.swift */,
 				177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */,
-				171CDB771D91C56500D7D52D /* Shared Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -544,7 +547,6 @@
 				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
 				171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */,
-				171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -940,11 +942,13 @@
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					17F22E571BEF9E600041E0B0 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = F754VXZDPA;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					83883D731BC1F7E800BD1A9C = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -1014,11 +1018,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8366F57B1D99FC6A000A800A /* alarm.mp3 in Resources */,
+				8366F57F1D9A1735000A800A /* alarm2.mp3 in Resources */,
 				17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */,
 				1739B1BE1B31141000C22762 /* html in Resources */,
 				17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */,
 				83E6214B1D9222480019622C /* Localizable.strings in Resources */,
-				1713D5A71C11388700A52345 /* LICENSE in Resources */,
 				170825EC1B2CBABB00304F8F /* Main.storyboard in Resources */,
 				17E1B47B1B62DB3E0047D594 /* Settings.bundle in Resources */,
 			);
@@ -1028,10 +1033,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				171CDBBD1D91C56600D7D52D /* alarm.mp3 in Resources */,
 				171CDBBF1D91C56600D7D52D /* alarm2.mp3 in Resources */,
 				171CDBC11D91C56600D7D52D /* Localizable.strings in Resources */,
-				171CDBBD1D91C56600D7D52D /* alarm.mp3 in Resources */,
-				171CDBC51D91C56600D7D52D /* Shared Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,10 +1043,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				171CDBC61D91C56600D7D52D /* Shared Assets.xcassets in Resources */,
 				171CDBBE1D91C56600D7D52D /* alarm.mp3 in Resources */,
-				171CDBC21D91C56600D7D52D /* Localizable.strings in Resources */,
 				171CDBC01D91C56600D7D52D /* alarm2.mp3 in Resources */,
+				171CDBC21D91C56600D7D52D /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1059,6 +1062,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8366F57C1D99FC6B000A800A /* alarm.mp3 in Resources */,
+				8366F5801D9A1776000A800A /* alarm2.mp3 in Resources */,
 				83883D921BC1F7E900BD1A9C /* Assets.xcassets in Resources */,
 				177FAB9A1D92BF8100B612B3 /* Localizable.strings in Resources */,
 			);
@@ -1160,7 +1165,7 @@
 				171CDB991D91C56500D7D52D /* MeteredGlucoseValue.swift in Sources */,
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,
-				171CDB8B1D91C56500D7D52D /* NSDate-Extensions.swift in Sources */,
+				171CDB8B1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
 				171CDBB31D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB931D91C56500D7D52D /* Calibration.swift in Sources */,
 				171CDBC71D91C56600D7D52D /* AlarmManager.swift in Sources */,
@@ -1184,16 +1189,17 @@
 				177FAB981D92BE7400B612B3 /* CompassControl.swift in Sources */,
 				171CDB911D91C56500D7D52D /* AlarmRule.swift in Sources */,
 				171CDBB51D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
-				171CDB891D91C56500D7D52D /* NSCalendar-Extension.swift in Sources */,
+				171CDB891D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				177FAB961D92BE7400B612B3 /* CompassControl+Convience.swift in Sources */,
 				171CDBBB1D91C56600D7D52D /* ViewModelProtocols.swift in Sources */,
 				171CDB871D91C56500D7D52D /* Extensions.swift in Sources */,
 				171CDBCB1D91C56600D7D52D /* PhoneSessionManager.swift in Sources */,
-				171CDB8D1D91C56500D7D52D /* NSURL-Extensions.swift in Sources */,
+				171CDB8D1D91C56500D7D52D /* URL-Extensions.swift in Sources */,
 				171CDB9B1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB831D91C56500D7D52D /* Color-Extensions.swift in Sources */,
 				171CDBA91D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */,
 				177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */,
+				178E0A701D9959A700918B3C /* SegueHandlerType.swift in Sources */,
 				171CDBA71D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
 				171CDB9F1D91C56500D7D52D /* Site.swift in Sources */,
 				171CDB9D1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
@@ -1212,7 +1218,7 @@
 				171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				171CDB9C1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
-				171CDB8C1D91C56500D7D52D /* NSDate-Extensions.swift in Sources */,
+				171CDB8C1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
 				171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
 				171CDBA81D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
 				177FAB9D1D92C71D00B612B3 /* WatchSessionManager.swift in Sources */,
@@ -1220,7 +1226,7 @@
 				171CDBA61D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDB981D91C56500D7D52D /* DeviceStatus.swift in Sources */,
 				171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */,
-				171CDB8A1D91C56500D7D52D /* NSCalendar-Extension.swift in Sources */,
+				171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
 				171CDBB41D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB961D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
@@ -1235,7 +1241,7 @@
 				17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */,
 				171CDB941D91C56500D7D52D /* Calibration.swift in Sources */,
 				171CDBC41D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
-				171CDB8E1D91C56500D7D52D /* NSURL-Extensions.swift in Sources */,
+				171CDB8E1D91C56500D7D52D /* URL-Extensions.swift in Sources */,
 				171CDBCE1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				171CDBBA1D91C56600D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
 				171CDB9E1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
@@ -1422,6 +1428,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nightscouter/Nightscouter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
@@ -1440,6 +1447,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nightscouter/Nightscouter.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				INFOPLIST_FILE = Nightscouter/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_SWIFT_FLAGS = "";
@@ -1456,7 +1464,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1489,7 +1497,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
@@ -1513,7 +1521,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1539,7 +1547,7 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1653,6 +1661,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -1676,6 +1685,7 @@
 				CODE_SIGN_ENTITLEMENTS = NightscouterToday/NightscouterToday.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				INFOPLIST_FILE = NightscouterToday/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nothingonline.Nightscouter.$(PRODUCT_NAME:rfc1034identifier)";

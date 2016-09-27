@@ -1,22 +1,22 @@
 //
-//  CALayer+Extensions.swift
+//  Extensions.swift
 //  Nightscouter
 //
 //  Created by Peter Ina on 8/16/16.
 //  Copyright © 2016 Nothingonline. All rights reserved.
 //
 
+import Foundation
+// Provide a private typealias for a platform specific color.
+#if os(iOS)
+    import UIKit
+    typealias CollectionView = UICollectionView
+#elseif os(OSX)
+    import Cocoa
+    typealias CollectionView = NSCollectionView
+#endif
 
-import UIKit
-
-public extension IndexPath {
-    public static var zero: IndexPath {
-        return IndexPath(item: 0, section: 0)
-    }
-}
-
-
-
+#if os(iOS)
 public extension UINavigationItem {
     public func update(with newItem: UINavigationItem) {
         self.backBarButtonItem = newItem.backBarButtonItem
@@ -118,11 +118,18 @@ public extension UIView {
         }
     }
 }
+#endif
 
-public extension UICollectionView {
+public extension CollectionView {
     public var indexPathOfItemAtCenter: IndexPath? {
         let visiblePoint = CGPoint(x: self.center.x + self.contentOffset.x, y: self.center.y + self.contentOffset.y)
         return self.indexPathForItem(at: visiblePoint)
     }
-    
 }
+
+public extension IndexPath {
+    public static var zero: IndexPath {
+        return IndexPath(item: 0, section: 0)
+    }
+}
+

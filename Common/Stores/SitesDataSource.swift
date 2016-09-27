@@ -30,11 +30,11 @@ public class SitesDataSource: SiteStoreType {
     
     private init() {
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
-      
+        
         let iCloudManager = iCloudKeyValueStore()
         iCloudManager.store = self
         iCloudManager.startSession()
-      
+        
         let watchConnectivityManager = WatchSessionManager.sharedManager
         watchConnectivityManager.store = self
         watchConnectivityManager.startSession()
@@ -45,7 +45,7 @@ public class SitesDataSource: SiteStoreType {
         
         self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
         
-        updateDataNotification(nil)
+        dataStaleTimer(nil)
     }
     
     deinit {
@@ -58,7 +58,7 @@ public class SitesDataSource: SiteStoreType {
     private var sessionManagers: [SessionManagerType] = []
     
     private var timer: Timer?
-
+    
     public var storageLocation: StorageLocation { return .localKeyValueStore }
     
     public var otherStorageLocations: SiteStoreType?
@@ -75,12 +75,12 @@ public class SitesDataSource: SiteStoreType {
     
     
     /*{
-        if let loaded = loadData() {
-            return loaded
-        }
-        return []
-    }
- */
+     if let loaded = loadData() {
+     return loaded
+     }
+     return []
+     }
+     */
     
     public var lastViewedSiteIndex: Int {
         set {
@@ -198,7 +198,7 @@ public class SitesDataSource: SiteStoreType {
         
         saveData(["currentSiteIndexInt": 0])
         saveData(["siteModelArray": []])
-
+        
         saveData([DefaultKey.sites.rawValue: []])
         return initial.isEmpty
     }
@@ -264,34 +264,22 @@ public class SitesDataSource: SiteStoreType {
         
         return []
     }
-
-    /*
-    let postToObservers = debounce(delay: 3, action: {
-        print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
-    })
-    
-    let postStaleNotifcation = debounce(delay: 1, action: {
-        print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
-    })
-     */
     
     func createUpdateTimer() -> Timer {
         print(">>> Entering \(#function) <<<")
-        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(SitesDataSource.updateDataNotification(_:)), userInfo: nil, repeats: true)
+        let localTimer = Timer.scheduledTimer(timeInterval: TimeInterval.FourMinutes, target: self, selector: #selector(SitesDataSource.dataStaleTimer(_:)), userInfo: nil, repeats: true)
         
         return localTimer
     }
     
-    @objc func updateDataNotification(_ timer: Timer?) -> Void {
+    @objc func dataStaleTimer(_ timer: Timer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
         OperationQueue.main.addOperation {
-            NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
+            self.postDataStaleNotification()
         }
         
         if (self.timer == nil) {
@@ -325,11 +313,28 @@ public class SitesDataSource: SiteStoreType {
             }
         })
         
-        OperationQueue.main.addOperation {
-            NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
-        }
+        //OperationQueue.main.addOperation {
+        //    self.postDataUpdatedNotification()
+        //}
         
         return (successfullSave, successfullAppContextUpdate)
+    }
+    
+    
+    
+    func postAddedContentNotification() {
+        print(">>> Entering \(#function) <<<")
+        NotificationCenter.default.post(name: .NightscoutDataAddedContentNotification, object: nil)
+    }
+    
+    func postDataUpdatedNotification() {
+        print(">>> Entering \(#function) <<<")
+        NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
+    }
+    
+    func postDataStaleNotification() {
+        print(">>> Entering \(#function) <<<")
+        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
     }
 }
 

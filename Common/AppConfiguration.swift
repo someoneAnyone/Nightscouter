@@ -10,8 +10,11 @@ import Foundation
 
 
 public extension Notification.Name {
-    static public let NightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updated")
-    static public let NightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.stale")
+    static public let NightscoutDataAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
+    static public let NightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
+    static public let NightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
+
+    static public let NightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
 }
 
 public typealias ArrayOfDictionaries = [[String: AnyObject]]

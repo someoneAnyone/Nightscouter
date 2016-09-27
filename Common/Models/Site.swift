@@ -41,7 +41,7 @@ public struct Site: Dateable, CustomStringConvertible {
         let compare = now.compare(nextRefreshDate)
         
         // If the newDate is in the future do not update. Exit function.
-        return compare == .orderedDescending
+        return (compare == .orderedDescending || configuration == nil) && disabled == false
     }
     
     public var lastUpdatedDate: Date? = nil

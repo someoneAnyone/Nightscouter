@@ -62,7 +62,8 @@ public enum LocalizedString: String {
     minutes,
     hour,
     hours,
-    min
+    min,
+    generalAlarmMessage
 }
 
 extension LocalizedString {
