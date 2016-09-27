@@ -36,33 +36,6 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff 
         }
     }
     
-    var alarmObject: AlarmObject? {
-        didSet {
-            guard let alarmObject = alarmObject else {
-                return
-            }
-            if alarmObject.warning == true || alarmObject.isSnoozed {
-                let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-                
-                self.snoozeAlarmButton.isEnabled = true
-                self.snoozeAlarmButton.tintColor = activeColor
-                
-                if let headerView = self.headerView {
-                    headerView.isHidden = false
-                    headerView.tintColor = activeColor
-                    headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : "One or more of your sites are sounding an alarm."
-                }
-                
-            } else if alarmObject.warning == false && !alarmObject.isSnoozed {
-                self.snoozeAlarmButton.isEnabled = false
-                self.snoozeAlarmButton.tintColor = nil
-                
-            } else {
-                self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
-            }
-        }
-    }
-    
     var data = [AnyObject]() {
         didSet {
             loadWebView()
@@ -138,8 +111,8 @@ extension SiteDetailViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(SiteDetailViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
     
         NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
-            if let alarmObject = notif.object as? AlarmObject {
-                self.alarmObject = alarmObject
+            if (notif.object as? AlarmObject) != nil {
+                self.updateUI()
             }
         }
         
@@ -193,7 +166,6 @@ extension SiteDetailViewController {
     }
     
     @IBAction func manageAlarm(_ sender: AnyObject?) {
-        //        AlarmManager.sharedManager.presentSnoozePopup(forViewController: self)
         presentSnoozePopup(forViewController: self)
     }
     
@@ -259,7 +231,7 @@ extension SiteDetailViewController {
         UIApplication.shared.isIdleTimerDisabled = site.overrideScreenLock
         
         let dataSource = site.summaryViewModel
-        
+    
         siteLastReadingLabel?.text = dataSource.lastReadingDate.timeAgoSinceNow
         siteLastReadingLabel?.textColor = dataSource.lastReadingColor
         
@@ -281,6 +253,26 @@ extension SiteDetailViewController {
         
         data = site.sgvs.map{ $0.jsonForChart as AnyObject }
         
+        if alarmObject.warning == true || alarmObject.isSnoozed {
+            let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+            
+            self.snoozeAlarmButton.isEnabled = true
+            self.snoozeAlarmButton.tintColor = activeColor
+            
+            if let headerView = self.headerView {
+                headerView.isHidden = false
+                headerView.tintColor = activeColor
+                headerView.message = AlarmRule.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+            }
+            
+        } else if alarmObject.warning == false && !alarmObject.isSnoozed {
+            self.snoozeAlarmButton.isEnabled = false
+            self.snoozeAlarmButton.tintColor = nil
+            
+        } else {
+            self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+        }
+
         self.siteWebView?.reload()
     }
     
@@ -313,86 +305,5 @@ extension SiteDetailViewController {
         self.site?.overrideScreenLock = shouldOverride
         SitesDataSource.sharedInstance.updateSite(self.site!)
         UIApplication.shared.isIdleTimerDisabled = site?.overrideScreenLock ?? false
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-protocol AlarmStuff {
-    var alarmObject: AlarmObject? { get }
-    func presentSnoozePopup(forViewController viewController: UIViewController)
-    func snooze(forMiutes minutes : Int)
-}
-
-extension AlarmStuff {
-    public func presentSnoozePopup(forViewController viewController: UIViewController) {
-        
-        guard let alarmObject = alarmObject else {
-            return
-        }
-        
-        if alarmObject.isSnoozed{
-            AlarmRule.disableSnooze()
-
-        } else {
-//            self.muteVolume()
-            
-            let alertController = UIAlertController(title: LocalizedString.snoozeLabel.localized, message: LocalizedString.snoozeMessage.localized, preferredStyle: .alert)
-            
-            alertController.addAction(UIAlertAction(title: "30 \(LocalizedString.minutes.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 30)
-            }))
-            alertController.addAction(UIAlertAction(title: "1 \(LocalizedString.hour.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 60)
-            }))
-            alertController.addAction(UIAlertAction(title: "1 1/2 \(LocalizedString.hours.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 90)
-            }))
-            alertController.addAction(UIAlertAction(title: "2 \(LocalizedString.hours.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 120)
-            }))
-            alertController.addAction(UIAlertAction(title: LocalizedString.generalCancelLabel.localized,
-                                                    style: .default,
-                                                    handler: {(alert: UIAlertAction!) in
-//                                                        self.unmuteVolume()
-            }))
-            
-            viewController.present(alertController, animated: true, completion: nil)
-            alertController.view.tintColor = NSAssetKit.darkNavColor
-        }
-    }
-    
-    public func snooze(forMiutes minutes : Int) {
-        AlarmRule.snooze(minutes)
-//        AlarmManager.sharedManager.stop()
-//        AlarmManager.sharedManager.unmuteVolume()
     }
 }

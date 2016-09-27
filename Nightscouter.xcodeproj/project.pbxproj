@@ -90,9 +90,11 @@
 		171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */; };
 		171CDBD41D91C76C00D7D52D /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6F1D91C56500D7D52D /* Protocols.swift */; };
 		171CDBD61D91C99700D7D52D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDBD51D91C99700D7D52D /* AppTheme.swift */; };
+		1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
 		1739B1BE1B31141000C22762 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 1739B1BD1B31141000C22762 /* html */; };
 		1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */; };
+		175707721D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */; };
 		176CF74C1B385C6A009B7E92 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74B1B385C6A009B7E92 /* ModelController.swift */; };
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
@@ -296,10 +298,12 @@
 		171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SiteStoreTypeProtocols.swift; path = ../Stores/SiteStoreTypeProtocols.swift; sourceTree = "<group>"; };
 		171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		171CDBD51D91C99700D7D52D /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
+		1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmProtocols.swift; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		1734545E1B30A8A200931278 /* SiteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteTableViewCell.swift; sourceTree = "<group>"; };
 		1739B1BD1B31141000C22762 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
 		1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteDetailViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
+		175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AlarmAudioPlayer-AVFoundation.swift"; sourceTree = "<group>"; };
 		176CF74B1B385C6A009B7E92 /* ModelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteListPageViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		1771B0421B75235B006C1F5E /* NightscouterKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscouterKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -515,6 +519,7 @@
 		171CDB6A1D91C56500D7D52D /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */,
 				171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */,
 				171CDB6C1D91C56500D7D52D /* Chartable.swift */,
 				171CDB6D1D91C56500D7D52D /* Codables.swift */,
@@ -543,6 +548,7 @@
 			isa = PBXGroup;
 			children = (
 				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
+				175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */,
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
 				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
@@ -1161,7 +1167,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				171CDBAB1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */,
+				175707721D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift in Sources */,
 				171CDB851D91C56500D7D52D /* Double-Extension.swift in Sources */,
+				1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */,
 				171CDB991D91C56500D7D52D /* MeteredGlucoseValue.swift in Sources */,
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,

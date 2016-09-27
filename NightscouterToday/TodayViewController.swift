@@ -27,16 +27,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        self.sites = SitesDataSource.sharedInstance.sites
-
         tableView.backgroundColor = Color.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = Color(white: 1.0, alpha: 0.5)
         
+        self.sites = SitesDataSource.sharedInstance.sites
+        
         if #available(iOSApplicationExtension 10.0, *) {
-            extensionContext?.widgetLargestAvailableDisplayMode = .expanded
+            extensionContext?.widgetLargestAvailableDisplayMode =  (tableView.numberOfRows(inSection: 0) == 1) ? .compact : .expanded
             
             let effect = UIVibrancyEffect.widgetPrimary()
             tableView.separatorEffect = effect
@@ -48,7 +48,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
         
         NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -76,9 +75,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     @available(iOSApplicationExtension 10.0, *)
     func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
         if (activeDisplayMode == .compact) {
-            preferredContentSize = maxSize
-        }
-        else {
+            preferredContentSize = tableView.contentSize //maxSize
+        } else {
             preferredContentSize = tableView.contentSize
         }
     }
@@ -91,7 +89,6 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
         if (sites.isEmpty) {
             // Make sure to allow for a row to note that no incomplete items remain.
             return 1
@@ -116,7 +113,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
             
             let os = ProcessInfo().operatingSystemVersion
             if os.majorVersion >= 10 {
-                contentCell.contentView.backgroundColor = Color(hexString: "1e1e1f")//Color.black.withAlphaComponent(0.7)
+                contentCell.contentView.backgroundColor = Color(hexString: "1e1e1f")
             }
             
             if site.updateNow {
@@ -128,7 +125,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.layer.backgroundColor = UIColor.clear.cgColor
+        cell.layer.backgroundColor = Color.clear.cgColor
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -147,17 +144,16 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
     }
     
-    func refreshDataFor(_ site: Site, index: Int, completionHandler: ((NCUpdateResult) -> Void)? = nil){
+    func refreshDataFor(_ site: Site, index: Int){
         // Start up the API
         FIXME()
         site.fetchDataFromNetwrok(userInitiated: true) { (updatedSite, err) in
             if let _ = err {
-              
                 return
             }
-            
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            
+            self.sites = SitesDataSource.sharedInstance.sites
+
             OperationQueue.main.addOperation {
                 self.tableView.reloadData()
                 

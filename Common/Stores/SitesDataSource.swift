@@ -39,11 +39,11 @@ public class SitesDataSource: SiteStoreType {
         watchConnectivityManager.store = self
         watchConnectivityManager.startSession()
         
-        let alarmManager = AlarmManager.sharedManager
-        alarmManager.store = self
-        alarmManager.startSession()
+//        let alarmManager = AlarmManager.sharedManager
+//        alarmManager.store = self
+//        alarmManager.startSession()
         
-        self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
+        self.sessionManagers = [iCloudManager, watchConnectivityManager]//, alarmManager]
         
         dataStaleTimer(nil)
     }
@@ -73,14 +73,30 @@ public class SitesDataSource: SiteStoreType {
         }
     }
     
-    
-    /*{
-     if let loaded = loadData() {
-     return loaded
-     }
-     return []
-     }
-     */
+    public var alarmObject: AlarmObject {
+        get {
+            var urgent: Bool = false
+            var alarmForSGV: Bool = false
+
+            let alarmingSites = sites.filter { site in
+                let viewModel = site.isAlarming
+                if viewModel.warn || viewModel.urgent || viewModel.alarmForSGV {
+                    urgent = viewModel.urgent
+                    alarmForSGV = viewModel.alarmForSGV
+                    return true
+                } else {
+                    return false
+                }
+            }
+            
+            var snoozeText: String = LocalizedString.generalAlarmMessage.localized
+            if AlarmRule.isSnoozed {
+                snoozeText = String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
+            }
+            
+            return AlarmObject(warning: !alarmingSites.isEmpty, urgent: urgent, isAlarmingForSgv: alarmForSGV, isSnoozed: AlarmRule.isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: AlarmRule.remainingSnoozeMinutes)
+        }
+    }
     
     public var lastViewedSiteIndex: Int {
         set {
@@ -224,7 +240,7 @@ public class SitesDataSource: SiteStoreType {
             print("No primarySiteUUID was found.")
         }
         
-        if let alarm = payload[DefaultKey.alarm.rawValue] as? String {
+        if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
             print(alarm)
             
             FIXME()

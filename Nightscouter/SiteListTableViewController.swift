@@ -47,39 +47,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var timer: Timer?
     
-    var alarmObject: AlarmObject? {
-        didSet {
-            guard let alarmObject = alarmObject else {
-                return
-            }
-                        
-            if alarmObject.warning == true || alarmObject.isSnoozed {
-                let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
-                
-                self.snoozeAlarmButton.isEnabled = true
-                self.snoozeAlarmButton.tintColor = activeColor
-                
-                self.tableView.tableHeaderView = self.headerView
-                self.tableView.reloadData()
-                
-                if let headerView = self.tableView.tableHeaderView as? BannerMessage {
-                    headerView.isHidden = false
-                    headerView.tintColor = activeColor
-                    headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
-                }
-                
-            } else if alarmObject.warning == false && !alarmObject.isSnoozed {
-                self.snoozeAlarmButton.isEnabled = false
-                self.snoozeAlarmButton.tintColor = nil
-                self.tableView.tableHeaderView = nil
-                
-            } else {
-                self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
-                self.tableView.tableHeaderView = nil
-            }
-            
-        }
-    }
     
     // MARK: View controller lifecycle
     
@@ -224,7 +191,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 let indexPath = tableView.indexPath(for: selectedSiteCell)!
                 let selectedSite = sites[indexPath.row]
                 siteDetailViewController.site = selectedSite
-                siteDetailViewController.alarmObject = alarmObject
             }
             
         case .ShowPageView:
@@ -322,6 +288,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
         self.setupNotifications()
+        updateUI(timer: nil)
         
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
@@ -339,15 +306,41 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
-    }
+     
+        if alarmObject.warning == true || alarmObject.isSnoozed {
+            let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+            
+            self.snoozeAlarmButton.isEnabled = true
+            self.snoozeAlarmButton.tintColor = activeColor
+            
+            self.tableView.tableHeaderView = self.headerView
+            self.tableView.reloadData()
+            
+            if let headerView = self.tableView.tableHeaderView as? BannerMessage {
+                headerView.isHidden = false
+                headerView.tintColor = activeColor
+                headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+            }
+            
+        } else if alarmObject.warning == false && !alarmObject.isSnoozed {
+            self.snoozeAlarmButton.isEnabled = false
+            self.snoozeAlarmButton.tintColor = nil
+            self.tableView.tableHeaderView = nil
+            
+        } else {
+            self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
+            self.tableView.tableHeaderView = nil
+        }
     
+    }
+
     func setupNotifications() {
         // Listen for global update timer.
         NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
         
         NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
-            if let alarmObject = notif.object as? AlarmObject {
-                self.alarmObject = alarmObject
+            if (notif.object as? AlarmObject) != nil {
+                self.updateUI(timer: nil)
             }
         }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)

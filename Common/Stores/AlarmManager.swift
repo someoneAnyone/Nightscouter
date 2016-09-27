@@ -8,30 +8,14 @@
 
 import Foundation
 
-#if os(iOS)
-    //    import AVFoundation
-#elseif os(watchOS)
-    //    import WatchKit
-#elseif os(OSX)
-#endif
-
-public protocol AlarmManagerDelgate {
-    func alarmManagerHasChangedAlarmingState(isActive alarm: Bool, urgent: Bool, snoozed: Bool)
-}
 
 public protocol AudioCordinator {
-    //func startAlarmMonitor()
-    //func endAlarmMonitor()
+    var alarmObject: AlarmObject? { get set }
     func stop()
     func play()
     func pause()
     func unmuteVolume()
     func muteVolume()
-    
-    //    func playAlarmFor(_ urgent: Bool)
-    
-    //func addAlarmManagerDelgate<T>(_ delegate: T) where T : AlarmManagerDelgate, T : Equatable
-    //func removeAlarmManagerDelgate<T>(_ delegate: T) where T : AlarmManagerDelgate, T : Equatable
 }
 
 public protocol Snoozable {
@@ -42,7 +26,6 @@ public protocol Snoozable {
 }
 
 public struct AlarmObject {
-    
     public let warning: Bool
     public let urgent: Bool
     public let isAlarmingForSgv: Bool
@@ -51,13 +34,12 @@ public struct AlarmObject {
     public let snoozeTimeRemaining: Int
     public var audioFileURL: URL {
         let assetName = urgent ? "alarm2" : "alarm"
-        let bundle: Bundle = Bundle.main // Bundle(for: AlarmManager.self)
+        let bundle: Bundle = Bundle(for: AlarmManager.self)
         let path: String = bundle.path(forResource: assetName, ofType: "mp3") ?? ""
         let audioUrl = URL(fileURLWithPath: path)
         print("url is valid file?: \(audioUrl.isFileURL) && \(FileManager.default.fileExists(atPath: audioUrl.path))")
         return audioUrl
     }
-    
 }
 
 extension AlarmObject: Encodable, Decodable {
@@ -82,7 +64,6 @@ extension AlarmObject: Encodable, Decodable {
     }
     
     public static func decode(_ dict: [String : Any]) -> AlarmObject? {
-        
         guard
             let warning = dict[JSONKey.warning] as? Bool,
             let urgent = dict[JSONKey.urgent] as? Bool,
@@ -106,12 +87,10 @@ open class AlarmManager: NSObject, SessionManagerType  {
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
     
-    
     var alarmObject: AlarmObject {
         return AlarmObject(warning: active, urgent: urgent, isAlarmingForSgv: isAlarmingForSgv, isSnoozed: isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: snoozeTimeRemaining)
     }
     
-    fileprivate var muted: Bool = false
     fileprivate var active: Bool = false
     fileprivate var urgent: Bool = false
     fileprivate var isAlarmingForSgv: Bool = false
@@ -166,11 +145,7 @@ open class AlarmManager: NSObject, SessionManagerType  {
             return
         }
         
-    
-        
         DispatchQueue.main.async {
-            
-
             self.postAlarmUpdateNotifiaction()
         }
         
@@ -178,7 +153,6 @@ open class AlarmManager: NSObject, SessionManagerType  {
 }
 
 extension AlarmManager: Snoozable {
-    
     public func snooze(forMiutes minutes: Int) {
         AlarmRule.snooze(minutes)
     }
@@ -204,11 +178,7 @@ extension AlarmManager {
     public func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
-        
-        
-        messageToSend["object"] = alarmObject.encode()
-        
-        
+        messageToSend[DefaultKey.alarm.rawValue] = alarmObject.encode()
         store?.handleApplicationContextPayload(messageToSend)
     }
     
@@ -217,73 +187,6 @@ extension AlarmManager {
         NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: alarmObject)
     }
 }
-
-
-
-///
-/*
- Not sure how to handle this behavior...
- 
- We need the alarming system to track changes to the sites... get updated whenever the site data changes. But where is the best place to do this?
- 
- Also once we havse an alarm... who and how is it managed...
- for example, who is responsible to snooze and update the user interface of its status?
- 
- presentation of dialogs and stuff should be done in the app layer, but handlig of snooze and
- text should probably come from a one place.si
- 
- */
-
-
-#if os(iOS)
-import AVFoundation
-
-
-public class AudioPlayer: AudioCordinator {
-    
-    public var audioPlayer: AVAudioPlayer
-    
-    public init(alamObject: AlarmObject) {
-        self.audioPlayer = try! AVAudioPlayer(contentsOf: alamObject.audioFileURL)
-    }
-    
-    open func stop() {
-        audioPlayer.stop()
-        try! AVAudioSession.sharedInstance().setActive(false)
-    }
-    
-    open func play() {
-        if !audioPlayer.isPlaying {
-            do {
-                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategorySoloAmbient)
-                try AVAudioSession.sharedInstance().setActive(true, with: .notifyOthersOnDeactivation)
-                
-                // Play endless loops
-                self.audioPlayer.prepareToPlay()
-                self.audioPlayer.numberOfLoops = -1
-                self.audioPlayer.play()
-                
-            } catch {
-                print("Audio Error: \(error)")
-                print("Unable to play sound!")
-            }
-        }
-    }
-    
-    open func pause() {
-        self.audioPlayer.pause()
-    }
-    
-    open func unmuteVolume(){
-        audioPlayer.volume = 1.0
-    }
-    
-    open func muteVolume() {
-        audioPlayer.volume = 0
-    }
-}
-#endif
-
 
 
 
