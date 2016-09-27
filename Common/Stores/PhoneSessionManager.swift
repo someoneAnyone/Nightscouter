@@ -91,6 +91,6 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
     }
     
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any]) {
-        self.processApplicationContext(context: message)
+       // self.processApplicationContext(context: message)
     }
 }

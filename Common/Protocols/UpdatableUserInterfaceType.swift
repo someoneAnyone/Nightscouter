@@ -24,13 +24,13 @@ import Foundation
 public protocol UpdatableUserInterfaceType {
     func startUpdateUITimer()
     var updateInterval: TimeInterval { get }
-    func updateUI(_ notif: Timer)
+    func updateUI(notif: Timer?)
 }
 
 public extension UpdatableUserInterfaceType where Self: ViewController {
     
     var updateUITimer: Timer {
-        return Timer.scheduledTimer(timeInterval: updateInterval, target: self, selector: #selector(Self.updateUI(_:)), userInfo: nil, repeats: true)
+        return Timer.scheduledTimer(timeInterval: updateInterval, target: self, selector: #selector(Self.updateUI(notif:)), userInfo: nil, repeats: true)
     }
     
     func startUpdateUITimer() {

@@ -42,6 +42,8 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff 
         }
     }
     
+    var timer: Timer?
+    
     // MARK: View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -108,20 +110,37 @@ extension SiteDetailViewController {
             site = SitesDataSource.sharedInstance.sites[SitesDataSource.sharedInstance.lastViewedSiteIndex]
         }
         
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteDetailViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
-    
-        NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
-            if (notif.object as? AlarmObject) != nil {
-                self.updateUI()
-            }
+       setupNotifications()
+        
+        if #available(iOS 10.0, *) {
+            self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
+                DispatchQueue.main.async {
+                    self.updateUI(timer: timer)
+                }
+            })
+        } else {
+            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
         }
         
         updateData()
     }
     
+    func setupNotifications() {
+        // Listen for global update timer.
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSite(_:)), name: .NightscoutDataStaleNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
+            if (notif.object as? AlarmObject) != nil {
+                self.updateUI(timer: nil)
+            }
+        }
+        //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
+    }
+
+    
     func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
-        self.updateData()
+        self.updateData(forceUpdate: true)
     }
     
     func updateData(forceUpdate force: Bool = false) {
@@ -140,6 +159,7 @@ extension SiteDetailViewController {
                 }
                 
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
+                self.site = updatedSite
                 
                 OperationQueue.main.addOperation {
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
@@ -152,7 +172,7 @@ extension SiteDetailViewController {
         }
     }
     
-    func updateUI() {
+    func updateUI(timer: Timer? = nil) {
         guard let site = site else {
             return
         }
@@ -274,6 +294,8 @@ extension SiteDetailViewController {
         }
 
         self.siteWebView?.reload()
+        
+        
     }
     
     func updateTitles(_ title: String) {

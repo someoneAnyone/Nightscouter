@@ -28,7 +28,7 @@ public extension ComplicationDataSourceGenerator {
             return Date(timeIntervalSinceNow: complicationUpdateInterval)
         }
         
-        return latestComplicationData.date.addingTimeInterval(complicationUpdateInterval) as Date
+        return latestComplicationData.date.addingTimeInterval(complicationUpdateInterval)
     }
     
     func nearest(calibration cals: [Calibration], forDate date: Date) -> Calibration? {

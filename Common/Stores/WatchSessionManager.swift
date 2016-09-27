@@ -114,7 +114,7 @@ extension WatchSessionManager {
     func processApplicationContext(context: [String : Any]) -> Bool {
         print(">>> Entering \(#function) <<<")
         
-        print("Did receive payload: \(context)")
+        print("Did receive payload")
         
         guard let store = store else {
             print("No Store")
@@ -122,7 +122,7 @@ extension WatchSessionManager {
         }
         
         store.handleApplicationContextPayload(context)
-        
+    
         ///Complications need to be updated smartly... also backgroun refresh needs to be taken into account
         FIXME()
         let complicationServer = CLKComplicationServer.sharedInstance()
@@ -154,6 +154,7 @@ extension WatchSessionManager {
             print("WatchSession Transfer Error: \(error)")
             
             self.processApplicationContext(context: DefaultKey.payloadPhoneUpdateError)
+            
         }
     }
 }

@@ -26,9 +26,15 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public var nextRefreshDate: Date {
         
-        let nextRefreshDate = date.addingTimeInterval(60.0 * 4)
         
-        //print("iOS nextRefreshDate: " + nextRefreshDate.description)
+        var nextRefreshDate = date.addingTimeInterval(60.0 * 4)
+        
+        if let latestSGVDate = sgvs.first?.date {
+//            nextRefreshDate = lastSGVDate.addingTimeInterval((60.0 * 4))
+            print("latestSGV Date: \(latestSGVDate)")
+        }
+        
+        print("iOS nextRefreshDate: " + nextRefreshDate.description)
         
         return nextRefreshDate
     }

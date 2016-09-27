@@ -292,7 +292,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
-                self.updateUI(timer: timer)
+                DispatchQueue.main.async {
+                    self.updateUI(timer: timer)
+                }
             })
         } else {
             self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
@@ -409,7 +411,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             }
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            
+            if let date = updatedSite.lastUpdatedDate {
+               self.milliseconds = date.timeIntervalSince1970.millisecond
+            }
             OperationQueue.main.addOperation {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {

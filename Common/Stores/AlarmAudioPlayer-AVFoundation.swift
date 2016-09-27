@@ -29,10 +29,11 @@ open class AlarmAudioPlayer: AudioCordinator {
             guard let alarmObject = alarmObject else {
                 return
             }
+            
             do {
                 self.audioPlayer = try AVAudioPlayer(contentsOf: alarmObject.audioFileURL)
-                let readyToPlay = audioPlayer?.prepareToPlay()
-                print("readyToPlayAlarm: \(readyToPlay), will play: \(alarmObject.audioFileURL)")
+                _ = audioPlayer?.prepareToPlay()
+                // print("readyToPlayAlarm: \(readyToPlay), will play: \(alarmObject.audioFileURL)")
                 
                 if alarmObject.isSnoozed {
                     muteVolume()

@@ -91,6 +91,9 @@
 		171CDBD41D91C76C00D7D52D /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6F1D91C56500D7D52D /* Protocols.swift */; };
 		171CDBD61D91C99700D7D52D /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDBD51D91C99700D7D52D /* AppTheme.swift */; };
 		1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */; };
+		1724B9F61D9AE8F300D2CD2B /* AlarmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */; };
+		1724B9F71D9AE8F400D2CD2B /* AlarmObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */; };
+		1724B9FA1D9AE9CE00D2CD2B /* SegueHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F91D9AE9CE00D2CD2B /* SegueHandlerType.swift */; };
 		1734545F1B30A8A200931278 /* SiteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1734545E1B30A8A200931278 /* SiteTableViewCell.swift */; };
 		1739B1BE1B31141000C22762 /* html in Resources */ = {isa = PBXBuildFile; fileRef = 1739B1BD1B31141000C22762 /* html */; };
 		1739B1CA1B31152C00C22762 /* SiteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739B1C81B31152C00C22762 /* SiteDetailViewController.swift */; };
@@ -109,7 +112,6 @@
 		178A9BFC1D6C8EC100267FCA /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */; };
 		178A9BFE1D6C8EF700267FCA /* BannerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
-		178E0A701D9959A700918B3C /* SegueHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */; };
 		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
@@ -299,6 +301,8 @@
 		171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		171CDBD51D91C99700D7D52D /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmProtocols.swift; sourceTree = "<group>"; };
+		1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmObject.swift; sourceTree = "<group>"; };
+		1724B9F91D9AE9CE00D2CD2B /* SegueHandlerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueHandlerType.swift; sourceTree = "<group>"; };
 		1725511D1B75544700AC09E0 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		1734545E1B30A8A200931278 /* SiteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteTableViewCell.swift; sourceTree = "<group>"; };
 		1739B1BD1B31141000C22762 /* html */ = {isa = PBXFileReference; lastKnownFileType = folder; path = html; sourceTree = "<group>"; };
@@ -314,7 +318,6 @@
 		178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteListTableViewController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BannerMessage.swift; sourceTree = "<group>"; };
 		178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SiteDetailInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SegueHandlerType.swift; sourceTree = "<group>"; };
 		17B1E57C1B5A89EF0093BC72 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		17BD1C361BF0EEAB0014EE38 /* NightscouteriOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouteriOSAssets.pcvd; sourceTree = "<group>"; };
 		17BD1C371BF0EEAB0014EE38 /* NightscouterWatchOSAssets.pcvd */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = NightscouterWatchOSAssets.pcvd; sourceTree = "<group>"; };
@@ -470,7 +473,6 @@
 				171CDB501D91C56500D7D52D /* Array-Extensions.swift */,
 				171CDB511D91C56500D7D52D /* Color-Extensions.swift */,
 				171CDB521D91C56500D7D52D /* Double-Extension.swift */,
-				178E0A6F1D9959A700918B3C /* SegueHandlerType.swift */,
 				171CDB531D91C56500D7D52D /* Extensions.swift */,
 				171CDB541D91C56500D7D52D /* Calendar-Extension.swift */,
 				171CDB551D91C56500D7D52D /* Date-Extensions.swift */,
@@ -484,6 +486,7 @@
 			isa = PBXGroup;
 			children = (
 				171CDB591D91C56500D7D52D /* AlarmRule.swift */,
+				1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */,
 				171CDB5A1D91C56500D7D52D /* Calibration.swift */,
 				171CDB5B1D91C56500D7D52D /* ComplicationTimelineEntry.swift */,
 				171CDB5C1D91C56500D7D52D /* DeviceStatus.swift */,
@@ -519,6 +522,7 @@
 		171CDB6A1D91C56500D7D52D /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				1724B9F91D9AE9CE00D2CD2B /* SegueHandlerType.swift */,
 				1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */,
 				171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */,
 				171CDB6C1D91C56500D7D52D /* Chartable.swift */,
@@ -1170,6 +1174,7 @@
 				175707721D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift in Sources */,
 				171CDB851D91C56500D7D52D /* Double-Extension.swift in Sources */,
 				1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */,
+				1724B9FA1D9AE9CE00D2CD2B /* SegueHandlerType.swift in Sources */,
 				171CDB991D91C56500D7D52D /* MeteredGlucoseValue.swift in Sources */,
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,
@@ -1183,6 +1188,7 @@
 				171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				171CDB951D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
 				177FAB971D92BE7400B612B3 /* ColorBlockView.swift in Sources */,
+				1724B9F71D9AE8F400D2CD2B /* AlarmObject.swift in Sources */,
 				171CDBB91D91C56500D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
 				171CDBCF1D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
 				171CDB971D91C56500D7D52D /* DeviceStatus.swift in Sources */,
@@ -1207,7 +1213,6 @@
 				171CDB831D91C56500D7D52D /* Color-Extensions.swift in Sources */,
 				171CDBA91D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */,
 				177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */,
-				178E0A701D9959A700918B3C /* SegueHandlerType.swift in Sources */,
 				171CDBA71D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
 				171CDB9F1D91C56500D7D52D /* Site.swift in Sources */,
 				171CDB9D1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
@@ -1225,6 +1230,7 @@
 				171CDBA21D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
+				1724B9F61D9AE8F300D2CD2B /* AlarmObject.swift in Sources */,
 				171CDB9C1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB8C1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
 				171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,

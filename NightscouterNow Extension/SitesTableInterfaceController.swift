@@ -36,9 +36,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     // Whenever this changes, it updates the attributed title of the refresh control.
     var milliseconds: Double? {
         didSet{
-            
             timeStamp = AppConfiguration.lastUpdatedFromPhoneDateFormatter.string(from: date)
-            
             sitesLoading.setHidden(!self.sites.isEmpty)
         }
     }
@@ -62,9 +60,14 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         sites = SitesDataSource.sharedInstance.sites
         
         NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
-            self.sites = SitesDataSource.sharedInstance.sites
             self.milliseconds = Date().timeIntervalSince1970.millisecond
-            self.updateTableData()
+            self.sites = SitesDataSource.sharedInstance.sites
+        }
+        
+        NotificationCenter.default.addObserver(forName: .NightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
+            self.milliseconds = Date().timeIntervalSince1970.millisecond
+            self.sites = SitesDataSource.sharedInstance.sites
+            
         }
     }
     
@@ -72,6 +75,9 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         // This method is called when watch view controller is no longer visible
         print(">>> Entering \(#function) <<<")
         super.didDeactivate()
+        for (index, site) in self.sites.enumerated() {
+            self.refreshDataFor(site, index: index, userInitiated: false)
+        }
 
     }
     
@@ -123,69 +129,53 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     @IBAction func updateButton() {
         FIXME()
-        WatchSessionManager.sharedManager.requestCompanionAppUpdate()
-    }
-        /*
-    func dataSourceDidUpdateAppContext(_ models: [WatchModel]) {
-        print(">>> Entering \(#function) <<<")
-        OperationQueue.main.addOperation { 
-            
-        self.dismiss()
-        self.models = models // WatchSessionManager.sharedManager.models
-        self.lastUpdatedTime = Date()
-        self.updateTableData()
-            
+        for (index, site) in self.sites.enumerated() {
+            self.refreshDataFor(site, index: index, userInitiated: true)
         }
+    }
+    
+    func refreshDataFor(_ site: Site, index: Int, userInitiated: Bool = false){
+        /// Tie into networking code.
+        FIXME()
+        
+        
+        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+            if let error = err {
+                OperationQueue.main.addOperation {
+                    self.presentErrorDialog(withTitle: "Oh no!", message: error.localizedDescription)
+                    
+                }
+                return
+            }
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            if let date = updatedSite.lastUpdatedDate {
+                self.milliseconds = date.timeIntervalSince1970.millisecond
+            }
+            OperationQueue.main.addOperation {
+               self.updateTableData()
+            }
+        }
+    }
 
-    }
-    
-    func dataSourceCouldNotConnectToPhone(_ error: Error) {
-        self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-    }
-    
-    func didUpdateItem(_ model: WatchModel){
-        OperationQueue.main.addOperation {
-            
-            self.dismiss()
-            self.models = WatchSessionManager.sharedManager.models
-            self.lastUpdatedTime = Date()
-            self.updateTableData()
-        }
-    }
-    
-    func didSetItemAsDefault(_ model: WatchModel) {
-        WatchSessionManager.sharedManager.defaultSiteUUID = UUID(uuidString: model.uuid)
-    }
-    
     func presentErrorDialog(withTitle title: String, message: String) {
         // catch any errors here
         let retry = WKAlertAction(title: "Retry", style: .default, handler: { () -> Void in
-            WatchSessionManager.sharedManager.updateData(forceRefresh: true)
+            
+            self.updateButton()
         })
         
         let cancel = WKAlertAction(title: "Cancel", style: .cancel, handler: { () -> Void in
             self.dismiss()
         })
-        
-        let action = WKAlertAction(title: "Local Update", style: .default, handler: { () -> Void in
-            for model in self.models {
-                self.currentlyUpdating = true
-                quickFetch(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    OperationQueue.main.addOperation { () -> Void in
-                        self.currentlyUpdating = false
-                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                    }
-                })
-            }
-            
-        })
-        
+
         DispatchQueue.main.async {
-            self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel, action])
+            self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel])
         }
     }
-    
 
+    
+        /*
     
     override func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
         print(">>> Entering \(#function) <<<")

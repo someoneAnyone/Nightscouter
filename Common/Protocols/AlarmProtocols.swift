@@ -8,6 +8,25 @@
 
 import Foundation
 
+
+public protocol AudioCordinator {
+    var alarmObject: AlarmObject? { get set }
+    func stop()
+    func play()
+    func pause()
+    func unmuteVolume()
+    func muteVolume()
+}
+
+public protocol Snoozable {
+    func snooze(forMiutes minutes : Int)
+    var snoozeText: String { get }
+    var snoozeTimeRemaining: Int { get }
+    var isSnoozed: Bool { get }
+}
+
+
+#if os(iOS)
 import UIKit
 
 public protocol AlarmStuff {
@@ -83,3 +102,4 @@ public extension AlarmStuff {
         }
     }
 }
+#endif

@@ -9,77 +9,8 @@
 import Foundation
 
 
-public protocol AudioCordinator {
-    var alarmObject: AlarmObject? { get set }
-    func stop()
-    func play()
-    func pause()
-    func unmuteVolume()
-    func muteVolume()
-}
 
-public protocol Snoozable {
-    func snooze(forMiutes minutes : Int)
-    var snoozeText: String { get }
-    var snoozeTimeRemaining: Int { get }
-    var isSnoozed: Bool { get }
-}
-
-public struct AlarmObject {
-    public let warning: Bool
-    public let urgent: Bool
-    public let isAlarmingForSgv: Bool
-    public let isSnoozed: Bool
-    public let snoozeText: String
-    public let snoozeTimeRemaining: Int
-    public var audioFileURL: URL {
-        let assetName = urgent ? "alarm2" : "alarm"
-        let bundle: Bundle = Bundle(for: AlarmManager.self)
-        let path: String = bundle.path(forResource: assetName, ofType: "mp3") ?? ""
-        let audioUrl = URL(fileURLWithPath: path)
-        print("url is valid file?: \(audioUrl.isFileURL) && \(FileManager.default.fileExists(atPath: audioUrl.path))")
-        return audioUrl
-    }
-}
-
-extension AlarmObject: Encodable, Decodable {
-    struct JSONKey {
-        static let warning = "warning"
-        static let urgent = "urgent"
-        static let isAlarmingForSgv = "isAlarmingForSgv"
-        static let isSnoozed = "isSnoozed"
-        static let snoozeText = "snoozeText"
-        static let snoozeTimeRemaining = "snoozeTimeRemaining"
-    }
-    
-    public func encode() -> [String : Any] {
-        return [
-            JSONKey.warning: warning,
-            JSONKey.urgent: urgent,
-            JSONKey.isAlarmingForSgv: isAlarmingForSgv,
-            JSONKey.isSnoozed: isSnoozed,
-            JSONKey.snoozeText: snoozeText,
-            JSONKey.snoozeTimeRemaining: snoozeTimeRemaining,
-        ]
-    }
-    
-    public static func decode(_ dict: [String : Any]) -> AlarmObject? {
-        guard
-            let warning = dict[JSONKey.warning] as? Bool,
-            let urgent = dict[JSONKey.urgent] as? Bool,
-            let isAlarmingForSgv = dict[JSONKey.isAlarmingForSgv] as? Bool,
-            let isSnoozed = dict[JSONKey.isSnoozed] as? Bool,
-            let snoozeText = dict[JSONKey.snoozeText] as? String,
-            let snoozeTimeRemaining = dict[JSONKey.snoozeTimeRemaining] as? Int
-            else {
-                return nil
-        }
-        
-        return AlarmObject(warning: warning, urgent: urgent, isAlarmingForSgv: isAlarmingForSgv, isSnoozed: isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: snoozeTimeRemaining)
-    }
-}
-
-
+/*
 open class AlarmManager: NSObject, SessionManagerType  {
     
     public static let sharedManager = AlarmManager()
@@ -187,6 +118,6 @@ extension AlarmManager {
         NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: alarmObject)
     }
 }
-
+*/
 
 
