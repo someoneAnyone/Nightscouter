@@ -23,26 +23,28 @@ import AVFoundation
  */
 open class AlarmAudioPlayer: AudioCordinator {
     public static let shared: AlarmAudioPlayer = AlarmAudioPlayer()
-
+    
     public var alarmObject: AlarmObject? {
         didSet{
             guard let alarmObject = alarmObject else {
                 return
             }
             
-            do {
-                self.audioPlayer = try AVAudioPlayer(contentsOf: alarmObject.audioFileURL)
-                _ = audioPlayer?.prepareToPlay()
-                // print("readyToPlayAlarm: \(readyToPlay), will play: \(alarmObject.audioFileURL)")
-                
-                if alarmObject.isSnoozed {
-                    muteVolume()
-                } else if alarmObject.warning || alarmObject.urgent || alarmObject.isAlarmingForSgv {
-                    play()
+            if oldValue != alarmObject {
+                do {
+                    self.audioPlayer = try AVAudioPlayer(contentsOf: alarmObject.audioFileURL)
+                    _ = audioPlayer?.prepareToPlay()
+                    // print("readyToPlayAlarm: \(readyToPlay), will play: \(alarmObject.audioFileURL)")
+                    
+                    if alarmObject.isSnoozed {
+                        muteVolume()
+                    } else if alarmObject.warning || alarmObject.urgent || alarmObject.isAlarmingForSgv {
+                        play()
+                    }
+                    
+                } catch _ {
+                    return
                 }
-                
-            } catch _ {
-                return
             }
         }
     }
@@ -61,6 +63,7 @@ open class AlarmAudioPlayer: AudioCordinator {
     
     public func play() {
         unmuteVolume()
+        
         if !isPlaying && (alarmObject != nil) {
             do {
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategorySoloAmbient)

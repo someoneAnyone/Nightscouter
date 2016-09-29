@@ -30,7 +30,7 @@ public struct Site: Dateable, CustomStringConvertible {
         var nextRefreshDate = date.addingTimeInterval(60.0 * 4)
         
         if let latestSGVDate = sgvs.first?.date {
-//            nextRefreshDate = lastSGVDate.addingTimeInterval((60.0 * 4))
+            // nextRefreshDate = lastSGVDate.addingTimeInterval((60.0 * 4))
             print("latestSGV Date: \(latestSGVDate)")
         }
         

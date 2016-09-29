@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11201" systemVersion="16A319" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GKK-vj-5UX">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GKK-vj-5UX">
     <dependencies>
         <deployment identifier="watchOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -94,12 +94,13 @@
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="SiteEmptyRowController" selectable="NO" id="S77-fP-8yz" customClass="SiteEmptyRowController" customModule="NightscouterNow_Extension">
-                                    <group key="rootItem" width="1" alignment="left" id="wCq-82-UfK">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="wCq-82-UfK">
                                         <items>
-                                            <label alignment="center" verticalAlignment="center" text="No Sites Available" id="udT-as-uND">
+                                            <label alignment="center" verticalAlignment="center" text="No Sites Available" textAlignment="center" numberOfLines="0" id="udT-as-uND">
                                                 <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
                                             </label>
                                         </items>
+                                        <edgeInsets key="margins" left="5" right="5" top="10" bottom="10"/>
                                     </group>
                                     <connections>
                                         <outlet property="messageLabel" destination="udT-as-uND" id="6Ts-pQ-msW"/>
@@ -136,8 +137,8 @@
                         </items>
                     </menu>
                     <connections>
-                        <outlet property="sitesLoading" destination="BlF-Sv-Zda" id="KCN-8V-Pxf"/>
-                        <outlet property="sitesTable" destination="aSP-OI-u6m" id="gVB-m3-lIb"/>
+                        <outlet property="loadingLabel" destination="BlF-Sv-Zda" id="HVx-VM-nW8"/>
+                        <outlet property="tableView" destination="aSP-OI-u6m" id="Sqw-uP-S9v"/>
                     </connections>
                 </controller>
             </objects>

@@ -29,6 +29,8 @@ public class SitesDataSource: SiteStoreType {
     public static let sharedInstance = SitesDataSource()
     
     private init() {
+        
+        
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
         let iCloudManager = iCloudKeyValueStore()
@@ -39,11 +41,14 @@ public class SitesDataSource: SiteStoreType {
         watchConnectivityManager.store = self
         watchConnectivityManager.startSession()
         
-//        let alarmManager = AlarmManager.sharedManager
-//        alarmManager.store = self
-//        alarmManager.startSession()
+        let alarmManager = AlarmManager.sharedManager
+        alarmManager.store = self
+        if !appIsInBackground {
+            alarmManager.startSession()
+        }
+        self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
         
-        self.sessionManagers = [iCloudManager, watchConnectivityManager]//, alarmManager]
+        print("found \(self.sites.count) sites in the store.")
         
         dataStaleTimer(nil)
     }
@@ -63,40 +68,50 @@ public class SitesDataSource: SiteStoreType {
     
     public var otherStorageLocations: SiteStoreType?
     
+    fileprivate var concurrentQueue = DispatchQueue(label: "com.nothingonline.nightscouter.sitesdatasource", attributes: .concurrent)
+    
     public var sites: [Site] {
         get {
-            if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-                return sites.flatMap { Site.decode($0) }
+            var internalSite: [Site] = []
+            concurrentQueue.sync {
+                if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
+                    internalSite = sites.flatMap { Site.decode($0) }
+                }
             }
-            
-            return []
+            return internalSite
         }
     }
     
-    public var alarmObject: AlarmObject {
-        get {
-            var urgent: Bool = false
-            var alarmForSGV: Bool = false
-
-            let alarmingSites = sites.filter { site in
-                let viewModel = site.isAlarming
-                if viewModel.warn || viewModel.urgent || viewModel.alarmForSGV {
-                    urgent = viewModel.urgent
-                    alarmForSGV = viewModel.alarmForSGV
-                    return true
-                } else {
-                    return false
-                }
-            }
-            
-            var snoozeText: String = LocalizedString.generalAlarmMessage.localized
-            if AlarmRule.isSnoozed {
-                snoozeText = String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
-            }
-            
-            return AlarmObject(warning: !alarmingSites.isEmpty, urgent: urgent, isAlarmingForSgv: alarmForSGV, isSnoozed: AlarmRule.isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: AlarmRule.remainingSnoozeMinutes)
-        }
-    }
+    public var appIsInBackground: Bool = true
+    
+    //public var alarmObject: AlarmObject?
+    
+    /*{
+     get {
+     var urgent: Bool = false
+     var alarmForSGV: Bool = false
+     
+     let alarmingSites = sites.filter { site in
+     if site.alarmDetails.isAlarming {
+     urgent = site.alarmDetails.urgent
+     alarmForSGV = site.alarmDetails.alarmForSGV
+     return true
+     }
+     
+     return false
+     }
+     
+     var snoozeText: String = LocalizedString.generalAlarmMessage.localized
+     
+     if AlarmRule.isSnoozed {
+     snoozeText = String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
+     }
+     
+     let warningsFound: Bool = !alarmingSites.isEmpty
+     
+     return AlarmObject(warning: warningsFound, urgent: urgent, isAlarmingForSgv: alarmForSGV, isSnoozed: AlarmRule.isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: AlarmRule.remainingSnoozeMinutes)
+     }
+     }*/
     
     public var lastViewedSiteIndex: Int {
         set {
@@ -112,10 +127,11 @@ public class SitesDataSource: SiteStoreType {
     
     public var primarySite: Site? {
         set{
-            if let site = newValue {
+            if let site = primarySite {
                 saveData([DefaultKey.primarySiteUUID.rawValue: site.uuid.uuidString])
             } else {
-                saveData([DefaultKey.primarySiteUUID.rawValue: ""])
+//                saveData([DefaultKey.primarySiteUUID.rawValue: ""])
+                defaults.removeObject(forKey: DefaultKey.primarySiteUUID.rawValue)
             }
         }
         get {
@@ -147,21 +163,26 @@ public class SitesDataSource: SiteStoreType {
         
         saveData([DefaultKey.sites.rawValue: siteDict])
         
+        OperationQueue.main.addOperation {
+            self.postAddedContentNotification()
+        }
+        
         return initial.contains(site)
     }
     
-    @discardableResult
-    public func updateSite(_ site: Site)  ->  Bool {
+    
+    public func updateSite(_ site: Site) {
         
-        var initial = sites
+        concurrentQueue.sync {
+            var initial = self.sites
+            
+            let success = initial.insertOrUpdate(site)
+            
+            let siteDict = initial.map { $0.encode() }
+            
+            self.saveData([DefaultKey.sites.rawValue: siteDict])
+        }
         
-        let success = initial.insertOrUpdate(site)
-        
-        let siteDict = initial.map { $0.encode() }
-        
-        saveData([DefaultKey.sites.rawValue: siteDict])
-        
-        return success
     }
     
     @discardableResult
@@ -222,7 +243,9 @@ public class SitesDataSource: SiteStoreType {
     public func handleApplicationContextPayload(_ payload: [String : Any]) {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
-            defaults.set(sites, forKey: DefaultKey.sites.rawValue)
+            saveData([DefaultKey.sites.rawValue: sites])
+            //defaults.set(sites, forKey: DefaultKey.sites.rawValue)
+            //defaults.synchronize()
         } else {
             print("No sites were found.")
         }
@@ -241,10 +264,11 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
-            print(alarm)
-            
             FIXME()
-            
+            if let alarmObject = AlarmObject.decode(alarm) {
+                print("Received and alarm from the monitor: \(alarm)")
+                //self.alarmObject = alarmObject
+            }
         } else {
             print("No alarm update was found.")
         }
@@ -269,8 +293,6 @@ public class SitesDataSource: SiteStoreType {
                 print("Did not find an action.")
             }
         }
-        
-        defaults.synchronize()
     }
     
     public func loadData() -> [Site]? {
@@ -294,13 +316,15 @@ public class SitesDataSource: SiteStoreType {
             print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
-        OperationQueue.main.addOperation {
-            self.postDataStaleNotification()
-        }
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }
+        
+        OperationQueue.main.addOperation {
+            self.postDataStaleNotification()
+        }
+        
     }
     
     @discardableResult
@@ -329,13 +353,14 @@ public class SitesDataSource: SiteStoreType {
             }
         })
         
-        //OperationQueue.main.addOperation {
-        //    self.postDataUpdatedNotification()
-        //}
+        if successfullAppContextUpdate {
+            OperationQueue.main.addOperation {
+                self.postDataUpdatedNotification()
+            }
+        }
         
         return (successfullSave, successfullAppContextUpdate)
     }
-    
     
     
     func postAddedContentNotification() {

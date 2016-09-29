@@ -59,6 +59,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         // Common setup.
         configureView()
+        setupNotifications()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -287,7 +288,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         refreshControl?.tintColor = UIColor.white
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-        self.setupNotifications()
         updateUI(timer: nil)
         
         if #available(iOS 10.0, *) {
@@ -308,34 +308,41 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
-     
-        if alarmObject.warning == true || alarmObject.isSnoozed {
-            let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+        
+        if let alarmObject = alarmObject {
             
-            self.snoozeAlarmButton.isEnabled = true
-            self.snoozeAlarmButton.tintColor = activeColor
-            
-            self.tableView.tableHeaderView = self.headerView
-            self.tableView.reloadData()
-            
-            if let headerView = self.tableView.tableHeaderView as? BannerMessage {
-                headerView.isHidden = false
-                headerView.tintColor = activeColor
-                headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+            if alarmObject.warning == true || alarmObject.isSnoozed {
+                let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+                
+                if alarmObject.isSnoozed {
+                    self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmSliencedIcon")
+                }
+                
+                self.snoozeAlarmButton.isEnabled = true
+                self.snoozeAlarmButton.tintColor = activeColor
+                
+                self.tableView.tableHeaderView = self.headerView
+                // self.tableView.reloadData()
+                
+                if let headerView = self.tableView.tableHeaderView as? BannerMessage {
+                    headerView.isHidden = false
+                    headerView.tintColor = activeColor
+                    headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+                }
+                
+            } else if alarmObject.warning == false && !alarmObject.isSnoozed {
+                self.snoozeAlarmButton.isEnabled = false
+                self.snoozeAlarmButton.tintColor = nil
+                self.tableView.tableHeaderView = nil
+                
+            } else {
+                self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+                self.tableView.tableHeaderView = nil
             }
-            
-        } else if alarmObject.warning == false && !alarmObject.isSnoozed {
-            self.snoozeAlarmButton.isEnabled = false
-            self.snoozeAlarmButton.tintColor = nil
-            self.tableView.tableHeaderView = nil
-            
-        } else {
-            self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
-            self.tableView.tableHeaderView = nil
         }
-    
+        
     }
-
+    
     func setupNotifications() {
         // Listen for global update timer.
         NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
@@ -412,7 +419,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
             if let date = updatedSite.lastUpdatedDate {
-               self.milliseconds = date.timeIntervalSince1970.millisecond
+                self.milliseconds = date.timeIntervalSince1970.millisecond
             }
             OperationQueue.main.addOperation {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false

@@ -35,7 +35,7 @@
                                 <rect key="frame" x="0.0" y="130" width="375" height="180"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <frame key="frameInset" width="375" height="179.5"/>
+                                    <frame key="frameInset" width="375" height="179"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lh2-gJ-TwC">

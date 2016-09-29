@@ -54,7 +54,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff 
             self.view.backgroundColor = UIColor.clear
             self.siteNameLabel?.removeFromSuperview()
         }
-
+        
         configureView()
     }
     
@@ -101,7 +101,7 @@ extension SiteDetailViewController {
     func configureView() {
         
         headerView?.isHidden = true
-
+        
         self.siteCompassControl?.color = NSAssetKit.predefinedNeutralColor
         
         if let siteOptional = site {
@@ -110,7 +110,7 @@ extension SiteDetailViewController {
             site = SitesDataSource.sharedInstance.sites[SitesDataSource.sharedInstance.lastViewedSiteIndex]
         }
         
-       setupNotifications()
+        setupNotifications()
         
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
@@ -136,7 +136,7 @@ extension SiteDetailViewController {
         }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
     }
-
+    
     
     func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
@@ -251,7 +251,7 @@ extension SiteDetailViewController {
         UIApplication.shared.isIdleTimerDisabled = site.overrideScreenLock
         
         let dataSource = site.summaryViewModel
-    
+        
         siteLastReadingLabel?.text = dataSource.lastReadingDate.timeAgoSinceNow
         siteLastReadingLabel?.textColor = dataSource.lastReadingColor
         
@@ -273,29 +273,33 @@ extension SiteDetailViewController {
         
         data = site.sgvs.map{ $0.jsonForChart as AnyObject }
         
-        if alarmObject.warning == true || alarmObject.isSnoozed {
-            let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+        if let alarmObject = alarmObject {
             
-            self.snoozeAlarmButton.isEnabled = true
-            self.snoozeAlarmButton.tintColor = activeColor
-            
-            if let headerView = self.headerView {
-                headerView.isHidden = false
-                headerView.tintColor = activeColor
-                headerView.message = AlarmRule.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+            if alarmObject.warning == true || alarmObject.isSnoozed {
+                let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
+                
+                self.snoozeAlarmButton.isEnabled = true
+                self.snoozeAlarmButton.tintColor = activeColor
+                if alarmObject.isSnoozed {
+                    self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmSliencedIcon")
+                }
+                
+                if let headerView = self.headerView {
+                    headerView.isHidden = false
+                    headerView.tintColor = activeColor
+                    headerView.message = AlarmRule.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
+                }
+                
+            } else if alarmObject.warning == false && !alarmObject.isSnoozed {
+                self.snoozeAlarmButton.isEnabled = false
+                self.snoozeAlarmButton.tintColor = nil
+                
+            } else {
+                self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
             }
-            
-        } else if alarmObject.warning == false && !alarmObject.isSnoozed {
-            self.snoozeAlarmButton.isEnabled = false
-            self.snoozeAlarmButton.tintColor = nil
-            
-        } else {
-            self.snoozeAlarmButton.image = UIImage(named: "alarmIcon")
         }
-
+        
         self.siteWebView?.reload()
-        
-        
     }
     
     func updateTitles(_ title: String) {

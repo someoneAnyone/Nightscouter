@@ -8,6 +8,7 @@
 
 import UIKit
 import NightscouterKit
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, BundleRepresentable {
@@ -17,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     var sites: [Site] {
         return SitesDataSource.sharedInstance.sites
     }
-        
+    
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
     
@@ -40,21 +41,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         return true
     }
     
-    func applicationWillResignActive(_ application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-        #endif
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        SitesDataSource.sharedInstance.appIsInBackground = false
     }
     
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-        #endif
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        SitesDataSource.sharedInstance.appIsInBackground = true
     }
     
     deinit {
@@ -66,6 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
+        SitesDataSource.sharedInstance.appIsInBackground = true
         
     }
     
@@ -87,7 +81,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         print(">>> Entering \(#function) <<<")
         print("Received a local notification payload: \(notification) with application: \(application)")
-    
+        
     }
     
     @available(iOS 9.0, *)
@@ -136,11 +130,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
             UIApplication.shared.shortcutItems?.append(shortcut)
         }
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
+        
+        if let alarmObject = AlarmManager.sharedManager.alarmObject {
+            schedule(notificationFor: alarmObject)
+        }
     }
     
+    func schedule(notificationFor alarmObject: AlarmObject) {
+        
+        
+        if #available(iOS 10.0, *) {
+            
+        } else {
+            // Fallback on earlier versions
+            
+            
+            let localNotification = UILocalNotification()
+            localNotification.fireDate = Date()
+            localNotification.soundName = alarmObject.audioFileURL.absoluteString//UILocalNotificationDefaultSoundName;
+            localNotification.category = "Nightscout_Category"
+            // localNotification.userInfo = [site.uuid.uuidString: "uuid"]
+            
+            localNotification.alertAction = "View Site"
+            
+            let model = alarmObject
+            
+            localNotification.alertBody = model.snoozeText
+            
+            // localNotification.alertBody = "Last reading: \(model.lastReadingDate), BG: \(model.sgvLabel) \(model.direction.emojiForDirection) Delta: \(model.deltaLabel) Battery: \(model.batteryLabel)%"
+            
+            UIApplication.shared.scheduleLocalNotification(localNotification)
+        }
+    }
     
     // MARK: Custom Methods
-
+    
     func deepLinkToURL(_ url: URL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
         let pathComponents = url.pathComponents
@@ -198,21 +222,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
             navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
         }
         
-    
+        
     }
     
     func setupNotificationSettings() {
         print(">>> Entering \(#function) <<<")
-        // Specify the notification types.
-        let notificationTypes: UIUserNotificationType = [.alert, .sound, .badge]
         
-        // Register the notification settings.
-        let newNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
-        UIApplication.shared.registerUserNotificationSettings(newNotificationSettings)
         
-        // TODO: Enabled remote notifications... need to get a server running.
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                if let error = error {
+                    print("error:\(error)")
+                } else if !granted {
+                    print("not granted")
+                } else {
+                    DispatchQueue.main.async(execute: {
+                    })
+                }
+                
+            }
+        } else {
+            // Fallback on earlier versions
+            let notificationTypes: UIUserNotificationType = [.alert, .sound, .badge]
+            // Specify the notification types.
+            
+            
+            // Register the notification settings.
+            let newNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(newNotificationSettings)
+            
+            // TODO: Enabled remote notifications... need to get a server running.
+            
+        }
+        
         // UIApplication.sharedApplication().registerForRemoteNotifications()
-        
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         UIApplication.shared.applicationIconBadgeNumber = 0
         UIApplication.shared.cancelAllLocalNotifications()

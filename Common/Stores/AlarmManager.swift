@@ -9,8 +9,6 @@
 import Foundation
 
 
-
-/*
 open class AlarmManager: NSObject, SessionManagerType  {
     
     public static let sharedManager = AlarmManager()
@@ -18,17 +16,60 @@ open class AlarmManager: NSObject, SessionManagerType  {
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
     
-    var alarmObject: AlarmObject {
-        return AlarmObject(warning: active, urgent: urgent, isAlarmingForSgv: isAlarmingForSgv, isSnoozed: isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: snoozeTimeRemaining)
-    }
-    
-    fileprivate var active: Bool = false
-    fileprivate var urgent: Bool = false
-    fileprivate var isAlarmingForSgv: Bool = false
     fileprivate var updateTimer: Timer?
     
+    public var alarmObject: AlarmObject? {
+        get {
+            guard let sites = store?.sites else {
+                return nil
+            }
+            
+            var urgent: Bool = false
+            var alarmForSGV: Bool = false
+            
+            let alarmingSites = sites.filter { site in
+                if site.alarmDetails.isAlarming {
+                    urgent = site.alarmDetails.urgent
+                    alarmForSGV = site.alarmDetails.alarmForSGV
+                    return true
+                }
+                
+                return false
+            }
+            
+            var snoozeText: String = LocalizedString.generalAlarmMessage.localized
+            
+            if AlarmRule.isSnoozed {
+                snoozeText = String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
+            }
+            
+            let warningsFound: Bool = !alarmingSites.isEmpty
+            
+            if !warningsFound {
+                AlarmRule.disableSnooze()
+                return nil
+            }
+            
+            let isSnoozed = AlarmRule.isSnoozed
+            let snoozeTimeRemaining = AlarmRule.remainingSnoozeMinutes
+            
+            let alarmObject = AlarmObject(warning: warningsFound, urgent: urgent, isAlarmingForSgv: alarmForSGV, isSnoozed: isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: snoozeTimeRemaining)
+            
+            /*
+             If things are active... we need to play...
+             but if the player is currently playing we shouldn't start again.
+             Also if the alarm rule is snoozing we shouldn't sound again, right?
+             */
+            if isSnoozed && updateTimer == nil {
+                createTimer()
+            }
+            
+            return alarmObject
+        }
+    }
+    
     fileprivate func createTimer() {
-        let snoozeTimer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(AlarmManager.requestCompanionAppUpdate), userInfo: nil, repeats: true)
+        let snoozeTimer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(AlarmManager.postAlarmUpdateNotifiaction), userInfo: nil, repeats: true)
         updateTimer = snoozeTimer
     }
     
@@ -37,87 +78,29 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
     
     public func startSession() {
-        AlarmRule.snooze(seconds: 3)
+//        AlarmRule.snooze(seconds: 3)
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
-        
-        guard let sites = store?.sites else {
-            return
-        }
-        
-        let alarmingSites = sites.filter { site in
-            let viewModel = site.isAlarming
-            if viewModel.warn || viewModel.urgent || viewModel.alarmForSGV {
-                urgent = viewModel.urgent
-                return true
-            } else {
-                return false
-            }
-        }
-        
-        if alarmingSites.isEmpty {
-            AlarmRule.disableSnooze()
-        }
-        
-        self.active = !alarmingSites.isEmpty
-        
-        /*
-         If things are active... we need to play...
-         but if the player is currently playing we shouldn't start again.
-         Also if the alarm rule is snoozing we shouldn't sound again, right?
-         */
-        if isSnoozed {
-            guard updateTimer != nil else {
-                createTimer()
-                return
-            }
-            
-            return
-        }
-        
-        DispatchQueue.main.async {
+        OperationQueue.main.addOperation {
             self.postAlarmUpdateNotifiaction()
         }
-        
-    }
-}
-
-extension AlarmManager: Snoozable {
-    public func snooze(forMiutes minutes: Int) {
-        AlarmRule.snooze(minutes)
     }
     
-    open var snoozeTimeRemaining: Int {
-        return AlarmRule.remainingSnoozeMinutes
-    }
-    
-    open var isSnoozed: Bool {
-        return AlarmRule.isSnoozed
-    }
-    
-    open var snoozeText: String {
-        if AlarmRule.isSnoozed {
-            return String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
-        }
-        
-        return ""
-    }
 }
 
 extension AlarmManager {
-    public func requestCompanionAppUpdate() {
+    func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
-        messageToSend[DefaultKey.alarm.rawValue] = alarmObject.encode()
+        messageToSend[DefaultKey.alarm.rawValue] = alarmObject?.encode()
         store?.handleApplicationContextPayload(messageToSend)
     }
     
-    fileprivate func postAlarmUpdateNotifiaction() {
+    func postAlarmUpdateNotifiaction() {
         print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: alarmObject)
+        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: self.alarmObject)
     }
 }
-*/
 
 

@@ -16,7 +16,6 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
             print(">>> Entering \(#function) <<<")
             print(">>> ExtensionDelegate <<<")
         #endif
-        
         super.init()
     }
     

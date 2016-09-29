@@ -60,8 +60,8 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
     }
     
     public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
-        print("didReceiveUserInfo")
-        // print(": \(userInfo)")
+        print(">>> Entering \(#function) <<<")
+        //print(": \(userInfo)")
         
         DispatchQueue.main.async {
             self.processApplicationContext(context: userInfo)
@@ -69,13 +69,15 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
     }
     
     public func session(_ session: WCSession, didReceiveApplicationContext applicationContext: [String : Any]) {
-        // print("didReceiveApplicationContext: \(applicationContext)")
+        print(">>> Entering \(#function) <<<")
+        //print("didReceiveApplicationContext: \(applicationContext)")
         DispatchQueue.main.async {
             self.processApplicationContext(context: applicationContext)
         }
     }
     
     public func session(_ session: WCSession, didReceiveMessage message: [String : Any], replyHandler: @escaping ([String : Any]) -> Void) {
+        print(">>> Entering \(#function) <<<")
         DispatchQueue.main.async {
             let success =  self.processApplicationContext(context: message)
             replyHandler(["response" : "The message was procssed correctly: \(success)", "success": success])
@@ -153,7 +155,7 @@ extension WatchSessionManager {
         }) { (error) in
             print("WatchSession Transfer Error: \(error)")
             
-            self.processApplicationContext(context: DefaultKey.payloadPhoneUpdateError)
+            //self.processApplicationContext(context: DefaultKey.payloadPhoneUpdateError)
             
         }
     }

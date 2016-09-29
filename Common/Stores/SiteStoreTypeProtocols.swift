@@ -52,7 +52,7 @@ public protocol SiteStoreType {
     /// - parameter site: A fully formed site.
     /// - returns: True if things were successful.
     ///
-    func updateSite(_ site: Site)  ->  Bool
+    func updateSite(_ site: Site)
     ///
     /// Delete a site from storage.
     ///

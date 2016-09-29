@@ -110,7 +110,7 @@ public class Nightscout {
         
         switch APIRoute {
         case .entries:
-            let entryCout = 900
+            let entryCout = 300
             let queryItemCount = URLQueryItem(name: "count", value: "\(entryCout)")
             
             var comps = URLComponents(url: url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension) , resolvingAgainstBaseURL: true)
@@ -236,9 +236,9 @@ public class Nightscout {
                 FIXME()
                 ///Need a task here to generate complication data.
                 
-                OperationQueue.main.addOperation {
-                    completion(configuration, sgvs, cals, mbgs, device, nil)
-                }
+//                OperationQueue.main.addOperation {
+//                    completion(configuration, sgvs, cals, mbgs, device, nil)
+//                }
             }
             
             self.processingQueue.addOperation(parseReadingsData)
@@ -327,7 +327,9 @@ public extension Site {
             }
             
             updatedSite.lastUpdatedDate = Date()
-            // updatedSite.generateComplicationData()
+            OperationQueue.current?.addOperation {
+                updatedSite.generateComplicationData()
+            }
             
             completion(updatedSite, nil)
         }

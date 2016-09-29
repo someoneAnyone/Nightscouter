@@ -102,6 +102,7 @@
 		176CF74E1B385D33009B7E92 /* SiteListPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176CF74D1B385D33009B7E92 /* SiteListPageViewController.swift */; };
 		1771B0591B75235C006C1F5E /* NightscouterKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; };
 		1771B05A1B75235C006C1F5E /* NightscouterKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 1771B0421B75235B006C1F5E /* NightscouterKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		177CCF821D9C2AE500F22512 /* AlarmProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */; };
 		177FAB961D92BE7400B612B3 /* CompassControl+Convience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB931D92BE7400B612B3 /* CompassControl+Convience.swift */; };
 		177FAB971D92BE7400B612B3 /* ColorBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB941D92BE7400B612B3 /* ColorBlockView.swift */; };
 		177FAB981D92BE7400B612B3 /* CompassControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB951D92BE7400B612B3 /* CompassControl.swift */; };
@@ -1244,6 +1245,7 @@
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
 				171CDBB41D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB961D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
+				177CCF821D9C2AE500F22512 /* AlarmProtocols.swift in Sources */,
 				171CDB841D91C56500D7D52D /* Color-Extensions.swift in Sources */,
 				171CDB821D91C56500D7D52D /* Array-Extensions.swift in Sources */,
 				171CDBB21D91C56500D7D52D /* Chartable.swift in Sources */,

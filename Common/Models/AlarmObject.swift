@@ -22,7 +22,15 @@ public struct AlarmObject {
         let audioUrl = URL(fileURLWithPath: path)
         return audioUrl
     }
+
 }
+
+extension AlarmObject: Equatable {
+    public static func ==(lhs: AlarmObject, rhs: AlarmObject) -> Bool {
+        return (lhs.warning == rhs.warning && lhs.urgent == rhs.urgent && lhs.isAlarmingForSgv == rhs.isAlarmingForSgv && rhs.snoozeTimeRemaining == lhs.snoozeTimeRemaining)
+    }
+}
+
 
 extension AlarmObject: Encodable, Decodable {
     struct JSONKey {

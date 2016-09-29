@@ -11,11 +11,15 @@ public struct SiteAlarmModel {
     public var warn: Bool = false
     public var urgent: Bool = false
     public var alarmForSGV: Bool = false
+    
+    public var isAlarming: Bool {
+        return warn || urgent || alarmForSGV
+    }
 }
 
 public extension Site {
     
-    public var isAlarming: SiteAlarmModel {
+    public var alarmDetails: SiteAlarmModel {
         get {
             guard let configuration = configuration, let settings = configuration.settings, let latestSgv = sgvs.first else {
                 return SiteAlarmModel()
@@ -27,14 +31,17 @@ public extension Site {
             let sgvColorVar = thresholds.desiredColorState(forValue: latestSgv.mgdl)
             
             var alarmForSGV: Bool = false
+
+            var urgent: Bool = isStaleData.urgent
             
             if sgvColorVar == .alert || sgvColorVar == .warning {
                 alarmForSGV = true
+                urgent = (sgvColorVar == .alert)
             } else if !latestSgv.isGlucoseValueOk {
                 alarmForSGV = true
             }
             
-            return SiteAlarmModel(warn: isStaleData.warn, urgent: isStaleData.urgent, alarmForSGV: alarmForSGV)
+            return SiteAlarmModel(warn: isStaleData.warn, urgent: urgent, alarmForSGV: alarmForSGV)
         }
     }
     

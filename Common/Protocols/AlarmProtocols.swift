@@ -30,7 +30,7 @@ public protocol Snoozable {
 import UIKit
 
 public protocol AlarmStuff {
-    var alarmObject: AlarmObject { get }
+    var alarmObject: AlarmObject? { get }
     func presentSnoozePopup(forViewController viewController: UIViewController)
     func snooze(forMiutes minutes : Int)
 }
@@ -38,11 +38,13 @@ public protocol AlarmStuff {
 public extension AlarmStuff {
     var audioManager: AlarmAudioPlayer { return AlarmAudioPlayer.shared }
     
-    var alarmObject: AlarmObject {
+    var alarmObject: AlarmObject? {
         
-        let al = SitesDataSource.sharedInstance.alarmObject
-        
-        audioManager.alarmObject = al
+        let al = AlarmManager.sharedManager.alarmObject
+      
+        if !SitesDataSource.sharedInstance.appIsInBackground {
+            audioManager.alarmObject = al
+        }
         
         return al
     }
@@ -96,10 +98,8 @@ public extension AlarmStuff {
         AlarmRule.snooze(minutes)
         audioManager.stop()
         audioManager.unmuteVolume()
-        
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: self.alarmObject)
-        }
+
+        AlarmManager.sharedManager.requestCompanionAppUpdate()
     }
 }
 #endif
