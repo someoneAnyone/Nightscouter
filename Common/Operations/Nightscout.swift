@@ -231,10 +231,10 @@ public class Nightscout {
             }
         }
         
-        finishup.addDependency(parseConfig)
-        finishup.addDependency(parseEntries)
-        finishup.addDependency(parseDevice)
-        processingQueue.addOperation(finishup)
+        finishUp.addDependency(parseConfig)
+        finishUp.addDependency(parseEntries)
+        finishUp.addDependency(parseDevice)
+        processingQueue.addOperation(finishUp)
         
     }
     
