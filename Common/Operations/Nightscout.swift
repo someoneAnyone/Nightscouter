@@ -151,10 +151,10 @@ public class Nightscout {
         var sgvs: [SensorGlucoseValue]?
         var mbgs: [MeteredGlucoseValue]?
         var cals: [Calibration]?
+        var device: [DeviceStatus]?
         
         var entriesError: NightscoutRESTClientError?
         var serverConfigError: NightscoutRESTClientError?
-        var device: [DeviceStatus]?
         var deviceError: NightscoutRESTClientError?
         
         // Request JSON data for the Site's configuration.
@@ -224,7 +224,7 @@ public class Nightscout {
         processingQueue.addOperation(parseDevice)
         
         
-        let finishup = BlockOperation {
+        let finishUp = BlockOperation {
             print("Finishing up download and parse.")
             OperationQueue.main.addOperation {
                 completion(configuration, sgvs, cals, mbgs, device, nil)

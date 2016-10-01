@@ -124,8 +124,6 @@
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
-		8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
-		8352D5C21D9F6A4F00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
 		8366F57B1D99FC6A000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
 		8366F57C1D99FC6B000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
 		8366F57F1D9A1735000A800A /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB741D91C56500D7D52D /* alarm2.mp3 */; };
@@ -139,6 +137,8 @@
 		83883D961BC1F7E900BD1A9C /* NightscouterNow.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 83883D741BC1F7E800BD1A9C /* NightscouterNow.app */; };
 		83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */; };
 		83883DAC1BC2089000BD1A9C /* SiteRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883DAB1BC2089000BD1A9C /* SiteRowController.swift */; };
+		83C63A301D9F54C400593A13 /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C63A2E1D9F548A00593A13 /* DownloadOperation.swift */; };
+		83C63A311D9F54C500593A13 /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C63A2E1D9F548A00593A13 /* DownloadOperation.swift */; };
 		83E6214B1D9222480019622C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
 		83F4C5791B7C201800C74285 /* NotificationCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1725511D1B75544700AC09E0 /* NotificationCenter.framework */; };
 		83F4C5831B7C201800C74285 /* NightscouterToday.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83F4C5781B7C201700C74285 /* NightscouterToday.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -336,7 +336,6 @@
 		17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteUpdateRowController.swift; sourceTree = "<group>"; };
 		833E8D9B1D932C4B00ED30BD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NightscouterKit/Info.plist; sourceTree = SOURCE_ROOT; };
 		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
-		8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadOperation.swift; sourceTree = "<group>"; };
 		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D771BC1F7E800BD1A9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		83883D791BC1F7E800BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -354,6 +353,7 @@
 		83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SitesTableInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83883DAB1BC2089000BD1A9C /* SiteRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteRowController.swift; sourceTree = "<group>"; };
 		839DBD081BC0170300691B75 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
+		83C63A2E1D9F548A00593A13 /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadOperation.swift; sourceTree = "<group>"; };
 		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
 		83F4C5781B7C201700C74285 /* NightscouterToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NightscouterToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		83F4C57C1B7C201800C74285 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -506,8 +506,8 @@
 		171CDB621D91C56500D7D52D /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */,
 				171CDB631D91C56500D7D52D /* Nightscout.swift */,
+				83C63A2E1D9F548A00593A13 /* DownloadOperation.swift */,
 				171CDB641D91C56500D7D52D /* ParseConfigurationOperation.swift */,
 				171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */,
 				171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */,
@@ -815,7 +815,6 @@
 				170825DF1B2CBABB00304F8F /* Sources */,
 				170825E01B2CBABB00304F8F /* Frameworks */,
 				170825E11B2CBABB00304F8F /* Resources */,
-				1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */,
 				1771B0601B75235C006C1F5E /* Embed Frameworks */,
 				1725512C1B75544700AC09E0 /* Embed App Extensions */,
 				83883D9E1BC1F7E900BD1A9C /* Embed Watch Content */,
@@ -1097,20 +1096,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1757227E1C1A11FD0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "git=`sh /etc/profile; which git`\nbranch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\\\(.*\\\\),\\\\1,'`\ngit_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`\nsimple_branch_name=`$git rev-parse --abbrev-ref HEAD`\n\nbuild_number=\"$git_count\"\nif [ $CONFIGURATION != \"Release\" ]; then\nbuild_number+=\"-$simple_branch_name\"\nfi\n\nplist=\"${TARGET_BUILD_DIR}/${INFOPLIST_PATH}\"\ndsym_plist=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$plist\"\nif [ -f \"$DSYM_INFO_PLIST\" ] ; then\n/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $build_number\" \"$dsym_plist\"\nfi";
-		};
 		1757227F1C1A125C0015E552 /* Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/ */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1181,6 +1166,7 @@
 				171CDB851D91C56500D7D52D /* Double-Extension.swift in Sources */,
 				1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */,
 				1724B9FA1D9AE9CE00D2CD2B /* SegueHandlerType.swift in Sources */,
+				83C63A311D9F54C500593A13 /* DownloadOperation.swift in Sources */,
 				171CDB991D91C56500D7D52D /* MeteredGlucoseValue.swift in Sources */,
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,
@@ -1205,7 +1191,6 @@
 				171CDBD61D91C99700D7D52D /* AppTheme.swift in Sources */,
 				171CDBC31D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
 				171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
-				8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */,
 				171CDBA31D91C56500D7D52D /* Nightscout.swift in Sources */,
 				177FAB981D92BE7400B612B3 /* CompassControl.swift in Sources */,
 				171CDB911D91C56500D7D52D /* AlarmRule.swift in Sources */,
@@ -1246,6 +1231,7 @@
 				171CDB901D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDBA61D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDB981D91C56500D7D52D /* DeviceStatus.swift in Sources */,
+				83C63A301D9F54C400593A13 /* DownloadOperation.swift in Sources */,
 				171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
@@ -1265,7 +1251,6 @@
 				171CDBC41D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
 				171CDB8E1D91C56500D7D52D /* URL-Extensions.swift in Sources */,
 				171CDBCE1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
-				8352D5C21D9F6A4F00A51FFB /* DownloadOperation.swift in Sources */,
 				171CDBBA1D91C56600D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
 				171CDB9E1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
 				171CDBD41D91C76C00D7D52D /* Protocols.swift in Sources */,

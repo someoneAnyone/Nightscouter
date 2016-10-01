@@ -47,6 +47,8 @@ open class AlarmManager: NSObject, SessionManagerType  {
             
             if !warningsFound {
                 AlarmRule.disableSnooze()
+                updateTimer?.invalidate()
+                updateTimer = nil
                 return nil
             }
             
@@ -78,7 +80,7 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
     
     public func startSession() {
-//        AlarmRule.snooze(seconds: 3)
+        AlarmRule.snooze(seconds: 1)
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
