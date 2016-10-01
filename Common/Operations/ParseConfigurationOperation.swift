@@ -12,15 +12,15 @@ public class ParseConfigurationOperation: NightscouterBaseOperation {
     
     var configuration: ServerConfiguration?
     
-    public convenience init(withJSONData data: Data) {
+    public convenience init(withJSONData data: Data?) {
         self.init()
         self.name = "Parse JSON for Nightscout Server Configuration"
         self.data = data
     }
     
-    override func parse(JSONData data: Data) {
+    override func parse(JSONData data: Data?) {
         
-        guard let stringVersion = String(data: data, encoding: String.Encoding.utf8) else {
+        guard let data = data, let stringVersion = String(data: data, encoding: String.Encoding.utf8) else {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
             self.error = apiError
             

@@ -55,9 +55,8 @@ internal protocol NightscouterOperation {
 }
 
 public class NightscouterBaseOperation: Operation, NightscouterOperation {
-    
-    internal var error: NightscoutRESTClientError?
     internal var data: Data?
+    internal var error: NightscoutRESTClientError?
     
     public override func main() {
         
@@ -149,141 +148,94 @@ public class Nightscout {
         print(">>> Entering \(#function) for \(url) <<<")
         
         var configuration: ServerConfiguration?
-        //var serverConfigError: NightscoutRESTClientError?
-        
         var sgvs: [SensorGlucoseValue]?
         var mbgs: [MeteredGlucoseValue]?
         var cals: [Calibration]?
-        //var entriesError: NightscoutRESTClientError?
         
+        var entriesError: NightscoutRESTClientError?
+        var serverConfigError: NightscoutRESTClientError?
         var device: [DeviceStatus]?
-        //var deviceError: NightscoutRESTClientError?
-    
+        var deviceError: NightscoutRESTClientError?
+        
         // Request JSON data for the Site's configuration.
-        var configurationRequest = generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .status)
+        var configurationRequest = self.generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .status)
         configurationRequest.networkServiceType = userInitiated ? .default : .background
-        
-        let serverConfigTask = session.downloadTask(with: configurationRequest) { (location, response, error) in
-            print(">>> serverConfigTask task is complete. <<<")
-            //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
-            
-            if let err = error {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
-                
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            // Is there a file at the location provided?
-            guard let location = location else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
-                
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            guard let dataFromLocation = try? Data(contentsOf: location) else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            let parseConfig = ParseConfigurationOperation(withJSONData: dataFromLocation)
-            parseConfig.completionBlock = {
-                configuration = parseConfig.configuration
-            }
-            
-            self.processingQueue.addOperation(parseConfig)
-        }
-        serverConfigTask.resume()
-        
         
         var downloadReadingsRequest = generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .entries)
         downloadReadingsRequest.networkServiceType = userInitiated ? .default : .background
-        let downloadReadingsTask = session.downloadTask(with: downloadReadingsRequest) { (location, response, error) in
-            print(">>> downloadReadingsTask task is complete. <<<")
-            //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
-            
-            // Is there a file at the location provided?
-            guard let location = location else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            guard let dataFromLocation = try? Data(contentsOf: location) else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            let parseReadingsData = ParseReadingsOperation(withJSONData: dataFromLocation)
-            parseReadingsData.completionBlock = {
-                sgvs = parseReadingsData.sensorGlucoseValues
-                mbgs = parseReadingsData.meteredGlucoseValues
-                cals = parseReadingsData.calibrations
-                
-                FIXME()
-                ///Need a task here to generate complication data.
-                
-//                OperationQueue.main.addOperation {
-//                    completion(configuration, sgvs, cals, mbgs, device, nil)
-//                }
-            }
-            
-            self.processingQueue.addOperation(parseReadingsData)
-        }
-        
-        print(">>> Starting network request for \(url) <<<")
-        downloadReadingsTask.resume()
         
         var requestDevice = generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .devicestatus)
         requestDevice.networkServiceType = userInitiated ? .default : .background
         
-        let deviceTask = session.downloadTask(with: requestDevice) { (location, response, error) in
-            print(">>> deviceTask task is complete. <<<")
-            //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
+        let fetchConfig = DownloadOperation(withURLRequest: configurationRequest)
+        let parseConfig = ParseConfigurationOperation()
+        let configAdaptor = BlockOperation {
+            parseConfig.data  = fetchConfig.data
+            parseConfig.error = fetchConfig.error
+        }
+        parseConfig.completionBlock = {
+            configuration = parseConfig.configuration
+            serverConfigError = parseConfig.error
+        }
+        configAdaptor.addDependency(fetchConfig)
+        parseConfig.addDependency(configAdaptor)
+        
+        processingQueue.addOperation(fetchConfig)
+        processingQueue.addOperation(configAdaptor)
+        processingQueue.addOperation(parseConfig)
+        
+        
+        let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest)
+        let parseEntries = ParseReadingsOperation()
+        let entriesAdaptor = BlockOperation {
+            parseEntries.data  = fetchEntries.data
+            parseEntries.error = fetchEntries.error
+        }
+        parseEntries.completionBlock = {
+            sgvs = parseEntries.sensorGlucoseValues
+            mbgs = parseEntries.meteredGlucoseValues
+            cals = parseEntries.calibrations
             
-            // Is there a file at the location provided?
-            guard let location = location else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
+            entriesError = parseEntries.error
+        }
+        entriesAdaptor.addDependency(fetchEntries)
+        parseEntries.addDependency(entriesAdaptor)
+        
+        processingQueue.addOperation(fetchEntries)
+        processingQueue.addOperation(entriesAdaptor)
+        processingQueue.addOperation(parseEntries)
+        
+        
+        let fetchDevice = DownloadOperation(withURLRequest: requestDevice)
+        let parseDevice = ParseDeviceStatusOperation()
+        let deviceAdaptor = BlockOperation {
+            parseDevice.data  = fetchDevice.data
+            parseDevice.error = fetchDevice.error
+        }
+        parseDevice.completionBlock = {
+            device = parseDevice.deviceStatus
+            deviceError = parseDevice.error
+        }
+        deviceAdaptor.addDependency(fetchDevice)
+        parseDevice.addDependency(deviceAdaptor)
+        
+        processingQueue.addOperation(fetchDevice)
+        processingQueue.addOperation(deviceAdaptor)
+        processingQueue.addOperation(parseDevice)
+        
+        
+        let finishup = BlockOperation {
+            print("Finishing up download and parse.")
+            OperationQueue.main.addOperation {
+                completion(configuration, sgvs, cals, mbgs, device, nil)
             }
-            
-            guard let dataFromLocation = try? Data(contentsOf: location) else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
-                OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, apiError)
-                }
-                return
-            }
-            
-            let parseDeviceData = ParseDeviceStatusOperation(withJSONData: dataFromLocation)
-            parseDeviceData.completionBlock = {
-                device = parseDeviceData.deviceStatus
-                
-                OperationQueue.main.addOperation {
-                    completion(configuration, sgvs, cals, mbgs, device, nil)
-                }
-            }
-            
-            self.processingQueue.addOperation(parseDeviceData)
         }
         
-        deviceTask.resume()
+        finishup.addDependency(parseConfig)
+        finishup.addDependency(parseEntries)
+        finishup.addDependency(parseDevice)
+        processingQueue.addOperation(finishup)
+        
     }
     
 }
@@ -292,7 +244,7 @@ public extension Site {
     public func fetchDataFromNetwrok(userInitiated: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         var updatedSite = self
-
+        
         Nightscout().networkRequest(forNightscoutURL: self.url, apiPassword: self.apiSecret, userInitiated: userInitiated) { (config, sgvs, cals, mbgs, devices, err) in
             
             if let error = err {
@@ -300,7 +252,7 @@ public extension Site {
                 // We need to propogate the error to UI.
                 updatedSite.disabled = true
                 completion(updatedSite, error)
-
+                
                 //fatalError()
             }
             
