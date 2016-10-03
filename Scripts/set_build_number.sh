@@ -1,3 +1,4 @@
+# http://www.mokacoding.com/blog/automatic-xcode-versioning-with-git/
 #!/bin/bash
 
 git=$(sh /etc/profile; which git)
@@ -16,6 +17,7 @@ done
 
 
 
+# Automated Build Number - http://blog.curtisherbert.com/automated-build-numbers/
 # git=`sh /etc/profile; which git`
 # branch_name=`$git symbolic-ref HEAD | sed -e 's,.*/\\(.*\\),\\1,'`
 # git_count=`$git rev-list $branch_name |wc -l | sed 's/^ *//;s/ *$//'`
