@@ -245,7 +245,6 @@ public class SitesDataSource: SiteStoreType {
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
             saveData([DefaultKey.sites.rawValue: sites])
             //defaults.set(sites, forKey: DefaultKey.sites.rawValue)
-            //defaults.synchronize()
         } else {
             print("No sites were found.")
         }
@@ -357,6 +356,7 @@ public class SitesDataSource: SiteStoreType {
             OperationQueue.main.addOperation {
                 self.postDataUpdatedNotification()
             }
+            defaults.synchronize()
         }
         
         return (successfullSave, successfullAppContextUpdate)
