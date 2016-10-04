@@ -185,7 +185,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             return
         }
         
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             self.pop()
             self.dismiss()
             

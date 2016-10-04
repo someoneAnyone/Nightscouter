@@ -14,13 +14,14 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     override init() {
         super.init()
         FIXME()
-        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
-            ComplicationController.reloadComplications()
-        }
+//        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+            // ComplicationController.reloadComplications()
+       // }
     }
     
     public func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
-        handler([.backward])
+//        handler([.backward])
+        handler([])
     }
     
     public func getCurrentTimelineEntry(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {

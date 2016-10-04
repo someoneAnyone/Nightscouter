@@ -153,6 +153,7 @@ public class Nightscout {
         var cals: [Calibration]?
         var device: [DeviceStatus]?
         
+        // Need to propgate the errors back up to the UI.
         var entriesError: NightscoutRESTClientError?
         var serverConfigError: NightscoutRESTClientError?
         var deviceError: NightscoutRESTClientError?
@@ -173,10 +174,19 @@ public class Nightscout {
             parseConfig.data  = fetchConfig.data
             parseConfig.error = fetchConfig.error
         }
+        
         parseConfig.completionBlock = {
             configuration = parseConfig.configuration
             serverConfigError = parseConfig.error
+            
+            if let serverConfigError = serverConfigError {
+                self.processingQueue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    completion(nil, nil, nil, nil, nil, serverConfigError)
+                }
+            }
         }
+        
         configAdaptor.addDependency(fetchConfig)
         parseConfig.addDependency(configAdaptor)
         
@@ -191,12 +201,20 @@ public class Nightscout {
             parseEntries.data  = fetchEntries.data
             parseEntries.error = fetchEntries.error
         }
+        
         parseEntries.completionBlock = {
             sgvs = parseEntries.sensorGlucoseValues
             mbgs = parseEntries.meteredGlucoseValues
             cals = parseEntries.calibrations
             
             entriesError = parseEntries.error
+            
+            if let entriesError = entriesError {
+                OperationQueue.main.addOperation {
+                    self.processingQueue.cancelAllOperations()
+                    completion(configuration, nil, nil, nil, nil, entriesError)
+                }
+            }
         }
         entriesAdaptor.addDependency(fetchEntries)
         parseEntries.addDependency(entriesAdaptor)
@@ -215,6 +233,13 @@ public class Nightscout {
         parseDevice.completionBlock = {
             device = parseDevice.deviceStatus
             deviceError = parseDevice.error
+            
+            if let deviceError = deviceError {
+                self.processingQueue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                    completion(configuration, sgvs, cals, mbgs, nil, deviceError)
+                }
+            }
         }
         deviceAdaptor.addDependency(fetchDevice)
         parseDevice.addDependency(deviceAdaptor)
@@ -237,23 +262,26 @@ public class Nightscout {
         processingQueue.addOperation(finishUp)
         
     }
-    
+
 }
 
 public extension Site {
+    
+    var nightscouterAPI: Nightscout {
+        return Nightscout()
+    }
+    
     public func fetchDataFromNetwrok(userInitiated: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         var updatedSite = self
         
-        Nightscout().networkRequest(forNightscoutURL: self.url, apiPassword: self.apiSecret, userInitiated: userInitiated) { (config, sgvs, cals, mbgs, devices, err) in
+        nightscouterAPI.networkRequest(forNightscoutURL: self.url, apiPassword: self.apiSecret, userInitiated: userInitiated) { (config, sgvs, cals, mbgs, devices, err) in
             
             if let error = err {
                 print(error.kind)
                 // We need to propogate the error to UI.
                 updatedSite.disabled = true
                 completion(updatedSite, error)
-                
-                //fatalError()
             }
             
             // Process the updates to the site.
@@ -279,9 +307,7 @@ public extension Site {
             }
             
             updatedSite.lastUpdatedDate = Date()
-            OperationQueue.current?.addOperation {
-                updatedSite.generateComplicationData()
-            }
+            updatedSite.generateComplicationData()
             
             completion(updatedSite, nil)
         }

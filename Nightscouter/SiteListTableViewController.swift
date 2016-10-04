@@ -309,6 +309,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
         
+        self.headerView.isHidden = true
         if let alarmObject = alarmObject {
             
             if alarmObject.warning == true || alarmObject.isSnoozed {

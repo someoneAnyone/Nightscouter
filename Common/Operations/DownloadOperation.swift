@@ -29,8 +29,8 @@ class DownloadOperation: Operation {
         
         disGroup.enter()
         
-        let serverConfigTask = URLSession.shared.downloadTask(with: self.request) { (location, response, error) in
-            print(">>> serverConfigTask task is complete. <<<")
+        let downloadTask = URLSession.shared.downloadTask(with: self.request) { (location, response, error) in
+            print(">>> downloadTask task for \(self.request.url) is complete. <<<")
             //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
             
             if self.isCancelled { return }
@@ -59,7 +59,7 @@ class DownloadOperation: Operation {
             disGroup.leave()
         }
 
-        serverConfigTask.resume()
+        downloadTask.resume()
 
         disGroup.wait()
     }

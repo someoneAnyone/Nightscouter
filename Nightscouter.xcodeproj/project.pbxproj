@@ -283,7 +283,7 @@
 		171CDB641D91C56500D7D52D /* ParseConfigurationOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseConfigurationOperation.swift; sourceTree = "<group>"; };
 		171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDeviceStatusOperation.swift; sourceTree = "<group>"; };
 		171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseReadingsOperation.swift; sourceTree = "<group>"; };
-		171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationDataSourceGenerator.swift; sourceTree = "<group>"; };
+		171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComplicationDataSourceGenerator.swift; path = ../Parsers/ComplicationDataSourceGenerator.swift; sourceTree = "<group>"; };
 		171CDB691D91C56500D7D52D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleRepresntable.swift; sourceTree = "<group>"; };
 		171CDB6C1D91C56500D7D52D /* Chartable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chartable.swift; sourceTree = "<group>"; };
@@ -518,7 +518,6 @@
 		171CDB671D91C56500D7D52D /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
-				171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */,
 				171CDB691D91C56500D7D52D /* JSONParser.swift */,
 			);
 			path = Parsers;
@@ -527,6 +526,7 @@
 		171CDB6A1D91C56500D7D52D /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */,
 				1724B9F91D9AE9CE00D2CD2B /* SegueHandlerType.swift */,
 				1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */,
 				171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */,
@@ -995,6 +995,7 @@
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
 								enabled = 1;
