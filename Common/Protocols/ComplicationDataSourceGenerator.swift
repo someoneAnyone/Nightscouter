@@ -115,7 +115,7 @@ public extension ComplicationDataSourceGenerator {
             if let calibration = nearest(calibration: calibrations, forDate: sgv.date as Date) {
                 
                 // Calculate Raw BG for a given calibration.
-                let raw = calculateRawBG(fromSensorGlucoseValue: sgv, calibration: calibration)
+                let raw = sgv.calculateRaw(withCalibration: calibration) //calculateRawBG(fromSensorGlucoseValue: sgv, calibration: calibration)
                 var rawFormattedString = raw.formattedForMgdl
                 // Convert to correct units.
                 if units == .mmol {
@@ -130,13 +130,14 @@ public extension ComplicationDataSourceGenerator {
             compModels.append(compModel)
         }
         
-        
+        /*
         let settings = configuration.settings ?? ServerConfiguration().settings!
         
         // Get the latest model and use to create stale complication timeline entries.
         let model = compModels.max{ (lModel, rModel) -> Bool in
             return rModel.date.compare(lModel.date as Date) == .orderedDescending
         }
+        
         
         if let model = model {
             // take last date and extend out 15 minutes.
@@ -154,19 +155,19 @@ public extension ComplicationDataSourceGenerator {
                 let urgentItem = ComplicationTimelineEntry(date: urgentStaleDate, rawLabel: "Please update.", nameLabel: "Data missing.", sgvLabel: "Urgent", deltaLabel: "", tintColor: DesiredColorState.alert.colorValue, units: .mgdl, direction: .none, noise: .none)
                 compModels.append(urgentItem)
             }
-        }
+        }*/
         
-        compModels.sorted()
+        // compModels.sorted()
         
         return compModels
     }
-
+    
 }
 
 
 extension Site: ComplicationDataSourceGenerator {
     @discardableResult
-     public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
+    public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
         
         guard let configuration = self.configuration else {
             return []

@@ -143,7 +143,19 @@ extension DeltaDisplayable {
     }
 }
 
-public func calculateRawBG(fromSensorGlucoseValue sgv: SensorGlucoseValue, calibration cal: Calibration) -> MgdlValue {
+public extension SensorGlucoseValue {
+    func calculateRaw(withCalibration cal: Calibration) -> MgdlValue {
+        return calculateRawBG(fromSensorGlucoseValue: self, calibration: cal)
+    }
+}
+
+public extension Calibration {
+    func calculateRaw(withSensorGlucoseValue sgv: SensorGlucoseValue) -> MgdlValue {
+        return calculateRawBG(fromSensorGlucoseValue: sgv, calibration: self)
+    }
+}
+
+fileprivate func calculateRawBG(fromSensorGlucoseValue sgv: SensorGlucoseValue, calibration cal: Calibration) -> MgdlValue {
     var raw: Double = 0
     
     let unfiltered = sgv.unfiltered

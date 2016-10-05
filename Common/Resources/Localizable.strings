@@ -31,6 +31,7 @@
 "generalRetryLabel" = "Retry";
 "generalNoLabel" = "No";
 "generalYesLabel" = "Yes";
+"cannotUpdate" = "Cannot Update";
 
 "uiAlertBadSiteTitle" = "Cannot Reach Nightscout Site";
 "uiAlertBadSiteMessage" = "A connection to %@ was not successfull.\n\nReason: %@\n\nPlease check the URL and try again.";
@@ -63,7 +64,7 @@
 
 "emptyTableViewCellTitle" = "No Nightscout sites were found.";
 
-"updateDateFromPhoneString" = "LAST UPDATE FROM PHONE";
+"updateDateFromPhoneString" = "LAST UPDATE";
 
 "sitePlural" = "Sites";
 "siteSingle" = "Site";

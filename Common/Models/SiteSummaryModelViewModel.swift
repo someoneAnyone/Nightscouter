@@ -161,7 +161,7 @@ public struct SiteSummaryModelViewModel: SiteSummaryModelViewModelDataSource, Si
             deltaString = delta.formattedBGDelta(forUnits: units)
             
             if let latestCalibration = site.cals.first {
-                let raw = calculateRawBG(fromSensorGlucoseValue: latestSgv, calibration: latestCalibration)
+                let raw = latestSgv.calculateRaw(withCalibration: latestCalibration) //calculateRawBG(fromSensorGlucoseValue: latestSgv, calibration: latestCalibration)
                 rawColorVar = thresholds.desiredColorState(forValue: raw)
                 
                 var rawFormattedString = "\(raw.formattedForMgdl)"
