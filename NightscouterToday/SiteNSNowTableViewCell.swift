@@ -44,7 +44,7 @@ class SiteNSNowTableViewCell: UITableViewCell {
         siteRawLabel?.isHidden = dataSource.rawHidden
         siteRawHeader?.isHidden = dataSource.rawHidden
         
-        siteRawLabel.text = dataSource.rawLabel
+        siteRawLabel.text =  dataSource.rawFormatedLabel
         siteRawLabel.textColor = delegate?.rawColor
         
         siteNameLabel.text = dataSource.nameLabel
