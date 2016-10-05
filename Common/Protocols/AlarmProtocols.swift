@@ -27,79 +27,79 @@ public protocol Snoozable {
 
 
 #if os(iOS)
-import UIKit
-
-public protocol AlarmStuff {
-    var alarmObject: AlarmObject? { get }
-    func presentSnoozePopup(forViewController viewController: UIViewController)
-    func snooze(forMiutes minutes : Int)
-}
-
-public extension AlarmStuff {
-    var audioManager: AlarmAudioPlayer { return AlarmAudioPlayer.shared }
+    import UIKit
     
-    var alarmObject: AlarmObject? {
+    public protocol AlarmStuff {
+        var alarmObject: AlarmObject? { get }
+        func presentSnoozePopup(forViewController viewController: UIViewController)
+        func snooze(forMiutes minutes : Int)
+    }
+    
+    public extension AlarmStuff {
+        var audioManager: AlarmAudioPlayer { return AlarmAudioPlayer.shared }
         
-        let al = AlarmManager.sharedManager.alarmObject
-      
-        if !SitesDataSource.sharedInstance.appIsInBackground {
-            audioManager.alarmObject = al
+        var alarmObject: AlarmObject? {
+            
+            var al: AlarmObject? = nil
+            al = AlarmManager.sharedManager.alarmObject
+            
+            if !SitesDataSource.sharedInstance.appIsInBackground {
+                audioManager.alarmObject = al
+            }
+            return al
         }
         
-        return al
-    }
-    
-    public func presentSnoozePopup(forViewController viewController: UIViewController) {
+        public func presentSnoozePopup(forViewController viewController: UIViewController) {
+            
+            if AlarmRule.isSnoozed {
+                AlarmRule.disableSnooze()
+                audioManager.play()
+            } else {
+                AlarmAudioPlayer.shared.muteVolume()
+                
+                let alertController = UIAlertController(title: LocalizedString.snoozeLabel.localized, message: LocalizedString.snoozeMessage.localized, preferredStyle: .alert)
+                
+                alertController.addAction(UIAlertAction(title: "30 \(LocalizedString.minutes.localized)",
+                    style: .default,
+                    handler: {(alert: UIAlertAction!) in
+                        
+                        self.snooze(forMiutes: 30)
+                }))
+                alertController.addAction(UIAlertAction(title: "1 \(LocalizedString.hour.localized)",
+                    style: .default,
+                    handler: {(alert: UIAlertAction!) in
+                        
+                        self.snooze(forMiutes: 60)
+                }))
+                alertController.addAction(UIAlertAction(title: "1 1/2 \(LocalizedString.hours.localized)",
+                    style: .default,
+                    handler: {(alert: UIAlertAction!) in
+                        
+                        self.snooze(forMiutes: 90)
+                }))
+                alertController.addAction(UIAlertAction(title: "2 \(LocalizedString.hours.localized)",
+                    style: .default,
+                    handler: {(alert: UIAlertAction!) in
+                        
+                        self.snooze(forMiutes: 120)
+                }))
+                alertController.addAction(UIAlertAction(title: LocalizedString.generalCancelLabel.localized,
+                                                        style: .default,
+                                                        handler: {(alert: UIAlertAction!) in
+                                                            self.audioManager.unmuteVolume()
+                }))
+                
+                viewController.present(alertController, animated: true, completion: nil)
+                alertController.view.tintColor = NSAssetKit.darkNavColor
+            }
+        }
         
-        if AlarmRule.isSnoozed {
-            AlarmRule.disableSnooze()
-            audioManager.play()
-        } else {
-            AlarmAudioPlayer.shared.muteVolume()
+        public func snooze(forMiutes minutes : Int) {
+            AlarmRule.snooze(minutes)
+            audioManager.stop()
+            audioManager.unmuteVolume()
             
-            let alertController = UIAlertController(title: LocalizedString.snoozeLabel.localized, message: LocalizedString.snoozeMessage.localized, preferredStyle: .alert)
-            
-            alertController.addAction(UIAlertAction(title: "30 \(LocalizedString.minutes.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 30)
-            }))
-            alertController.addAction(UIAlertAction(title: "1 \(LocalizedString.hour.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 60)
-            }))
-            alertController.addAction(UIAlertAction(title: "1 1/2 \(LocalizedString.hours.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 90)
-            }))
-            alertController.addAction(UIAlertAction(title: "2 \(LocalizedString.hours.localized)",
-                style: .default,
-                handler: {(alert: UIAlertAction!) in
-                    
-                    self.snooze(forMiutes: 120)
-            }))
-            alertController.addAction(UIAlertAction(title: LocalizedString.generalCancelLabel.localized,
-                                                    style: .default,
-                                                    handler: {(alert: UIAlertAction!) in
-                                                        self.audioManager.unmuteVolume()
-            }))
-            
-            viewController.present(alertController, animated: true, completion: nil)
-            alertController.view.tintColor = NSAssetKit.darkNavColor
+            AlarmManager.sharedManager.requestCompanionAppUpdate()
         }
     }
-    
-    public func snooze(forMiutes minutes : Int) {
-        AlarmRule.snooze(minutes)
-        audioManager.stop()
-        audioManager.unmuteVolume()
-
-        AlarmManager.sharedManager.requestCompanionAppUpdate()
-    }
-}
 #endif

@@ -367,7 +367,7 @@ extension SensorGlucoseValue: Encodable, Decodable {
         let device = Device(rawValue: deviceString) ?? .unknown
         let direction = Direction(rawValue: directionString) ?? .none
         let noise = Noise(rawValue: noiseInt) ?? .unknown
-        
+
         return SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mill)
     }
 }
@@ -392,7 +392,16 @@ extension DeviceStatus: Encodable, Decodable {
     public static func decode(_ dict: [String : Any]) -> DeviceStatus? {
         let json = dict
         
-        guard let uploaderBattery = json[JSONKey.uploaderBattery] as? Int, let created = json[JSONKey.created_at] as? String else {
+        guard let uploaderBattery = json[JSONKey.uploaderBattery] as? Int else {
+            return nil
+        }
+        
+        var mills: Mills?
+        if let created = json[JSONKey.created_at] as? String {
+            mills = AppConfiguration.serverTimeDateFormatter.date(from: created)?.timeIntervalSince1970.millisecond
+        } else if let intMills = json["mills"] as? Int {
+            mills = Mills(intMills)
+        } else {
             return nil
         }
         
@@ -401,12 +410,12 @@ extension DeviceStatus: Encodable, Decodable {
          return nil
          }
          */
-        
+        /*
         guard let mills = AppConfiguration.serverTimeDateFormatter.date(from: created)?.timeIntervalSince1970.millisecond else {
             return nil
-        }
+        }*/
         
-        return DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: mills)
+        return DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: mills!)
     }
 }
 

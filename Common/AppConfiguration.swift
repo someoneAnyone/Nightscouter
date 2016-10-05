@@ -151,7 +151,7 @@ public class AppConfiguration {
         // Sample String: "2016-01-13T15:31:11.023Z"
      //"2015-07-12T02:46:37.878Z"
         
-        let formatString = "yyyy-MM-dd'T'HH:mm:Ss.sss'Z'"
+        let formatString = "yyyy-MM-dd'T'HH:mm:Ss.z'Z'"
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = formatString
         return dateFormatter

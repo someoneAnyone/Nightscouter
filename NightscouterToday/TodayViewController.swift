@@ -47,6 +47,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
             preferredContentSize = tableView.contentSize
         }
         
+        updateData()
         NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
     }
     

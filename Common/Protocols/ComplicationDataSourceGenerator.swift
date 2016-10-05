@@ -68,7 +68,7 @@ public extension ComplicationDataSourceGenerator {
         let thresholds: Thresholds = configuration.settings?.thresholds ?? Thresholds(bgHigh: 300, bgLow: 70, bgTargetBottom: 60, bgTargetTop: 250)
         
         // Iterate through provided Sensor Glucose Values to create a timeline.
-        for (index, sgv) in sgvs.enumerated() {
+        for (index, sgv) in sgvs.enumerated() where index < 4 {
             
             // Create a color for a given SGV value.
             let sgvColor = thresholds.desiredColorState(forValue: sgv.mgdl)
