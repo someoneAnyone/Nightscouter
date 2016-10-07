@@ -131,31 +131,31 @@ public extension ComplicationDataSourceGenerator {
         }
         
         /*
-        let settings = configuration.settings ?? ServerConfiguration().settings!
-        
-        // Get the latest model and use to create stale complication timeline entries.
-        let model = compModels.max{ (lModel, rModel) -> Bool in
-            return rModel.date.compare(lModel.date as Date) == .orderedDescending
-        }
-        
-        
-        if let model = model {
-            // take last date and extend out 15 minutes.
-            if settings.timeAgo.warn {
-                let warnTime = settings.timeAgo.warnMins
-                let warningStaleDate = model.date.addingTimeInterval(warnTime)
-                let warnItem = ComplicationTimelineEntry(date: warningStaleDate, rawLabel: "Please update.", nameLabel: "Data missing.", sgvLabel: "Warning", deltaLabel: "", tintColor: DesiredColorState.warning.colorValue, units: .mgdl, direction: .none, noise: .none)
-                compModels.append(warnItem)
-            }
-            
-            if settings.timeAgo.urgent {
-                // take last date and extend out 30 minutes.
-                let urgentTime = settings.timeAgo.urgentMins
-                let urgentStaleDate = model.date.addingTimeInterval(urgentTime)
-                let urgentItem = ComplicationTimelineEntry(date: urgentStaleDate, rawLabel: "Please update.", nameLabel: "Data missing.", sgvLabel: "Urgent", deltaLabel: "", tintColor: DesiredColorState.alert.colorValue, units: .mgdl, direction: .none, noise: .none)
-                compModels.append(urgentItem)
-            }
-        }*/
+         let settings = configuration.settings ?? ServerConfiguration().settings!
+         
+         // Get the latest model and use to create stale complication timeline entries.
+         let model = compModels.max{ (lModel, rModel) -> Bool in
+         return rModel.date.compare(lModel.date as Date) == .orderedDescending
+         }
+         
+         
+         if let model = model {
+         // take last date and extend out 15 minutes.
+         if settings.timeAgo.warn {
+         let warnTime = settings.timeAgo.warnMins
+         let warningStaleDate = model.date.addingTimeInterval(warnTime)
+         let warnItem = ComplicationTimelineEntry(date: warningStaleDate, rawLabel: "Please update.", nameLabel: "Data missing.", sgvLabel: "Warning", deltaLabel: "", tintColor: DesiredColorState.warning.colorValue, units: .mgdl, direction: .none, noise: .none)
+         compModels.append(warnItem)
+         }
+         
+         if settings.timeAgo.urgent {
+         // take last date and extend out 30 minutes.
+         let urgentTime = settings.timeAgo.urgentMins
+         let urgentStaleDate = model.date.addingTimeInterval(urgentTime)
+         let urgentItem = ComplicationTimelineEntry(date: urgentStaleDate, rawLabel: "Please update.", nameLabel: "Data missing.", sgvLabel: "Urgent", deltaLabel: "", tintColor: DesiredColorState.alert.colorValue, units: .mgdl, direction: .none, noise: .none)
+         compModels.append(urgentItem)
+         }
+         }*/
         
         // compModels.sorted()
         
@@ -167,7 +167,9 @@ public extension ComplicationDataSourceGenerator {
 
 extension Site: ComplicationDataSourceGenerator {
     @discardableResult
-    public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
+     public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
+        
+        if !self.updateNow { return self.complicationTimeline }
         
         guard let configuration = self.configuration else {
             return []
@@ -178,13 +180,13 @@ extension Site: ComplicationDataSourceGenerator {
     }
     
     public var latestComplicationData: ComplicationTimelineEntry? {
-        let complicationModels: [ComplicationTimelineEntry] = self.complicationTimeline// ?? []
+        let complicationModels: [ComplicationTimelineEntry] = self.complicationTimeline // ?? []
         
         return sortByDate(complicationModels).first
     }
     
     public var oldestComplicationData: ComplicationTimelineEntry? {
-        let complicationModels: [ComplicationTimelineEntry] = self.complicationTimeline //?? []
+        let complicationModels: [ComplicationTimelineEntry] = self.complicationTimeline // ?? []
         
         return sortByDate(complicationModels).last
     }

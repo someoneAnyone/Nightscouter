@@ -84,35 +84,6 @@ public class SitesDataSource: SiteStoreType {
     
     public var appIsInBackground: Bool = true
     
-    //public var alarmObject: AlarmObject?
-    
-    /*{
-     get {
-     var urgent: Bool = false
-     var alarmForSGV: Bool = false
-     
-     let alarmingSites = sites.filter { site in
-     if site.alarmDetails.isAlarming {
-     urgent = site.alarmDetails.urgent
-     alarmForSGV = site.alarmDetails.alarmForSGV
-     return true
-     }
-     
-     return false
-     }
-     
-     var snoozeText: String = LocalizedString.generalAlarmMessage.localized
-     
-     if AlarmRule.isSnoozed {
-     snoozeText = String(format: LocalizedString.snoozedForLabel.localized, "\(AlarmRule.remainingSnoozeMinutes)")
-     }
-     
-     let warningsFound: Bool = !alarmingSites.isEmpty
-     
-     return AlarmObject(warning: warningsFound, urgent: urgent, isAlarmingForSgv: alarmForSGV, isSnoozed: AlarmRule.isSnoozed, snoozeText: snoozeText, snoozeTimeRemaining: AlarmRule.remainingSnoozeMinutes)
-     }
-     }*/
-    
     public var lastViewedSiteIndex: Int {
         set {
             if lastViewedSiteIndex != newValue {
@@ -127,10 +98,11 @@ public class SitesDataSource: SiteStoreType {
     
     public var primarySite: Site? {
         set{
-            if let site = primarySite {
+            if var site = primarySite {
+                
+                site.generateComplicationData()
                 saveData([DefaultKey.primarySiteUUID.rawValue: site.uuid.uuidString])
             } else {
-//                saveData([DefaultKey.primarySiteUUID.rawValue: ""])
                 defaults.removeObject(forKey: DefaultKey.primarySiteUUID.rawValue)
             }
         }
@@ -176,7 +148,7 @@ public class SitesDataSource: SiteStoreType {
         concurrentQueue.sync {
             var initial = self.sites
             
-            let success = initial.insertOrUpdate(site)
+            let _ = initial.insertOrUpdate(site)
             
             let siteDict = initial.map { $0.encode() }
             
@@ -219,7 +191,7 @@ public class SitesDataSource: SiteStoreType {
             lastViewedSiteIndex = 0
             primarySite = nil
             
-            // clearAllSites()
+            clearAllSites()
         }
         
         let siteDict = initial.map { $0.encode() }
@@ -233,10 +205,12 @@ public class SitesDataSource: SiteStoreType {
         var initial = sites
         initial.removeAll()
         
-        saveData(["currentSiteIndexInt": 0])
-        saveData(["siteModelArray": []])
+        primarySite = nil
+        defaults.removeObject(forKey: "currentSiteIndexInt")
+        defaults.removeObject(forKey: "siteModelArray")
+        defaults.removeObject(forKey: DefaultKey.sites.rawValue)
+        defaults.synchronize()
         
-        saveData([DefaultKey.sites.rawValue: []])
         return initial.isEmpty
     }
     
@@ -244,7 +218,6 @@ public class SitesDataSource: SiteStoreType {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
             saveData([DefaultKey.sites.rawValue: sites])
-            //defaults.set(sites, forKey: DefaultKey.sites.rawValue)
         } else {
             print("No sites were found.")
         }
@@ -263,10 +236,8 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
-            FIXME()
             if let alarmObject = AlarmObject.decode(alarm) {
-                print("Received and alarm from the monitor: \(alarm)")
-                //self.alarmObject = alarmObject
+                print("Received and alarm from the monitor: \(alarmObject)")
             }
         } else {
             print("No alarm update was found.")
@@ -315,7 +286,6 @@ public class SitesDataSource: SiteStoreType {
             print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
-        
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }
@@ -339,8 +309,6 @@ public class SitesDataSource: SiteStoreType {
         
         dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = Date()
         
-        successfullSave = defaults.synchronize()
-        
         var successfullAppContextUpdate = true
         
         sessionManagers.forEach({ (manager: SessionManagerType ) -> () in
@@ -353,15 +321,18 @@ public class SitesDataSource: SiteStoreType {
         })
         
         if successfullAppContextUpdate {
-            OperationQueue.main.addOperation {
-                self.postDataUpdatedNotification()
-            }
-            defaults.synchronize()
+            successfullSave = defaults.synchronize()
+            delayDataUpdateNotification()
         }
         
         return (successfullSave, successfullAppContextUpdate)
     }
     
+    var delayDataUpdateNotification: (()->()) {
+        return debounce(delay: 2, action: {
+            self.postDataUpdatedNotification()
+        })
+    }
     
     func postAddedContentNotification() {
         print(">>> Entering \(#function) <<<")
@@ -378,7 +349,6 @@ public class SitesDataSource: SiteStoreType {
         NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
     }
 }
-
 
 public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, action: @escaping (()->()) ) -> ()->() {
     var lastFireTime   = DispatchTime.now()

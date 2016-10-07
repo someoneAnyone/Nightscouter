@@ -35,6 +35,11 @@ class GlanceController: WKInterfaceController {
         beginGlanceUpdates()
         //Update data.
         FIXME()
+        SitesDataSource.sharedInstance.primarySite?.fetchDataFromNetwrok(userInitiated: true, completion: { (updateSite, error) in
+            
+            SitesDataSource.sharedInstance.updateSite(updateSite)
+
+        })
         endGlanceUpdates()
         
     }
@@ -59,8 +64,8 @@ class GlanceController: WKInterfaceController {
         
         let  dataSource = SiteSummaryModelViewModel(withSite: site)
         
-        OperationQueue.main.addOperation {
-            
+//        OperationQueue.main.addOperation {
+        
             let dateString = NSCalendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(dataSource.lastReadingDate)
             
             let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: dataSource.lastReadingColor, textHeader: LocalizedString.lastReadingLabelShort.localized)
@@ -89,7 +94,7 @@ class GlanceController: WKInterfaceController {
             // Raw
             self.siteRawLabel.setAttributedText(formattedRaw)
             self.siteRawLabel.setHidden(dataSource.rawHidden)
-        }
+//        }
         
         self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [DefaultKey.lastViewedSiteIndex: SitesDataSource.sharedInstance.sites.index(of: site)], webpageURL: URL(string: dataSource.urlLabel))
     }

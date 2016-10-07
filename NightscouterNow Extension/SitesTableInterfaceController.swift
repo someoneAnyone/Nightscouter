@@ -40,28 +40,25 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     var timeStamp: String = ""
     
-    var currentlyUpdating: Bool = false
+    var currentlyUpdating: Bool = false {
+        didSet{
+            self.loadingLabel.setHidden(currentlyUpdating)
+        }
+    }
     
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         print(">>> Entering \(#function) <<<")
+        
         setupNotifications()
-        self.updateTableData()
-    }
-    
-    override func didDeactivate() {
-        // This method is called when watch view controller is no longer visible
-        print(">>> Entering \(#function) <<<")
-        super.didDeactivate()
+        
+        updateTableData()
     }
     
     override func table(_ table: WKInterfaceTable, didSelectRowAt rowIndex: Int) {
-        // create object.
-        // push controller...
-        print(">>> Entering \(#function) <<<")
-        
+        // set the currently selected object in the datasource
         SitesDataSource.sharedInstance.lastViewedSiteIndex = rowIndex
-        
+        // push controller on to the navigation stack.
         pushController(withName: ControllerName.SiteDetail, context: [DefaultKey.lastViewedSiteIndex.rawValue: rowIndex])
     }
     
@@ -75,9 +72,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             self.milliseconds = Date().timeIntervalSince1970.millisecond
             self.updateButton()
         }
-        
     }
-    
     
     fileprivate func updateTableData() {
         print(">>> Entering \(#function) <<<")
@@ -121,7 +116,6 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     @IBAction func updateButton() {
         print(">>> Entering \(#function) <<<")
-        FIXME()
         for (index, site) in self.sites.enumerated() {
             self.refreshDataFor(site, index: index, userInitiated: true)
         }
@@ -130,48 +124,39 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     func refreshDataFor(_ site: Site, index: Int, userInitiated: Bool = false) {
         print(">>> Entering \(#function) <<<")
         /// Tie into networking code.
-        FIXME()
+        currentlyUpdating = true
         site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+            
+            self.currentlyUpdating = false
             if let error = err {
-                OperationQueue.main.addOperation {
-                    self.presentErrorDialog(withTitle: "Oh no!", message: error.localizedDescription)
-                }
+                //OperationQueue.main.addOperation {
+                    self.presentErrorDialog(withTitle: LocalizedString.cannotUpdate.localized, message: error.localizedDescription)
+                //}
                 return
             }
             
-            let op = BlockOperation{
-                
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
-                
-                if let date = updatedSite.lastUpdatedDate {
-                    self.milliseconds = date.timeIntervalSince1970.millisecond
-                }
-
-            }
-            op.completionBlock = {
-                OperationQueue.main.addOperation {
-                    self.updateTableData()
-                }
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            if let date = updatedSite.lastUpdatedDate {
+                self.milliseconds = date.timeIntervalSince1970.millisecond
             }
             
-            OperationQueue.main.addOperation(op)
+            self.updateTableData()
         }
-        
     }
     
     func presentErrorDialog(withTitle title: String, message: String) {
         // catch any errors here
-        let retry = WKAlertAction(title: "Retry", style: .default, handler: { () -> Void in
+        let retry = WKAlertAction(title: LocalizedString.generalRetryLabel.localized, style: .default, handler: { () -> Void in
             self.updateButton()
         })
         
-        let cancel = WKAlertAction(title: "Cancel", style: .cancel, handler: { () -> Void in
+        let cancel = WKAlertAction(title: LocalizedString.generalCancelLabel.localized, style: .cancel, handler: { () -> Void in
             self.dismiss()
         })
         
-        DispatchQueue.main.async {
+        //DispatchQueue.main.sync {
             self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel])
-        }
+        //}
     }
     
     
@@ -181,7 +166,6 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         print(">>> Entering \(#function) <<<")
         
         guard let index = userInfo?[DefaultKey.lastViewedSiteIndex.rawValue] as? Int else {
-            
             return
         }
         

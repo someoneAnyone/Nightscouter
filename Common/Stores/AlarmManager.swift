@@ -84,12 +84,14 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
-        OperationQueue.main.addOperation {
-            self.postAlarmUpdateNotifiaction()
-        }
+        delayPost()
     }
-    
+
+    var delayPost = debounce(delay: 3) {
+        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
+    }
 }
+
 
 extension AlarmManager {
     func requestCompanionAppUpdate() {

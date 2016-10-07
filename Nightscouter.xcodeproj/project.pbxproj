@@ -1646,7 +1646,7 @@
 				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				OTHER_SWIFT_FLAGS = "-D DEBUG";
@@ -1670,7 +1670,7 @@
 				CODE_SIGN_ENTITLEMENTS = "NightscouterNow Extension/NightscouterNow Extension.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = F754VXZDPA;
 				INFOPLIST_FILE = "NightscouterNow Extension/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter.watchkitapp.watchkitextension;

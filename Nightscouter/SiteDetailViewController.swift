@@ -273,6 +273,7 @@ extension SiteDetailViewController {
         
         data = site.sgvs.map{ $0.jsonForChart as AnyObject }
         
+        snoozeAlarmButton.isEnabled = false
         if let alarmObject = alarmObject {
             
             if alarmObject.warning == true || alarmObject.isSnoozed {

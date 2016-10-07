@@ -48,13 +48,29 @@ class SiteDetailInterfaceController: WKInterfaceController {
     // MARK: Interface Builder Actions
     
     @IBAction func updateButton() {
-        // TODO: Force update of site.
-        FIXME()
+        print(">>> Entering \(#function) <<<")
+
+        guard let site = site else { return }
+        refreshDataFor(site, userInitiated: true)
+    }
+    
+    func refreshDataFor(_ site: Site, index: Int = 0, userInitiated: Bool = false) {
+        print(">>> Entering \(#function) <<<")
+        /// Tie into networking code.
+        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+            if let _ = err {
+                return
+            }
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            if let _ = updatedSite.lastUpdatedDate {
+
+            }
+        }
     }
     
     @IBAction func setAsComplication() {
         // TODO: Create icon and function that sets current site as the watch complication.
-        FIXME()
         SitesDataSource.sharedInstance.primarySite = site
     }
     
@@ -65,11 +81,17 @@ class SiteDetailInterfaceController: WKInterfaceController {
             self.site = SitesDataSource.sharedInstance.sites[index]
         }
         
-        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+        setupNotifications()
+    }
+    
+    fileprivate func setupNotifications() {
+        NotificationCenter.default.addObserver(forName: .NightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
+            print(">>> Entering \(#function) <<<")
             self.configureView()
         }
     }
     
+
     func configureView() {
         
         guard let site = self.site else {
@@ -86,7 +108,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
         //let timerHidden: Bool = dataSource.lookStale
         let image = self.createImage(dataSource: dataSource, delegate: dataSource, frame: calculateFrameForImage())
         
-        OperationQueue.main.addOperation {
+        //OperationQueue.main.addOperation {
             
             self.setTitle(dataSource.nameLabel)
             
@@ -109,7 +131,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
             self.siteUpdateTimer.setDate(dataSource.lastReadingDate)
             self.siteUpdateTimer.setTextColor(dataSource.lastReadingColor)
             self.siteUpdateTimer.setHidden(false)
-        }
+        //}
         
     }
     
