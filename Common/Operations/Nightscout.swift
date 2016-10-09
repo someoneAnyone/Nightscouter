@@ -75,31 +75,49 @@ public class NightscouterBaseOperation: Operation, NightscouterOperation {
 }
 
 
-public class Nightscout {
-    
+public protocol NightscoutDownloaderDelegate {
+    func nightscout(_ downloader: NightscoutDownloader, didEndWithError error: NightscoutRESTClientError?)
+    func nightscout(_ downloader: NightscoutDownloader, didCompleteTask: String)
+}
+
+public class NightscoutDownloader {
     
     // MARK: - Variables
+
+    static var sharedInstance: NightscoutDownloader = NightscoutDownloader()
+
+    let processingQueue: OperationQueue = OperationQueue()
     
-    public let processingQueue: OperationQueue = OperationQueue()
     
+    // MARK: - Private Variables
+
     fileprivate lazy var session: URLSession = {
         return URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: self.processingQueue)
     }()
     
-    enum APIRoutes: String {
-        case status, entries, pebble, devicestatus
+    fileprivate var userInitiated: Bool = false
+    fileprivate var hostURL: URL? = nil
+    fileprivate var apiSecret: String? = nil
+    
+    private enum APIRoutes: String {
+        case status, entries, pebble, devicestatus, cal
     }
+
     
     // MARK: - Private Methods
     
-    fileprivate func generateConfigurationRequestHeader(withBaseURL url: URL, withApiSecretString APISecret: String? = nil, forAPIRoute APIRoute: APIRoutes = .status) -> URLRequest {
-        var headers = [String: String]()
+    fileprivate func generateConfigurationRequestHeader(forAPIRoute APIRoute: APIRoutes = .status) -> URLRequest? {
         
+        guard let url = self.hostURL else {
+            return nil
+        }
+        
+        var headers = [String: String]()
         // Set the headers.
         // 1. Content type.
         headers["Content-Type"] = "application/json"
         // 2. Provide the API key, passphrase or api-secret token. User of the api prvides a string and this will convert to a SHA1 string.
-        headers["api-secret"] = APISecret?.sha1()
+        headers["api-secret"] = apiSecret?.sha1()
         
         var requstURL: URL
         
@@ -109,13 +127,15 @@ public class Nightscout {
         
         switch APIRoute {
         case .entries:
+            
             let entryCout = 300
             let queryItemCount = URLQueryItem(name: "count", value: "\(entryCout)")
-            
             var comps = URLComponents(url: url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension) , resolvingAgainstBaseURL: true)
             comps!.queryItems = [queryItemCount]
             requstURL = comps!.url!
             
+        case .cal:
+            requstURL = url.appendingPathComponent("\(apiVersion)/\(APIRoutes.entries.rawValue)").appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
         case .pebble:
             requstURL = url.appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
             
@@ -131,13 +151,22 @@ public class Nightscout {
             request.setValue(headerValue, forHTTPHeaderField: headerField)
         }
         
+        //request.networkServiceType = userInitiated ? .default : .background
+
         return request
     }
     
+      // Request JSON data for the Site's configuration.
+    var configurationRequest: URLRequest { return self.generateConfigurationRequestHeader(forAPIRoute: .status)! }
+    
+    var downloadReadingsRequest: URLRequest { return self.generateConfigurationRequestHeader(forAPIRoute: .entries)! }
+
+    var requestDevice: URLRequest { return self.generateConfigurationRequestHeader(forAPIRoute: .devicestatus)! }
+
     
     // MARK: - Public Methods
     
-    public init() {
+    private init() {
         processingQueue.name = API_DOMAIN
     }
     
@@ -146,6 +175,10 @@ public class Nightscout {
     public func networkRequest(forNightscoutURL url: URL, apiPassword password: String? = nil, userInitiated: Bool = false, completion:@escaping (_ configuration: ServerConfiguration?,_ sensorGlucoseValues: [SensorGlucoseValue]?, _ calibrations: [Calibration]?, _ meteredGlucoseValues:[MeteredGlucoseValue]?, _ deviceStatus: [DeviceStatus]?, _ error: NightscoutRESTClientError?) -> Void) {
         
         print(">>> Entering \(#function) for \(url) <<<")
+        
+        self.hostURL = url
+        self.apiSecret = password
+        self.userInitiated = userInitiated
         
         var configuration: ServerConfiguration?
         var sgvs: [SensorGlucoseValue]?
@@ -157,16 +190,6 @@ public class Nightscout {
         var entriesError: NightscoutRESTClientError?
         var serverConfigError: NightscoutRESTClientError?
         var deviceError: NightscoutRESTClientError?
-        
-        // Request JSON data for the Site's configuration.
-        var configurationRequest = self.generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .status)
-        configurationRequest.networkServiceType = userInitiated ? .default : .background
-        
-        var downloadReadingsRequest = generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .entries)
-        downloadReadingsRequest.networkServiceType = userInitiated ? .default : .background
-        
-        var requestDevice = generateConfigurationRequestHeader(withBaseURL: url, withApiSecretString: nil, forAPIRoute: .devicestatus)
-        requestDevice.networkServiceType = userInitiated ? .default : .background
         
         let fetchConfig = DownloadOperation(withURLRequest: configurationRequest)
         let parseConfig = ParseConfigurationOperation()
@@ -193,7 +216,6 @@ public class Nightscout {
         processingQueue.addOperation(fetchConfig)
         processingQueue.addOperation(configAdaptor)
         processingQueue.addOperation(parseConfig)
-        
         
         let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest)
         let parseEntries = ParseReadingsOperation()
@@ -230,6 +252,7 @@ public class Nightscout {
             parseDevice.data  = fetchDevice.data
             parseDevice.error = fetchDevice.error
         }
+        
         parseDevice.completionBlock = {
             device = parseDevice.deviceStatus
             deviceError = parseDevice.error
@@ -241,13 +264,13 @@ public class Nightscout {
                 }
             }
         }
+        
         deviceAdaptor.addDependency(fetchDevice)
         parseDevice.addDependency(deviceAdaptor)
         
         processingQueue.addOperation(fetchDevice)
         processingQueue.addOperation(deviceAdaptor)
         processingQueue.addOperation(parseDevice)
-        
         
         let finishUp = BlockOperation {
             print("Finishing up download and parse.")
@@ -259,16 +282,16 @@ public class Nightscout {
         finishUp.addDependency(parseConfig)
         finishUp.addDependency(parseEntries)
         finishUp.addDependency(parseDevice)
+
         processingQueue.addOperation(finishUp)
-        
     }
 
 }
 
 public extension Site {
     
-    var nightscouterAPI: Nightscout {
-        return Nightscout()
+    var nightscouterAPI: NightscoutDownloader {
+        return NightscoutDownloader.sharedInstance
     }
     
     public func fetchDataFromNetwrok(userInitiated: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {

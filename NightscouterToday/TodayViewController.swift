@@ -155,7 +155,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
             SitesDataSource.sharedInstance.updateSite(updatedSite)
             self.sites = SitesDataSource.sharedInstance.sites
 
-            OperationQueue.main.addOperation {
+            DispatchQueue.main.async {
                 self.tableView.reloadData()
                 
                 if (self.refreshControl?.isRefreshing != nil) {

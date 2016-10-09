@@ -30,7 +30,6 @@ public class SitesDataSource: SiteStoreType {
     
     private init() {
         
-        
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
         let iCloudManager = iCloudKeyValueStore()
@@ -98,9 +97,7 @@ public class SitesDataSource: SiteStoreType {
     
     public var primarySite: Site? {
         set{
-            if var site = primarySite {
-                
-                site.generateComplicationData()
+            if let site = newValue {
                 saveData([DefaultKey.primarySiteUUID.rawValue: site.uuid.uuidString])
             } else {
                 defaults.removeObject(forKey: DefaultKey.primarySiteUUID.rawValue)
@@ -154,7 +151,6 @@ public class SitesDataSource: SiteStoreType {
             
             self.saveData([DefaultKey.sites.rawValue: siteDict])
         }
-        
     }
     
     @discardableResult
@@ -283,14 +279,14 @@ public class SitesDataSource: SiteStoreType {
     @objc func dataStaleTimer(_ timer: Timer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
-            print("Posting NightscoutDataStaleNotification Notification at \(Date())")
+            // print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }
         
-        OperationQueue.main.addOperation {
+        DispatchQueue.main.async {
             self.postDataStaleNotification()
         }
         

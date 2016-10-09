@@ -95,8 +95,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
             // Validate URL
             URL.validateUrl(self.urlTextField.text, completion: { (success, urlString, error) -> Void in
                 print("validateURL Error: \(error)")
-                DispatchQueue.main.async(execute: { () -> Void in
-                    
+                DispatchQueue.main.async {   
                     if (success)
                     {
                         URL.ValidationQueue.queue.cancelAllOperations()
@@ -108,7 +107,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
                     }
                     self.nextButton.isEnabled = success
                     self.activityIndicator.stopAnimating()
-                })
+                }
             })
         })
         

@@ -110,7 +110,6 @@ extension SiteDetailViewController {
             site = SitesDataSource.sharedInstance.sites[SitesDataSource.sharedInstance.lastViewedSiteIndex]
         }
         
-        setupNotifications()
         
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
@@ -122,6 +121,8 @@ extension SiteDetailViewController {
             self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
         }
         
+        setupNotifications()
+
         updateData()
     }
     
@@ -152,7 +153,7 @@ extension SiteDetailViewController {
             self.siteActivityView?.startAnimating()
             site.fetchDataFromNetwrok(userInitiated: force) { (updatedSite, err) in
                 if let _ = err {
-                    OperationQueue.main.addOperation {
+                    DispatchQueue.main.async {
                         // self.presentAlertDialog(site.url, index: index, error: error.kind.description)
                     }
                     return
@@ -161,7 +162,7 @@ extension SiteDetailViewController {
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
                 self.site = updatedSite
                 
-                OperationQueue.main.addOperation {
+                DispatchQueue.main.async {
                     UIApplication.shared.isNetworkActivityIndicatorVisible = false
                     self.siteActivityView?.stopAnimating()
                     self.updateUI()

@@ -267,6 +267,7 @@ extension ComplicationController {
         FIXME()
         // Ask data store for new data..
         SitesDataSource.sharedInstance.primarySite?.generateComplicationData()
+        ComplicationController.reloadComplications()
     }
     
     func requestedUpdateBudgetExhausted() {

@@ -1,5 +1,3 @@
-
-
 //
 //  SitesTableInterfaceController.swift
 //  Nightscouter
@@ -42,7 +40,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     var currentlyUpdating: Bool = false {
         didSet{
-            self.loadingLabel.setHidden(currentlyUpdating)
+            self.loadingLabel.setHidden(!currentlyUpdating)
         }
     }
     
@@ -129,8 +127,8 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             
             self.currentlyUpdating = false
             if let error = err {
-                //OperationQueue.main.addOperation {
-                    self.presentErrorDialog(withTitle: LocalizedString.cannotUpdate.localized, message: error.localizedDescription)
+                // DispatchQueue.main.async {
+                self.presentErrorDialog(withTitle: LocalizedString.cannotUpdate.localized, message: error.localizedDescription)
                 //}
                 return
             }
@@ -139,6 +137,16 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             if let date = updatedSite.lastUpdatedDate {
                 self.milliseconds = date.timeIntervalSince1970.millisecond
             }
+            
+            #if os(watchOS)
+                ///Complications need to be updated smartly... also background refresh needs to be taken into account
+                let complicationServer = CLKComplicationServer.sharedInstance()
+                if let activeComplications = complicationServer.activeComplications {
+                    for complication in activeComplications {
+                        complicationServer.reloadTimeline(for: complication)
+                    }
+                }
+            #endif
             
             self.updateTableData()
         }
@@ -155,7 +163,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         })
         
         //DispatchQueue.main.sync {
-            self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel])
+        self.presentAlert(withTitle: title, message: message, preferredStyle: .alert, actions: [retry, cancel])
         //}
     }
     
