@@ -125,23 +125,19 @@ extension WatchSessionManager {
         
         store.handleApplicationContextPayload(context)
         
-        ///Complications need to be updated smartly... also backgroun refresh needs to be taken into account
+        ///Complications need to be updated smartly... also background refresh needs to be taken into account
         FIXME()
-        delayedReload()
+        
+        let complicationServer = CLKComplicationServer.sharedInstance()
+        if let activeComplications = complicationServer.activeComplications {
+            for complication in activeComplications {
+                complicationServer.reloadTimeline(for: complication)
+            }
+        }
         
         return true
     }
     
-    var delayedReload: (()->()) {
-        return debounce(delay: 2) {
-            let complicationServer = CLKComplicationServer.sharedInstance()
-            if let activeComplications = complicationServer.activeComplications {
-                for complication in activeComplications {
-                    complicationServer.reloadTimeline(for: complication)
-                }
-            }
-        }
-    }
 }
 
 extension WatchSessionManager {

@@ -556,8 +556,8 @@
 		171CDB781D91C56500D7D52D /* Stores */ = {
 			isa = PBXGroup;
 			children = (
-				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
 				175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */,
+				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
 				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,

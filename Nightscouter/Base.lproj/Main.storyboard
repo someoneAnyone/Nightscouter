@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nAT-HQ-Vfb">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="nAT-HQ-Vfb">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -35,7 +35,7 @@
                                 <rect key="frame" x="0.0" y="130" width="375" height="180"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fmw-B0-bF1" id="GfW-8p-Oeh">
-                                    <frame key="frameInset" width="375" height="179"/>
+                                    <frame key="frameInset" width="375" height="179.5"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lh2-gJ-TwC">
@@ -389,20 +389,19 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <activityIndicatorView opaque="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="VCK-LB-chS">
-                                <frame key="frameInset" minX="169" minY="560" width="37" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
+                            <activityIndicatorView opaque="NO" tag="5" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="VCK-LB-chS"/>
                         </subviews>
                         <color key="backgroundColor" red="0.33333333333333331" green="0.33333333333333331" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <gestureRecognizers/>
                         <constraints>
+                            <constraint firstItem="VCK-LB-chS" firstAttribute="centerX" secondItem="Hny-uc-L71" secondAttribute="centerX" id="Mit-JV-EzY"/>
                             <constraint firstItem="oca-oF-j9U" firstAttribute="leading" secondItem="A2Y-lA-0M9" secondAttribute="leading" id="OOA-B7-JGf"/>
                             <constraint firstItem="UbX-Qv-sdH" firstAttribute="top" secondItem="oca-oF-j9U" secondAttribute="bottom" id="Vss-my-BdQ"/>
                             <constraint firstAttribute="trailing" secondItem="oca-oF-j9U" secondAttribute="trailingMargin" id="ad4-3u-cWK"/>
                             <constraint firstItem="oca-oF-j9U" firstAttribute="leading" secondItem="A2Y-lA-0M9" secondAttribute="leadingMargin" constant="-8" id="i72-WB-uFh"/>
                             <constraint firstAttribute="bottom" secondItem="oca-oF-j9U" secondAttribute="bottom" id="lTf-k8-t1Z"/>
                             <constraint firstAttribute="trailingMargin" secondItem="oca-oF-j9U" secondAttribute="trailing" constant="-9" id="uXo-Ev-SOg"/>
+                            <constraint firstItem="VCK-LB-chS" firstAttribute="centerY" secondItem="Hny-uc-L71" secondAttribute="centerY" id="w7n-uU-FXF"/>
                             <constraint firstItem="oca-oF-j9U" firstAttribute="top" secondItem="sim-ic-EM0" secondAttribute="bottom" id="zin-Di-PaX"/>
                         </constraints>
                         <variation key="default">

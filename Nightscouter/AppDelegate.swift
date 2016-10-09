@@ -61,6 +61,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         #endif
         SitesDataSource.sharedInstance.appIsInBackground = true
         
+        sites.forEach { (site) in
+            site.fetchDataFromNetwrok(userInitiated: true, completion: { (updatedSite, error) in
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+            })
+        }
+        
+        completionHandler(.newData)
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any]) -> Bool {
