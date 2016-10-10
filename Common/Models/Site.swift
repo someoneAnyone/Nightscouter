@@ -26,8 +26,7 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public var nextRefreshDate: Date {
         
-        
-        var nextRefreshDate = date.addingTimeInterval(60.0 * 4)
+        let nextRefreshDate = lastUpdatedDate?.addingTimeInterval(60.0 * 4) ?? Date.distantPast
         
         if let latestSGVDate = sgvs.first?.date {
             // nextRefreshDate = lastSGVDate.addingTimeInterval((60.0 * 4))

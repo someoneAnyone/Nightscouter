@@ -20,8 +20,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     }
     
     public func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
-//        handler([.backward])
-        handler([])
+        handler([.backward])
     }
     
     public func getCurrentTimelineEntry(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {

@@ -341,6 +341,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
                 self.tableView.tableHeaderView = nil
             }
+        } else {
+            self.tableView.tableFooterView = nil
         }
         
     }
@@ -364,8 +366,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        FIXME()
-        if site.updateNow {
+         if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -423,7 +424,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             if let date = updatedSite.lastUpdatedDate {
                 self.milliseconds = date.timeIntervalSince1970.millisecond
             }
-            OperationQueue.main.addOperation {
+            DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
                     self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
