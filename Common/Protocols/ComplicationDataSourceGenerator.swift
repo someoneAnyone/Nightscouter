@@ -169,7 +169,7 @@ extension Site: ComplicationDataSourceGenerator {
     @discardableResult
      public mutating func generateComplicationData() -> [ComplicationTimelineEntry] {
         
-        if !self.updateNow { return self.complicationTimeline }
+        //if !self.updateNow { return self.complicationTimeline }
         
         guard let configuration = self.configuration else {
             return []
