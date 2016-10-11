@@ -119,7 +119,7 @@ public class NightscoutDownloader {
         // 2. Provide the API key, passphrase or api-secret token. User of the api prvides a string and this will convert to a SHA1 string.
         headers["api-secret"] = apiSecret?.sha1()
         
-        var requstURL: URL
+        var requestURL: URL
         
         let pathExtension = "json"
         
@@ -127,25 +127,24 @@ public class NightscoutDownloader {
         
         switch APIRoute {
         case .entries:
-            
-            let entryCout = 300
-            let queryItemCount = URLQueryItem(name: "count", value: "\(entryCout)")
+            let entryCount = 300
+            let queryItemCount = URLQueryItem(name: "count", value: "\(entryCount)")
             var comps = URLComponents(url: url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension) , resolvingAgainstBaseURL: true)
             comps!.queryItems = [queryItemCount]
-            requstURL = comps!.url!
+            requestURL = comps!.url!
             
         case .cal:
-            requstURL = url.appendingPathComponent("\(apiVersion)/\(APIRoutes.entries.rawValue)").appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
+            requestURL = url.appendingPathComponent("\(apiVersion)/\(APIRoutes.entries.rawValue)").appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
         case .pebble:
-            requstURL = url.appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
+            requestURL = url.appendingPathComponent(APIRoute.rawValue).appendingPathExtension(pathExtension)
             
         case .devicestatus:
-            requstURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
+            requestURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
         default:
-            requstURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
+            requestURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
         }
         
-        var request = URLRequest(url: requstURL)
+        var request = URLRequest(url: requestURL)
         
         for (headerField, headerValue) in headers {
             request.setValue(headerValue, forHTTPHeaderField: headerField)
