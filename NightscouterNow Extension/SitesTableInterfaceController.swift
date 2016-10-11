@@ -134,10 +134,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             }
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            if let date = updatedSite.lastUpdatedDate {
-                self.milliseconds = date.timeIntervalSince1970.millisecond
-            }
-            
+            self.milliseconds = updatedSite.milliseconds
             #if os(watchOS)
                 ///Complications need to be updated smartly... also background refresh needs to be taken into account
                 let complicationServer = CLKComplicationServer.sharedInstance()

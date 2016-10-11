@@ -329,7 +329,7 @@ public extension Site {
                 updatedSite.deviceStatuses = deviceStatus
             }
             
-            updatedSite.lastUpdatedDate = Date()
+            updatedSite.updatedAt = Date()
             updatedSite.generateComplicationData()
             
             completion(updatedSite, nil)

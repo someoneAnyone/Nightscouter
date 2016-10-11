@@ -26,6 +26,7 @@ extension Site: Encodable, Decodable {
     struct JSONKey {
         static let lastUpdated = "lastUpdated"
         static let url = "url"
+        static let updatedAt = "updatedAt"
         static let overrideScreenLock = "overrideScreenLock"
         static let disabled = "disabled"
         static let uuid = "uuid"
@@ -45,7 +46,17 @@ extension Site: Encodable, Decodable {
         let encodedDeviceStatus: [[String : Any]] = deviceStatuses.flatMap{ $0.encode() }
         let encodedComplicationTimeline: [[String : Any]] = complicationTimeline.flatMap { $0.encode() }
         
-        return [JSONKey.url : url.absoluteString, JSONKey.overrideScreenLock : overrideScreenLock, JSONKey.disabled: disabled, JSONKey.uuid: uuid.uuidString, JSONKey.configuration: configuration?.encode() ?? "", JSONKey.sgvs: encodedSgvs, JSONKey.cals: encodedCals, JSONKey.mbgs: encodedMgbs, JSONKey.deviceStatuses: encodedDeviceStatus, JSONKey.complicationTimeline: encodedComplicationTimeline]
+        return [JSONKey.url : url.absoluteString,
+                JSONKey.updatedAt : updatedAt,
+                JSONKey.overrideScreenLock : overrideScreenLock,
+                JSONKey.disabled: disabled,
+                JSONKey.uuid: uuid.uuidString,
+                JSONKey.configuration: configuration?.encode() ?? "",
+                JSONKey.sgvs: encodedSgvs,
+                JSONKey.cals: encodedCals,
+                JSONKey.mbgs: encodedMgbs,
+                JSONKey.deviceStatuses: encodedDeviceStatus,
+                JSONKey.complicationTimeline: encodedComplicationTimeline]
     }
     
     public static func decode(_ dict: [String: Any]) -> Site? {
@@ -57,7 +68,11 @@ extension Site: Encodable, Decodable {
         var site = Site(url: url, uuid: uuid)
         site.overrideScreenLock = dict[JSONKey.overrideScreenLock] as? Bool ?? false
         site.disabled = dict[JSONKey.disabled] as? Bool ?? false
-        
+        if let nextRefesh = dict[JSONKey.updatedAt] as? Date {
+            site.updatedAt = nextRefesh
+        } else {
+            site.updatedAt = Date.distantPast
+        }
         let rootDictForData = dict
         
         if let sgvs = rootDictForData[JSONKey.sgvs] as? [[String: Any]] {
@@ -468,155 +483,6 @@ extension ComplicationTimelineEntry: Encodable, Decodable {
         )
     }
 }
-
-/*
- // MARK: Append incoming data from a socket.io connection.
- public extension Site {
- 
- /**
- Mutates the current site by adding device, sgv, mbgs, cals received via JSON.
- 
- - parameter json: JSON Data
- 
- */
- mutating func parseJSONforSocketData(json: JSON) {
- 
- if let lastUpdated = json[Site.JSONKey.lastUpdated] as? Double {
- self.milliseconds = lastUpdated
- }
- 
- 
- if let uploaderBattery = (json[DeviceStatus.JSONKey.devicestatus] as? [String: Any])?[DeviceStatus.JSONKey.uploaderBattery] as? Int {
- self.deviceStatuses.insertOrUpdate(DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: 0))
- }
- /*
- if let lastUpdated = json[Site.JSONKey.lastUpdated].double {
- self.milliseconds = lastUpdated
- }
- 
- 
- if let uploaderBattery = json[DeviceStatus.JSONKey.devicestatus][DeviceStatus.JSONKey.uploaderBattery].int {
- self.deviceStatuses.insertOrUpdate(DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: 0))
- }
- */
- let deviceStatus = json[DeviceStatus.JSONKey.devicestatus] as? [[String: Any]] ?? []
- 
- // let deviceStatus = json[DeviceStatus.JSONKey.devicestatus]
- print("deviceStatus count: \(deviceStatus.count)")
- 
- for subJson in deviceStatus {
- if let mills = subJson[DeviceStatus.JSONKey.mills] as? Double {
- print(subJson)
- }
- }
- 
- /*
- for (_, subJson) in deviceStatus {
- if let mills = subJson[DeviceStatus.JSONKey.mills].double {
- if let uploaderBattery = subJson[DeviceStatus.JSONKey.uploader, DeviceStatus.JSONKey.battery].int {
- let dStatus = DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: mills)
- self.deviceStatuses.insertOrUpdate(dStatus)
- }
- }
- }
- */
- 
- let sgvs = json[GlobalJSONKey.sgvs] as? [[String: Any]] ?? []
- 
- //        let sgvs = json[GlobalJSONKey.sgvs]
- print("sgv count: \(sgvs.count)")
- for subJson in sgvs {
- // print("working on sgv[\(index)]")
- 
- if let deviceString = subJson[SensorGlucoseValue.JSONKey.device] as? String,
- let rssi = subJson[SensorGlucoseValue.JSONKey.rssi] as? Int,
- let unfiltered = subJson[SensorGlucoseValue.JSONKey.unfiltered] as? Double,
- let directionString = subJson[SensorGlucoseValue.JSONKey.direction] as? String,
- let filtered = subJson[SensorGlucoseValue.JSONKey.filtered] as? Double,
- let noiseInt = subJson[SensorGlucoseValue.JSONKey.noise] as? Int,
- let mills = subJson[SensorGlucoseValue.JSONKey.mills] as? Double,
- let mgdl = subJson[SensorGlucoseValue.JSONKey.mgdl] as? Double {
- 
- let device = Device(rawValue: deviceString) ?? .unknown
- let direction = Direction(rawValue: directionString) ?? .none
- let noise = Noise(rawValue: noiseInt) ?? Noise()
- 
- let sensorValue = SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mills)
- self.sgvs.insertOrUpdate(sensorValue)
- }
- }
- 
- /*
- for (_, subJson) in sgvs {
- // print("working on sgv[\(index)]")
- 
- if let deviceString = subJson[SensorGlucoseValue.JSONKey.device].string, let rssi = subJson[SensorGlucoseValue.JSONKey.rssi].int, let unfiltered = subJson[SensorGlucoseValue.JSONKey.unfiltered].double, let  directionString = subJson[SensorGlucoseValue.JSONKey.direction].string, let  filtered = subJson[SensorGlucoseValue.JSONKey.filtered].double, let  noiseInt = subJson[SensorGlucoseValue.JSONKey.noise].int, let  mills = subJson[SensorGlucoseValue.JSONKey.mills].double, let  mgdl = subJson[SensorGlucoseValue.JSONKey.mgdl].double {
- 
- let device = Device(rawValue: deviceString) ?? Device.Unknown
- let direction = Direction(rawValue: directionString) ?? Direction.None
- let noise = Noise(rawValue: noiseInt) ?? Noise()
- 
- let sensorValue = SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mills)
- self.sgvs.insertOrUpdate(sensorValue)
- }
- }
- */
- 
- let mbgs = json[GlobalJSONKey.mbgs] as? [[String: Any]] ?? []
- // let mbgs = json[GlobalJSONKey.mbgs]
- 
- print("mbgs count: \(mbgs.count)")
- 
- for subJson in mbgs {
- if let deviceString = subJson[MeteredGlucoseValue.JSONKey.device] as? String,
- let mills = subJson[MeteredGlucoseValue.JSONKey.mills] as? Double,
- let mgdl = subJson[MeteredGlucoseValue.JSONKey.mgdl] as? Double {
- let device = Device(rawValue: deviceString) ?? .unknown
- let meter = MeteredGlucoseValue(milliseconds: mills, device: device, mgdl: mgdl)
- self.mbgs.insertOrUpdate(meter)
- }
- }
- 
- /*
- for (_, subJson) in mbgs {
- if let deviceString = subJson[MeteredGlucoseValue.JSONKey.device].string, let mills = subJson[MeteredGlucoseValue.JSONKey.mills].double, let mgdl = subJson[MeteredGlucoseValue.JSONKey.mgdl].double {
- let device = Device(rawValue: deviceString) ?? Device.Unknown
- let meter = MeteredGlucoseValue(milliseconds: mills, device: device, mgdl: mgdl)
- self.mbgs.insertOrUpdate(meter)
- }
- }
- */
- let cals = json[GlobalJSONKey.cals] as? [[String: Any]] ?? []
- // let cals = json[GlobalJSONKey.cals]
- print("cals count: \(cals.count)")
- 
- for subJson in cals {
- if let slope = subJson[Calibration.JSONKey.slope] as? Double,
- let intercept = subJson[Calibration.JSONKey.intercept] as? Double,
- let scale = subJson[Calibration.JSONKey.scale] as? Double,
- let mills = subJson[Calibration.JSONKey.mills] as? Double {
- let calibration = Calibration(slope: slope, intercept: intercept, scale: scale, milliseconds: mills)
- self.cals.insertOrUpdate(calibration)
- }
- }
- 
- /*
- for (_, subJson) in cals {
- if let slope = subJson[Calibration.JSONKey.slope].double, let intercept = subJson[Calibration.JSONKey.intercept].double, let scale = subJson[Calibration.JSONKey.scale].double, let mills = subJson[Calibration.JSONKey.mills].double {
- let calibration = Calibration(slope: slope, intercept: intercept, scale: scale, milliseconds: mills)
- self.cals.insertOrUpdate(calibration)
- }
- }
- */
- // makes sure things are sorted correctly by date. When delta's come in they might screw up the order.
- self.sgvs.sorted()
- self.cals.sorted()
- self.mbgs.sorted()
- self.deviceStatuses.sorted()
- 
- }
- }
- */
 
 
 

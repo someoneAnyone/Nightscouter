@@ -10,7 +10,6 @@ import Foundation
 
 public struct Site: Dateable, CustomStringConvertible {
     public var configuration: ServerConfiguration?
-    public var milliseconds: Double
     public var url: URL
     public var overrideScreenLock: Bool
     public var disabled: Bool
@@ -21,42 +20,22 @@ public struct Site: Dateable, CustomStringConvertible {
     public var deviceStatuses: [DeviceStatus] = []
     public var complicationTimeline: [ComplicationTimelineEntry] = []
     
+    public var milliseconds: Mills {
+        get {
+            return updatedAt.addingTimeInterval(60*4).timeIntervalSince1970.millisecond
+        }
+    }
+
     // public var allowNotifications: Bool // Will be used when we support push notifications. Future addition.
     // public var treatments: [Treatment] = [] // Will be used when we support display of treatments. Future addition.
-    
-    public var nextRefreshDate: Date {
-        
-        let nextRefreshDate = lastUpdatedDate?.addingTimeInterval(60.0 * 4) ?? Date.distantPast
-        
-        if let latestSGVDate = sgvs.first?.date {
-            // nextRefreshDate = lastSGVDate.addingTimeInterval((60.0 * 4))
-            print("latestSGV Date: \(latestSGVDate)")
-        }
-        
-        print("iOS nextRefreshDate: " + nextRefreshDate.description)
-        
-        return nextRefreshDate
-    }
+    var updatedAt = Date.distantPast
     
     public var updateNow: Bool {
-        
-        // Get time information for right now.
-        let now = Date()
         // Compare now against when we should update.
-        let compare = now.compare(nextRefreshDate)
+        let compare = Date().compare(updatedAt.addingTimeInterval(TimeInterval.FourMinutes))
         
         // If the newDate is in the future do not update. Exit function.
         return (compare == .orderedDescending || configuration == nil) && disabled == false
-    }
-    
-    public var lastUpdatedDate: Date? = nil
-        {
-        didSet {
-            guard let lastUpdatedDate = lastUpdatedDate else {
-                return
-            }
-            milliseconds = lastUpdatedDate.timeIntervalSince1970.millisecond
-        }
     }
     
     public var uuid: UUID
@@ -68,7 +47,6 @@ public struct Site: Dateable, CustomStringConvertible {
     public init(){
         self.url = URL(string: "https://nscgm.herokuapp.com")!
         self.configuration = ServerConfiguration()
-        self.milliseconds = AppConfiguration.Constant.knownMilliseconds
         self.overrideScreenLock = false
         self.disabled = false
         
@@ -77,7 +55,6 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public init(url: URL){
         self.configuration = nil
-        self.milliseconds = AppConfiguration.Constant.knownMilliseconds
         self.url = url
         self.overrideScreenLock = false
         self.disabled = false
@@ -120,7 +97,6 @@ extension Site {
     
     public init(url: URL, apiSecret: String){
         self.configuration = nil
-        self.milliseconds = Date().timeIntervalSince1970.millisecond
         self.url = url
         self.overrideScreenLock = false
         self.disabled = false
@@ -131,7 +107,6 @@ extension Site {
     
     public init(url: URL, uuid: UUID){
         self.configuration = nil
-        self.milliseconds = Date().timeIntervalSince1970.millisecond
         self.url = url
         self.overrideScreenLock = false
         self.disabled = false

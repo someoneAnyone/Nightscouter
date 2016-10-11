@@ -63,9 +63,6 @@ class SiteDetailInterfaceController: WKInterfaceController {
             }
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            if let _ = updatedSite.lastUpdatedDate {
-
-            }
         }
     }
     
