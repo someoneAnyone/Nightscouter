@@ -421,9 +421,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             }
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            if let date = updatedSite.lastUpdatedDate {
-                self.milliseconds = date.timeIntervalSince1970.millisecond
-            }
+            self.milliseconds = updatedSite.milliseconds
             DispatchQueue.main.async {
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
