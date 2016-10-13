@@ -406,13 +406,13 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         }
     }
     
-    func refreshDataFor(_ site: Site, index: Int, userInitiated: Bool = false){
+    func refreshDataFor(_ site: Site, index: Int){
         /// Tie into networking code.
         FIXME()
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        site.fetchDataFromNetwork(userInitiated: userInitiated) { (updatedSite, err) in
+        site.fetchDataFromNetwork() { (updatedSite, err) in
             if let error = err {
                 OperationQueue.main.addOperation {
                     self.presentAlertDialog(site.url, index: index, error: error.kind.description)

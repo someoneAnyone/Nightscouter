@@ -35,7 +35,7 @@ class GlanceController: WKInterfaceController {
         beginGlanceUpdates()
         //Update data.
         FIXME()
-        SitesDataSource.sharedInstance.primarySite?.fetchDataFromNetwork(userInitiated: true, completion: { (updateSite, error) in
+        SitesDataSource.sharedInstance.primarySite?.fetchDataFromNetwork(completion: { (updateSite, error) in
             
             SitesDataSource.sharedInstance.updateSite(updateSite)
 

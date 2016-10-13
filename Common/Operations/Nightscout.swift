@@ -249,7 +249,7 @@ public extension Site {
         return NightscoutDownloader.sharedInstance
     }
     
-    public func fetchDataFromNetwork(userInitiated: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
+    public func fetchDataFromNetwork(completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         var updatedSite = self
         

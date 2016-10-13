@@ -141,35 +141,30 @@ extension SiteDetailViewController {
     
     func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
-        self.updateData(forceUpdate: true)
+        self.updateData()
     }
     
-    func updateData(forceUpdate force: Bool = false) {
+    func updateData() {
         guard let site = self.site else { return }
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        if (site.updateNow || site.sgvs.isEmpty || force == true) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            
-            self.siteActivityView?.startAnimating()
-            site.fetchDataFromNetwork(userInitiated: force) { (updatedSite, err) in
-                if let _ = err {
-                    DispatchQueue.main.async {
-                        // self.presentAlertDialog(site.url, index: index, error: error.kind.description)
-                    }
-                    return
-                }
-                
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
-                self.site = updatedSite
-                
+        self.siteActivityView?.startAnimating()
+        site.fetchDataFromNetwork() { (updatedSite, err) in
+            if let _ = err {
                 DispatchQueue.main.async {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                    self.siteActivityView?.stopAnimating()
-                    self.updateUI()
+                    // self.presentAlertDialog(site.url, index: index, error: error.kind.description)
                 }
+                return
             }
-        } else {
-            self.updateUI()
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            self.site = updatedSite
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                self.siteActivityView?.stopAnimating()
+                self.updateUI()
+            }
         }
     }
     
