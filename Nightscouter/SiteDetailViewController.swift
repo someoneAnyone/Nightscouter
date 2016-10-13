@@ -151,7 +151,7 @@ extension SiteDetailViewController {
             UIApplication.shared.isNetworkActivityIndicatorVisible = true
             
             self.siteActivityView?.startAnimating()
-            site.fetchDataFromNetwrok(userInitiated: force) { (updatedSite, err) in
+            site.fetchDataFromNetwork(userInitiated: force) { (updatedSite, err) in
                 if let _ = err {
                     DispatchQueue.main.async {
                         // self.presentAlertDialog(site.url, index: index, error: error.kind.description)

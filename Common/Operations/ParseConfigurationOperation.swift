@@ -8,8 +8,10 @@
 
 import Foundation
 
-public class ParseConfigurationOperation: NightscouterBaseOperation {
-    
+public class ParseConfigurationOperation: Operation, NightscouterOperation {
+
+    internal var error: NightscoutRESTClientError?
+    internal var data: Data?
     var configuration: ServerConfiguration?
     
     public convenience init(withJSONData data: Data?) {
@@ -18,8 +20,8 @@ public class ParseConfigurationOperation: NightscouterBaseOperation {
         self.data = data
     }
     
-    override func parse(JSONData data: Data?) {
-        
+    public override func main() {
+
         guard let data = data, let stringVersion = String(data: data, encoding: String.Encoding.utf8) else {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
             self.error = apiError

@@ -57,7 +57,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
     func refreshDataFor(_ site: Site, index: Int = 0, userInitiated: Bool = false) {
         print(">>> Entering \(#function) <<<")
         /// Tie into networking code.
-        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+        site.fetchDataFromNetwork(userInitiated: userInitiated) { (updatedSite, err) in
             if let _ = err {
                 return
             }

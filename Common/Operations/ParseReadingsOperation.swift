@@ -8,8 +8,11 @@
 
 import Foundation
 
-public class ParseReadingsOperation: NightscouterBaseOperation {
+public class ParseReadingsOperation: Operation, NightscouterOperation {
     
+    internal var error: NightscoutRESTClientError?
+    internal var data: Data?
+
     var sensorGlucoseValues: [SensorGlucoseValue] = []
     var calibrations: [Calibration] = []
     var meteredGlucoseValues: [MeteredGlucoseValue] = []
@@ -24,8 +27,7 @@ public class ParseReadingsOperation: NightscouterBaseOperation {
         self.data = data
     }
     
-    override func parse(JSONData data: Data?) {
-
+    public override func main() {
         guard let data = data, let stringVersion = String(data: data, encoding: String.Encoding.utf8) else {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
             self.error = apiError

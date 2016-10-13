@@ -366,7 +366,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-         if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+        if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -412,7 +412,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+        site.fetchDataFromNetwork(userInitiated: userInitiated) { (updatedSite, err) in
             if let error = err {
                 OperationQueue.main.addOperation {
                     self.presentAlertDialog(site.url, index: index, error: error.kind.description)

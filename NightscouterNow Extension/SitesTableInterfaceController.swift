@@ -123,7 +123,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         print(">>> Entering \(#function) <<<")
         /// Tie into networking code.
         currentlyUpdating = true
-        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+        site.fetchDataFromNetwork(userInitiated: userInitiated) { (updatedSite, err) in
             
             self.currentlyUpdating = false
             if let error = err {

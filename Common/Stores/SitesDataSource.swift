@@ -292,8 +292,7 @@ public class SitesDataSource: SiteStoreType {
         
     }
     
-    @discardableResult
-    public func saveData(_ dictionary: [String: Any]) -> (savedLocally: Bool, updatedApplicationContext: Bool) {
+    public func saveData(_ dictionary: [String: Any]) {
         
         var dictionaryToSend = dictionary
         
@@ -319,9 +318,13 @@ public class SitesDataSource: SiteStoreType {
         if successfullAppContextUpdate {
             successfullSave = defaults.synchronize()
             delayDataUpdateNotification()
+        } else {
+            fatalError("Unable to update the app context \(self)")
         }
         
-        return (successfullSave, successfullAppContextUpdate)
+        if successfullSave == false {
+            fatalError("Unable to save Data")
+        }
     }
     
     var delayDataUpdateNotification: (()->()) {
