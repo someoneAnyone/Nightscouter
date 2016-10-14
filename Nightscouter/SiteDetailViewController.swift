@@ -114,11 +114,11 @@ extension SiteDetailViewController {
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
                 DispatchQueue.main.async {
-                    self.updateUI(timer: timer)
+                    self.updateUI()
                 }
             })
         } else {
-            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
+            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI), userInfo: nil, repeats: true)
         }
         
         setupNotifications()
@@ -132,7 +132,7 @@ extension SiteDetailViewController {
         
         NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
             if (notif.object as? AlarmObject) != nil {
-                self.updateUI(timer: nil)
+                self.updateUI()
             }
         }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
@@ -168,13 +168,12 @@ extension SiteDetailViewController {
         }
     }
     
-    func updateUI(timer: Timer? = nil) {
+    func updateUI() {
         guard let site = site else {
             return
         }
         configureView(withSite: site)
     }
-    
     
     @IBAction func unwindToSiteDetail(_ segue:UIStoryboardSegue) {
         // print(">>> Entering \(#function) <<<")

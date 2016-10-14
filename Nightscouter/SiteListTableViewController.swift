@@ -288,23 +288,23 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         refreshControl?.tintColor = UIColor.white
         refreshControl?.layer.zPosition = tableView.backgroundView!.layer.zPosition + 1
         
-        updateUI(timer: nil)
+        updateUI()
         
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
                 DispatchQueue.main.async {
-                    self.updateUI(timer: timer)
+                    self.updateUI()
                 }
             })
         } else {
-            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
+            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(updateUI), userInfo: nil, repeats: true)
         }
         
         // Make sure the idle screen timer is turned back to normal. Screen will time out.
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    func updateUI(timer: Timer?) {
+    func updateUI() {
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
@@ -353,7 +353,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
             if (notif.object as? AlarmObject) != nil {
-                self.updateUI(timer: nil)
+                self.updateUI()
             }
         }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
