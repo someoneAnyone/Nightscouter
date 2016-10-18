@@ -8,7 +8,10 @@
 
 import Foundation
 
-public class ParseDeviceStatusOperation: NightscouterBaseOperation {
+public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
+    
+    internal var error: NightscoutRESTClientError?
+    internal var data: Data?
     
     var deviceStatus: [DeviceStatus] = []
     
@@ -17,9 +20,13 @@ public class ParseDeviceStatusOperation: NightscouterBaseOperation {
         self.name = "Parse JSON for Nightscout Device Status"
         self.data = data
     }
-    
-    override func parse(JSONData data: Data) {
-        super.parse(JSONData: data)
+
+    public override func main() {
+        guard let data = data else {
+            print("We expect data to be set at this point in the NightscouterOperation")
+            return
+        }
+        
         guard let stringVersion = String(data: data, encoding: String.Encoding.utf8) else {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
             self.error = apiError

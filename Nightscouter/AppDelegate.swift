@@ -64,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         SitesDataSource.sharedInstance.appIsInBackground = true
         
         sites.forEach { (site) in
-            site.fetchDataFromNetwrok(userInitiated: true, completion: { (updatedSite, error) in
+            site.fetchDataFromNetwork(completion: { (updatedSite, error) in
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
             })
         }

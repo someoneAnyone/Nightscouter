@@ -79,12 +79,13 @@ public protocol SiteStoreType {
     /// - returns Bool: True if things were successful.
     ///
     func clearAllSites() -> Bool
+    
     ///
     /// Save all site data to long-term storage.
-    /// -returns Bool: True if things were successful.
+    /// If the save fails we print and forcefully quit the app
     ///
-    @discardableResult
-    func saveData(_ dictionary: [String: Any]) -> (savedLocally: Bool, updatedApplicationContext: Bool)
+    func saveData(_ dictionary: [String: Any])
+    
     ///
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.

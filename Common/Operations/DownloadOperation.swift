@@ -33,11 +33,15 @@ class DownloadOperation: Operation {
             print(">>> downloadTask task for \(self.request.url) is complete. <<<")
             //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
             
-            if self.isCancelled { return }
+            if self.isCancelled {
+                disGroup.leave()
+                return
+            }
             
             if let err = error {
                 let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
                 self.error = apiError
+                disGroup.leave()
                 return
             }
             
@@ -45,12 +49,14 @@ class DownloadOperation: Operation {
             guard let location = location else {
                 let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
                 self.error = apiError
+                disGroup.leave()
                 return
             }
             
             guard let dataFromLocation = try? Data(contentsOf: location) else {
                 let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
                 self.error = apiError
+                disGroup.leave()
                 return
             }
             

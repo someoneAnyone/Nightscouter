@@ -75,7 +75,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 group.enter()
                 for site in SitesDataSource.sharedInstance.sites {
                     group.enter()
-                    site.fetchDataFromNetwrok(completion: { (updatedSite, error) in
+                    site.fetchDataFromNetwork(completion: { (updatedSite, error) in
                         SitesDataSource.sharedInstance.updateSite(updatedSite)
                         group.leave()
                     })

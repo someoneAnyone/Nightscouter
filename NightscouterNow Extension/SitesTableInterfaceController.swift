@@ -115,15 +115,15 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     @IBAction func updateButton() {
         print(">>> Entering \(#function) <<<")
         for (index, site) in self.sites.enumerated() {
-            self.refreshDataFor(site, index: index, userInitiated: true)
+            self.refreshDataFor(site, index: index)
         }
     }
     
-    func refreshDataFor(_ site: Site, index: Int, userInitiated: Bool = false) {
+    func refreshDataFor(_ site: Site, index: Int) {
         print(">>> Entering \(#function) <<<")
         /// Tie into networking code.
         currentlyUpdating = true
-        site.fetchDataFromNetwrok(userInitiated: userInitiated) { (updatedSite, err) in
+        site.fetchDataFromNetwork() { (updatedSite, err) in
             
             self.currentlyUpdating = false
             if let error = err {

@@ -148,7 +148,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     func refreshDataFor(_ site: Site, index: Int){
         // Start up the API
         FIXME()
-        site.fetchDataFromNetwrok(userInitiated: true) { (updatedSite, err) in
+        site.fetchDataFromNetwork() { (updatedSite, err) in
             if let _ = err {
                 return
             }

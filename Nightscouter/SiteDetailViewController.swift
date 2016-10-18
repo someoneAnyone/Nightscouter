@@ -114,11 +114,11 @@ extension SiteDetailViewController {
         if #available(iOS 10.0, *) {
             self.timer = Timer.scheduledTimer(withTimeInterval: TimeInterval.OneMinute, repeats: true, block: { (timer) in
                 DispatchQueue.main.async {
-                    self.updateUI(timer: timer)
+                    self.updateUI()
                 }
             })
         } else {
-            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI(timer:)), userInfo: nil, repeats: true)
+            self.timer = Timer.scheduledTimer(timeInterval: TimeInterval.OneMinute, target: self, selector: #selector(SiteListTableViewController.updateUI), userInfo: nil, repeats: true)
         }
         
         setupNotifications()
@@ -132,7 +132,7 @@ extension SiteDetailViewController {
         
         NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
             if (notif.object as? AlarmObject) != nil {
-                self.updateUI(timer: nil)
+                self.updateUI()
             }
         }
         //NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataUpdatedNotification, object: nil)
@@ -141,45 +141,39 @@ extension SiteDetailViewController {
     
     func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
-        self.updateData(forceUpdate: true)
+        self.updateData()
     }
     
-    func updateData(forceUpdate force: Bool = false) {
+    func updateData() {
         guard let site = self.site else { return }
+        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
-        if (site.updateNow || site.sgvs.isEmpty || force == true) {
-            UIApplication.shared.isNetworkActivityIndicatorVisible = true
-            
-            self.siteActivityView?.startAnimating()
-            site.fetchDataFromNetwrok(userInitiated: force) { (updatedSite, err) in
-                if let _ = err {
-                    DispatchQueue.main.async {
-                        // self.presentAlertDialog(site.url, index: index, error: error.kind.description)
-                    }
-                    return
-                }
-                
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
-                self.site = updatedSite
-                
+        self.siteActivityView?.startAnimating()
+        site.fetchDataFromNetwork() { (updatedSite, err) in
+            if let _ = err {
                 DispatchQueue.main.async {
-                    UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                    self.siteActivityView?.stopAnimating()
-                    self.updateUI()
+                    // self.presentAlertDialog(site.url, index: index, error: error.kind.description)
                 }
+                return
             }
-        } else {
-            self.updateUI()
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            self.site = updatedSite
+            
+            DispatchQueue.main.async {
+                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+                self.siteActivityView?.stopAnimating()
+                self.updateUI()
+            }
         }
     }
     
-    func updateUI(timer: Timer? = nil) {
+    func updateUI() {
         guard let site = site else {
             return
         }
         configureView(withSite: site)
     }
-    
     
     @IBAction func unwindToSiteDetail(_ segue:UIStoryboardSegue) {
         // print(">>> Entering \(#function) <<<")
