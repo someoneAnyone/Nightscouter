@@ -323,7 +323,8 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if successfullSave == false {
-            fatalError("Unable to save Data")
+            print("Defaults were not able be to synchronized for some reason.")
+            //fatalError("Unable to save Data")
         }
     }
     
