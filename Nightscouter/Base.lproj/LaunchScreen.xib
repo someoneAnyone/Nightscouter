@@ -1,64 +1,69 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <mutableArray key="HelveticaNeueLights.ttc">
+        <array key="HelveticaNeueLights.ttc">
             <string>HelveticaNeue-UltraLight</string>
-        </mutableArray>
+        </array>
     </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" restorationIdentifier="LaunchScreen" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nightscouter" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="nDB-nJ-8Zc">
-                    <rect key="frame" x="124" y="213" width="231" height="53"/>
-                    <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="46"/>
-                    <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="133" placeholderIntrinsicHeight="173" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
-                    <rect key="frame" x="173" y="32" width="133" height="173"/>
-                </imageView>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This application is not to be used for the treatment of diabetes. Please use this as an informational tool only." textAlignment="center" lineBreakMode="middleTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="8" translatesAutoresizingMaskIntoConstraints="NO" id="K0i-0c-3AB">
-                    <rect key="frame" x="15" y="298" width="450" height="39"/>
-                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
-                    <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="baV-dh-SrM">
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="D7K-af-wMS">
+                            <frame key="frameInset" minX="56" width="231" height="234"/>
+                            <subviews>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" placeholderIntrinsicWidth="133" placeholderIntrinsicHeight="173" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
+                                    <frame key="frameInset" minX="49" width="133" height="173"/>
+                                </imageView>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Nightscouter" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="nDB-nJ-8Zc">
+                                    <frame key="frameInset" minY="181" width="231" height="53"/>
+                                    <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="46"/>
+                                    <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                        </stackView>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" ambiguous="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K0i-0c-3AB">
+                            <frame key="frameInset" minY="266" width="343" height="139"/>
+                            <string key="text">This application is not to be used for the treatment of diabetes.
+
+Please use this as an informational tool only.</string>
+                            <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                            <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Copyright © 2015. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="wdr-4F-pJR">
-                    <rect key="frame" x="0.0" y="455" width="480" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                    <color key="textColor" red="0.74644886359999996" green="0.74644886359999996" blue="0.74644886359999996" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="textColor" red="0.74644886359999996" green="0.74644886359999996" blue="0.74644886359999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="nDB-nJ-8Zc" firstAttribute="top" secondItem="kG0-ZA-UvL" secondAttribute="bottom" constant="8" id="6Zb-iM-RaA"/>
-                <constraint firstAttribute="bottom" secondItem="wdr-4F-pJR" secondAttribute="bottom" constant="8" id="71b-oN-geu"/>
-                <constraint firstItem="K0i-0c-3AB" firstAttribute="top" secondItem="nDB-nJ-8Zc" secondAttribute="bottom" constant="10" id="F6W-t6-DUl"/>
-                <constraint firstAttribute="trailing" secondItem="K0i-0c-3AB" secondAttribute="trailing" constant="15" id="J9b-7c-72p"/>
-                <constraint firstAttribute="trailing" secondItem="wdr-4F-pJR" secondAttribute="trailing" id="JxV-dt-PJ1"/>
-                <constraint firstAttribute="centerX" secondItem="nDB-nJ-8Zc" secondAttribute="centerX" id="Mib-Ku-EN2"/>
-                <constraint firstItem="K0i-0c-3AB" firstAttribute="top" secondItem="nDB-nJ-8Zc" secondAttribute="bottom" constant="32" id="N8P-0p-obA"/>
-                <constraint firstItem="K0i-0c-3AB" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="15" id="Now-zW-wuU"/>
-                <constraint firstAttribute="centerY" secondItem="nDB-nJ-8Zc" secondAttribute="centerY" id="hVd-y8-eL5"/>
-                <constraint firstItem="nDB-nJ-8Zc" firstAttribute="centerX" secondItem="kG0-ZA-UvL" secondAttribute="centerX" id="iXq-uf-2ol"/>
-                <constraint firstItem="wdr-4F-pJR" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ieU-Fu-JoE"/>
+                <constraint firstAttribute="bottom" secondItem="wdr-4F-pJR" secondAttribute="bottom" constant="8" id="4Zw-Ft-lCO"/>
+                <constraint firstAttribute="trailingMargin" secondItem="baV-dh-SrM" secondAttribute="trailing" constant="8" id="52s-S3-dcd"/>
+                <constraint firstItem="wdr-4F-pJR" firstAttribute="top" relation="greaterThanOrEqual" secondItem="baV-dh-SrM" secondAttribute="bottom" priority="999" constant="32" id="EMW-bg-FCN"/>
+                <constraint firstItem="wdr-4F-pJR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="HRk-fk-nNJ"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Hu8-nA-gfW"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" constant="8" id="OjZ-jU-8dL"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="topMargin" priority="998" constant="32" id="eAh-hU-0vw"/>
+                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="wdr-4F-pJR" secondAttribute="trailing" id="hZd-cY-h8V"/>
+                <constraint firstItem="wdr-4F-pJR" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="w4T-cr-TQz"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <variation key="default">
-                <mask key="constraints">
-                    <exclude reference="F6W-t6-DUl"/>
-                </mask>
-            </variation>
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>

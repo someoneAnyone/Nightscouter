@@ -1,8 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="10116" systemVersion="15E65" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="GKK-vj-5UX">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GKK-vj-5UX">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="10032"/>
+        <deployment identifier="watchOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11077"/>
     </dependencies>
     <scenes>
         <!--Nightscouter-->
@@ -31,10 +32,10 @@
                                                     <group alignment="left" verticalAlignment="center" id="XPB-eC-B96">
                                                         <items>
                                                             <label alignment="left" text="LR" id="ZGd-P5-JG6">
-                                                                <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
-                                                            <timer width="35.5" alignment="left" verticalAlignment="center" enabled="YES" format="short" id="gsk-IY-9L0">
+                                                            <timer alignment="left" verticalAlignment="center" enabled="YES" format="short" previewedSeconds="240" id="gsk-IY-9L0">
                                                                 <fontDescription key="font" type="system" pointSize="11"/>
                                                                 <calendarUnit key="units" day="YES" hour="YES" minute="YES"/>
                                                             </timer>
@@ -53,7 +54,7 @@
                                                     <group alignment="left" verticalAlignment="center" id="rhp-j8-i4I">
                                                         <items>
                                                             <label alignment="left" text="B" id="eQO-Fc-4sQ">
-                                                                <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
                                                             <label alignment="left" verticalAlignment="center" text="--%" id="gOe-Pt-KgL">
@@ -64,7 +65,7 @@
                                                     <group alignment="right" verticalAlignment="center" id="uI5-1C-zXY">
                                                         <items>
                                                             <label alignment="left" text="R" id="XwO-b7-cwc">
-                                                                <color key="textColor" white="1" alpha="0.5" colorSpace="calibratedWhite"/>
+                                                                <color key="textColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
                                                                 <fontDescription key="font" type="boldSystem" pointSize="8"/>
                                                             </label>
                                                             <label alignment="left" verticalAlignment="center" text="--- : ---" id="rlM-jC-3gb">
@@ -93,12 +94,13 @@
                                     </connections>
                                 </tableRow>
                                 <tableRow identifier="SiteEmptyRowController" selectable="NO" id="S77-fP-8yz" customClass="SiteEmptyRowController" customModule="NightscouterNow_Extension">
-                                    <group key="rootItem" width="1" alignment="left" id="wCq-82-UfK">
+                                    <group key="rootItem" width="1" height="0.0" alignment="left" id="wCq-82-UfK">
                                         <items>
-                                            <label alignment="center" verticalAlignment="center" text="No Sites Available" id="udT-as-uND">
+                                            <label alignment="center" verticalAlignment="center" text="No Sites Available" textAlignment="center" numberOfLines="0" id="udT-as-uND">
                                                 <fontDescription key="font" style="UICTFontTextStyleCaption2"/>
                                             </label>
                                         </items>
+                                        <edgeInsets key="margins" left="5" right="5" top="10" bottom="10"/>
                                     </group>
                                     <connections>
                                         <outlet property="messageLabel" destination="udT-as-uND" id="6Ts-pQ-msW"/>
@@ -108,14 +110,14 @@
                                     <group key="rootItem" width="1" height="0.0" alignment="left" layout="vertical" id="bDS-bY-6Yc">
                                         <items>
                                             <label alignment="center" text="LAST ATTEMPTED UPDATE" id="9Ve-5A-4Ux">
-                                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="font" type="system" pointSize="8"/>
                                             </label>
                                             <label alignment="center" text="---" id="IXC-W1-L1r">
                                                 <fontDescription key="font" style="UICTFontTextStyleFootnote"/>
                                             </label>
                                         </items>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                     </group>
                                     <connections>
                                         <outlet property="siteLastReadingLabel" destination="IXC-W1-L1r" id="jms-7A-nyG"/>
@@ -135,8 +137,8 @@
                         </items>
                     </menu>
                     <connections>
-                        <outlet property="sitesLoading" destination="BlF-Sv-Zda" id="KCN-8V-Pxf"/>
-                        <outlet property="sitesTable" destination="aSP-OI-u6m" id="gVB-m3-lIb"/>
+                        <outlet property="loadingLabel" destination="BlF-Sv-Zda" id="HVx-VM-nW8"/>
+                        <outlet property="tableView" destination="aSP-OI-u6m" id="Sqw-uP-S9v"/>
                     </connections>
                 </controller>
             </objects>
@@ -180,7 +182,7 @@
                                 <group alignment="left" layout="vertical" spacing="0.0" id="RTL-DC-Ar5">
                                     <items>
                                         <label alignment="left" text="LAST READING" id="hR9-AL-08K">
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <fontDescription key="font" type="system" pointSize="8"/>
                                         </label>
                                         <label alignment="left" hidden="YES" text="- ---" id="JRe-kw-DOn">
@@ -195,7 +197,7 @@
                                 <group alignment="right" layout="vertical" spacing="0.0" id="F4f-Bs-kBz">
                                     <items>
                                         <label alignment="right" text="BATTERY" id="QGg-rk-PXv">
-                                            <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="textColor" red="0.66666666666666663" green="0.66666666666666663" blue="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <fontDescription key="font" type="system" pointSize="8"/>
                                         </label>
                                         <label alignment="right" text="--%" id="qjI-J1-2Qh">
@@ -211,12 +213,12 @@
                         <items>
                             <menuItem title="Update" image="RefreshIcon" id="UOF-CU-DHG">
                                 <connections>
-                                    <action selector="updateButton" destination="QpE-HT-5Ki" id="YHK-po-cdT"/>
+                                    <action selector="updateButton" destination="QpE-HT-5Ki" id="8Qk-dY-YcV"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Set as Default" icon="add" id="EGf-FO-X6l">
+                            <menuItem title="Set as Complication" icon="add" id="EGf-FO-X6l">
                                 <connections>
-                                    <action selector="setAsDefaultSite" destination="QpE-HT-5Ki" id="KHZ-94-gbv"/>
+                                    <action selector="setAsComplication" destination="QpE-HT-5Ki" id="4rX-vO-hla"/>
                                 </connections>
                             </menuItem>
                         </items>
@@ -233,7 +235,7 @@
                     </connections>
                 </controller>
             </objects>
-            <point key="canvasLocation" x="659" y="140"/>
+            <point key="canvasLocation" x="642" y="118"/>
         </scene>
         <!--Glance-->
         <scene sceneID="Hfq-rq-OqJ">
@@ -257,8 +259,8 @@
                     </connections>
                 </glanceController>
             </objects>
-            <point key="canvasLocation" x="403" y="-103"/>
+            <point key="canvasLocation" x="386" y="-186"/>
         </scene>
     </scenes>
-    <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="calibratedRGB"/>
+    <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

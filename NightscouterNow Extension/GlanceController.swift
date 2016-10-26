@@ -19,99 +19,89 @@ class GlanceController: WKInterfaceController {
     @IBOutlet var siteNameLabel: WKInterfaceLabel!
     @IBOutlet var siteSgvLabel: WKInterfaceLabel!
     
-    var updateUITimer: NSTimer?
-    
-    /*
-    var model: WatchModel? {
-        return WatchSessionManager.sharedManager.defaultModel()
-    }
- */
-    var model: WatchModel? {
-        didSet{
-            dispatch_async(dispatch_get_main_queue()) {
-                self.configureView()
-            }
+    var site: Site? {
+        didSet {
+            self.configureView()
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func willActivate() {
-        
-        updateUITimer = NSTimer.scheduledTimerWithTimeInterval(60.0 , target: self, selector: #selector(GlanceController.configureView), userInfo: nil, repeats: true)
+        super.willActivate()
         
         beginGlanceUpdates()
+        //Update data.
+        FIXME()
+        SitesDataSource.sharedInstance.primarySite?.fetchDataFromNetwork(completion: { (updateSite, error) in
+            
+            SitesDataSource.sharedInstance.updateSite(updateSite)
+
+        })
+        endGlanceUpdates()
         
-        // self.configureView()
-        WatchSessionManager.sharedManager.updateComplication { (timline) in
-            self.model = WatchSessionManager.sharedManager.defaultModel()
-            self.endGlanceUpdates()
+    }
+    
+    
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
+        
+        self.configureView()
+        
+        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+            
+            self.site = SitesDataSource.sharedInstance.primarySite
         }
-    }
-    
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        // Configure interface objects here.
-    }
-    
-    override func didDeactivate() {
-        // This method is called when watch view controller is no longer visible
-        super.didDeactivate()
-        
-        updateUITimer?.invalidate()
     }
     
     func configureView() {
         
-        guard let model = self.model else {
-            NSOperationQueue.mainQueue().addOperationWithBlock {
-                self.siteDeltaLabel.setText("Launch Nightscouter")
-                self.siteRawLabel.setText("and add a site.")
-                self.siteNameLabel.setText("")
-                self.siteSgvLabel.setText("")
-            }
-            
-            self.invalidateUserActivity()
+        guard let site = self.site else {
             return
         }
         
+        let  dataSource = SiteSummaryModelViewModel(withSite: site)
         
-            let dateString = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
+//        OperationQueue.main.addOperation {
+        
+            let dateString = NSCalendar.autoupdatingCurrent.stringRepresentationOfElapsedTimeSinceNow(dataSource.lastReadingDate)
             
-            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: UIColor(hexString: model.lastReadingColor), textHeader: "LR")
+            let formattedLastUpdateString = self.formattedStringWithHeaderFor(dateString, textColor: dataSource.lastReadingColor, textHeader: LocalizedString.lastReadingLabelShort.localized)
             
-            let formattedRaw = self.formattedStringWithHeaderFor(model.rawString, textColor:  UIColor(hexString: model.rawColor), textHeader: "R")
+            let formattedRaw = self.formattedStringWithHeaderFor(dataSource.rawLabel, textColor: dataSource.rawColor, textHeader: LocalizedString.rawLabelShort.localized)
             
-            let formattedBattery = self.formattedStringWithHeaderFor(model.batteryString, textColor:  UIColor(hexString: model.batteryColor), textHeader: "B")
+            let formattedBattery = self.formattedStringWithHeaderFor(dataSource.batteryLabel, textColor: dataSource.batteryColor, textHeader: LocalizedString.batteryLabelShort.localized)
             
-            let sgvString = String(stringInterpolation:model.sgvStringWithEmoji.stringByReplacingOccurrencesOfString(" ", withString: ""))
-
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-
+            let sgvString = String(stringInterpolation:dataSource.sgvLabel, dataSource.direction.emojiForDirection)
+            
             // Battery
             self.batteryLabel.setAttributedText(formattedBattery)
             self.lastUpdateLabel.setAttributedText(formattedLastUpdateString)
             
             // Delta
-            self.siteDeltaLabel.setText(model.deltaString)
-            self.siteDeltaLabel.setTextColor(UIColor(hexString: model.deltaColor))
+            self.siteDeltaLabel.setText(dataSource.deltaLabel)
+            self.siteDeltaLabel.setTextColor(dataSource.deltaColor)
             
             // Name
-            self.siteNameLabel.setText(model.displayName)
+            self.siteNameLabel.setText(dataSource.nameLabel)
             
             // Sgv
             self.siteSgvLabel.setText(sgvString)
-            self.siteSgvLabel.setTextColor(UIColor(hexString: model.sgvColor))
+            self.siteSgvLabel.setTextColor(dataSource.sgvColor)
             
             // Raw
             self.siteRawLabel.setAttributedText(formattedRaw)
-            self.siteRawLabel.setHidden(!model.rawVisible)
-            
-            self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [WatchModel.PropertyKey.modelKey: model.dictionary], webpageURL: NSURL(string: model.urlString)!)
-        }
+            self.siteRawLabel.setHidden(dataSource.rawHidden)
+//        }
+        
+        self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [DefaultKey.lastViewedSiteIndex: SitesDataSource.sharedInstance.sites.index(of: site)], webpageURL: URL(string: dataSource.urlLabel))
     }
     
-    func formattedStringWithHeaderFor(textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {
+    func formattedStringWithHeaderFor(_ textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {
         
-        let headerFontDict = [NSFontAttributeName: UIFont.boldSystemFontOfSize(8)]
+        let headerFontDict = [NSFontAttributeName: UIFont.boldSystemFont(ofSize: 8)]
         
         let headerString = NSMutableAttributedString(string: textHeader, attributes: headerFontDict)
         headerString.addAttribute(NSForegroundColorAttributeName, value: UIColor(white: 1.0, alpha: 0.5), range: NSRange(location:0,length:textHeader.characters.count))
@@ -119,7 +109,7 @@ class GlanceController: WKInterfaceController {
         let valueString = NSMutableAttributedString(string: textValue)
         valueString.addAttribute(NSForegroundColorAttributeName, value: textColor, range: NSRange(location:0,length:textValue.characters.count))
         
-        headerString.appendAttributedString(valueString)
+        headerString.append(valueString)
         
         return headerString
     }

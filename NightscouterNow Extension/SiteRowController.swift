@@ -27,54 +27,53 @@ class SiteRowController: NSObject {
     @IBOutlet var siteDirectionLabel: WKInterfaceLabel!
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
+
+    private var dataSource: TableViewRowWithOutCompassDataSource?
+    private var delegate: TableViewRowWithOutCompassDelegate?
     
-    var model: WatchModel? {
-        didSet {
-            
-            if let model = model {
-                // Site name in row
-                NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-                    
-                    let sgvColor = UIColor(hexString: model.sgvColor)
-                    let rawColor = UIColor(hexString: model.rawColor)
-                    let batteryColor = UIColor(hexString: model.batteryColor)
-                    let lastReadingColor = UIColor(hexString: model.lastReadingColor)
-                    
-                    
-                    self.siteNameLabel.setText(model.displayName)
-                    
-                    let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
-                    
-                    // Last reading label
-                    self.siteLastReadingLabel.setText(date)
-                    self.siteLastReadingLabel.setTextColor(lastReadingColor)
-                    
-                    self.siteUpdateTimer.setDate(model.lastReadingDate)
-                    self.siteUpdateTimer.setTextColor(lastReadingColor)
-                    
-                    // Battery label
-                    self.siteBatteryLabel.setText(model.batteryString)
-                    self.siteBatteryLabel.setTextColor(batteryColor)
-                    
-                    // Raw data
-                    self.siteRawGroup.setHidden(!model.rawVisible)
-                    self.siteRawLabel.setText(model.rawString)
-                    self.siteRawLabel.setTextColor(rawColor)
-                    
-                    // SGV formatted value
-                    self.siteSgvLabel.setText(model.sgvStringWithEmoji)
-                    self.siteSgvLabel.setTextColor(sgvColor)
-                    
-                    // Delta
-                    self.siteDirectionLabel.setText(model.deltaString)
-                    self.siteDirectionLabel.setTextColor(sgvColor)
-                    self.backgroundGroup.setBackgroundColor(sgvColor.colorWithAlphaComponent(0.2))
-                    
-                })
-            }
-            
-        }
+    func configure(withDataSource dataSource: TableViewRowWithOutCompassDataSource, delegate: TableViewRowWithOutCompassDelegate?) {
+        self.dataSource = dataSource
+        self.delegate = delegate
+        
+        // let timerHidden: Bool = dataSource.lookStale
+        
+        siteNameLabel.setText(dataSource.nameLabel)
+        
+        // Last reading label
+        siteLastReadingHeader.setText(LocalizedString.lastReadingLabelShort.localized)
+
+        // siteLastReadingLabel.setText(PlaceHolderStrings.date)
+        // siteLastReadingLabel.setTextColor(PlaceHolderStrings.defaultColor.colorValue)
+        // siteLastReadingLabel.setHidden(true)
+        
+        siteUpdateTimer.setDate(dataSource.lastReadingDate)
+        siteUpdateTimer.setTextColor(delegate?.lastReadingColor)
+        siteUpdateTimer.setHidden(false)
+        
+        // Battery label
+        siteBatteryHeader.setText(LocalizedString.batteryLabelShort.localized)
+        siteBatteryLabel.setText(dataSource.batteryLabel)
+        siteBatteryLabel.setTextColor(delegate?.batteryColor)
+        siteBatteryHeader.setHidden(dataSource.batteryHidden)
+        siteBatteryLabel.setHidden(dataSource.batteryHidden)
+
+        // Raw data
+        siteRawGroup.setHidden(dataSource.rawHidden)
+        siteRawHeader.setText(LocalizedString.rawLabelShort.localized)
+        siteRawLabel.setText(dataSource.rawFormatedLabel)
+        siteRawLabel.setTextColor(delegate?.rawColor)
+        
+        let sgvString = dataSource.sgvLabel + " " + dataSource.direction.emojiForDirection
+        // SGV formatted value
+        siteSgvLabel.setText(sgvString)
+        siteSgvLabel.setTextColor(delegate?.sgvColor)
+        
+        // Delta
+        siteDirectionLabel.setText(dataSource.deltaLabel)
+        siteDirectionLabel.setTextColor(delegate?.deltaColor)
+        
+        backgroundGroup.setBackgroundColor(delegate?.sgvColor.withAlphaComponent(0.2))
+        
     }
-    
 }
 
