@@ -24,8 +24,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     
     // MARK: AppDelegate Lifecycle
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        BuddyBuildSDK.setup()
-        
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
