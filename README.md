@@ -4,8 +4,8 @@ An Native iOS app used for displaying CGM data from a Nightscout website data. T
 Don't want to build and install on your own? Nightscouter is now available on the [Apple AppStore] (https://itunes.apple.com/us/app/nightscouter/id1010503247?ls=1&mt=8).
 
 ## Requirements
-- Xcode Version 7.3 with Swift 2.2
-- iOS 8.4 or better (requires 9.2 for Watch Support)
+- Xcode Version 8.1 with Swift 3
+- iOS 9.3 or better (requires 9.3 for Watch Support)
 - watchOS 2.2 if you want to use  Watch
 - iPhone 5, 5s, 6, 6 Plus (Will work on iPads but not specifically optimized for it yet)
 - Nightscout Remote Monitor versions 0.7.0 & 0.8.0 (https://github.com/nightscout/cgm-remote-monitor)
@@ -19,7 +19,6 @@ Don't want to build and install on your own? Nightscouter is now available on th
 - Background for application updates. (updates when Apple wakes the app)
 -  Watch App for quick acess to Nightscout data. This includes an App, Glance, and complications. You can pick which site to use for the complication and "at a glance" views on the watch by force touching the "bg compas" in the watch app. Please note that complications will only update hourly due to limitations from Apple.
 
-
 ## Future Plans
 * [x] ~~Today Extension~~ *Added [#12](https://github.com/someoneAnyone/Nightscouter/commit/9b1120726ea64faca3b0dd859b7caa8d32e4b797)*
 * [x] ~~Apple Watch Extension / App (targeting watchOS2)~~
@@ -30,8 +29,7 @@ Don't want to build and install on your own? Nightscouter is now available on th
 * [ ] tvOS support
 * [ ] macOS notification center support.
 * [ ] Unit tests
-* [ ] Alarming based on BG thresholds
-
+* [ ] Alarming based on BG thresholds - In progress
 
 ##Questions?
 Feel free to post an [issue].
