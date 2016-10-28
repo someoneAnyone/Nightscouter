@@ -28,8 +28,8 @@ class SiteRowController: NSObject {
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
 
-    private var dataSource: TableViewRowWithOutCompassDataSource?
-    private var delegate: TableViewRowWithOutCompassDelegate?
+    fileprivate var dataSource: TableViewRowWithOutCompassDataSource?
+    fileprivate var delegate: TableViewRowWithOutCompassDelegate?
     
     func configure(withDataSource dataSource: TableViewRowWithOutCompassDataSource, delegate: TableViewRowWithOutCompassDelegate?) {
         self.dataSource = dataSource
