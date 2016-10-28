@@ -80,7 +80,7 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
     
     public func startSession() {
-        AlarmRule.snooze(seconds: 1)
+        AlarmRule.snooze(seconds: 5)
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
