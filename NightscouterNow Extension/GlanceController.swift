@@ -34,7 +34,6 @@ class GlanceController: WKInterfaceController {
         
         beginGlanceUpdates()
         //Update data.
-        FIXME()
         SitesDataSource.sharedInstance.primarySite?.fetchDataFromNetwork(completion: { (updateSite, error) in
             
             SitesDataSource.sharedInstance.updateSite(updateSite)
@@ -96,7 +95,7 @@ class GlanceController: WKInterfaceController {
             self.siteRawLabel.setHidden(dataSource.rawHidden)
 //        }
         
-        self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [DefaultKey.lastViewedSiteIndex: SitesDataSource.sharedInstance.sites.index(of: site)], webpageURL: URL(string: dataSource.urlLabel))
+        self.updateUserActivity("com.nothingonline.nightscouter.view", userInfo: [DefaultKey.lastViewedSiteIndex: SitesDataSource.sharedInstance.sites.index(of: site) as Any], webpageURL: URL(string: dataSource.urlLabel))
     }
     
     func formattedStringWithHeaderFor(_ textValue: String, textColor: UIColor, textHeader: String) -> NSAttributedString {

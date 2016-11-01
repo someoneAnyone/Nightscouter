@@ -77,7 +77,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         print(">>> Entering \(#function) <<<")
         print(session)
         print(activationState)
-        print(error)
+        print(error ?? "No error")
     }
     
     public func sessionDidDeactivate(_ session: WCSession) {

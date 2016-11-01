@@ -11,13 +11,12 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    override init() {
-        super.init()
-        FIXME()
-//        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
-            // ComplicationController.reloadComplications()
-       // }
-    }
+//    override init() {
+//        super.init()
+////        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+//            // ComplicationController.reloadComplications()
+//       // }
+//    }
     
     open func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
         handler([.backward])
@@ -45,7 +44,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         handler(date)
     }
     
-    func getNextRequestedUpdateDate(_ handler: @escaping (Date?) -> Void) {
+    func getNextRequestedUpdateDate(handler: @escaping (Date?) -> Void) {
         // Call the handler with the date when you would next like to be given the opportunity to update your complication content
         let nextUpdate = SitesDataSource.sharedInstance.primarySite?.nextRequestedComplicationUpdateDate
         
@@ -263,7 +262,6 @@ extension ComplicationController {
         #endif
         
         // TODO: Start up connecitivty session ask for data from data source. and update.
-        FIXME()
         // Ask data store for new data..
         SitesDataSource.sharedInstance.primarySite?.generateComplicationData()
         ComplicationController.reloadComplications()

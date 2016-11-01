@@ -257,7 +257,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     @IBAction func manageAlarm(_ sender: UIBarButtonItem?) {
         print(">>> Entering \(#function) <<<")
-        FIXME()
         presentSnoozePopup(forViewController: self)
     }
     
@@ -408,8 +407,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func refreshDataFor(_ site: Site, index: Int){
         /// Tie into networking code.
-        FIXME()
-        
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         site.fetchDataFromNetwork() { (updatedSite, err) in
