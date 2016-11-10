@@ -341,6 +341,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.tableView.tableHeaderView = nil
             }
         } else {
+            self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+            self.snoozeAlarmButton.isEnabled = false
+            self.snoozeAlarmButton.tintColor = nil
             self.tableView.tableFooterView = nil
         }
         
