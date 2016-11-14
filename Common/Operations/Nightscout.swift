@@ -68,13 +68,11 @@ public class NightscoutDownloader {
     
     // MARK: - Private Variables
 
-    private lazy var session: URLSession = {
-        return URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: self.processingQueue)
-    }()
-    
     private var hostURL: URL? = nil
     private var apiSecret: String? = nil
     
+    private let isBackground: Bool = false
+
     private enum APIRoutes: String {
         case status,
         entries,
@@ -127,8 +125,10 @@ public class NightscoutDownloader {
         
         print(">>> Entering \(#function) for \(url) <<<")
         
+        
         self.hostURL = url
         self.apiSecret = password
+        
         
         var configuration: ServerConfiguration?
         var sgvs: [SensorGlucoseValue]?
@@ -140,10 +140,10 @@ public class NightscoutDownloader {
         var entriesError: NightscoutRESTClientError?
         var serverConfigError: NightscoutRESTClientError?
         var deviceError: NightscoutRESTClientError?
-        
+
         // set up the config request chain
         let configRequest = urlRequest(forAPIRoute: .status, url: url)
-        let fetchConfig = DownloadOperation(withURLRequest: configRequest)
+        let fetchConfig = DownloadOperation(withURLRequest: configRequest, isBackground: isBackground)
         let parseConfig = ParseConfigurationOperation()
         let configAdaptor = BlockOperation {
             parseConfig.data = fetchConfig.data
@@ -171,7 +171,7 @@ public class NightscoutDownloader {
         
         // Set up the entries request chain
         let downloadReadingsRequest = urlRequest(forAPIRoute: .entries, url: url)
-        let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest)
+        let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest, isBackground: isBackground)
         let parseEntries = ParseReadingsOperation()
         let entriesAdaptor = BlockOperation {
             parseEntries.data = fetchEntries.data
@@ -201,7 +201,7 @@ public class NightscoutDownloader {
         
         // Set up the device request chain
         let requestDevice = urlRequest(forAPIRoute: .devicestatus, url: url)
-        let fetchDevice = DownloadOperation(withURLRequest: requestDevice)
+        let fetchDevice = DownloadOperation(withURLRequest: requestDevice, isBackground: isBackground)
         let parseDevice = ParseDeviceStatusOperation()
         let deviceAdaptor = BlockOperation {
             parseDevice.data = fetchDevice.data
