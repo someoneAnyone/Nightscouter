@@ -395,8 +395,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
             if refreshControl?.isRefreshing == false {
-                refreshControl?.beginRefreshing()
-                // tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
+                DispatchQueue.main.async {
+                    self.refreshControl?.beginRefreshing()
+                    self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentOffset.y-self.refreshControl!.frame.size.height), animated: true)
+                }
             }
             for (index, site) in sites.enumerated() {
                 refreshDataFor(site, index: index)
@@ -414,7 +416,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         site.fetchDataFromNetwork() { (updatedSite, err) in
             if let error = err {
-                OperationQueue.main.addOperation {
+                DispatchQueue.main.async {
                     self.presentAlertDialog(site.url, index: index, error: error.kind.description)
                 }
                 return
@@ -433,6 +435,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()
                 }
+                
+                self.dismiss(animated: true, completion: nil)
+                
             }
         }
     }
