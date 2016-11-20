@@ -22,20 +22,29 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public var milliseconds: Mills {
         get {
-            return updatedAt.addingTimeInterval(60*4).timeIntervalSince1970.millisecond
+            return updatedAt.timeIntervalSince1970.millisecond
         }
     }
-
+    
+    public var nextUpdate: Date {
+        
+        if let sgvDate = sgvs.first?.date {
+            return sgvDate.addingTimeInterval(TimeInterval.FourMinutes)
+        }
+        
+        return updatedAt.addingTimeInterval(TimeInterval.FourMinutes)
+    }
+    
     // public var allowNotifications: Bool // Will be used when we support push notifications. Future addition.
     // public var treatments: [Treatment] = [] // Will be used when we support display of treatments. Future addition.
     var updatedAt = Date.distantPast
     
     public var updateNow: Bool {
         // Compare now against when we should update.
-        let compare = Date().compare(updatedAt.addingTimeInterval(TimeInterval.FourMinutes))
+        let compare = Date() > nextUpdate
         
         // If the newDate is in the future do not update. Exit function.
-        return (compare == .orderedDescending || configuration == nil) && disabled == false
+        return (compare || configuration == nil) && disabled == false //(compare == .orderedDescending || configuration == nil) && disabled == false
     }
     
     public var uuid: UUID

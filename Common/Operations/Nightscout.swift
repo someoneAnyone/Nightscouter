@@ -60,25 +60,25 @@ public protocol NightscoutDownloaderDelegate {
 public class NightscoutDownloader {
     
     // MARK: - Variables
-
+    
     static var sharedInstance: NightscoutDownloader = NightscoutDownloader()
-
+    
     private let processingQueue: OperationQueue = OperationQueue()
     
     
     // MARK: - Private Variables
-
+    
     private var hostURL: URL? = nil
     private var apiSecret: String? = nil
     
     private let isBackground: Bool = false
-
+    
     private enum APIRoutes: String {
         case status,
         entries,
         devicestatus
     }
-
+    
     
     // MARK: - Private Methods
     
@@ -94,17 +94,29 @@ public class NightscoutDownloader {
         let pathExtension = "json"
         
         let apiVersion = "api/v1"
-
+        
         var requestURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
         
         if APIRoute == .entries {
+            
+            //let today = Date()
+            //let twoHoursBefore = today.addingTimeInterval(-60*120)
+            
+            // Get the current data from REST-Call
+            // let findStringStart: String = "[date][$gte]=\(today.timeIntervalSince1970.millisecond)"
+            // let findQueryItemStart = URLQueryItem(name: "find", value: findStringStart)
+            // let findStringEnd: String = "[date][$lte]=\(twoHoursBefore.timeIntervalSince1970.millisecond)"
+            // let findQueryItemEnd = URLQueryItem(name: "find", value: findStringEnd)
+            
             let entryCount = 300
             let countQueryItem = URLQueryItem(name: "count", value: "\(entryCount)")
             var comps = URLComponents(url: requestURL, resolvingAgainstBaseURL: true)
             comps!.queryItems = [countQueryItem]
+            
             requestURL = comps!.url!
         }
-
+        
+        
         var request = URLRequest(url: requestURL)
         
         for (headerField, headerValue) in headers {
@@ -140,7 +152,7 @@ public class NightscoutDownloader {
         var entriesError: NightscoutRESTClientError?
         var serverConfigError: NightscoutRESTClientError?
         var deviceError: NightscoutRESTClientError?
-
+        
         // set up the config request chain
         let configRequest = urlRequest(forAPIRoute: .status, url: url)
         let fetchConfig = DownloadOperation(withURLRequest: configRequest, isBackground: isBackground)
@@ -237,10 +249,10 @@ public class NightscoutDownloader {
         finishUp.addDependency(parseConfig)
         finishUp.addDependency(parseEntries)
         finishUp.addDependency(parseDevice)
-
+        
         processingQueue.addOperation(finishUp)
     }
-
+    
 }
 
 public extension Site {

@@ -21,7 +21,9 @@
 "lastReadingLabel" = "LAST READING";
 "lastReadingLabelShort" = "LR";
 
-"lastUpdatedDateLabel" = "Updated on: ";
+//"lastUpdatedDateLabel" = "Updated on: ";
+"lastUpdatedDateLabel" = "Updated on: %@\nNext refresh: %@";
+
 "tableViewCellLoading" = "Loading...";
 
 "genericURLLabel" = "https://somesite.host.com";

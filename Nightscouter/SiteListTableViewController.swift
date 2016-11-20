@@ -33,7 +33,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var milliseconds: Double = 0 {
         didSet{
-            let str = String(stringInterpolation:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date))
+            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
             self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName: Color.white])
             self.refreshControl?.endRefreshing()
         }
@@ -309,7 +309,15 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         self.tableView.reloadData()
         
         
-        snoozeAlarmButton.isEnabled = false
+       checkAlarm()
+    }
+    
+    func checkAlarm() {
+        self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+        self.snoozeAlarmButton.isEnabled = false
+        self.snoozeAlarmButton.tintColor = nil
+        self.tableView.tableFooterView = nil
+        self.tableView.tableFooterView?.isHidden = true
         if let alarmObject = alarmObject {
             
             if alarmObject.warning == true || alarmObject.isSnoozed {
@@ -322,11 +330,12 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.isEnabled = true
                 self.snoozeAlarmButton.tintColor = activeColor
                 
+                self.tableView.tableFooterView?.isHidden = false
+
                 self.tableView.tableHeaderView = self.headerView
                 // self.tableView.reloadData()
                 
                 if let headerView = self.tableView.tableHeaderView as? BannerMessage {
-                    headerView.isHidden = false
                     headerView.tintColor = activeColor
                     headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
                 }
@@ -340,13 +349,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
                 self.tableView.tableHeaderView = nil
             }
-        } else {
-            self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
-            self.snoozeAlarmButton.isEnabled = false
-            self.snoozeAlarmButton.tintColor = nil
-            self.tableView.tableFooterView = nil
         }
-        
     }
     
     func setupNotifications() {
@@ -435,6 +438,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()
                 }
+                
+                self.checkAlarm()
                 
                 self.dismiss(animated: true, completion: nil)
                 
