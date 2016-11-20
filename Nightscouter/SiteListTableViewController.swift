@@ -307,33 +307,21 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
-        
-        
+
        checkAlarm()
     }
     
     func checkAlarm() {
-        self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
-        self.snoozeAlarmButton.isEnabled = false
-        self.snoozeAlarmButton.tintColor = nil
-        self.tableView.tableFooterView = nil
-        self.tableView.tableFooterView?.isHidden = true
+
         if let alarmObject = alarmObject {
-            
             if alarmObject.warning == true || alarmObject.isSnoozed {
                 let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
                 
-                if alarmObject.isSnoozed {
-                    self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmSliencedIcon")
-                }
-                
+                self.snoozeAlarmButton.image = alarmObject.isSnoozed ? #imageLiteral(resourceName: "alarmSliencedIcon") : #imageLiteral(resourceName: "alarmIcon")
                 self.snoozeAlarmButton.isEnabled = true
                 self.snoozeAlarmButton.tintColor = activeColor
-                
-                self.tableView.tableFooterView?.isHidden = false
-
                 self.tableView.tableHeaderView = self.headerView
-                // self.tableView.reloadData()
+                self.tableView.tableHeaderView?.isHidden = false
                 
                 if let headerView = self.tableView.tableHeaderView as? BannerMessage {
                     headerView.tintColor = activeColor
@@ -349,6 +337,12 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
                 self.tableView.tableHeaderView = nil
             }
+        } else {
+            self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+            self.snoozeAlarmButton.isEnabled = false
+            self.snoozeAlarmButton.tintColor = nil
+            self.tableView.tableHeaderView = nil
+            self.tableView.tableHeaderView?.isHidden = true
         }
     }
     
@@ -406,7 +400,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             for (index, site) in sites.enumerated() {
                 refreshDataFor(site, index: index)
             }
-            
+        
         } else {
             // No data in the sites array. Cancel the refreshing!
             refreshControl?.endRefreshing()

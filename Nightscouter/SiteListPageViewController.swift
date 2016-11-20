@@ -61,7 +61,6 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         
         setupNotifications()
         updateNavigationController()
-        
     }
     
     override func didReceiveMemoryWarning() {
