@@ -14,10 +14,14 @@ class DownloadOperation: Operation {
     
     var data: Data?
     var error: NightscoutRESTClientError?
-
-    public init(withURLRequest request: URLRequest) {
+    var isBackground: Bool
+    
+    public init(withURLRequest request: URLRequest, isBackground background: Bool) {
         self.request = request
+        self.isBackground = background
+        
         super.init()
+        
         self.name = "Download data from \(request.url)"
     }
     
@@ -29,7 +33,12 @@ class DownloadOperation: Operation {
         
         disGroup.enter()
         
-        let downloadTask = URLSession.shared.downloadTask(with: self.request) { (location, response, error) in
+        let config = !isBackground ? URLSessionConfiguration.default :
+            URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
+        
+        let session = URLSession(configuration: config)
+        
+        let downloadTask = session.downloadTask(with: self.request) { (location, response, error) in
             print(">>> downloadTask task for \(self.request.url) is complete. <<<")
             //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
             
@@ -61,12 +70,12 @@ class DownloadOperation: Operation {
             }
             
             self.data = dataFromLocation
-    
+            
             disGroup.leave()
         }
-
+        
         downloadTask.resume()
-
+        
         disGroup.wait()
     }
 }

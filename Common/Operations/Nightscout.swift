@@ -60,27 +60,25 @@ public protocol NightscoutDownloaderDelegate {
 public class NightscoutDownloader {
     
     // MARK: - Variables
-
+    
     static var sharedInstance: NightscoutDownloader = NightscoutDownloader()
-
+    
     private let processingQueue: OperationQueue = OperationQueue()
     
     
     // MARK: - Private Variables
-
-    private lazy var session: URLSession = {
-        return URLSession(configuration: URLSessionConfiguration.default, delegate: nil, delegateQueue: self.processingQueue)
-    }()
     
     private var hostURL: URL? = nil
     private var apiSecret: String? = nil
+    
+    private let isBackground: Bool = false
     
     private enum APIRoutes: String {
         case status,
         entries,
         devicestatus
     }
-
+    
     
     // MARK: - Private Methods
     
@@ -96,17 +94,29 @@ public class NightscoutDownloader {
         let pathExtension = "json"
         
         let apiVersion = "api/v1"
-
+        
         var requestURL = url.appendingPathComponent("\(apiVersion)/\(APIRoute.rawValue)").appendingPathExtension(pathExtension)
         
         if APIRoute == .entries {
+            
+            //let today = Date()
+            //let twoHoursBefore = today.addingTimeInterval(-60*120)
+            
+            // Get the current data from REST-Call
+            // let findStringStart: String = "[date][$gte]=\(today.timeIntervalSince1970.millisecond)"
+            // let findQueryItemStart = URLQueryItem(name: "find", value: findStringStart)
+            // let findStringEnd: String = "[date][$lte]=\(twoHoursBefore.timeIntervalSince1970.millisecond)"
+            // let findQueryItemEnd = URLQueryItem(name: "find", value: findStringEnd)
+            
             let entryCount = 300
             let countQueryItem = URLQueryItem(name: "count", value: "\(entryCount)")
             var comps = URLComponents(url: requestURL, resolvingAgainstBaseURL: true)
             comps!.queryItems = [countQueryItem]
+            
             requestURL = comps!.url!
         }
-
+        
+        
         var request = URLRequest(url: requestURL)
         
         for (headerField, headerValue) in headers {
@@ -127,8 +137,10 @@ public class NightscoutDownloader {
         
         print(">>> Entering \(#function) for \(url) <<<")
         
+        
         self.hostURL = url
         self.apiSecret = password
+        
         
         var configuration: ServerConfiguration?
         var sgvs: [SensorGlucoseValue]?
@@ -143,7 +155,7 @@ public class NightscoutDownloader {
         
         // set up the config request chain
         let configRequest = urlRequest(forAPIRoute: .status, url: url)
-        let fetchConfig = DownloadOperation(withURLRequest: configRequest)
+        let fetchConfig = DownloadOperation(withURLRequest: configRequest, isBackground: isBackground)
         let parseConfig = ParseConfigurationOperation()
         let configAdaptor = BlockOperation {
             parseConfig.data = fetchConfig.data
@@ -171,7 +183,7 @@ public class NightscoutDownloader {
         
         // Set up the entries request chain
         let downloadReadingsRequest = urlRequest(forAPIRoute: .entries, url: url)
-        let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest)
+        let fetchEntries = DownloadOperation(withURLRequest: downloadReadingsRequest, isBackground: isBackground)
         let parseEntries = ParseReadingsOperation()
         let entriesAdaptor = BlockOperation {
             parseEntries.data = fetchEntries.data
@@ -201,7 +213,7 @@ public class NightscoutDownloader {
         
         // Set up the device request chain
         let requestDevice = urlRequest(forAPIRoute: .devicestatus, url: url)
-        let fetchDevice = DownloadOperation(withURLRequest: requestDevice)
+        let fetchDevice = DownloadOperation(withURLRequest: requestDevice, isBackground: isBackground)
         let parseDevice = ParseDeviceStatusOperation()
         let deviceAdaptor = BlockOperation {
             parseDevice.data = fetchDevice.data
@@ -237,10 +249,10 @@ public class NightscoutDownloader {
         finishUp.addDependency(parseConfig)
         finishUp.addDependency(parseEntries)
         finishUp.addDependency(parseDevice)
-
+        
         processingQueue.addOperation(finishUp)
     }
-
+    
 }
 
 public extension Site {

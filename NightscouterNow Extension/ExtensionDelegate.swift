@@ -49,7 +49,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 }
             }
             else if let urlTask = task as? WKURLSessionRefreshBackgroundTask {
-                let backgroundConfigObject = URLSessionConfiguration.background(withIdentifier: urlTask.sessionIdentifier)
+                _ = URLSessionConfiguration.background(withIdentifier: urlTask.sessionIdentifier)
                 //let backgroundSession = URLSession(configuration: backgroundConfigObject, delegate: self, delegateQueue: nil)
                 
                // print("Rejoining session ", backgroundSession)

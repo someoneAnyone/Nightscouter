@@ -1465,7 +1465,7 @@ open class NSAssetKit : NSObject {
         set {
             Cache.listIconTargets = newValue
             for target: AnyObject in newValue {
-                target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfListIcon)
+                var _ = target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfListIcon)
             }
         }
     }
@@ -1475,7 +1475,7 @@ open class NSAssetKit : NSObject {
         set {
             Cache.settingsIconTargets = newValue
             for target: AnyObject in newValue {
-                target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfSettingsIcon)
+                  var _ = target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfSettingsIcon)
             }
         }
     }
@@ -1485,7 +1485,7 @@ open class NSAssetKit : NSObject {
         set {
             Cache.alarmIconTargets = newValue
             for target: AnyObject in newValue {
-                target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfAlarmIcon)
+                  var _ = target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfAlarmIcon)
             }
         }
     }
@@ -1495,7 +1495,7 @@ open class NSAssetKit : NSObject {
         set {
             Cache.alarmSliencedIconTargets = newValue
             for target: AnyObject in newValue {
-                target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfAlarmSliencedIcon)
+                  var _ = target.perform(NSSelectorFromString("setImage:"), with: NSAssetKit.imageOfAlarmSliencedIcon)
             }
         }
     }

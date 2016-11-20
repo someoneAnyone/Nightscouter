@@ -33,7 +33,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var milliseconds: Double = 0 {
         didSet{
-            let str = String(stringInterpolation:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date))
+            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
             self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName: Color.white])
             self.refreshControl?.endRefreshing()
         }
@@ -257,7 +257,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     @IBAction func manageAlarm(_ sender: UIBarButtonItem?) {
         print(">>> Entering \(#function) <<<")
-        FIXME()
         presentSnoozePopup(forViewController: self)
     }
     
@@ -310,7 +309,15 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         self.tableView.reloadData()
         
         
-        snoozeAlarmButton.isEnabled = false
+       checkAlarm()
+    }
+    
+    func checkAlarm() {
+        self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+        self.snoozeAlarmButton.isEnabled = false
+        self.snoozeAlarmButton.tintColor = nil
+        self.tableView.tableFooterView = nil
+        self.tableView.tableFooterView?.isHidden = true
         if let alarmObject = alarmObject {
             
             if alarmObject.warning == true || alarmObject.isSnoozed {
@@ -323,11 +330,12 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.isEnabled = true
                 self.snoozeAlarmButton.tintColor = activeColor
                 
+                self.tableView.tableFooterView?.isHidden = false
+
                 self.tableView.tableHeaderView = self.headerView
                 // self.tableView.reloadData()
                 
                 if let headerView = self.tableView.tableHeaderView as? BannerMessage {
-                    headerView.isHidden = false
                     headerView.tintColor = activeColor
                     headerView.message = alarmObject.isSnoozed ? alarmObject.snoozeText : LocalizedString.generalAlarmMessage.localized
                 }
@@ -341,10 +349,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
                 self.tableView.tableHeaderView = nil
             }
-        } else {
-            self.tableView.tableFooterView = nil
         }
-        
     }
     
     func setupNotifications() {
@@ -393,8 +398,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
             if refreshControl?.isRefreshing == false {
-                refreshControl?.beginRefreshing()
-                // tableView.setContentOffset(CGPoint(x: 0, y: tableView.contentOffset.y-refreshControl!.frame.size.height), animated: true)
+                DispatchQueue.main.async {
+                    self.refreshControl?.beginRefreshing()
+                    self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentOffset.y-self.refreshControl!.frame.size.height), animated: true)
+                }
             }
             for (index, site) in sites.enumerated() {
                 refreshDataFor(site, index: index)
@@ -408,13 +415,11 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func refreshDataFor(_ site: Site, index: Int){
         /// Tie into networking code.
-        FIXME()
-        
         UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         site.fetchDataFromNetwork() { (updatedSite, err) in
             if let error = err {
-                OperationQueue.main.addOperation {
+                DispatchQueue.main.async {
                     self.presentAlertDialog(site.url, index: index, error: error.kind.description)
                 }
                 return
@@ -433,6 +438,11 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()
                 }
+                
+                self.checkAlarm()
+                
+                self.dismiss(animated: true, completion: nil)
+                
             }
         }
     }

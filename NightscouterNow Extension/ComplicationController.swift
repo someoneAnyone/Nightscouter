@@ -11,19 +11,18 @@ import NightscouterWatchOSKit
 
 class ComplicationController: NSObject, CLKComplicationDataSource {
     
-    override init() {
-        super.init()
-        FIXME()
-//        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
-            // ComplicationController.reloadComplications()
-       // }
-    }
+//    override init() {
+//        super.init()
+////        NotificationCenter.default.addObserver(forName: .NightscoutDataUpdatedNotification, object: nil, queue: OperationQueue.main) { (notif) in
+//            // ComplicationController.reloadComplications()
+//       // }
+//    }
     
-    public func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
+    open func getSupportedTimeTravelDirections(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimeTravelDirections) -> Void) {
         handler([.backward])
     }
     
-    public func getCurrentTimelineEntry(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
+    open func getCurrentTimelineEntry(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTimelineEntry?) -> Void) {
         getTimelineEntries(for: complication, before: Date(), limit: 1) { (timelineEntries) in
             handler(timelineEntries?.first)
         }
@@ -68,7 +67,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for entry in entries {
             let entryDate = entry.date
             if date.compare(entryDate) == .orderedDescending {
-                if let template = templateForComplication(complication: complication, model: entry) {
+                if let template = templateForComplication(complication, model: entry) {
                     let entry = CLKComplicationTimelineEntry(date: entryDate, complicationTemplate: template)
                     timelineEntries.append(entry)
                     if timelineEntries.count == limit {
@@ -88,7 +87,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         for entry in entries {
             let entryDate = entry.date
             if date.compare(entryDate) == .orderedAscending {
-                if let template = templateForComplication(complication: complication, model: entry) {
+                if let template = templateForComplication(complication, model: entry) {
                     let entry = CLKComplicationTimelineEntry(date: entryDate, complicationTemplate: template)
                     timelineEntries.append(entry)
                     if timelineEntries.count == limit {
@@ -169,7 +168,7 @@ extension ComplicationController {
     
     // MARK: Create Complication Templates
     
-    func templateForComplication(complication: CLKComplication, model: ComplicationTimelineEntry) -> CLKComplicationTemplate? {
+    func templateForComplication(_ complication: CLKComplication, model: ComplicationTimelineEntry) -> CLKComplicationTemplate? {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
@@ -263,7 +262,6 @@ extension ComplicationController {
         #endif
         
         // TODO: Start up connecitivty session ask for data from data source. and update.
-        FIXME()
         // Ask data store for new data..
         SitesDataSource.sharedInstance.primarySite?.generateComplicationData()
         ComplicationController.reloadComplications()
