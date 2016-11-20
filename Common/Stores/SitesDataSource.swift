@@ -45,6 +45,7 @@ public class SitesDataSource: SiteStoreType {
         if !appIsInBackground {
             alarmManager.startSession()
         }
+        
         self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
         
         print("found \(self.sites.count) sites in the store.")
