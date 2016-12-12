@@ -293,6 +293,11 @@ extension SiteDetailViewController {
             } else {
                 self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
             }
+        } else {
+            self.snoozeAlarmButton.image = #imageLiteral(resourceName: "alarmIcon")
+            self.snoozeAlarmButton.isEnabled = false
+            self.snoozeAlarmButton.tintColor = nil
+            self.headerView?.isHidden = true
         }
         
         self.siteWebView?.reload()
