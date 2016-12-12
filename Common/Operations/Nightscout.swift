@@ -61,7 +61,7 @@ public class NightscoutDownloader {
     
     // MARK: - Variables
     
-    static var sharedInstance: NightscoutDownloader = NightscoutDownloader()
+    static public var sharedInstance: NightscoutDownloader = NightscoutDownloader()
     
     private let processingQueue: OperationQueue = OperationQueue()
     
@@ -71,7 +71,7 @@ public class NightscoutDownloader {
     private var hostURL: URL? = nil
     private var apiSecret: String? = nil
     
-    private let isBackground: Bool = false
+    internal var isBackground: Bool = false
     
     private enum APIRoutes: String {
         case status,
@@ -261,7 +261,9 @@ public extension Site {
         return NightscoutDownloader.sharedInstance
     }
     
-    public func fetchDataFromNetwork(completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
+    public func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
+        
+        nightscouterAPI.isBackground = background
         
         var updatedSite = self
         

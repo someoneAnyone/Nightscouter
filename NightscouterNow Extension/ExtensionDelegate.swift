@@ -23,6 +23,15 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
+        
+        // Example scheduling of background task an hour in the future
+        if #available(watchOSApplicationExtension 3.0, *) {
+            WKExtension.shared().scheduleBackgroundRefresh(withPreferredDate: Date(timeIntervalSinceNow: TimeInterval.OneHour), userInfo: nil) { (error: Error?) in
+                if let error = error {
+                    print("Error occured while scheduling background refresh: \(error.localizedDescription)")
+                }
+            }
+        }
     }
     
     func applicationDidBecomeActive() {
@@ -75,7 +84,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 group.enter()
                 for site in SitesDataSource.sharedInstance.sites {
                     group.enter()
-                    site.fetchDataFromNetwork(completion: { (updatedSite, error) in
+                    site.fetchDataFromNetwork(useBackground: true, completion: { (updatedSite, error) in
                         SitesDataSource.sharedInstance.updateSite(updatedSite)
                         group.leave()
                     })
@@ -85,7 +94,7 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
                 backgroundTask.setTaskCompleted()
             case let snapshotTask as WKSnapshotRefreshBackgroundTask:
                 // Snapshot tasks have a unique completion call, make sure to set your expiration date
-                snapshotTask.setTaskCompleted(restoredDefaultState: true, estimatedSnapshotExpiration: Date.distantFuture, userInfo: nil)
+                snapshotTask.setTaskCompleted(restoredDefaultState: true, estimatedSnapshotExpiration: Date.init(timeIntervalSinceNow: TimeInterval.ThirtyMinutes), userInfo: nil)
             case let connectivityTask as WKWatchConnectivityRefreshBackgroundTask:
                 // Be sure to complete the connectivity task once you’re done.
                 connectivityTask.setTaskCompleted()
