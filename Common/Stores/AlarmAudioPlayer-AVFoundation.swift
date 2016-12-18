@@ -27,6 +27,7 @@ open class AlarmAudioPlayer: AudioCordinator {
     public var alarmObject: AlarmObject? {
         didSet{
             guard let alarmObject = alarmObject else {
+                audioPlayer?.stop()
                 return
             }
             
