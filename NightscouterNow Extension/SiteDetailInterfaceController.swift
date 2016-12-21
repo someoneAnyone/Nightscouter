@@ -10,12 +10,12 @@ import WatchKit
 import Foundation
 import NightscouterWatchOSKit
 
-protocol SiteDetailViewDidUpdateItemDelegate {
-    func didUpdateItem(model: WatchModel)
-    func didSetItemAsDefault(model: WatchModel)
-}
+//protocol SiteDetailViewDidUpdateItemDelegate {
+//    func didUpdateItem(_ model: WatchModel)
+//    func didSetItemAsDefault(_ model: WatchModel)
+//}
 
-class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDelegate {
+class SiteDetailInterfaceController: WKInterfaceController {
     
     @IBOutlet var compassGroup: WKInterfaceGroup!
     @IBOutlet var detailGroup: WKInterfaceGroup!
@@ -27,158 +27,139 @@ class SiteDetailInterfaceController: WKInterfaceController, DataSourceChangedDel
     
     @IBOutlet var siteUpdateTimer: WKInterfaceTimer!
     
-    var delegate: SiteDetailViewDidUpdateItemDelegate?
-    
-    var model: WatchModel? {
-        didSet{
+    var site: Site? {
+        didSet {
             self.configureView()
         }
-    }
-    
-    override func awakeWithContext(context: AnyObject?) {
-        super.awakeWithContext(context)
-        
-        if let delegate = context![WatchModel.PropertyKey.delegateKey] as? SiteDetailViewDidUpdateItemDelegate { self.delegate = delegate }
     }
     
     override func willActivate() {
         super.willActivate()
         print("willActivate")
         
-        if WatchSessionManager.sharedManager.models.isEmpty { popController() }
-        
-        self.model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
-        
-        let image = NSAssetKitWatchOS.imageOfWatchFace()
-        compassImage.setImage(image)
-        
         self.configureView()
-        
-        WatchSessionManager.sharedManager.addDataSourceChangedDelegate(self)
-        WatchSessionManager.sharedManager.updateData(forceRefresh: false)
+
     }
     
-    
-    override func didDeactivate() {
-        super.didDeactivate()
-        print("didDeactivate \(self)")
-        
-        // Remove this class from the observer list. Was listening for a global update timer.
-        WatchSessionManager.sharedManager.removeDataSourceChangedDelegate(self)
-        
-        // NSNotificationCenter.defaultCenter().removeObserver(self)
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
-    func dataSourceDidUpdateAppContext(models: [WatchModel]) {
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            let model = WatchSessionManager.sharedManager.models[WatchSessionManager.sharedManager.currentSiteIndex]
-            self?.model = model
-            self?.delegate?.didUpdateItem(model)
-        }
+    // MARK: Interface Builder Actions
+    
+    @IBAction func updateButton() {
+        print(">>> Entering \(#function) <<<")
+
+        guard let site = site else { return }
+        refreshDataFor(site)
     }
     
-    func dataSourceCouldNotConnectToPhone(error: NSError) {
-        self.presentErrorDialog(withTitle: "Phone not Reachable", message: error.localizedDescription)
-    }
-    
-    func presentErrorDialog(withTitle title: String, message: String, forceRefresh refresh: Bool = false) {
-        // catch any errors here
-        let retry = WKAlertAction(title: "Retry", style: .Default, handler: { () -> Void in
-            WatchSessionManager.sharedManager.updateData(forceRefresh: true)
-        })
-        
-        let cancel = WKAlertAction(title: "Cancel", style: .Cancel, handler: { () -> Void in
-            self.dismissController()
-        })
-        
-        guard let model = model else {
-            return
-        }
-        
-        let action = WKAlertAction(title: "Local Update", style: .Default, handler: { () -> Void in
-            if model.updateNow || refresh {
-                fetchSiteData(model.generateSite(), handler: { (returnedSite, error) -> Void in
-                    NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-                        WatchSessionManager.sharedManager.updateModel(returnedSite.viewModel)
-                        self.configureView()
-                    }
-                })
+    func refreshDataFor(_ site: Site, index: Int = 0) {
+        print(">>> Entering \(#function) <<<")
+        /// Tie into networking code.
+        site.fetchDataFromNetwork() { (updatedSite, err) in
+            if let _ = err {
+                return
             }
-        })
-        NSOperationQueue.mainQueue().addOperationWithBlock({ () -> Void in
-            self.presentAlertControllerWithTitle(title, message: message, preferredStyle: .Alert, actions: [retry, action, cancel])
-        })
+            
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+        }
     }
     
-    func configureView(){
+    @IBAction func setAsComplication() {
+        // TODO: Create icon and function that sets current site as the watch complication.
+        SitesDataSource.sharedInstance.primarySite = site
+    }
+    
+    override func awake(withContext context: Any?) {
+        super.awake(withContext: context)
         
-        guard let model = self.model else {
+        if let context = context as? [String: AnyObject],let index = context[DefaultKey.lastViewedSiteIndex.rawValue] as? Int {
+            self.site = SitesDataSource.sharedInstance.sites[index]
+        }
+        
+        setupNotifications()
+    }
+    
+    fileprivate func setupNotifications() {
+        NotificationCenter.default.addObserver(forName: .NightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
+            print(">>> Entering \(#function) <<<")
+            self.configureView()
+        }
+    }
+    
+
+    func configureView() {
+        
+        guard let site = self.site else {
+            
+            let image = NSAssetKitWatchOS.imageOfWatchFace()
+            compassImage.setImage(image)
+            compassImage.setAlpha(0.5)
+            
             return
         }
         
-        NSOperationQueue.mainQueue().addOperationWithBlock {
-            let compassAlpha: CGFloat = model.warn ? 0.5 : 1.0
+        let dataSource = SiteSummaryModelViewModel(withSite: site)
+        let compassAlpha: CGFloat = dataSource.lookStale ? 0.5 : 1.0
+        //let timerHidden: Bool = dataSource.lookStale
+        let image = self.createImage(dataSource: dataSource, delegate: dataSource, frame: calculateFrameForImage())
+        
+        //OperationQueue.main.addOperation {
             
-            let frame = self.contentFrame
-            let smallest = min(min(frame.height, frame.width), 134)
-            let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
+            self.setTitle(dataSource.nameLabel)
             
-            let sgvColor = UIColor(hexString: model.sgvColor)
-            let rawColor = UIColor(hexString: model.rawColor)
-            let batteryColor = UIColor(hexString: model.batteryColor)
-            let lastReadingColor = UIColor(hexString: model.lastReadingColor)
-            
-            let image = NSAssetKitWatchOS.imageOfWatchFace(arrowTintColor: sgvColor, rawColor: rawColor, isDoubleUp: model.isDoubleUp, isArrowVisible: model.isArrowVisible, isRawEnabled: model.rawVisible, deltaString: model.deltaString, sgvString: model.sgvString, rawString: model.rawString, angle: model.angle, watchFrame: groupFrame)
-            
-            self.setTitle(model.displayName)
-            
+            // Compass Image
             self.compassImage.setAlpha(compassAlpha)
             self.compassImage.setImage(image)
             
             // Battery label
-            self.batteryLabel.setText(model.batteryString)
-            self.batteryLabel.setTextColor(batteryColor)
-            self.batteryLabel.setAlpha(compassAlpha)
+            self.batteryLabel.setText(dataSource.batteryLabel)
+            self.batteryLabel.setTextColor(dataSource.batteryColor)
+            self.batteryHeader.setText(LocalizedString.batteryLabel.localized)
+            self.batteryHeader.setHidden(dataSource.batteryHidden)
+            self.batteryLabel.setHidden(dataSource.batteryHidden)
             
-            let date = NSCalendar.autoupdatingCurrentCalendar().stringRepresentationOfElapsedTimeSinceNow(model.lastReadingDate)
             // Last reading label
-            self.lastUpdateLabel.setText(date)//watchModel.lastReadingString)
-            self.lastUpdateLabel.setTextColor(lastReadingColor)
+            self.lastUpdateLabel.setText(PlaceHolderStrings.date)
+            self.lastUpdateLabel.setTextColor(PlaceHolderStrings.defaultColor.colorValue)
+            self.lastUpdateLabel.setHidden(true)
             
-            self.siteUpdateTimer.setDate(model.lastReadingDate)
-            self.siteUpdateTimer.setTextColor(lastReadingColor)
-            
-            // self.lastUpdatedTime = model.lastReadingDate
-        }
+            self.siteUpdateTimer.setDate(dataSource.lastReadingDate)
+            self.siteUpdateTimer.setTextColor(dataSource.lastReadingColor)
+            self.siteUpdateTimer.setHidden(false)
+        //}
+        
     }
     
-    @IBAction func updateButton() {
-        WatchSessionManager.sharedManager.updateData(forceRefresh: true)
+    func calculateFrameForImage() -> CGRect {
+        let frame = self.contentFrame
+        let smallest = min(min(frame.height, frame.width), 134)
+        let groupFrame = CGRect(x: 0, y: 0, width: smallest, height: smallest)
+        
+        return groupFrame
     }
     
-    @IBAction func setAsDefaultSite(){
-        dispatch_async(dispatch_get_main_queue()) { [weak self] in
-            self?.delegate?.didSetItemAsDefault(self!.model!)
-        }
+    func createImage(dataSource:CompassViewDataSource, delegate:CompassViewDelegate, frame: CGRect) -> UIImage {
+        let sgvColor = delegate.sgvColor
+        let rawColor = delegate.rawColor
+        
+        let image = NSAssetKitWatchOS.imageOfWatchFace(frame, arrowTintColor: sgvColor, rawColor: rawColor , isDoubleUp: dataSource.direction.isDoubleRingVisible, isArrowVisible: dataSource.direction.isArrowVisible, isRawEnabled: !dataSource.rawHidden, deltaString: dataSource.deltaLabel, sgvString: dataSource.sgvLabel, rawString: dataSource.rawLabel , angle: CGFloat(dataSource.direction.angleForCompass))
+        
+        return image
     }
     
-    override func handleUserActivity(userInfo: [NSObject : AnyObject]?) {
+    override func handleUserActivity(_ userInfo: [AnyHashable: Any]?) {
         print(">>> Entering \(#function) <<<")
         
-        guard let dict = userInfo?[WatchModel.PropertyKey.modelKey] as? [String : AnyObject], incomingModel = WatchModel (fromDictionary: dict) else {
+        guard let indexOfSite = userInfo?[DefaultKey.lastViewedSiteIndex] as? Int else {
             return
         }
         
-        if let index = WatchSessionManager.sharedManager.models.indexOf(incomingModel) {
-            WatchSessionManager.sharedManager.currentSiteIndex = index
-        }
+        SitesDataSource.sharedInstance.lastViewedSiteIndex = indexOfSite
         
-        dispatch_async(dispatch_get_main_queue()) {
-            let modelDict = incomingModel.dictionary
-            // self.awakeWithContext(modelDict)
-            self.model = WatchModel(fromDictionary: modelDict)
+        DispatchQueue.main.async {
+            self.site = SitesDataSource.sharedInstance.sites[indexOfSite]
         }
     }
-    
 }
-

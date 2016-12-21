@@ -8,98 +8,75 @@
 
 import UIKit
 import NightscouterKit
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
+class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, BundleRepresentable {
     
     var window: UIWindow?
     
     var sites: [Site] {
-        return AppDataManageriOS.sharedInstance.sites
+        return SitesDataSource.sharedInstance.sites
     }
-    
-    var timer: NSTimer?
-    
     
     /// Saved shortcut item used as a result of an app launch, used later when app is activated.
     var launchedShortcutItem: String?
-
-    // MARK: AppDelegate Lifecycle    
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    
+    // MARK: AppDelegate Lifecycle
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
         // Override point for customization after application launch.
-        WatchSessionManager.sharedManager.startSession()
-
-        AppThemeManager.themeApp
-        window?.tintColor = Theme.Color.windowTintColor
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: AppDataManagerDidChangeNotification, object: nil)
+        Theme.customizeAppAppearance(sharedApplication: UIApplication.shared, forWindow: window)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .NightscoutDataUpdatedNotification, object: nil)
         
         // If a shortcut was launched, display its information and take the appropriate action
-        if #available(iOS 9.0, *) {
-            if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsShortcutItemKey] as? UIApplicationShortcutItem {
-                
-                launchedShortcutItem = shortcutItem.type
-                
-            }
+        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
+            launchedShortcutItem = shortcutItem.type
         }
+        
         return true
-        
     }
     
-    func applicationWillResignActive(application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-        #endif
-        
-        self.timer?.invalidate()
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        SitesDataSource.sharedInstance.appIsInBackground = false
     }
     
-    func applicationDidBecomeActive(application: UIApplication) {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-        #endif
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-
-        updateDataNotification(nil)
-    }
-    
-    func applicationWillTerminate(application: UIApplication) {
-        AppDataManageriOS.sharedInstance.saveData()
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        SitesDataSource.sharedInstance.appIsInBackground = true
     }
     
     deinit {
-        NSNotificationCenter.defaultCenter().removeObserver(self)
+        NotificationCenter.default.removeObserver(self)
     }
     
     // MARK: Background Fetch
-    func application(application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
+        SitesDataSource.sharedInstance.appIsInBackground = true
         
-        AppDataManageriOS.sharedInstance.generateData(forSites: self.sites) { (updatedSites) in
-            
-                for site in updatedSites {
-                    AppDataManageriOS.sharedInstance.updateSite(site)
-                }
-
-                print("returning completionHandler() for \(#function)")
-                completionHandler(.NewData)
+        sites.forEach { (site) in
+            site.fetchDataFromNetwork(completion: { (updatedSite, error) in
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+            })
         }
+        
+        completionHandler(.newData)
     }
     
-    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any]) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             print("Recieved URL: \(url) with options: \(options)")
         #endif
-        let schemes = supportedSchemes!
-        if (!schemes.contains((url.scheme))) { // If the incoming scheme is not contained within the array of supported schemes return false.
-            return false
-        }
+        // If the incoming scheme is not contained within the array of supported schemes return false.
+        guard let schemes = LinkBuilder.supportedSchemes, schemes.contains(url.scheme ?? "") else { return false }
         
         // We now have an acceptable scheme. Pass the URL to the deep linking handler.
         deepLinkToURL(url)
@@ -108,34 +85,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     }
     
     // MARK: Local Notifications
-    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         print(">>> Entering \(#function) <<<")
         print("Received a local notification payload: \(notification) with application: \(application)")
         
-        processLocalNotification(notification)
     }
     
     @available(iOS 9.0, *)
-    func application(application: UIApplication, performActionForShortcutItem shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         print(shortcutItem)
         
-        switch shortcutItem.type {
-        case "com.nothingonline.Nightscouter.AddNew":
-            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteFormViewNavigationController.rawValue)")
-            deepLinkToURL(url!)
-        case "com.nothingonline.Nightscouter.ViewSite":
-            let siteIndex = shortcutItem.userInfo!["siteIndex"] as! Int
-            AppDataManageriOS.sharedInstance.currentSiteIndex = siteIndex
-            
+        guard let useCase: CommonUseCasesForShortcuts = CommonUseCasesForShortcuts(shortcutItemString: shortcutItem.type) else {
+            completionHandler(false)
+            return
+        }
+        
+        switch useCase {
+        case .AddNew :
+            deepLinkToURL(useCase.linkForUseCase())
+        case .ShowDetail:
+            if let siteIndex = shortcutItem.userInfo!["siteIndex"] as? Int {
+                SitesDataSource.sharedInstance.lastViewedSiteIndex = siteIndex
+            }
             #if DEDBUG
                 println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
             #endif
-            
-            let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
-            deepLinkToURL(url!)
+            deepLinkToURL(useCase.linkForUseCase())
         default:
             completionHandler(false)
-            
         }
         
         completionHandler(true)
@@ -143,172 +120,152 @@ class AppDelegate: UIResponder, UIApplicationDelegate, BundleRepresentable {
     
     
     // AppDataManagerNotificationDidChange Handler
-    func dataManagerDidChange(notification: NSNotification) {
-        if UIApplication.sharedApplication().currentUserNotificationSettings()?.types == .None || !sites.isEmpty{
+    func dataManagerDidChange(_ notification: Notification) {
+        if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
             setupNotificationSettings()
         }
         
-        if #available(iOS 9.0, *) {
-            UIApplication.sharedApplication().shortcutItems = nil
-            for (index, site) in AppDataManageriOS.sharedInstance.sites.enumerate() {
-                UIApplication.sharedApplication().shortcutItems?.append(UIApplicationShortcutItem(type: "com.nothingonline.Nightscouter.ViewSite", localizedTitle: site.viewModel.displayName, localizedSubtitle: site.viewModel.displayUrlString, icon: nil, userInfo: ["uuid": site.uuid.UUIDString, "siteIndex": index]))
-            }
+        UIApplication.shared.shortcutItems = nil
+        for (index, site) in SitesDataSource.sharedInstance.sites.enumerated() {
+            
+            let model = site.summaryViewModel
+            
+            let useCase = CommonUseCasesForShortcuts.ShowDetail.applicationShortcutItemType
+            
+            let shortcut = UIApplicationShortcutItem(type: useCase, localizedTitle: model.nameLabel, localizedSubtitle: model.urlLabel, icon: nil, userInfo: ["uuid": site.uuid.uuidString, "siteIndex": index])
+            
+            UIApplication.shared.shortcutItems?.append(shortcut)
         }
         // print("currentUserNotificationSettings: \(currentUserNotificationSettings)")
+        
+        if let alarmObject = AlarmManager.sharedManager.alarmObject {
+            schedule(notificationFor: alarmObject)
+        }
+    }
+    
+    func schedule(notificationFor alarmObject: AlarmObject) {
+        
+        
+        if #available(iOS 10.0, *) {
+            
+        } else {
+            // Fallback on earlier versions
+            
+            
+            let localNotification = UILocalNotification()
+            localNotification.fireDate = Date()
+            localNotification.soundName = alarmObject.audioFileURL.absoluteString//UILocalNotificationDefaultSoundName;
+            localNotification.category = "Nightscout_Category"
+            // localNotification.userInfo = [site.uuid.uuidString: "uuid"]
+            
+            localNotification.alertAction = "View Site"
+            
+            let model = alarmObject
+            
+            localNotification.alertBody = model.snoozeText
+            
+            // localNotification.alertBody = "Last reading: \(model.lastReadingDate), BG: \(model.sgvLabel) \(model.direction.emojiForDirection) Delta: \(model.deltaLabel) Battery: \(model.batteryLabel)%"
+            
+            UIApplication.shared.scheduleLocalNotification(localNotification)
+        }
     }
     
     // MARK: Custom Methods
-    func processLocalNotification(notification: UILocalNotification) {
-        if let userInfoDict : [NSObject : AnyObject] = notification.userInfo {
-            if let uuidString = userInfoDict[Site.PropertyKey.uuidKey] as? String {
-                let uuid = NSUUID(UUIDString: uuidString) // Get the uuid from the notification.
-                
-                _ = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)/\(uuidString)")
-                if let site = (sites.filter{ $0.uuid == uuid }.first) { // Use the uuid value to get the site object from the array.
-                    if let siteIndex = sites.indexOf(site) { // Use the site object to get its index position in the array.
-                        
-                        AppDataManageriOS.sharedInstance.currentSiteIndex = siteIndex
-                        
-                        #if DEDBUG
-                            println("User tapped on notification for site: \(site) at index \(siteIndex) with UUID: \(uuid)")
-                        #endif
-                        
-                        let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteListPageViewController.rawValue)")
-                        deepLinkToURL(url!)
-                    }
-                }
-                //                }
-            } else {
-                let url = NSURL(string: "nightscouter://link/\(Constants.StoryboardViewControllerIdentifier.SiteFormViewController.rawValue)")
-                deepLinkToURL(url!)
-            }
-        }
-    }
     
-    func deepLinkToURL(url: NSURL) {
+    func deepLinkToURL(_ url: URL) {
         // Maybe this can be expanded to handle icomming messages from remote or local notifications.
-        if let pathComponents = url.pathComponents {
+        let pathComponents = url.pathComponents
+        
+        if let queryItems = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems {
+            #if DEBUG
+                print("queryItems: \(queryItems)") // Not handling queries at that moment, but might want to.
+            #endif
+        }
+        
+        guard let app = UIApplication.shared.delegate as? AppDelegate, let window = app.window else {
+            return
+        }
+        
+        if let navController = window.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
             
-            if let queryItems = NSURLComponents(URL: url, resolvingAgainstBaseURL: false)?.queryItems {
-                #if DEBUG
-                    print("queryItems: \(queryItems)") // Not handling queries at that moment, but might want to.
-                #endif
-            }
+            navController.popToRootViewController(animated: false) // Return to root viewcontroller without animation.
+            navController.dismiss(animated: false, completion: { () -> Void in
+                //
+            })
+            let storyboard = window
+                .rootViewController?.storyboard // Grab the storyboard from the rootview.
+            var viewControllers = navController.viewControllers // Grab all the current view controllers in the stack.
             
-            if let navController = self.window?.rootViewController as? UINavigationController { // Get the root view controller's navigation controller.
-                navController.popToRootViewControllerAnimated(false) // Return to root viewcontroller without animation.
-                let storyboard = self.window?.rootViewController?.storyboard // Grab the storyboard from the rootview.
-                var viewControllers = navController.viewControllers // Grab all the current view controllers in the stack.
-                for stringID in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
-                    if let stor = Constants.StoryboardViewControllerIdentifier(rawValue: stringID) { // Attempt to create a storyboard identifier out of the string.
-                        let linkIsAllowed = Constants.StoryboardViewControllerIdentifier.deepLinkableStoryboards.contains(stor) // Check to see if this is an allowed viewcontroller.
-                        if linkIsAllowed {
-                            let newViewController = storyboard!.instantiateViewControllerWithIdentifier(stringID)
+            for pathComponent in pathComponents { // iterate through all the path components. Currently the app only has one level of deep linking.
+                
+                // Attempt to create a storyboard identifier out of the string.
+                guard let storyboardIdentifier = StoryboardIdentifier(rawValue: pathComponent) else {
+                    continue
+                }
+                
+                let linkIsAllowed = StoryboardIdentifier.deepLinkable.contains(storyboardIdentifier) // Check to see if this is an allowed viewcontroller.
+                
+                if linkIsAllowed {
+                    let newViewController = storyboard!.instantiateViewController(withIdentifier: storyboardIdentifier.rawValue)
+                    
+                    switch (storyboardIdentifier) {
+                    case .sitesTableViewController:
+                        
+                        if let UUIDString = pathComponents[safe: 2], let uuid = UUID(uuidString: UUIDString), let site = (SitesDataSource.sharedInstance.sites.filter { $0.uuid == uuid }.first), let index = SitesDataSource.sharedInstance.sites.index(of: site) {
                             
-                            switch (stor) {
-                            case .SiteListPageViewController:
-                                viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
-                            case .SiteFormViewNavigationController, .SiteFormViewController:
-                                navController.presentViewController(newViewController, animated: false, completion: { () -> Void in
-                                    // ...
-                                })
-                            default:
-                                viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
-                            }
+                            SitesDataSource.sharedInstance.lastViewedSiteIndex = index
                         }
+                        
+                        viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
+                    case .formViewNavigationController, .formViewController:
+                        navController.present(newViewController, animated: false, completion: { () -> Void in
+                            // ...
+                        })
+                    default:
+                        viewControllers.append(newViewController) // Create the view controller and append it to the navigation view controller stack
                     }
                 }
-                navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
             }
-        }
-    }
-    
-    func createUpdateTimer() -> NSTimer {
-        let localTimer = NSTimer.scheduledTimerWithTimeInterval(Constants.NotableTime.StandardRefreshTime, target: self, selector: #selector(AppDelegate.updateDataNotification(_:)), userInfo: nil, repeats: true)
-        
-        return localTimer
-    }
-    
-    func updateDataNotification(timer: NSTimer?) -> Void {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-            print("Posting \(NightscoutAPIClientNotification.DataIsStaleUpdateNow) Notification at \(NSDate())")
-        #endif
-        
-        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            NSNotificationCenter.defaultCenter().postNotification(NSNotification(name: NightscoutAPIClientNotification.DataIsStaleUpdateNow, object: self))
-            //AppDataManageriOS.sharedInstance.updateWatch(withAction: .UserInfo
-        }
-        if (self.timer == nil) {
-            self.timer = createUpdateTimer()
-        }
-    }
-    
-    func scheduleLocalNotification(site: Site) {
-        #if DEBUG
-            print(">>> Entering \(#function) <<<")
-            print("Scheduling a notification for site: \(site.url) and is allowed: \(site.allowNotifications)")
-        #endif
-        
-        if (site.allowNotifications == false) { return }
-        
-        let dateFor = NSDateFormatter()
-        dateFor.timeStyle = .ShortStyle
-        dateFor.dateStyle = .ShortStyle
-        dateFor.doesRelativeDateFormatting = true
-        
-        let localNotification = UILocalNotification()
-        localNotification.fireDate = NSDate().dateByAddingTimeInterval(NSTimeInterval(arc4random_uniform(UInt32(sites.count))))
-        localNotification.soundName = UILocalNotificationDefaultSoundName;
-        localNotification.category = "Nightscout_Category"
-        localNotification.userInfo = NSDictionary(object: site.uuid.UUIDString, forKey: Site.PropertyKey.uuidKey) as [NSObject : AnyObject]
-        localNotification.alertAction = "View Site"
-        
-        if let config = site.configuration {
-            localNotification.alertTitle = "Update for \(config.displayName)"
-            
-            let units = config.displayUnits
-            if let watch: WatchEntry = site.watchEntry {
-                localNotification.alertBody = "Last reading: \(dateFor.stringFromDate(watch.date)), BG: \(watch.sgv!.sgvString(forUnits: units)) \(watch.sgv!.direction.emojiForDirection) Delta: \(watch.bgdelta.formattedBGDelta(forUnits: units)) Battery: \(watch.batteryString)%"
-            }
+            navController.viewControllers = viewControllers // Apply the updated list of view controller to the current navigation controller.
         }
         
-        UIApplication.sharedApplication().scheduleLocalNotification(localNotification)
+        
     }
     
     func setupNotificationSettings() {
         print(">>> Entering \(#function) <<<")
-        // Specify the notification types.
-        let notificationTypes: UIUserNotificationType = [.Alert, .Sound, .Badge]
         
-        // Register the notification settings.
-        let newNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
-        UIApplication.sharedApplication().registerUserNotificationSettings(newNotificationSettings)
         
-        // TODO: Enabled remote notifications... need to get a server running.
-        // UIApplication.sharedApplication().registerForRemoteNotifications()
-        
-        UIApplication.sharedApplication().setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
-        UIApplication.sharedApplication().applicationIconBadgeNumber = 0
-        UIApplication.sharedApplication().cancelAllLocalNotifications()
-    }
-    
-    var supportedSchemes: [String]? {
-        if let info = infoDictionary {
-            var schemes = [String]() // Create an empty array we can later set append available schemes.
-            if let bundleURLTypes = info["CFBundleURLTypes"] as? [AnyObject] {
-                for (index, _) in bundleURLTypes.enumerate() {
-                    if let urlTypeDictionary = bundleURLTypes[index] as? [String : AnyObject] {
-                        if let urlScheme = urlTypeDictionary["CFBundleURLSchemes"] as? [String] {
-                            schemes += urlScheme // We've found the supported schemes appending to the array.
-                            return schemes
-                        }
-                    }
+        if #available(iOS 10.0, *) {
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { (granted, error) in
+                if let error = error {
+                    print("error:\(error)")
+                } else if !granted {
+                    print("not granted")
+                } else {
+                    DispatchQueue.main.async(execute: {
+                    })
                 }
+                
             }
+        } else {
+            // Fallback on earlier versions
+            let notificationTypes: UIUserNotificationType = [.alert, .sound, .badge]
+            // Specify the notification types.
+            
+            
+            // Register the notification settings.
+            let newNotificationSettings = UIUserNotificationSettings(types: notificationTypes, categories: nil)
+            UIApplication.shared.registerUserNotificationSettings(newNotificationSettings)
+            
+            // TODO: Enabled remote notifications... need to get a server running.
+            
         }
         
-        return nil
+        // UIApplication.sharedApplication().registerForRemoteNotifications()
+        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        UIApplication.shared.cancelAllLocalNotifications()
     }
+    
 }
-
