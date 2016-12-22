@@ -49,29 +49,3 @@ extension SensorGlucoseValue: Chartable {
         }
     }
 }
-/*
- extension Calibration: Chartable {
- public var chartDictionary: [String: Any] {
- get{
- let entry: Calibration = self
- let dateForJson = chartDateFormatter.string(from: entry.date)
- let dict: [String: Any] = ["color" : chartColor, "date" : dateForJson, "slope" : entry.slope, "intercept": entry.intercept, "scale" : entry.scale]
- 
- return dict
- }
- }
- }
- 
- extension MeteredGlucoseValue: Chartable {
- public var chartDictionary: [String: Any] {
- get{
- let entry: MeteredGlucoseValue = self
- let dateForJson = chartDateFormatter.string(from: entry.date as Date)
- let dict: [String: Any] = ["color" : chartColor, "date" : dateForJson, "device" : entry.device.rawValue, "mgdl" : entry.mgdl]
- 
- return dict
- }
- }
- 
- }
- */
