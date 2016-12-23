@@ -44,7 +44,7 @@ public struct Site: Dateable, CustomStringConvertible {
         let compare = Date() > nextUpdate
         
         // If the newDate is in the future do not update. Exit function.
-        return (compare || configuration == nil) && disabled == false //(compare == .orderedDescending || configuration == nil) && disabled == false
+        return (compare || configuration == nil) && disabled == false
     }
     
     public var uuid: UUID
