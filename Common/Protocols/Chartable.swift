@@ -23,17 +23,18 @@ extension Chartable {
         let nsDateFormatter = DateFormatter()
         nsDateFormatter.dateFormat = "EEE MMM d HH:mm:ss zzz yyy"
         nsDateFormatter.timeZone = TimeZone.autoupdatingCurrent
-
+        nsDateFormatter.locale = Locale(identifier: "en_US")
         return nsDateFormatter
     }
     
     public var jsonForChart: String {
         let jsObj =  try? JSONSerialization.data(withJSONObject: chartDictionary, options:[])
         
-//        let str = String(data: jsObj!, encoding: .utf8)
-        let str = String(bytes: jsObj!, encoding: String.Encoding.utf8)
+        guard let jsObjSafe = jsObj, let str = String(bytes: jsObjSafe, encoding: .utf8) else {
+            return ""
+        }
         
-        return str!
+        return str
     }
 }
 
@@ -48,29 +49,3 @@ extension SensorGlucoseValue: Chartable {
         }
     }
 }
-/*
-extension Calibration: Chartable {
-    public var chartDictionary: [String: Any] {
-        get{
-            let entry: Calibration = self
-            let dateForJson = chartDateFormatter.string(from: entry.date)
-            let dict: [String: Any] = ["color" : chartColor, "date" : dateForJson, "slope" : entry.slope, "intercept": entry.intercept, "scale" : entry.scale]
-            
-            return dict
-        }
-    }
-}
-
-extension MeteredGlucoseValue: Chartable {
-    public var chartDictionary: [String: Any] {
-        get{
-            let entry: MeteredGlucoseValue = self
-            let dateForJson = chartDateFormatter.string(from: entry.date as Date)
-            let dict: [String: Any] = ["color" : chartColor, "date" : dateForJson, "device" : entry.device.rawValue, "mgdl" : entry.mgdl]
-            
-            return dict
-        }
-    }
-    
-}
-*/
