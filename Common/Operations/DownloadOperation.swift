@@ -8,7 +8,7 @@
 
 import Foundation
 
-class DownloadOperation: Operation {
+class DownloadOperation: Operation, URLSessionDelegate {
     
     var request: URLRequest
     
@@ -36,7 +36,9 @@ class DownloadOperation: Operation {
         let config = !isBackground ? URLSessionConfiguration.default :
             URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
         
-        let session = URLSession(configuration: config)
+        
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+       
         
         let downloadTask = session.downloadTask(with: self.request) { (location, response, error) in
             print(">>> downloadTask task for \(self.request.url) is complete. <<<")
@@ -77,5 +79,10 @@ class DownloadOperation: Operation {
         downloadTask.resume()
         
         disGroup.wait()
+    }
+    
+    func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+        print(#function)
+        return
     }
 }
