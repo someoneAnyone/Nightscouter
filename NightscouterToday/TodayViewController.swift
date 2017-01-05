@@ -22,18 +22,23 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
     }
     
-    var sites:[Site] = []
+    //var sites:[Site] = []
+    // Computed Property: Grabs the common set of sites from the data manager.
+    var sites: [Site] {
+        return SitesDataSource.sharedInstance.sites
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-    
+        
         tableView.backgroundColor = Color.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = Color(white: 1.0, alpha: 0.5)
         
-        self.sites = SitesDataSource.sharedInstance.sites
+        //self.sites = SitesDataSource.sharedInstance.sites
         
         if #available(iOSApplicationExtension 10.0, *) {
             extensionContext?.widgetLargestAvailableDisplayMode =  (tableView.numberOfRows(inSection: 0) == 1) ? .compact : .expanded
@@ -152,14 +157,10 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
                 return
             }
             SitesDataSource.sharedInstance.updateSite(updatedSite)
-            self.sites = SitesDataSource.sharedInstance.sites
-
+            //self.sites = SitesDataSource.sharedInstance.sites
+            
             DispatchQueue.main.async {
                 self.tableView.reloadData()
-                
-                if (self.refreshControl?.isRefreshing != nil) {
-                    self.refreshControl?.endRefreshing()
-                }
             }
         }
     }
