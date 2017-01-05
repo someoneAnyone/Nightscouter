@@ -134,14 +134,16 @@ extension ServerConfiguration: Encodable, Decodable {
         
         guard let status = dict[JSONKey.status] as? String,
             let apiEnabled = dict[JSONKey.apiEnabled] as? Bool,
-            let serverTime = dict[JSONKey.serverTime] as? String,
+            // let serverTime = dict[JSONKey.serverTime] as? String,
             let careportalEnabled = dict[JSONKey.careportalEnabled] as? Bool,
             let head = dict[JSONKey.head] as? String,
             let version = dict[JSONKey.version] as? String,
             let name = dict[JSONKey.name] as? String else {
                 return nil
         }
-        
+
+        let serverTime = dict[JSONKey.serverTime] as? String ?? AppConfiguration.serverTimeDateFormatter.string(from: Date())
+
         let boluscalcEnabled = dict[JSONKey.boluscalcEnabled] as? Bool ?? false
         
         var settings: Settings?
