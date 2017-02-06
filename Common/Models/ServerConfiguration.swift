@@ -62,7 +62,7 @@ public struct ServerConfiguration: CustomStringConvertible {
         self.status = status
         self.version = version
         self.name = name
-        self.serverTime = serverTime// AppConfiguration.serverTimeDateFormatter.stringFromDate(NSDate())
+        self.serverTime = serverTime
         self.apiEnabled = api
         self.careportalEnabled = carePortal
         self.boluscalcEnabled = boluscalc
