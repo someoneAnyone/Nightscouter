@@ -18,7 +18,7 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
     var meteredGlucoseValues: [MeteredGlucoseValue] = []
     
     fileprivate enum SupportedEntryTypes: String {
-        case sgv, mbg, cal
+        case sgv, mbg, cal, pumpdata
     }
     
     public convenience init(withJSONData data: Data?) {
@@ -63,6 +63,8 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
                     if let cal = Calibration.decode(entry) {
                         calibrations.append(cal)
                     }
+                case .pumpdata:
+                    continue
                 }
             }
             
