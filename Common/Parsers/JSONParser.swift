@@ -386,10 +386,10 @@ extension SensorGlucoseValue: Encodable, Decodable {
         if (directionString == nil) {
             directionString = "None"
         }
-        let direction = Direction(rawValue: directionString!)
+        let direction = Direction(rawValue: directionString!)!
         let noise = Noise(rawValue: noiseInt) ?? .unknown
 
-        return SensorGlucoseValue(direction: direction!, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mill)
+        return SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mill)
     }
 }
 
