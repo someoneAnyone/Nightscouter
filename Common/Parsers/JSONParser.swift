@@ -376,17 +376,16 @@ extension SensorGlucoseValue: Encodable, Decodable {
             return nil
         }
         
-        var directionString = json[JSONKey.direction] as? String
+        let directionString = json[JSONKey.direction] as? String ?? "None"
         let filtered = json[JSONKey.filtered] as? Double ?? 0
         let noiseInt = json[JSONKey.noise] as? Int ?? 0
         let rssi = json[JSONKey.rssi] as? Int ?? 0
         let unfiltered = json[JSONKey.unfiltered] as? Double ?? 0
         
         let device = Device(rawValue: deviceString) ?? .unknown
-        if (directionString == nil) {
-            directionString = "None"
-        }
-        let direction = Direction(rawValue: directionString!)!
+       
+        let direction = Direction(rawValue: directionString) ?? .none
+        
         let noise = Noise(rawValue: noiseInt) ?? .unknown
 
         return SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mill)
