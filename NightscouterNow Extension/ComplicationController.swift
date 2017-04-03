@@ -49,7 +49,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
         let nextUpdate = SitesDataSource.sharedInstance.primarySite?.nextRequestedComplicationUpdateDate
         
         #if DEBUG
-            print("Next Requested Update Date is:\(nextUpdate)")
+            print("Next Requested Update Date is:\(String(describing: nextUpdate))")
         #endif
         
         handler(nextUpdate)
