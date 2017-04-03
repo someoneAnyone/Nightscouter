@@ -134,13 +134,15 @@ extension ServerConfiguration: Encodable, Decodable {
         
         guard let status = dict[JSONKey.status] as? String,
             let apiEnabled = dict[JSONKey.apiEnabled] as? Bool,
-            let serverTime = dict[JSONKey.serverTime] as? String,
+            // let serverTime = dict[JSONKey.serverTime] as? String,
             let careportalEnabled = dict[JSONKey.careportalEnabled] as? Bool,
             let head = dict[JSONKey.head] as? String,
             let version = dict[JSONKey.version] as? String,
             let name = dict[JSONKey.name] as? String else {
                 return nil
         }
+        
+        let serverTime = dict[JSONKey.serverTime] as? String ?? AppConfiguration.serverTimeDateFormatter.string(from: Date())
         
         let boluscalcEnabled = dict[JSONKey.boluscalcEnabled] as? Bool ?? false
         
@@ -382,7 +384,7 @@ extension SensorGlucoseValue: Encodable, Decodable {
         let device = Device(rawValue: deviceString) ?? .unknown
         let direction = Direction(rawValue: directionString) ?? .none
         let noise = Noise(rawValue: noiseInt) ?? .unknown
-
+        
         return SensorGlucoseValue(direction: direction, device: device, rssi: rssi, unfiltered: unfiltered, filtered: filtered, mgdl: mgdl, noise: noise, milliseconds: mill)
     }
 }
@@ -413,24 +415,18 @@ extension DeviceStatus: Encodable, Decodable {
         
         var mills: Mills?
         if let created = json[JSONKey.created_at] as? String {
-            mills = AppConfiguration.serverTimeDateFormatter.date(from: created)?.timeIntervalSince1970.millisecond
-        } else if let intMills = json["mills"] as? Int {
+            if #available(iOSApplicationExtension 10.0, watchOSApplicationExtension 3.0, *) {
+                mills = ISO8601DateFormatter().date(from: created)?.timeIntervalSince1970.millisecond
+            } else {
+                mills = AppConfiguration.serverTimeDateFormatter.date(from: created)?.timeIntervalSince1970.millisecond
+            }
+        } else if let intMills = json[JSONKey.mills] as? Int {
             mills = Mills(intMills)
         } else {
             return nil
         }
-        
-        /*
-         guard let mills = json[JSONKey.mills].double, let uploaderBattery = json[JSONKey.uploaderBattery].int else {
-         return nil
-         }
-         */
-        /*
-        guard let mills = AppConfiguration.serverTimeDateFormatter.date(from: created)?.timeIntervalSince1970.millisecond else {
-            return nil
-        }*/
-        
-        return DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: mills!)
+
+        return DeviceStatus(uploaderBattery: uploaderBattery, milliseconds: mills ?? Date.distantPast.timeIntervalSince1970.millisecond)
     }
 }
 
