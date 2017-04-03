@@ -76,7 +76,7 @@ open class NSAssetKit : NSObject {
             //// doubleRingWithArrow Drawing
             context.saveGState()
             context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.53248 * frame.height)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let doubleRingWithArrowPath = UIBezierPath()
             doubleRingWithArrowPath.move(to: CGPoint(x: -0, y: -68.33))
@@ -247,7 +247,7 @@ open class NSAssetKit : NSObject {
             //// ringWithArrow Drawing
             context.saveGState()
             context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.52779 * frame.height)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let ringWithArrowPath = UIBezierPath()
             ringWithArrowPath.move(to: CGPoint(x: 0, y: -51.16))
@@ -513,7 +513,7 @@ open class NSAssetKit : NSObject {
             //// uncomputableRing Drawing
             context.saveGState()
             context.translateBy(x: frame.minX + 0.50000 * frame.width, y: frame.minY + 0.52821 * frame.height)
-            context.rotate(by: -computeAnimation * CGFloat(M_PI) / 180)
+            context.rotate(by: -computeAnimation * CGFloat(Double.pi) / 180)
 
             let uncomputableRingPath = UIBezierPath(ovalIn: CGRect(x: -54, y: -54, width: 108, height: 108))
             context.saveGState()
@@ -1310,7 +1310,7 @@ open class NSAssetKit : NSObject {
         //// Bezier 3 Drawing
         context.saveGState()
         context.translateBy(x: 11, y: 3)
-        context.rotate(by: -(alarmAngle - 5) * CGFloat(M_PI) / 180)
+        context.rotate(by: -(alarmAngle - 5) * CGFloat(Double.pi) / 180)
 
         let bezier3Path = UIBezierPath()
         bezier3Path.move(to: CGPoint(x: 3.5, y: 16.88))

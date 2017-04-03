@@ -81,7 +81,7 @@ public extension SegueHandlerType where Self: Controller, SegueIdentifier.RawVal
          */
         guard let identifier = segue.identifier,
             let segueIdentifier = SegueIdentifier(rawValue: identifier) else {
-                fatalError("Couldn't handle segue identifier \(segue.identifier) for view controller of type \(type(of: self)).")
+                fatalError("Couldn't handle segue identifier \(String(describing: segue.identifier)) for view controller of type \(type(of: self)).")
         }
         
         return segueIdentifier
