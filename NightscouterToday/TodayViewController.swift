@@ -122,7 +122,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
                 contentCell.contentView.backgroundColor = Color(hexString: "1e1e1f")
             }
             
-            if site.updateNow {
+            if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
                 refreshDataFor(site, index: indexPath.row)
             }
             
@@ -144,8 +144,11 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
+            
             for (index, site) in sites.enumerated() {
-                refreshDataFor(site, index: index)
+                if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+                    refreshDataFor(site, index: index)
+                }
             }
         }
     }
@@ -157,12 +160,14 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
                 return
             }
             SitesDataSource.sharedInstance.updateSite(updatedSite)
+
             //self.sites = SitesDataSource.sharedInstance.sites
             
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         }
+        
     }
     
     func openApp(with indexPath: IndexPath) {
