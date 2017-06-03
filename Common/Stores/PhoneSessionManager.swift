@@ -43,7 +43,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         session?.activate()
         
         #if DEBUG
-            print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(session?.isPaired), Watch App Installed: \(session?.isWatchAppInstalled)")
+            print("WCSession.isSupported: \(WCSession.isSupported()), Paired Watch: \(String(describing: session?.isPaired)), Watch App Installed: \(String(describing: session?.isWatchAppInstalled))")
         #endif
     }
     

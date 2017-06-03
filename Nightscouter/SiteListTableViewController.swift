@@ -263,7 +263,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     @IBAction func goToSettings(_ sender: AnyObject?) {
         print(">>> Entering \(#function) <<<")
         let settingsUrl = URL(string: UIApplicationOpenSettingsURLString)
-        UIApplication.shared.openURL(settingsUrl!)
+        //UIApplication.shared.openURL(settingsUrl!)
+        UIApplication.shared.open(settingsUrl!, options: Dictionary(), completionHandler: nil)
     }
     
     

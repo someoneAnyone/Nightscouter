@@ -22,7 +22,7 @@ class DownloadOperation: Operation, URLSessionDelegate {
         
         super.init()
         
-        self.name = "Download data from \(request.url)"
+        self.name = "Download data from \(String(describing: request.url))"
     }
     
     override func main() {
@@ -41,7 +41,7 @@ class DownloadOperation: Operation, URLSessionDelegate {
        
         
         let downloadTask = session.downloadTask(with: self.request) { (location, response, error) in
-            print(">>> downloadTask task for \(self.request.url) is complete. <<<")
+            print(">>> downloadTask task for \(String(describing: self.request.url)) is complete. <<<")
             //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
             
             if self.isCancelled {

@@ -315,7 +315,7 @@ extension SiteDetailViewController {
         self.siteWebView?.scrollView.isScrollEnabled = false
         
         let filePath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "html")
-        let defaultDBPath = "\(Bundle.main.resourcePath)\\html"
+        let defaultDBPath = "\(String(describing: Bundle.main.resourcePath))\\html"
         
         let fileExists = FileManager.default.fileExists(atPath: filePath!)
         if !fileExists {

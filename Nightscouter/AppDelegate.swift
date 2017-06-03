@@ -11,7 +11,7 @@ import NightscouterKit
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, BundleRepresentable {
+class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, BundleRepresentable, UNUserNotificationCenterDelegate {
     
     var window: UIWindow?
     
@@ -85,9 +85,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     }
     
     // MARK: Local Notifications
-    func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print(">>> Entering \(#function) <<<")
-        print("Received a local notification payload: \(notification) with application: \(application)")
+        //print("Received a local notification payload: \(notification) with application: \(application)")
         
     }
     
@@ -265,7 +265,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         // UIApplication.sharedApplication().registerForRemoteNotifications()
         UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         UIApplication.shared.applicationIconBadgeNumber = 0
-        UIApplication.shared.cancelAllLocalNotifications()
+        //UIApplication.shared.cancelAllLocalNotifications()
+        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }
     
 }

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GKK-vj-5UX">
+<document type="com.apple.InterfaceBuilder.WatchKit.Storyboard" version="3.0" toolsVersion="12118" systemVersion="16E195" targetRuntime="watchKit" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="GKK-vj-5UX">
+    <device id="watch38" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
-        <deployment identifier="watchOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="11077"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBWatchKitPlugin" version="12029"/>
     </dependencies>
     <scenes>
         <!--Nightscouter-->
@@ -236,30 +238,6 @@
                 </controller>
             </objects>
             <point key="canvasLocation" x="642" y="118"/>
-        </scene>
-        <!--Glance-->
-        <scene sceneID="Hfq-rq-OqJ">
-            <objects>
-                <glanceController identifier="Glance" topTemplateType="body2Body1" bottomTemplateType="extraLargeBody2Body1Footer" id="yQy-Tt-vkJ" customClass="GlanceController" customModule="NightscouterNow_Extension">
-                    <items>
-                        <label alignment="left" text="Nightscouter" id="OEC-YF-Ofr"/>
-                        <label alignment="left" text="---" id="8nb-06-Nhh"/>
-                        <label alignment="left" text="---" minimumScaleFactor="0.5" id="02e-R7-Lg2"/>
-                        <label alignment="left" text="---" id="zmD-jV-lYc"/>
-                        <label alignment="left" text="--- : ---" id="cbl-bZ-OZk"/>
-                        <label alignment="left" text="--%" id="8MH-ux-SuA"/>
-                    </items>
-                    <connections>
-                        <outlet property="batteryLabel" destination="8MH-ux-SuA" id="poB-ex-6Lh"/>
-                        <outlet property="lastUpdateLabel" destination="8nb-06-Nhh" id="kyt-Bd-6aI"/>
-                        <outlet property="siteDeltaLabel" destination="zmD-jV-lYc" id="3dN-oQ-kRt"/>
-                        <outlet property="siteNameLabel" destination="OEC-YF-Ofr" id="Cfx-6J-bxf"/>
-                        <outlet property="siteRawLabel" destination="cbl-bZ-OZk" id="mPU-UY-RBf"/>
-                        <outlet property="siteSgvLabel" destination="02e-R7-Lg2" id="KwU-To-h5h"/>
-                    </connections>
-                </glanceController>
-            </objects>
-            <point key="canvasLocation" x="386" y="-186"/>
         </scene>
     </scenes>
     <color key="tintColor" red="0.04129435122013092" green="0.35473400354385376" blue="0.76618272066116333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -159,7 +159,7 @@ open class NSAssetKitWatchOS : NSObject {
             //// Rectangle Drawing
             context.saveGState()
             context.translateBy(x: group2.minX + 60.51, y: group2.minY + 67)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let rectanglePath = UIBezierPath()
             rectanglePath.move(to: CGPoint(x: 10, y: -57))
@@ -176,11 +176,11 @@ open class NSAssetKitWatchOS : NSObject {
             //// Oval 2 Drawing
             context.saveGState()
             context.translateBy(x: group2.minX + 60.51, y: group2.minY + 67)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let oval2Rect = CGRect(x: -58.5, y: -58.5, width: 117, height: 117)
             let oval2Path = UIBezierPath()
-            oval2Path.addArc(withCenter: CGPoint(x: oval2Rect.midX, y: oval2Rect.midY), radius: oval2Rect.width / 2, startAngle: -210 * CGFloat(M_PI)/180, endAngle: 30 * CGFloat(M_PI)/180, clockwise: true)
+            oval2Path.addArc(withCenter: CGPoint(x: oval2Rect.midX, y: oval2Rect.midY), radius: oval2Rect.width / 2, startAngle: -210 * CGFloat(Double.pi)/180, endAngle: 30 * CGFloat(Double.pi)/180, clockwise: true)
 
             arrowTintShadowColor.setStroke()
             oval2Path.lineWidth = 4
@@ -200,11 +200,11 @@ open class NSAssetKitWatchOS : NSObject {
         //// Oval Drawing
         context.saveGState()
         context.translateBy(x: frame.minX + 0.50420 * frame.width, y: frame.minY + 0.50420 * frame.height)
-        context.rotate(by: -angle * CGFloat(M_PI) / 180)
+        context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
         let ovalRect = CGRect(x: -52.5, y: -52.5, width: 105, height: 105)
         let ovalPath = UIBezierPath()
-        ovalPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -220 * CGFloat(M_PI)/180, endAngle: 40 * CGFloat(M_PI)/180, clockwise: true)
+        ovalPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -220 * CGFloat(Double.pi)/180, endAngle: 40 * CGFloat(Double.pi)/180, clockwise: true)
 
         arrowTintShadowColor.setStroke()
         ovalPath.lineWidth = 3
@@ -217,7 +217,7 @@ open class NSAssetKitWatchOS : NSObject {
             //// Rectangle 2 Drawing
             context.saveGState()
             context.translateBy(x: frame.minX + 0.50420 * frame.width, y: frame.minY + 0.50420 * frame.height)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let rectangle2Path = UIBezierPath()
             rectangle2Path.move(to: CGPoint(x: 8, y: -53))

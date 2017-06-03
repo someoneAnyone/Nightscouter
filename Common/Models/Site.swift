@@ -50,7 +50,7 @@ public struct Site: Dateable, CustomStringConvertible {
     public var uuid: UUID
     
     public var description: String {
-        return "{ Site: { url: \(url), configuration: \(configuration), lastConnectedDate: \(date), disabled: \(disabled), numberOfSgvs: \(sgvs.count), numberOfCals: \(cals.count), , numberOfMbgs: \(mbgs.count), numberOfTimeLineEntries: \(complicationTimeline.count) } }"
+        return "{ Site: { url: \(url), configuration: \(String(describing: configuration)), lastConnectedDate: \(date), disabled: \(disabled), numberOfSgvs: \(sgvs.count), numberOfCals: \(cals.count), , numberOfMbgs: \(mbgs.count), numberOfTimeLineEntries: \(complicationTimeline.count) } }"
     }
     
     public init(){
