@@ -28,9 +28,22 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public var nextUpdate: Date {
         
+        
+        
         if let sgvDate = sgvs.first?.date {
-            return sgvDate.addingTimeInterval(TimeInterval.FourMinutes)
+            //let updated = updatedAt
+            let nextupDate = sgvDate.addingTimeInterval(TimeInterval.FourMinutes)
+            let lastupdatedPlusOne = updatedAt.addingTimeInterval(TimeInterval.OneMinute)
+            
+            
+            if lastupdatedPlusOne > nextupDate {
+                return lastupdatedPlusOne
+            }
+            
+            return nextupDate
         }
+        
+        
         
         return updatedAt.addingTimeInterval(TimeInterval.FourMinutes)
     }
@@ -42,6 +55,7 @@ public struct Site: Dateable, CustomStringConvertible {
     public var updateNow: Bool {
         // Compare now against when we should update.
         let compare = Date() > nextUpdate
+        
         
         // If the newDate is in the future do not update. Exit function.
         return (compare || configuration == nil) && disabled == false
@@ -129,7 +143,7 @@ extension Site {
     public var summaryViewModel: SiteSummaryModelViewModel {
         return SiteSummaryModelViewModel(withSite: self)
     }
-  
+    
 }
 
 struct SiteChangeset {
