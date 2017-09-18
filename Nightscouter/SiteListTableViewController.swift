@@ -308,12 +308,12 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
-
-       checkAlarm()
+        
+        checkAlarm()
     }
     
     func checkAlarm() {
-
+        
         if let alarmObject = alarmObject {
             if alarmObject.warning == true || alarmObject.isSnoozed {
                 let activeColor = alarmObject.urgent ? NSAssetKit.predefinedAlertColor : NSAssetKit.predefinedWarningColor
@@ -366,7 +366,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         
         cell.configure(withDataSource: model, delegate: model)
         // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
-        if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+        if site.updateNow {
+            
+            //            && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -391,20 +393,23 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
-        if sites.isEmpty == false {
-            if refreshControl?.isRefreshing == false {
-                DispatchQueue.main.async {
+        DispatchQueue.main.async {
+            
+            if self.sites.isEmpty == false {
+                if self.refreshControl?.isRefreshing == false {
+                    //                DispatchQueue.main.async {
                     self.refreshControl?.beginRefreshing()
                     self.tableView.setContentOffset(CGPoint(x: 0, y: self.tableView.contentOffset.y-self.refreshControl!.frame.size.height), animated: true)
+                    //                }
                 }
+                for (index, site) in self.sites.enumerated() {
+                    self.refreshDataFor(site, index: index)
+                }
+                
+            } else {
+                // No data in the sites array. Cancel the refreshing!
+                self.refreshControl?.endRefreshing()
             }
-            for (index, site) in sites.enumerated() {
-                refreshDataFor(site, index: index)
-            }
-        
-        } else {
-            // No data in the sites array. Cancel the refreshing!
-            refreshControl?.endRefreshing()
         }
     }
     
@@ -420,9 +425,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 return
             }
             
-            SitesDataSource.sharedInstance.updateSite(updatedSite)
-            self.milliseconds = updatedSite.milliseconds
             DispatchQueue.main.async {
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+                self.milliseconds = updatedSite.milliseconds
+                
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
                     self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
@@ -437,7 +443,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.checkAlarm()
                 
                 self.dismiss(animated: true, completion: nil)
-                
             }
         }
     }

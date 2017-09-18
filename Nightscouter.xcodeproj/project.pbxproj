@@ -504,8 +504,8 @@
 		171CDB621D91C56500D7D52D /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */,
 				171CDB631D91C56500D7D52D /* Nightscout.swift */,
+				8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */,
 				171CDB641D91C56500D7D52D /* ParseConfigurationOperation.swift */,
 				171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */,
 				171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */,
