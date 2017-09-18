@@ -32,9 +32,14 @@ public class SitesDataSource: SiteStoreType {
         
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
+        #if os(iOS)
+
         let iCloudManager = iCloudKeyValueStore()
         iCloudManager.store = self
         iCloudManager.startSession()
+           
+        self.sessionManagers.append(iCloudManager)
+        #endif
         
         let watchConnectivityManager = WatchSessionManager.sharedManager
         watchConnectivityManager.store = self
@@ -46,7 +51,7 @@ public class SitesDataSource: SiteStoreType {
             alarmManager.startSession()
         }
         
-        self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
+        self.sessionManagers = [watchConnectivityManager, alarmManager]
         
         print("found \(self.sites.count) sites in the store.")
         
