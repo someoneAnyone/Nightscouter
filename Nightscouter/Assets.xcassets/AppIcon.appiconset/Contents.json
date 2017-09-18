@@ -3,13 +3,13 @@
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "appIconSpotlight-1.png",
+      "filename" : "Notification@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "appIconSpotlight@3x-1.png",
+      "filename" : "Notification@3x.png",
       "scale" : "3x"
     },
     {
@@ -51,13 +51,13 @@
     {
       "size" : "20x20",
       "idiom" : "ipad",
-      "filename" : "appIconSpotlight-2.png",
+      "filename" : "Notification.png",
       "scale" : "1x"
     },
     {
       "size" : "20x20",
       "idiom" : "ipad",
-      "filename" : "appIconSpotlight-3.png",
+      "filename" : "Notification@2x-1.png",
       "scale" : "2x"
     },
     {
@@ -105,7 +105,7 @@
     {
       "size" : "1024x1024",
       "idiom" : "ios-marketing",
-      "filename" : "macApp512@2x-1.png",
+      "filename" : "AppStoreiOS.png",
       "scale" : "1x"
     },
     {
