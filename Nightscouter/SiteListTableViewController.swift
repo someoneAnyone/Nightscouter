@@ -425,9 +425,10 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 return
             }
             
-            SitesDataSource.sharedInstance.updateSite(updatedSite)
-            self.milliseconds = updatedSite.milliseconds
             DispatchQueue.main.async {
+                SitesDataSource.sharedInstance.updateSite(updatedSite)
+                self.milliseconds = updatedSite.milliseconds
+                
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
                     self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
@@ -442,7 +443,6 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.checkAlarm()
                 
                 self.dismiss(animated: true, completion: nil)
-                
             }
         }
     }
