@@ -120,7 +120,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     
     
     // AppDataManagerNotificationDidChange Handler
-    func dataManagerDidChange(_ notification: Notification) {
+    @objc func dataManagerDidChange(_ notification: Notification) {
         if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
             setupNotificationSettings()
         }

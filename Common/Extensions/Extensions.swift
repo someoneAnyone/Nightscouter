@@ -18,7 +18,7 @@ import Foundation
 
 #if os(iOS)
 public extension UINavigationItem {
-    public func update(with newItem: UINavigationItem) {
+    @objc public func update(with newItem: UINavigationItem) {
         self.backBarButtonItem = newItem.backBarButtonItem
         self.rightBarButtonItem = newItem.rightBarButtonItem
         self.rightBarButtonItems = newItem.rightBarButtonItems
@@ -49,7 +49,7 @@ public extension UIEdgeInsets {
 
 extension CALayer {
     
-    func setupDefaultShaddow(cornerRadius: CGFloat = 0) {
+    @objc func setupDefaultShaddow(cornerRadius: CGFloat = 0) {
         
         let pathBounds = bounds
         let cornerRadius = cornerRadius
@@ -64,7 +64,7 @@ extension CALayer {
         shaddowLayer.rasterizationScale = UIScreen.main.scale
     }
     
-    func setupGradient(with colors:[UIColor] = [#colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), UIColor.lightGray]) {
+    @objc func setupGradient(with colors:[UIColor] = [#colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0), UIColor.lightGray]) {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.frame = bounds
         gradient.colors = colors.map{ $0.cgColor }
@@ -77,7 +77,7 @@ extension CALayer {
 }
 
 public extension UIView {
-    public class func fromNib(nibNameOrNil: String? = nil) -> Self {
+    @objc public class func fromNib(nibNameOrNil: String? = nil) -> Self {
         return fromNib(nibNameOrNil: nibNameOrNil, type: self)
     }
     
@@ -105,12 +105,12 @@ public extension UIView {
         return view
     }
     
-    public class var nibName: String {
+    @objc public class var nibName: String {
         let name = "\(self)".components(separatedBy: ".").first ?? ""
         return name
     }
     
-    public class var nib: UINib? {
+    @objc public class var nib: UINib? {
         if let _ = Bundle.main.path(forResource: nibName, ofType: "nib") {
             return UINib(nibName: nibName, bundle: nil)
         } else {
@@ -121,7 +121,7 @@ public extension UIView {
 #endif
 
 public extension CollectionView {
-    public var indexPathOfItemAtCenter: IndexPath? {
+    @objc public var indexPathOfItemAtCenter: IndexPath? {
         let visiblePoint = CGPoint(x: self.center.x + self.contentOffset.x, y: self.center.y + self.contentOffset.y)
         return self.indexPathForItem(at: visiblePoint)
     }

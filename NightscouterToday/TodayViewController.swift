@@ -141,7 +141,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     // MARK: Private Methods
     
-    func updateData(){
+    @objc func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
             

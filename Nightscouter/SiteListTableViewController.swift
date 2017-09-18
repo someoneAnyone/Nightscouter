@@ -34,7 +34,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     var milliseconds: Double = 0 {
         didSet{
             let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
-            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName: Color.white])
+            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSAttributedStringKey.foregroundColor: Color.white])
             self.refreshControl?.endRefreshing()
         }
     }
@@ -304,7 +304,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
@@ -391,7 +391,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     // MARK: Fetch data via REST API
     
-    func updateData(){
+    @objc func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         DispatchQueue.main.async {
             

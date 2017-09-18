@@ -11,7 +11,7 @@ import Foundation
 
 open class AlarmManager: NSObject, SessionManagerType  {
     
-    public static let sharedManager = AlarmManager()
+    @objc public static let sharedManager = AlarmManager()
     
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
@@ -79,29 +79,29 @@ open class AlarmManager: NSObject, SessionManagerType  {
         super.init()
     }
     
-    public func startSession() {
+    @objc public func startSession() {
         AlarmRule.snooze(seconds: 5)
     }
     
-    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+    @objc public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         delayPost()
     }
 
-    var delayPost = debounce(delay: 3) {
+    @objc var delayPost = debounce(delay: 3) {
         NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
     }
 }
 
 
 extension AlarmManager {
-    func requestCompanionAppUpdate() {
+    @objc func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
         messageToSend[DefaultKey.alarm.rawValue] = alarmObject?.encode()
         store?.handleApplicationContextPayload(messageToSend)
     }
     
-    func postAlarmUpdateNotifiaction() {
+    @objc func postAlarmUpdateNotifiaction() {
         print(">>> Entering \(#function) <<<")
         NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: self.alarmObject)
     }

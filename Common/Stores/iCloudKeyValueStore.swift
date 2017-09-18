@@ -13,7 +13,7 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
     private let iCloudKeyValueStore: NSUbiquitousKeyValueStore
     
     override init() {
-        iCloudKeyValueStore = NSUbiquitousKeyValueStore.default()
+        iCloudKeyValueStore = NSUbiquitousKeyValueStore.default
         
         super.init()
         
@@ -22,7 +22,7 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
                                                object: iCloudKeyValueStore)
     }
     
-    func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
+    @objc func ubiquitousKeyValueStoreDidChange(_ notification: Notification) {
         guard let userInfo = notification.userInfo as? [String: AnyObject], let changeReason = userInfo[NSUbiquitousKeyValueStoreChangeReasonKey] as? NSNumber else {
             return
         }
@@ -31,7 +31,7 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
         
         if (reason == NSUbiquitousKeyValueStoreServerChange || reason == NSUbiquitousKeyValueStoreInitialSyncChange) {
             let changedKeys = userInfo[NSUbiquitousKeyValueStoreChangedKeysKey] as! [String]
-            let iCloudStore = NSUbiquitousKeyValueStore.default()
+            let iCloudStore = NSUbiquitousKeyValueStore.default
             print("iCloud has the following changed keys to sync: \(changedKeys)")
             
             guard let store = store else {
@@ -55,14 +55,14 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
     
     var store: SiteStoreType?
     
-    func startSession() {
+    @objc func startSession() {
         // let lazyMap = Array(iCloudKeyValueStore.dictionaryRepresentation.keys)
         // print("keys in \(iCloudKeyValueStore): " + lazyMap.description)
         
         iCloudKeyValueStore.synchronize()
     }
     
-    func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+    @objc func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         for (key, object) in applicationContext where key != DefaultKey.lastDataUpdateDateFromPhone.rawValue {
             iCloudKeyValueStore.set(object, forKey: key)
         }

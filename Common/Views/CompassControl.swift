@@ -16,10 +16,10 @@ public class CompassControl: UIView {
             setNeedsDisplay()
         }
     }
-    var angle: CGFloat = 0
-    var isUncomputable = false
-    var isDoubleUp = false
-    var isArrowVisible = false
+    @objc var angle: CGFloat = 0
+    @objc var isUncomputable = false
+    @objc var isDoubleUp = false
+    @objc var isArrowVisible = false
     
     @IBInspectable open var color: UIColor = NSAssetKit.predefinedNeutralColor {
         didSet {
@@ -46,7 +46,7 @@ public class CompassControl: UIView {
         }
     }
     
-    var animationValue: CGFloat = 0
+    @objc var animationValue: CGFloat = 0
     @IBInspectable open var delta: String = "- --/--" {
         didSet{
             setNeedsDisplay()
@@ -125,7 +125,7 @@ public extension CompassControl {
         
     }
     
-    func takeSnapshot() -> UIImage {
+    @objc func takeSnapshot() -> UIImage {
         UIGraphicsBeginImageContextWithOptions(bounds.size, false, UIScreen.main.scale)
         drawHierarchy(in: self.bounds, afterScreenUpdates: true)
         let image = UIGraphicsGetImageFromCurrentImageContext()!

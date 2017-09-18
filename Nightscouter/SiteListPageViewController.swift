@@ -128,7 +128,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: .NightscoutDataUpdatedNotification, object: nil)
     }
     
-    func updateNavigationController() {
+    @objc func updateNavigationController() {
         navigationItem.title = pageViewController?.viewControllers!.first?.navigationItem.title
         navigationItem.rightBarButtonItems = pageViewController?.viewControllers!.first?.navigationItem.rightBarButtonItems
     }

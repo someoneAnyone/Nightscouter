@@ -11,10 +11,10 @@ import Foundation
 public class ParseConfigurationOperation: Operation, NightscouterOperation {
 
     internal var error: NightscoutRESTClientError?
-    internal var data: Data?
+    @objc internal var data: Data?
     var configuration: ServerConfiguration?
     
-    public convenience init(withJSONData data: Data?) {
+    @objc public convenience init(withJSONData data: Data?) {
         self.init()
         self.name = "Parse JSON for Nightscout Server Configuration"
         self.data = data

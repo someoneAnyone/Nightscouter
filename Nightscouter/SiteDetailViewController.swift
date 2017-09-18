@@ -139,7 +139,7 @@ extension SiteDetailViewController {
     }
     
     
-    func updateSite(_ notification: Notification?) {
+    @objc func updateSite(_ notification: Notification?) {
         print(">>> Entering \(#function) <<<")
         self.updateData()
     }

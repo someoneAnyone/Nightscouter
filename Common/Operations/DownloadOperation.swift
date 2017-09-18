@@ -10,16 +10,16 @@ import Foundation
 
 class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelegate  {
     
-    var request: URLRequest
+    @objc var request: URLRequest
     
-    var data: Data?
+    @objc var data: Data?
     var error: NightscoutRESTClientError?
-    var isBackground: Bool
-    var disGroup: DispatchGroup?
+    @objc var isBackground: Bool
+    @objc var disGroup: DispatchGroup?
     
-    var downloadTask: URLSessionDownloadTask?
+    @objc var downloadTask: URLSessionDownloadTask?
     
-    public init(withURLRequest request: URLRequest, isBackground background: Bool) {
+    @objc public init(withURLRequest request: URLRequest, isBackground background: Bool) {
         self.request = request
         self.isBackground = background
         

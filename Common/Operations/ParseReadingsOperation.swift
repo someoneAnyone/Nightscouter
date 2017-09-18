@@ -11,7 +11,7 @@ import Foundation
 public class ParseReadingsOperation: Operation, NightscouterOperation {
     
     internal var error: NightscoutRESTClientError?
-    internal var data: Data?
+    @objc internal var data: Data?
 
     var sensorGlucoseValues: [SensorGlucoseValue] = []
     var calibrations: [Calibration] = []
@@ -21,7 +21,7 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
         case sgv, mbg, cal
     }
     
-    public convenience init(withJSONData data: Data?) {
+    @objc public convenience init(withJSONData data: Data?) {
         self.init()
         self.name = "Parse JSON for Parse Readings Operation"
         self.data = data

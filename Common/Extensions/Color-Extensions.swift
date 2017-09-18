@@ -17,7 +17,7 @@ import Foundation
 #endif
 
 public extension Color {
-    class var random: UIColor {
+    @objc class var random: UIColor {
         let randomRed:CGFloat = CGFloat(drand48())
         
         let randomGreen:CGFloat = CGFloat(drand48())
@@ -27,7 +27,7 @@ public extension Color {
         return UIColor(red: randomRed, green: randomGreen, blue: randomBlue, alpha: 1.0)
     }
     
-    class func generateRandom(arrayWith count: Int) -> [UIColor] {
+    @objc class func generateRandom(arrayWith count: Int) -> [UIColor] {
         let colors = (0..<count).map { _ in return UIColor.random }
         return colors
     }
@@ -35,7 +35,7 @@ public extension Color {
 }
 
 extension Color {
-    public convenience init(hexString:String) {
+    @objc public convenience init(hexString:String) {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner            = Scanner(string: hexString)
         
@@ -58,7 +58,7 @@ extension Color {
         self.init(red:red, green:green, blue:blue, alpha:1)
     }
     
-    public func toHexString() -> String {
+    @objc public func toHexString() -> String {
         var r:CGFloat = 0
         var g:CGFloat = 0
         var b:CGFloat = 0
