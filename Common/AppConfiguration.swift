@@ -17,7 +17,8 @@ public extension Notification.Name {
     static public let NightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
 }
 
-public typealias ArrayOfDictionaries = [[String: AnyObject]]
+public typealias ArrayOfDictionaries = [[String: Any]]
+public typealias ArrayOfData = [Data]
 
 @available(*, deprecated: 1.0, message: "I'm not deprecated, please ***FIXME**")
 public func FIXME() { }
@@ -69,14 +70,13 @@ public struct LinkBuilder {
 
 
 /// These match what is in the info plist. Do not change without updating.
-public enum CommonUseCasesForShortcuts: String {
+public enum CommonUseCasesForShortcuts: String, Codable {
     case ShowDetail, AddNew, AddNewWhenEmpty, ShowList
     
     public init?(shortcutItemString: String){
         
         let newString = shortcutItemString.components(separatedBy: ".")
 
-        
         self = CommonUseCasesForShortcuts(rawValue: newString.last!)!
     }
     
@@ -94,7 +94,7 @@ public enum CommonUseCasesForShortcuts: String {
     }
 }
 
-public enum StoryboardIdentifier: String, RawRepresentable {
+public enum StoryboardIdentifier: String, Codable, RawRepresentable {
     case formViewController, formViewNavigationController, sitesTableViewController, siteListPageViewController, siteDetailViewController, siteSettingsNavigationViewController
     public static let allValues = [formViewController, formViewNavigationController, sitesTableViewController, siteListPageViewController, siteDetailViewController, siteSettingsNavigationViewController]
     public static let deepLinkable = [formViewNavigationController, formViewController, siteListPageViewController, sitesTableViewController]

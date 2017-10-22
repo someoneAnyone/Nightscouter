@@ -427,7 +427,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
             DispatchQueue.main.async {
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
-                self.milliseconds = updatedSite.milliseconds
+                // FIXME::
+                self.milliseconds = updatedSite.milliseconds!
                 
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 if (self.tableView.numberOfRows(inSection: 0)-1) <= index {

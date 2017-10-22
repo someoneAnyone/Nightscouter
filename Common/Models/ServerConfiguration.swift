@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ServerConfiguration: CustomStringConvertible {
+public struct ServerConfiguration: Codable, CustomStringConvertible {
     public let status: String
     public let version: String
     public let name: String
@@ -44,16 +44,21 @@ public struct ServerConfiguration: CustomStringConvertible {
         self.careportalEnabled = false
         self.boluscalcEnabled = false
         
-        let placeholderAlarm1 = [15, 30, 45, 60]
-        let placeholderAlarm2 = [30, 60, 90, 120]
+        let placeholderAlarm1: [Double] = [15, 30, 45, 60]
+        let placeholderAlarm2: [Double] = [30, 60, 90, 120]
         
         
         let alrm = Alarm(urgentHigh: true, urgentHighMins: placeholderAlarm2, high: true, highMins: placeholderAlarm2, low: true, lowMins: placeholderAlarm1, urgentLow: true, urgentLowMins: placeholderAlarm1, warnMins: placeholderAlarm2)
         let timeAgo = TimeAgoAlert(warn: true, warnMins: 60.0 * 10, urgent: true, urgentMins: 60.0 * 15)
-        let plugins: [Plugin] = [Plugin.delta, Plugin.rawbg]
+        let plugins: [String] = [Plugin.delta.rawValue, Plugin.rawbg.rawValue]
         let thre = Thresholds(bgHigh: 300, bgLow: 70, bgTargetBottom: 60, bgTargetTop: 250)
-        let atype = AlarmType.predict
-        self.settings = Settings(units: .mgdl, timeFormat: 12, nightMode: false, editMode: false, showRawbg: RawBGMode.never, customTitle: "NightscoutDefault", theme: "color", alarms: alrm, timeAgo: timeAgo, scaleY: "log", language: "en", showPlugins: plugins, enable: plugins, thresholds: thre, baseURL: "", alarmType: atype, heartbeat: 60)
+        let atype = [AlarmType.predict]
+        
+//        let s = Settings(units: .mgdl, timeFormat: 12, nightMode: false, editMode: false, showRawbg: .never, customTitle: "NightscoutDefault", theme: "color", alarms: alrm, timeAgo: timeAgo, scaleY: "log", language: "en", showPlugins: plugins, showForecast: "", heartbeat: 60, baseURL: "", authDefaultRoles: "", thresholds: thre, DEFAULT_FEATURES: [""], alarmType: atype, enable: plugins)
+        
+        let s = Settings(units: .mgdl, timeFormat: 12, nightMode: false, editMode: false, showRawbg: .never, customTitle: "NightscoutDefault", theme: "color", alarmUrgentHigh: alrm.urgentHigh, alarmUrgentHighMins: alrm.urgentHighMins, alarmHigh: alrm.high, alarmHighMins: alrm.highMins, alarmLow: alrm.low, alarmLowMins: alrm.lowMins, alarmUrgentLow: alrm.urgentLow, alarmUrgentLowMins: alrm.urgentLowMins, alarmWarnMins: alrm.warnMins, alarmTimeagoWarn: timeAgo.warn, alarmTimeagoWarnMins: timeAgo.warnMins, alarmTimeagoUrgent: timeAgo.urgent, alarmTimeagoUrgentMins: timeAgo.urgentMins, scaleY: "log", language: "en", showPlugins: plugins.description, showForecast: "", heartbeat: 60, baseURL: "", authDefaultRoles: "", thresholds: thre, DEFAULT_FEATURES: [""], alarmTypes: atype, enable: plugins)
+        
+        self.settings = s
         
         self.head = "EMPTY"
     }
@@ -69,7 +74,6 @@ public struct ServerConfiguration: CustomStringConvertible {
         self.settings = settings
         self.head = head
     }
-    
 }
 
 extension ServerConfiguration: Equatable { }
@@ -96,7 +100,7 @@ extension ServerConfiguration {
     
     public var displayRawData: Bool {
         if let settings = settings {
-            let rawEnabled = settings.enable.contains(Plugin.rawbg)
+            let rawEnabled = settings.enable.contains(Plugin.rawbg.rawValue)
             if rawEnabled {
                 switch settings.showRawbg {
                 case .noise:
@@ -121,7 +125,7 @@ extension ServerConfiguration {
     }
 }
 
-public struct Settings: CustomStringConvertible {
+public struct Settings: Codable, CustomStringConvertible {
     public let units: GlucoseUnit
     public let timeFormat: Int
     public let nightMode: Bool
@@ -129,21 +133,48 @@ public struct Settings: CustomStringConvertible {
     public let showRawbg: RawBGMode
     public let customTitle: String
     public let theme: String
-    public let alarms: Alarm
-    public let timeAgo: TimeAgoAlert
+
+    public var alarms: Alarm {
+        return Alarm(urgentHigh: alarmUrgentHigh, urgentHighMins: alarmUrgentHighMins, high: alarmHigh, highMins: alarmHighMins, low: alarmLow, lowMins: alarmLowMins, urgentLow: alarmUrgentLow, urgentLowMins: alarmUrgentLowMins, warnMins: alarmWarnMins)
+    }
+
+    public let alarmUrgentHigh: Bool
+    public let alarmUrgentHighMins: [Double]
+    public let alarmHigh: Bool
+    public let alarmHighMins: [Double]
+    public let alarmLow: Bool
+    public let alarmLowMins: [Double]
+    public let alarmUrgentLow: Bool
+    public let alarmUrgentLowMins: [Double]
+    public let alarmWarnMins: [Double]
+    public let alarmTimeagoWarn: Bool
+    public let alarmTimeagoWarnMins: Double
+    public let alarmTimeagoUrgent: Bool
+    public let alarmTimeagoUrgentMins: Double
+    
+    public var timeAgo: TimeAgoAlert {
+        return TimeAgoAlert(warn: alarmTimeagoWarn, warnMins: TimeInterval(alarmTimeagoWarnMins * 10), urgent: alarmTimeagoUrgent, urgentMins: TimeInterval(alarmTimeagoUrgentMins * 10))
+    }
     public let scaleY: String
     public let language: String
-    public let showPlugins: [Plugin]
-    public let enable: [Plugin]
-    public let thresholds: Thresholds
-    public let baseURL: String
-    public let alarmType: AlarmType
+    public let showPlugins: String
+    public let showForecast: String
     public let heartbeat: Int
+    public let baseURL: String
+    public let authDefaultRoles: String
+    
+    public let thresholds: Thresholds
+    public let DEFAULT_FEATURES: [String]
+    public let alarmTypes: [AlarmType]
+//    public let enable: [Plugin]
+    public let enable: [String]
+    
     
     public var description: String {
         let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language, "baseURL": baseURL] as [String : Any]
         return dict.description
     }
+    
 }
 
 extension Settings: Equatable {}
@@ -163,11 +194,11 @@ public func ==(lhs: Settings, rhs: Settings) -> Bool {
         lhs.enable == rhs.enable &&
         lhs.thresholds == rhs.thresholds &&
         lhs.baseURL == rhs.baseURL &&
-        lhs.alarmType == rhs.alarmType &&
+        lhs.alarmTypes == rhs.alarmTypes &&
         lhs.heartbeat == rhs.heartbeat
 }
 
-public enum Plugin: String, CustomStringConvertible, RawRepresentable {
+public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
     case careportal = "careportal"
     case rawbg = "rawbg"
     case iob = "iob"
@@ -192,7 +223,7 @@ public enum Plugin: String, CustomStringConvertible, RawRepresentable {
     }
 }
 
-public enum GlucoseUnit: String, RawRepresentable, CustomStringConvertible {
+public enum GlucoseUnit: String, Codable, RawRepresentable, CustomStringConvertible {
     case mgdl = "mg/dL"
     case mmol = "mmol"
     
@@ -243,7 +274,7 @@ extension GlucoseUnit {
     
 }
 
-public enum RawBGMode: String, RawRepresentable, CustomStringConvertible {
+public enum RawBGMode: String, Codable, RawRepresentable, CustomStringConvertible {
     case never = "never"
     case always = "always"
     case noise = "noise"
@@ -268,7 +299,7 @@ public enum RawBGMode: String, RawRepresentable, CustomStringConvertible {
     }
 }
 
-public struct Thresholds: CustomStringConvertible {
+public struct Thresholds: Codable, CustomStringConvertible {
     public let bgHigh: Double
     public let bgLow: Double
     public let bgTargetBottom :Double
@@ -314,16 +345,16 @@ public func ==(lhs: Thresholds, rhs: Thresholds) -> Bool {
         lhs.top == rhs.top
 }
 
-public struct Alarm: CustomStringConvertible {
+public struct Alarm: Codable, CustomStringConvertible {
     public let urgentHigh: Bool
-    public let urgentHighMins: [Int]
+    public let urgentHighMins: [Double]
     public let high: Bool
-    public let highMins: [Int]
+    public let highMins: [Double]
     public let low: Bool
-    public let lowMins: [Int]
+    public let lowMins: [Double]
     public let urgentLow: Bool
-    public let urgentLowMins: [Int]
-    public let warnMins: [Int]
+    public let urgentLowMins: [Double]
+    public let warnMins: [Double]
     
     public var description: String {
         let dict = ["urgentHigh": urgentHigh, "urgentHighMins": urgentHighMins, "high": high, "highMins": highMins, "low": low, "lowMins": lowMins, "urgentLow": urgentLow, "urgentLowMins": urgentLowMins, "warnMins": warnMins] as [String : Any]
@@ -346,7 +377,7 @@ public func ==(lhs: Alarm, rhs: Alarm) -> Bool {
 
 
 
-public enum AlarmType: String, CustomStringConvertible {
+public enum AlarmType: String, Codable, CustomStringConvertible {
     case predict
     case simple
     
@@ -359,7 +390,7 @@ public enum AlarmType: String, CustomStringConvertible {
     }
 }
 
-public struct TimeAgoAlert: CustomStringConvertible {
+public struct TimeAgoAlert: Codable, CustomStringConvertible {
     public let warn: Bool
     public let warnMins: TimeInterval
     public let urgent: Bool

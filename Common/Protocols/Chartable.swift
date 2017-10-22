@@ -9,13 +9,26 @@
 import Foundation
 
 public protocol Chartable {
-    var chartDictionary: NSDictionary { get }
+    var chartDictionary: String { get }
     var chartColor: String { get }
     var chartDateFormatter: DateFormatter { get }
     var jsonForChart: String { get }
 }
 
+struct ChartPoint: Codable {
+    let color: String
+    let date: Date
+    let filtered: Double
+    let noise: Noise
+    let sgv: MgdlValue
+    let type: String
+    let unfiltered: Double
+    let y: Double
+    let direction: Direction
+}
+
 extension Chartable {
+    
     public var chartColor: String {
         return "grey"
     }
@@ -28,24 +41,33 @@ extension Chartable {
     }
     
     public var jsonForChart: String {
-        let jsObj =  try? JSONSerialization.data(withJSONObject: chartDictionary, options:[])
-        
-        guard let jsObjSafe = jsObj, let str = String(bytes: jsObjSafe, encoding: .utf8) else {
-            return ""
-        }
-        
-        return str
+//        do {
+//        let jsObj =  try JSONSerialization.data(withJSONObject: chartDictionary, options:[])
+//            guard let str = String(bytes: jsObj, encoding: .utf8) else {
+//                return ""
+//            }
+//
+//            return str
+//        } catch {
+//            print(error)
+//            return ""
+//        }
+        return chartDictionary
     }
 }
 
 extension SensorGlucoseValue: Chartable {
-    public var chartDictionary: NSDictionary {
+    public var chartDictionary: String {
         get{
             let entry: SensorGlucoseValue = self
-            let dateForJson = chartDateFormatter.string(from: entry.date)
-            let dict: NSDictionary = ["color" : chartColor, "date" : dateForJson, "filtered" : entry.filtered, "noise": entry.noise.rawValue, "sgv" : entry.mgdl, "type" : "sgv", "unfiltered" : entry.unfiltered, "y" : entry.mgdl, "direction" : entry.direction.rawValue]
+            // let dateForJson = chartDateFormatter.string(from: entry.date)
             
-            return dict
+            let chartObject = ChartPoint(color: chartColor, date: entry.date, filtered: entry.filtered ?? 0, noise: entry.noise ?? .none, sgv: entry.mgdl, type: "sgv", unfiltered: entry.unfiltered ?? 0, y: entry.mgdl, direction: entry.direction)
+            let jsonEncorder = JSONEncoder()
+            jsonEncorder.dateEncodingStrategy = .formatted(chartDateFormatter)
+            let item = try! jsonEncorder.encode(chartObject.self)
+            
+            return String(data: item, encoding: .utf8) ?? "{}"
         }
     }
 }

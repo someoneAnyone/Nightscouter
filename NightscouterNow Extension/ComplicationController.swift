@@ -61,8 +61,10 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEntries(for complication: CLKComplication, before date: Date, limit: Int, withHandler handler: @escaping ([CLKComplicationTimelineEntry]?) -> Void) {
         var timelineEntries = [CLKComplicationTimelineEntry]()
-        
-        let entries = SitesDataSource.sharedInstance.primarySite?.complicationTimeline ?? []
+      //: FIXME
+        // FIXME:
+        let entries: [ComplicationTimelineEntry] = []
+        //        let entries = SitesDataSource.sharedInstance.primarySite?.complicationTimeline ?? []
         
         for entry in entries {
             let entryDate = entry.date
@@ -81,8 +83,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEntries(for complication: CLKComplication, after date: Date, limit: Int, withHandler handler: @escaping ([CLKComplicationTimelineEntry]?) -> Void) {
         var timelineEntries = [CLKComplicationTimelineEntry]()
-        
-        let entries = SitesDataSource.sharedInstance.primarySite?.complicationTimeline ?? []
+        // FIXME:
+        let entries: [ComplicationTimelineEntry] = []
+//        let entries = SitesDataSource.sharedInstance.primarySite?.complicationTimeline ?? []
         
         for entry in entries {
             let entryDate = entry.date

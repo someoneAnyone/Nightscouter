@@ -172,7 +172,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     func openApp(with indexPath: IndexPath) {
         if let context = extensionContext {
-            let site = sites[indexPath.row], _ = site.uuid.uuidString
+            let site = sites[indexPath.row], _ = site.uuid
             SitesDataSource.sharedInstance.lastViewedSiteIndex = indexPath.row
             
             let url = LinkBuilder.buildLink(forType: .link, withViewController: .siteListPageViewController)

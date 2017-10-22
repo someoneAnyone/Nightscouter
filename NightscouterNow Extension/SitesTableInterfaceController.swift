@@ -29,7 +29,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     }
     
     // Whenever this changes, it updates the attributed title of the refresh control.
-    var milliseconds: Double = 0 {
+    var milliseconds: Mills? = 0 {
         didSet{
             timeStamp = AppConfiguration.lastUpdatedFromPhoneDateFormatter.string(from: date)
             loadingLabel.setHidden(!self.sites.isEmpty)

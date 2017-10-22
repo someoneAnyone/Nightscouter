@@ -80,7 +80,11 @@ public class SitesDataSource: SiteStoreType {
             var internalSite: [Site] = []
             concurrentQueue.sync {
                 if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-                    internalSite = sites.flatMap { Site.decode($0) }
+                    do {
+                    internalSite = try JSONDecoder().decode([Site].self, from: JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted))
+                    } catch {
+                       print(error)
+                    }
                 }
             }
             return internalSite
@@ -133,15 +137,23 @@ public class SitesDataSource: SiteStoreType {
         } else {
             initial.append(site)
         }
+
         
-        let siteDict = initial.map { $0.encode() }
-        
-        saveData([DefaultKey.sites.rawValue: siteDict])
-        
-        OperationQueue.main.addOperation {
-            self.postAddedContentNotification()
+        do {
+            
+            let encoder = JSONEncoder()
+            let encodedPeople = try encoder.encode(initial)
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
+                [[String: Any]]
+            
+            saveData([DefaultKey.sites.rawValue: jsonString])
+            OperationQueue.main.addOperation {
+                self.postAddedContentNotification()
+            }
+        } catch {
+            return false
         }
-        
+    
         return initial.contains(site)
     }
     
@@ -153,9 +165,19 @@ public class SitesDataSource: SiteStoreType {
             
             let _ = initial.insertOrUpdate(site)
             
-            let siteDict = initial.map { $0.encode() }
+            do {
+                
+                let encoder = JSONEncoder()
+                let encodedPeople = try encoder.encode(initial)
+                let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
+                    [[String: Any]]
+                
+                saveData([DefaultKey.sites.rawValue: jsonString])
+               
+            } catch {
+               print(error)
+            }
             
-            self.saveData([DefaultKey.sites.rawValue: siteDict])
         }
     }
     
@@ -164,8 +186,14 @@ public class SitesDataSource: SiteStoreType {
         var initial = sites
         do {
             try initial.move(fromIndex: oldIndex, toIndex: newIndex)
-            let siteDict = initial.map { $0.encode() }
-            saveData([DefaultKey.sites.rawValue: siteDict])
+            
+            let encoder = JSONEncoder()
+            let encodedPeople = try encoder.encode(initial)
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
+                [[String: Any]]
+            
+            saveData([DefaultKey.sites.rawValue: jsonString])
+            
             return true
         } catch {
             return false
@@ -196,8 +224,19 @@ public class SitesDataSource: SiteStoreType {
             clearAllSites()
         }
         
-        let siteDict = initial.map { $0.encode() }
-        saveData([DefaultKey.sites.rawValue: siteDict])
+        
+        do {
+            
+            let encoder = JSONEncoder()
+            let encodedPeople = try encoder.encode(initial)
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
+                [[String: Any]]
+            
+            saveData([DefaultKey.sites.rawValue: jsonString])
+          
+        } catch {
+          print(error)
+        }
         
         return success
     }
@@ -238,7 +277,9 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
-            if let alarmObject = AlarmObject.decode(alarm) {
+    
+            let data = try? JSONSerialization.data(withJSONObject: alarm, options: .prettyPrinted)
+            if let alarmObject = try? JSONDecoder().decode(Alarm.self, from: data!){
                 print("Received and alarm from the monitor: \(alarmObject)")
             }
         } else {
@@ -269,7 +310,11 @@ public class SitesDataSource: SiteStoreType {
     
     public func loadData() -> [Site]? {
         if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-            return sites.flatMap { Site.decode($0) }
+//            return sites.flatMap { Site.decode($0) }
+            let data = NSKeyedArchiver.archivedData(withRootObject: sites)
+            let test =  try! JSONDecoder().decode([Site].self, from: data)
+            
+            return test
         }
         
         return []
@@ -300,6 +345,7 @@ public class SitesDataSource: SiteStoreType {
     
     public func saveData(_ dictionary: [String: Any]) {
         
+            
         var dictionaryToSend = dictionary
         
         var successfullSave: Bool = false
@@ -370,5 +416,15 @@ public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, acti
                 action()
             }
         }
+    }
+}
+
+
+public extension Encodable {
+    public var dictionary: [String: Any] {
+        return (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))) as? [String: Any] ?? [:]
+    }
+    public var nsDictionary: NSDictionary {
+        return dictionary as NSDictionary
     }
 }

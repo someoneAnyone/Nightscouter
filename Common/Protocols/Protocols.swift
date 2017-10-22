@@ -16,12 +16,12 @@ public typealias Mills = Double
 
 // MARK: - Dateable. Store values in milliseconds, get a date back.
 public protocol Dateable {
-    var milliseconds: Mills { get }
+    var milliseconds: Mills? { get }
 }
 
 public extension Dateable {
     public var date: Date {
-        return Date(timeIntervalSince1970: (TimeInterval(milliseconds) / 1000))
+        return Date(timeIntervalSince1970: (TimeInterval(milliseconds ?? 1268197200000) / 1000))
     }
 }
 public func == <T: Dateable>(lhs: T, rhs: T) -> Bool {
@@ -98,8 +98,8 @@ public protocol DeviceOwnable {
     var device: Device { get }
 }
 
-public enum Device: String, CustomStringConvertible {
-    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm"
+public enum Device: String, Codable, CustomStringConvertible {
+    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846"
     
     public var description: String {
         return self.rawValue
@@ -158,13 +158,13 @@ public extension Calibration {
 fileprivate func calculateRawBG(fromSensorGlucoseValue sgv: SensorGlucoseValue, calibration cal: Calibration) -> MgdlValue {
     var raw: Double = 0
     
-    let unfiltered = sgv.unfiltered
-    let filtered = sgv.filtered
+    let unfiltered = sgv.unfiltered ?? 0
+    let filtered = sgv.filtered ?? 0
     let sgv: Double = sgv.mgdl
     
-    let slope = cal.slope
-    let scale = cal.scale
-    let intercept = cal.intercept
+    let slope = cal.slope 
+    let scale = cal.scale 
+    let intercept = cal.intercept 
     
     if (slope == 0 || unfiltered == 0 || scale == 0) {
         raw = 0
@@ -202,16 +202,5 @@ public extension DesiredColorState {
     }
     #endif
 }
-
-/*
-// Iterates srtuct properties
-func iterateEnum<T: Hashable>(_: T.Type) -> AnyIterator<T> {
-    var i = 0
-    return AnyIterator {
-        let next = withUnsafePointer(&i) { UnsafePointer<T>($0).pointee }
-        let u = +i
-        return next.hashValue == u ? next : nil
-    }
-}*/
 
 

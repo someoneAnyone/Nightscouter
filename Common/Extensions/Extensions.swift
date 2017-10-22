@@ -132,4 +132,3 @@ public extension IndexPath {
         return IndexPath(item: 0, section: 0)
     }
 }
-

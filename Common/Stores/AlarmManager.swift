@@ -97,7 +97,12 @@ extension AlarmManager {
     @objc func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
-        messageToSend[DefaultKey.alarm.rawValue] = alarmObject?.encode()
+        //FIXME:
+        
+        let encoder = JSONEncoder()
+        
+        messageToSend[DefaultKey.alarm.rawValue] = try? encoder.encode(alarmObject)
+//        messageToSend[DefaultKey.alarm.rawValue] = alarmObject?.encode()
         store?.handleApplicationContextPayload(messageToSend)
     }
     

@@ -35,6 +35,7 @@ public extension Color {
 }
 
 extension Color {
+    
     @objc public convenience init(hexString:String) {
         let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         let scanner            = Scanner(string: hexString)

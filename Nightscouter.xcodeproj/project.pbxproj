@@ -56,14 +56,10 @@
 		171CDBAA1D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */; };
 		171CDBAB1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */; };
 		171CDBAC1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */; };
-		171CDBAD1D91C56500D7D52D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB691D91C56500D7D52D /* JSONParser.swift */; };
-		171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB691D91C56500D7D52D /* JSONParser.swift */; };
 		171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */; };
 		171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */; };
 		171CDBB11D91C56500D7D52D /* Chartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6C1D91C56500D7D52D /* Chartable.swift */; };
 		171CDBB21D91C56500D7D52D /* Chartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6C1D91C56500D7D52D /* Chartable.swift */; };
-		171CDBB31D91C56500D7D52D /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6D1D91C56500D7D52D /* Codables.swift */; };
-		171CDBB41D91C56500D7D52D /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6D1D91C56500D7D52D /* Codables.swift */; };
 		171CDBB51D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */; };
 		171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */; };
 		171CDBB71D91C56500D7D52D /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6F1D91C56500D7D52D /* Protocols.swift */; };
@@ -486,16 +482,15 @@
 		171CDB581D91C56500D7D52D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				83BA44DF1F8DC708009BC928 /* ViewModels */,
 				171CDB591D91C56500D7D52D /* AlarmRule.swift */,
 				1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */,
 				171CDB5A1D91C56500D7D52D /* Calibration.swift */,
-				171CDB5B1D91C56500D7D52D /* ComplicationTimelineEntry.swift */,
 				171CDB5C1D91C56500D7D52D /* DeviceStatus.swift */,
 				171CDB5D1D91C56500D7D52D /* MeteredGlucoseValue.swift */,
 				171CDB5E1D91C56500D7D52D /* SensorGlucoseValue.swift */,
 				171CDB5F1D91C56500D7D52D /* ServerConfiguration.swift */,
 				171CDB601D91C56500D7D52D /* Site.swift */,
-				171CDB611D91C56500D7D52D /* SiteSummaryModelViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -515,6 +510,7 @@
 		171CDB671D91C56500D7D52D /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
+				171CDB6D1D91C56500D7D52D /* Codables.swift */,
 				171CDB691D91C56500D7D52D /* JSONParser.swift */,
 			);
 			path = Parsers;
@@ -528,7 +524,6 @@
 				1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */,
 				171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */,
 				171CDB6C1D91C56500D7D52D /* Chartable.swift */,
-				171CDB6D1D91C56500D7D52D /* Codables.swift */,
 				171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */,
 				171CDB6F1D91C56500D7D52D /* Protocols.swift */,
 				171CDB701D91C56500D7D52D /* UpdatableUserInterfaceType.swift */,
@@ -750,6 +745,15 @@
 				83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		83BA44DF1F8DC708009BC928 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				171CDB5B1D91C56500D7D52D /* ComplicationTimelineEntry.swift */,
+				171CDB611D91C56500D7D52D /* SiteSummaryModelViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		83F16A171BF1A4A500610E99 /* Views */ = {
@@ -1184,11 +1188,9 @@
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDB8B1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
-				171CDBB31D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB931D91C56500D7D52D /* Calibration.swift in Sources */,
 				171CDBC71D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDBA51D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
-				171CDBAD1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBA11D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				171CDB951D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
@@ -1234,7 +1236,6 @@
 				171CDBAC1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */,
 				171CDB801D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDBA21D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
-				171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				1724B9F61D9AE8F300D2CD2B /* AlarmObject.swift in Sources */,
 				171CDB9C1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
@@ -1248,7 +1249,6 @@
 				171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
-				171CDBB41D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB961D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
 				177CCF821D9C2AE500F22512 /* AlarmProtocols.swift in Sources */,
 				171CDB841D91C56500D7D52D /* Color-Extensions.swift in Sources */,

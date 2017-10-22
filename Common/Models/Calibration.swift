@@ -9,8 +9,8 @@
 import Foundation
 
 /// A record type provided by the Nightscout API, contains information required to calculate raw blood glucose level.
-public struct Calibration: CustomStringConvertible, Dateable {
-    public let slope: Double, intercept: Double, scale: Double, milliseconds: Double
+public struct Calibration: CustomStringConvertible, Dateable, Codable {
+    public let slope: Double, intercept: Double, scale: Double, milliseconds: Mills?
     
     public init() {
         slope = 856.59
@@ -19,7 +19,12 @@ public struct Calibration: CustomStringConvertible, Dateable {
         milliseconds = 1268197200000 // AppConfiguration.Constant.knownMilliseconds
     }
     
-    public init(slope: Double, intercept: Double, scale: Double, milliseconds: Double) {
+    enum CodingKeys: String, CodingKey {
+        case slope, intercept, scale
+        case milliseconds = "date"
+    }
+    
+    public init(slope: Double, intercept: Double, scale: Double, milliseconds: Mills) {
         self.slope = slope
         self.intercept = intercept
         self.scale = scale

@@ -32,10 +32,14 @@ public class ParseConfigurationOperation: Operation, NightscouterOperation {
         if self.isCancelled { return }
 
         do {
-            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
-            let object: [String: Any] = try JSONSerialization.jsonObject(with: cleanedData, options: .allowFragments) as! [String: Any]
             
-            self.configuration = ServerConfiguration.decode(object)
+            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
+
+// let jsonData = stringVersion.data(using: .utf8)!
+            let decoder = JSONDecoder()
+            let configuration = try decoder.decode(ServerConfiguration.self, from: cleanedData)
+
+            self.configuration = configuration
             
             return
         } catch let error {

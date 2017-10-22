@@ -12,7 +12,7 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
     
     internal var error: NightscoutRESTClientError?
     @objc internal var data: Data?
-
+    
     var sensorGlucoseValues: [SensorGlucoseValue] = []
     var calibrations: [Calibration] = []
     var meteredGlucoseValues: [MeteredGlucoseValue] = []
@@ -38,11 +38,16 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
         if self.isCancelled { return }
         
         do {
+            
+            // remove any + notation from the API. This was causing a crash a while back.
             let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
+            
+            // create an json array of objects.
             let entries: [[String: Any]] = try JSONSerialization.jsonObject(with: cleanedData, options: .allowFragments) as! [[String: Any]]
             
+            // iterate through entries
             for entry in entries {
-             
+                
                 guard let typedString = entry["type"] as? String, let type = SupportedEntryTypes(rawValue: typedString) else {
                     let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown("The JSON parser did not understand an entry type."))
                     self.error = apiError
@@ -50,26 +55,26 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
                     return
                 }
                 
+                let decoder = JSONDecoder()
+                let entryData = try JSONSerialization.data(withJSONObject: entry, options: .prettyPrinted)
+                
                 switch type {
                 case .sgv:
-                    if let sgv = SensorGlucoseValue.decode(entry) {
-                        sensorGlucoseValues.append(sgv)
-                    }
-                case .mbg:
-                    if let mbg = MeteredGlucoseValue.decode(entry) {
-                        meteredGlucoseValues.append(mbg)
-                    }
+                    let sgvEntry = try decoder.decode(SensorGlucoseValue.self, from: entryData)
+                    sensorGlucoseValues.append(sgvEntry)
                 case .cal:
-                    if let cal = Calibration.decode(entry) {
-                        calibrations.append(cal)
-                    }
+                    let calEntry = try decoder.decode(Calibration.self, from: entryData)
+                    calibrations.append(calEntry)
+                case .mbg:
+                    let mbgEntry = try decoder.decode(MeteredGlucoseValue.self, from: entryData)
+                    meteredGlucoseValues.append(mbgEntry)
                 }
             }
             
             return
         } catch let error {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .invalidJSON(error))
-            self.error = apiError
+           self.error = apiError
             
             return
         }

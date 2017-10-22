@@ -121,9 +121,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     
     // AppDataManagerNotificationDidChange Handler
     @objc func dataManagerDidChange(_ notification: Notification) {
-        if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
-            setupNotificationSettings()
+        
+        if sites.isEmpty { return }
+    
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            switch settings.authorizationStatus {
+            case .denied:
+                return
+            case .authorized:
+                return
+            case .notDetermined:
+                self.setupNotificationSettings()
+            }
         }
+        
+// Deprecated
+//        if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
+//            setupNotificationSettings()
+//        }
         
         UIApplication.shared.shortcutItems = nil
         for (index, site) in SitesDataSource.sharedInstance.sites.enumerated() {

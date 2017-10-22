@@ -13,7 +13,7 @@ public protocol SitesDataSourceProvider: Dateable {
 }
 
 public extension SitesDataSourceProvider {
-    var milliseconds: Double {
+    var milliseconds: Mills? {
         return AppConfiguration.Constant.knownMilliseconds.inThePast
     }
 }
@@ -85,7 +85,8 @@ public protocol SiteStoreType {
     /// If the save fails we print and forcefully quit the app
     ///
     func saveData(_ dictionary: [String: Any])
-    
+//    func saveData(_ dictionary: Encodable)
+
     ///
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.
