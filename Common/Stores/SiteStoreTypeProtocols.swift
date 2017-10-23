@@ -91,7 +91,7 @@ public protocol SiteStoreType {
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.
     ///
-    func loadData() -> [Site]?
+//    func loadData() -> [Site]?
 }
 
 public extension SiteStoreType {

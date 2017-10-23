@@ -33,12 +33,12 @@ public class SitesDataSource: SiteStoreType {
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
         #if os(iOS)
-
-        let iCloudManager = iCloudKeyValueStore()
-        iCloudManager.store = self
-        iCloudManager.startSession()
-           
-        self.sessionManagers.append(iCloudManager)
+            
+            let iCloudManager = iCloudKeyValueStore()
+            iCloudManager.store = self
+            iCloudManager.startSession()
+            self.sessionManagers.append(iCloudManager)
+            
         #endif
         
         let watchConnectivityManager = WatchSessionManager.sharedManager
@@ -81,9 +81,9 @@ public class SitesDataSource: SiteStoreType {
             concurrentQueue.sync {
                 if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
                     do {
-                    internalSite = try JSONDecoder().decode([Site].self, from: JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted))
+                        internalSite = try JSONDecoder().decode([Site].self, from: JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted))
                     } catch {
-                       print(error)
+                        print(error)
                     }
                 }
             }
@@ -137,23 +137,24 @@ public class SitesDataSource: SiteStoreType {
         } else {
             initial.append(site)
         }
-
         
         do {
             
             let encoder = JSONEncoder()
             let encodedPeople = try encoder.encode(initial)
-            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
-                [[String: Any]]
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as?
+                [[String: Any]] ?? [[:]]
             
             saveData([DefaultKey.sites.rawValue: jsonString])
+            
             OperationQueue.main.addOperation {
                 self.postAddedContentNotification()
             }
+            
         } catch {
             return false
         }
-    
+        
         return initial.contains(site)
     }
     
@@ -169,13 +170,13 @@ public class SitesDataSource: SiteStoreType {
                 
                 let encoder = JSONEncoder()
                 let encodedPeople = try encoder.encode(initial)
-                let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
-                    [[String: Any]]
+                let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as?
+                    [[String: Any]] ?? [[:]]
                 
                 saveData([DefaultKey.sites.rawValue: jsonString])
-               
+                
             } catch {
-               print(error)
+                print(error)
             }
             
         }
@@ -189,8 +190,8 @@ public class SitesDataSource: SiteStoreType {
             
             let encoder = JSONEncoder()
             let encodedPeople = try encoder.encode(initial)
-            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
-                [[String: Any]]
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as?
+                [[String: Any]] ?? [[:]]
             
             saveData([DefaultKey.sites.rawValue: jsonString])
             
@@ -229,13 +230,13 @@ public class SitesDataSource: SiteStoreType {
             
             let encoder = JSONEncoder()
             let encodedPeople = try encoder.encode(initial)
-            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as!
-                [[String: Any]]
+            let jsonString = try JSONSerialization.jsonObject(with: encodedPeople, options: []) as?
+                [[String: Any]] ?? [[:]]
             
             saveData([DefaultKey.sites.rawValue: jsonString])
-          
+            
         } catch {
-          print(error)
+            print(error)
         }
         
         return success
@@ -277,7 +278,6 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
-    
             let data = try? JSONSerialization.data(withJSONObject: alarm, options: .prettyPrinted)
             if let alarmObject = try? JSONDecoder().decode(Alarm.self, from: data!){
                 print("Received and alarm from the monitor: \(alarmObject)")
@@ -308,17 +308,18 @@ public class SitesDataSource: SiteStoreType {
         }
     }
     
-    public func loadData() -> [Site]? {
-        if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-//            return sites.flatMap { Site.decode($0) }
-            let data = NSKeyedArchiver.archivedData(withRootObject: sites)
-            let test =  try! JSONDecoder().decode([Site].self, from: data)
-            
-            return test
+    /*
+        public func loadData() -> [Site]? {
+            if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
+                let data = NSKeyedArchiver.archivedData(withRootObject: sites)
+                let test =  try! JSONDecoder().decode([Site].self, from: data)
+    
+                return test
+            }
+    
+            return []
         }
-        
-        return []
-    }
+    */
     
     func createUpdateTimer() -> Timer {
         print(">>> Entering \(#function) <<<")
@@ -330,7 +331,7 @@ public class SitesDataSource: SiteStoreType {
     @objc func dataStaleTimer(_ timer: Timer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
-            // print("Posting NightscoutDataStaleNotification Notification at \(Date())")
+            print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
         if (self.timer == nil) {
@@ -345,7 +346,6 @@ public class SitesDataSource: SiteStoreType {
     
     public func saveData(_ dictionary: [String: Any]) {
         
-            
         var dictionaryToSend = dictionary
         
         var successfullSave: Bool = false
@@ -421,10 +421,14 @@ public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, acti
 
 
 public extension Encodable {
-    public var dictionary: [String: Any] {
-        return (try? JSONSerialization.jsonObject(with: JSONEncoder().encode(self))) as? [String: Any] ?? [:]
+    
+    public var dictionary: Any? {
+        let encoder = JSONEncoder()
+        let encodedPeople = try? encoder.encode(self)
+        return try? JSONSerialization.jsonObject(with: encodedPeople!, options: [])
     }
-    public var nsDictionary: NSDictionary {
-        return dictionary as NSDictionary
+    
+    public var nsDictionary: NSDictionary? {
+        return dictionary as? NSDictionary
     }
 }
