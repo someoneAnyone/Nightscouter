@@ -8,8 +8,8 @@
 
 import Foundation
 
-public enum DefaultKey: String, RawRepresentable {
-    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, alarm
+public enum DefaultKey: String, RawRepresentable, Codable {
+    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, alarm, version
     
     static var payloadAlarmUpdate: [String: String] {
         return [DefaultKey.action.rawValue: DefaultKey.alarm.rawValue]
@@ -79,12 +79,27 @@ public class SitesDataSource: SiteStoreType {
         get {
             var internalSite: [Site] = []
             concurrentQueue.sync {
+                
                 if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
                     do {
                         internalSite = try JSONDecoder().decode([Site].self, from: JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted))
+                        if let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue), siteVersion != "v2" {
+                            saveData([DefaultKey.version.rawValue: "v2"])
+                        }
+                        
                     } catch {
                         print(error)
+                        internalSite = sites.flatMap { dictionary in
+                            if let urlString: String = dictionary["url"] as? String, let url: URL = URL(string: urlString) {
+                                return Site(url: url)
+                            } else {
+                                clearAllSites()
+                                return nil
+                            }
+                        }
+                        
                     }
+                    
                 }
             }
             return internalSite
@@ -309,17 +324,17 @@ public class SitesDataSource: SiteStoreType {
     }
     
     /*
-        public func loadData() -> [Site]? {
-            if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-                let data = NSKeyedArchiver.archivedData(withRootObject: sites)
-                let test =  try! JSONDecoder().decode([Site].self, from: data)
-    
-                return test
-            }
-    
-            return []
-        }
-    */
+     public func loadData() -> [Site]? {
+     if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
+     let data = NSKeyedArchiver.archivedData(withRootObject: sites)
+     let test =  try! JSONDecoder().decode([Site].self, from: data)
+     
+     return test
+     }
+     
+     return []
+     }
+     */
     
     func createUpdateTimer() -> Timer {
         print(">>> Entering \(#function) <<<")
