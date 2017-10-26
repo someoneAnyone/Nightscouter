@@ -431,11 +431,11 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 self.milliseconds = updatedSite.milliseconds!
                 
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                } else {
+//                if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
+//                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+//                } else {
                     self.tableView.reloadData()
-                }
+//                }
                 
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()

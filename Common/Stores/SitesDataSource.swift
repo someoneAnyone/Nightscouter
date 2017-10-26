@@ -22,6 +22,14 @@ public enum DefaultKey: String, RawRepresentable, Codable {
     static var payloadPhoneUpdateError: [String : String] {
         return [DefaultKey.action.rawValue: DefaultKey.error.rawValue]
     }
+    
+    static var currentVersion: String {
+        return "3.3"
+    }
+    
+    static var lastVersion: String {
+        return "3.2"
+    }
 }
 
 public class SitesDataSource: SiteStoreType {
@@ -78,28 +86,25 @@ public class SitesDataSource: SiteStoreType {
     public var sites: [Site] {
         get {
             var internalSite: [Site] = []
+            
             concurrentQueue.sync {
+                guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
+                    return
+                }
                 
-                if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
+                let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue)
+                if siteVersion != DefaultKey.currentVersion {
+                  defaults.removeObject(forKey: DefaultKey.sites.rawValue)
+                        saveData([DefaultKey.version.rawValue: DefaultKey.currentVersion])
+                } else {
                     do {
-                        internalSite = try JSONDecoder().decode([Site].self, from: JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted))
-                        if let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue), siteVersion != "v2" {
-                            saveData([DefaultKey.version.rawValue: "v2"])
-                        }
+                        let decoder = JSONDecoder()
+                        let data = try JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
+                        internalSite = try decoder.decode([Site].self, from: data)
                         
                     } catch {
                         print(error)
-                        internalSite = sites.flatMap { dictionary in
-                            if let urlString: String = dictionary["url"] as? String, let url: URL = URL(string: urlString) {
-                                return Site(url: url)
-                            } else {
-                                clearAllSites()
-                                return nil
-                            }
-                        }
-                        
-                    }
-                    
+                    }                    
                 }
             }
             return internalSite
@@ -167,6 +172,7 @@ public class SitesDataSource: SiteStoreType {
             }
             
         } catch {
+            
             return false
         }
         
