@@ -87,9 +87,9 @@ public class SitesDataSource: SiteStoreType {
         get {
             var internalSite: [Site] = []
             
-            concurrentQueue.sync {
+//            concurrentQueue.sync {
                 guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
-                    return
+                    return internalSite
                 }
                 
                 let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue)
@@ -106,7 +106,7 @@ public class SitesDataSource: SiteStoreType {
                         print(error)
                     }                    
                 }
-            }
+//            }
             return internalSite
         }
     }
