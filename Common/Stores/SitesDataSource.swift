@@ -99,8 +99,8 @@ public class SitesDataSource: SiteStoreType {
                 } else {
                     do {
                         let decoder = JSONDecoder()
-                        let data = try JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
-                        internalSite = try decoder.decode([Site].self, from: data)
+                        let data = try? JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
+                        internalSite = try decoder.decode([Site].self, from: data!)
                         
                     } catch {
                         print(error)
