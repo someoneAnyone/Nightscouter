@@ -20,7 +20,7 @@ public extension Notification.Name {
 public typealias ArrayOfDictionaries = [[String: Any]]
 public typealias ArrayOfData = [Data]
 
-@available(*, deprecated: 1.0, message: "I'm not deprecated, please ***FIXME**")
+@available(*, deprecated: 1.0, message: "I'm not really deprecated, please ***FIXME**")
 public func FIXME() { }
 
 // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.

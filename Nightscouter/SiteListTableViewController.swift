@@ -365,10 +365,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         let model = site.summaryViewModel
         
         cell.configure(withDataSource: model, delegate: model)
-        // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
+        FIXME()// this prevents a loop, but needs to be fixed and errors need to be reported.
         if site.updateNow {
-            
-            //            && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+            // && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -425,17 +424,15 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 return
             }
             
-            DispatchQueue.main.async {
+            DispatchQueue.main.sync {
+                
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
-                // FIXME::
+
                 self.milliseconds = updatedSite.milliseconds!
                 
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-//                if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
-//                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-//                } else {
-                    self.tableView.reloadData()
-//                }
+
+                self.tableView.reloadData()
                 
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()
