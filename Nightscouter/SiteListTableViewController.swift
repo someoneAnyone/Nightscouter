@@ -424,13 +424,15 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 return
             }
             
-            DispatchQueue.main.sync {
-                
+            
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
 
                 self.milliseconds = updatedSite.milliseconds!
                 
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
+
+            
+            DispatchQueue.main.async {
 
                 self.tableView.reloadData()
                 

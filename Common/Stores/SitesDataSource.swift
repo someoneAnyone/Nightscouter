@@ -87,26 +87,34 @@ public class SitesDataSource: SiteStoreType {
         get {
             var internalSite: [Site] = []
             
-//            concurrentQueue.sync {
-                guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
-                    return internalSite
+            // concurrentQueue.sync {
+            guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
+                return internalSite
+            }
+            
+            // If version key isn't in the defaults, dump the sites list because it might not be current format.
+            // someday, figure out a better migration strategy.
+            guard let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue) else {
+                defaults.removeObject(forKey: DefaultKey.sites.rawValue)
+                return internalSite
+            }
+            
+            if siteVersion == DefaultKey.currentVersion {
+                do {
+                    let decoder = JSONDecoder()
+                    let maybeData = try? JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
+                    
+                    if let data = maybeData {
+                        internalSite = try decoder.decode([Site].self, from: data)
+                    } else {
+                        print("There is an error in loading the data")
+                    }
+                    
+                } catch {
+                    print(error)
                 }
-                
-                let siteVersion = defaults.string(forKey: DefaultKey.version.rawValue)
-                if siteVersion != DefaultKey.currentVersion {
-                  defaults.removeObject(forKey: DefaultKey.sites.rawValue)
-                        saveData([DefaultKey.version.rawValue: DefaultKey.currentVersion])
-                } else {
-                    do {
-                        let decoder = JSONDecoder()
-                        let data = try? JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
-                        internalSite = try decoder.decode([Site].self, from: data!)
-                        
-                    } catch {
-                        print(error)
-                    }                    
-                }
-//            }
+            }
+            // }
             return internalSite
         }
     }
@@ -272,6 +280,8 @@ public class SitesDataSource: SiteStoreType {
         defaults.removeObject(forKey: "currentSiteIndexInt")
         defaults.removeObject(forKey: "siteModelArray")
         defaults.removeObject(forKey: DefaultKey.sites.rawValue)
+        defaults.removeObject(forKey: DefaultKey.version.rawValue)
+        
         defaults.synchronize()
         
         return initial.isEmpty
@@ -375,6 +385,7 @@ public class SitesDataSource: SiteStoreType {
             defaults.set(object, forKey: key)
         }
         
+        
         dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = Date()
         
         var successfullAppContextUpdate = true
@@ -390,6 +401,8 @@ public class SitesDataSource: SiteStoreType {
         
         if successfullAppContextUpdate {
             successfullSave = defaults.synchronize()
+            dictionaryToSend[DefaultKey.version.rawValue] = DefaultKey.currentVersion
+
             delayDataUpdateNotification()
         } else {
             fatalError("Unable to update the app context \(self)")
@@ -402,7 +415,7 @@ public class SitesDataSource: SiteStoreType {
     }
     
     var delayDataUpdateNotification: (()->()) {
-        return debounce(delay: 2, action: {
+        return debounce(delay: 3, action: {
             self.postDataUpdatedNotification()
         })
     }
