@@ -34,8 +34,6 @@ public class ParseConfigurationOperation: Operation, NightscouterOperation {
         do {
             
             let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
-
-// let jsonData = stringVersion.data(using: .utf8)!
             let decoder = JSONDecoder()
             let configuration = try decoder.decode(ServerConfiguration.self, from: cleanedData)
 

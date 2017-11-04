@@ -23,7 +23,9 @@ public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
     
     public override func main() {
         guard let data = data else {
-            print("We expect data to be set at this point in the NightscouterOperation")
+            let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown("We expect data to be set at this point in the NightscouterOperation"))
+            self.error = apiError
+            
             return
         }
         
@@ -37,8 +39,7 @@ public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
         if self.isCancelled { return }
         
         do {
-//            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
-            // let deviceLogs: [[String: Any]] = try JSONSerialization.jsonObject(with: cleanedData, options: .allowFragments) as! [[String: Any]]
+            // let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
             
             let decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
@@ -46,13 +47,6 @@ public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
             let deviceRecords = try decoder.decode([DeviceStatus].self, from: stringVersion.data(using: .utf8)!)
             
             deviceStatus.append(contentsOf: deviceRecords)
-            
-            // for deviceRecord in deviceLogs {
-            ////: FIXME
-            // if let d = DeviceStatus.decode(deviceRecord){
-            // deviceStatus.append(d)
-            // }
-            // }
             
             return
         } catch let error {
