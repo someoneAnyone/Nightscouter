@@ -379,6 +379,8 @@ public class SitesDataSource: SiteStoreType {
         
         var dictionaryToSend = dictionary
         
+        dictionaryToSend[DefaultKey.version.rawValue] = DefaultKey.currentVersion
+        
         var successfullSave: Bool = false
         
         for (key, object) in dictionaryToSend {
@@ -401,7 +403,6 @@ public class SitesDataSource: SiteStoreType {
         
         if successfullAppContextUpdate {
             successfullSave = defaults.synchronize()
-            dictionaryToSend[DefaultKey.version.rawValue] = DefaultKey.currentVersion
 
             delayDataUpdateNotification()
         } else {
