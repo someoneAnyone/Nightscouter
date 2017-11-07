@@ -87,10 +87,12 @@ public class SitesDataSource: SiteStoreType {
         get {
             var internalSite: [Site] = []
             
+            
             // concurrentQueue.sync {
             guard let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries else {
                 return internalSite
             }
+        
             
             // If version key isn't in the defaults, dump the sites list because it might not be current format.
             // someday, figure out a better migration strategy.
@@ -100,21 +102,20 @@ public class SitesDataSource: SiteStoreType {
             }
             
             if siteVersion == DefaultKey.currentVersion {
+                let jsonString = sites.toJSONString()
+                
+                guard let jsonData = jsonString.data(using: .utf8) else {
+                    return []
+                }
+                
+                let decoder = JSONDecoder()
                 do {
-                    let decoder = JSONDecoder()
-                    let maybeData = try? JSONSerialization.data(withJSONObject: sites, options: .prettyPrinted)
-                    
-                    if let data = maybeData {
-                        internalSite = try decoder.decode([Site].self, from: data)
-                    } else {
-                        print("There is an error in loading the data")
-                    }
-                    
+                    internalSite = try decoder.decode([Site].self, from: jsonData)
                 } catch {
                     print(error)
                 }
             }
-            // }
+            
             return internalSite
         }
     }
@@ -465,5 +466,16 @@ public extension Encodable {
     
     public var nsDictionary: NSDictionary? {
         return dictionary as? NSDictionary
+    }
+}
+
+extension Collection where Iterator.Element == [String: Any] {
+    func toJSONString(options: JSONSerialization.WritingOptions = .prettyPrinted) -> String {
+        if let arr = self as? [[String:AnyObject]],
+            let dat = try? JSONSerialization.data(withJSONObject: arr, options: options),
+            let str = String(data: dat, encoding: String.Encoding.utf8) {
+            return str
+        }
+        return "[]"
     }
 }
