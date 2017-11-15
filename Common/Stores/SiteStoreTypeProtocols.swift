@@ -85,13 +85,15 @@ public protocol SiteStoreType {
     /// If the save fails we print and forcefully quit the app
     ///
     func saveData(_ dictionary: [String: Any])
-//    func saveData(_ dictionary: Encodable)
 
     ///
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.
     ///
-//    func loadData() -> [Site]?
+    func loadData() -> [Site]
+    
+    func postNotificationOnMainQueue(name: NSNotification.Name, object: Any?,
+    userInfo: [AnyHashable : Any]?)
 }
 
 public extension SiteStoreType {
@@ -101,6 +103,17 @@ public extension SiteStoreType {
     var lastViewedSite: Site? {
         return sites[lastViewedSiteIndex]
     }
+    
+    // Post a notification on the main thread asynchronously.
+    //
+    func postNotificationOnMainQueue(name: NSNotification.Name, object: Any? = nil,
+                                         userInfo: [AnyHashable : Any]? = nil) {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: name, object: object, userInfo: userInfo)
+            
+        }
+    }
+
 }
 
 public protocol SessionManagerType {

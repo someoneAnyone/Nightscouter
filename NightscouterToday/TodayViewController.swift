@@ -53,7 +53,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
         
         updateData()
-        NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .nightscoutDataStaleNotification, object: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -75,7 +76,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
         
-        completionHandler(NCUpdateResult.newData)
+        completionHandler(.newData)
     }
     
     @available(iOSApplicationExtension 10.0, *)

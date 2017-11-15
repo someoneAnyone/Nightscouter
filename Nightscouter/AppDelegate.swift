@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         
         Theme.customizeAppAppearance(sharedApplication: UIApplication.shared, forWindow: window)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .NightscoutDataUpdatedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .nightscoutDataUpdatedNotification, object: nil)
         
         // If a shortcut was launched, display its information and take the appropriate action
         if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {

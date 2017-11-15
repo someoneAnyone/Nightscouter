@@ -44,7 +44,7 @@ open class AlarmAudioPlayer: AudioCordinator {
                         play()
                     }
                     
-                } catch _ {
+                } catch {
                     return
                 }
             }

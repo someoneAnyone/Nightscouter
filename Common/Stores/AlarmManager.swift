@@ -88,12 +88,9 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
 
     @objc var delayPost = debounce(delay: 3) {
-        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
+        NotificationCenter.default.post(name: .nightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
     }
-}
 
-
-extension AlarmManager {
     @objc func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
@@ -105,7 +102,7 @@ extension AlarmManager {
     
     @objc func postAlarmUpdateNotifiaction() {
         print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: self.alarmObject)
+        self.store?.postNotificationOnMainQueue(name: .nightscoutAlarmNotification, object: self.alarmObject)
     }
 }
 

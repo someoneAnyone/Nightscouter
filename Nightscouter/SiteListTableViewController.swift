@@ -349,9 +349,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func setupNotifications() {
         // Listen for global update timer.
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .nightscoutDataStaleNotification, object: nil)
         
-        NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
+        NotificationCenter.default.addObserver(forName: .nightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
             if (notif.object as? AlarmObject) != nil {
                 self.updateUI()
             }
