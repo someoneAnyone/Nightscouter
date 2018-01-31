@@ -62,8 +62,8 @@ class iCloudKeyValueStore: NSObject, SessionManagerType {
         iCloudKeyValueStore.synchronize()
     }
     
-    @objc func updateApplicationContext(_ applicationContext: [String : Any]) throws {
-        for (key, object) in applicationContext where key != DefaultKey.lastDataUpdateDateFromPhone.rawValue {
+    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+         for (key, object) in applicationContext where key != DefaultKey.lastDataUpdateDateFromPhone.rawValue {
             iCloudKeyValueStore.set(object, forKey: key)
         }
         

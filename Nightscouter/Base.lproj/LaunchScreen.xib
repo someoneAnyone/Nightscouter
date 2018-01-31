@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13527"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -19,23 +22,24 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="32" translatesAutoresizingMaskIntoConstraints="NO" id="baV-dh-SrM">
+                    <rect key="frame" x="0.0" y="139" width="375" height="390"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="D7K-af-wMS">
-                            <frame key="frameInset" minX="56" width="231" height="234"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="D7K-af-wMS">
+                            <rect key="frame" x="187.5" y="0.0" width="231" height="234"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" placeholderIntrinsicWidth="133" placeholderIntrinsicHeight="173" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
-                                    <frame key="frameInset" minX="49" width="133" height="173"/>
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="133" placeholderIntrinsicHeight="173" image="nightscoutLogo" translatesAutoresizingMaskIntoConstraints="NO" id="kG0-ZA-UvL">
+                                    <rect key="frame" x="0.0" y="0.0" width="133" height="173"/>
                                 </imageView>
-                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Nightscouter" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="nDB-nJ-8Zc">
-                                    <frame key="frameInset" minY="181" width="231" height="53"/>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Nightscouter" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="nDB-nJ-8Zc">
+                                    <rect key="frame" x="0.0" y="181" width="231" height="53"/>
                                     <fontDescription key="fontDescription" name="HelveticaNeue-UltraLight" family="Helvetica Neue" pointSize="46"/>
                                     <color key="textColor" red="0.3411764706" green="0.3411764706" blue="0.3411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
                         </stackView>
-                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" ambiguous="YES" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K0i-0c-3AB">
-                            <frame key="frameInset" minY="266" width="343" height="139"/>
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K0i-0c-3AB">
+                            <rect key="frame" x="0.0" y="266" width="375" height="124"/>
                             <string key="text">This application is not to be used for the treatment of diabetes.
 
 Please use this as an informational tool only.</string>
@@ -46,6 +50,7 @@ Please use this as an informational tool only.</string>
                     </subviews>
                 </stackView>
                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" Copyright © 2015. All rights reserved." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="7" translatesAutoresizingMaskIntoConstraints="NO" id="wdr-4F-pJR">
+                    <rect key="frame" x="64" y="642" width="247" height="17"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                     <color key="textColor" red="0.74644886359999996" green="0.74644886359999996" blue="0.74644886359999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <nil key="highlightedColor"/>
@@ -53,17 +58,15 @@ Please use this as an informational tool only.</string>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="wdr-4F-pJR" secondAttribute="bottom" constant="8" id="4Zw-Ft-lCO"/>
-                <constraint firstAttribute="trailingMargin" secondItem="baV-dh-SrM" secondAttribute="trailing" constant="8" id="52s-S3-dcd"/>
-                <constraint firstItem="wdr-4F-pJR" firstAttribute="top" relation="greaterThanOrEqual" secondItem="baV-dh-SrM" secondAttribute="bottom" priority="999" constant="32" id="EMW-bg-FCN"/>
-                <constraint firstItem="wdr-4F-pJR" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" id="HRk-fk-nNJ"/>
-                <constraint firstItem="baV-dh-SrM" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Hu8-nA-gfW"/>
-                <constraint firstItem="baV-dh-SrM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leadingMargin" constant="8" id="OjZ-jU-8dL"/>
-                <constraint firstItem="baV-dh-SrM" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="topMargin" priority="998" constant="32" id="eAh-hU-0vw"/>
-                <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="wdr-4F-pJR" secondAttribute="trailing" id="hZd-cY-h8V"/>
-                <constraint firstItem="wdr-4F-pJR" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="w4T-cr-TQz"/>
+                <constraint firstAttribute="trailing" secondItem="baV-dh-SrM" secondAttribute="trailing" id="6kE-9R-1EU"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="9Ay-DG-VWy"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="C6m-KX-6cv"/>
+                <constraint firstItem="baV-dh-SrM" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="G8k-hc-JWe"/>
+                <constraint firstAttribute="bottom" secondItem="wdr-4F-pJR" secondAttribute="bottom" constant="8" id="UrG-Fq-LVp"/>
+                <constraint firstItem="wdr-4F-pJR" firstAttribute="centerX" secondItem="baV-dh-SrM" secondAttribute="centerX" id="xuC-ZM-w58"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
+            <viewLayoutGuide key="safeArea" id="bQA-Dq-kVH"/>
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>

@@ -21,8 +21,11 @@ public protocol BundleRepresentable {
 extension BundleRepresentable {
      public var sharedGroupIdentifier: String {
         let group = URL(string: "group")
+        guard let gIdentifier = group?.appendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString else {
+            return ""
+        }
         
-        return (group?.appendingPathExtension((bundleIdentifier?.absoluteString)!).absoluteString)!
+        return gIdentifier
     }
     
     public var infoDictionary: [String: AnyObject]? {

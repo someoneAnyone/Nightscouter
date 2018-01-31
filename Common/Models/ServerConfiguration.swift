@@ -27,7 +27,7 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         dict["serverTime"] = serverTime
         dict["careportalEnabled"] = careportalEnabled
         dict["boluscalcEnabled"] = boluscalcEnabled
-        dict["settings"] = settings?.description
+        dict["settings"] = settings//?.dictionary
         dict["head"] = head
         dict["version"] = version
         dict["name"] = name
@@ -50,7 +50,9 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         
         let alrm = Alarm(urgentHigh: true, urgentHighMins: placeholderAlarm2, high: true, highMins: placeholderAlarm2, low: true, lowMins: placeholderAlarm1, urgentLow: true, urgentLowMins: placeholderAlarm1, warnMins: placeholderAlarm2)
         let timeAgo = TimeAgoAlert(warn: true, warnMins: 60.0 * 10, urgent: true, urgentMins: 60.0 * 15)
-        let plugins: [String] = [Plugin.delta.rawValue, Plugin.rawbg.rawValue]
+        //let plugins: [String] = [Plugin.delta.rawValue, Plugin.rawbg.rawValue]
+        let plugins: [Plugin] = [Plugin.delta, Plugin.rawbg]
+
         let thre = Thresholds(bgHigh: 300, bgLow: 70, bgTargetBottom: 60, bgTargetTop: 250)
         let atype = [AlarmType.predict]
         
@@ -100,7 +102,7 @@ extension ServerConfiguration {
     
     public var displayRawData: Bool {
         if let settings = settings {
-            let rawEnabled = settings.enable.contains(Plugin.rawbg.rawValue)
+            let rawEnabled = settings.enable.contains(Plugin.rawbg)
             if rawEnabled {
                 switch settings.showRawbg {
                 case .noise:
@@ -125,7 +127,7 @@ extension ServerConfiguration {
     }
 }
 
-public struct Settings: Codable, CustomStringConvertible {
+public struct Settings: Codable {
     public let units: GlucoseUnit
     public let timeFormat: Int
     public let nightMode: Bool
@@ -166,14 +168,14 @@ public struct Settings: Codable, CustomStringConvertible {
     public let thresholds: Thresholds
     public let DEFAULT_FEATURES: [String]
     public let alarmTypes: [AlarmType]
-//    public let enable: [Plugin]
-    public let enable: [String]
+    public let enable: [Plugin]
+//    public let enable: [String]
     
     
-    public var description: String {
-        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language, "baseURL": baseURL] as [String : Any]
-        return dict.description
-    }
+//    public var description: String {
+//        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language, "baseURL": baseURL] as [String : Any]
+//        return dict.description
+//    }
     
 }
 
@@ -199,24 +201,26 @@ public func ==(lhs: Settings, rhs: Settings) -> Bool {
 }
 
 public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
-    case careportal = "careportal"
-    case rawbg = "rawbg"
-    case iob = "iob"
-    case ar2 = "ar2"
-    case treatmentnotify = "treatmentnotify"
-    case delta = "delta"
-    case direction = "direction"
-    case upbat = "upbat"
-    case errorcodes = "errorcodes"
-    case simplealarms = "simplealarms"
-    case pushover = "pushover"
-    case maker = "maker"
-    case cob = "cob"
-    case bwp = "bwp"
-    case cage = "cage"
-    case basal = "basal"
-    case profile = "profile"
-    case timeago = "timeago"
+    case careportal
+    case rawbg
+    case iob
+    case ar2
+    case treatmentnotify
+    case delta
+    case direction
+    case upbat
+    case errorcodes
+    case simplealarms
+    case pushover
+    case maker
+    case cob
+    case bwp
+    case cage
+    case basal
+    case profile
+    case timeago
+    case alexa
+    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors
     
     public var description: String {
         return self.rawValue

@@ -110,7 +110,6 @@ public extension SiteStoreType {
                                          userInfo: [AnyHashable : Any]? = nil) {
         DispatchQueue.main.async {
             NotificationCenter.default.post(name: name, object: object, userInfo: userInfo)
-            
         }
     }
 
@@ -119,17 +118,17 @@ public extension SiteStoreType {
 public protocol SessionManagerType {
     /// The store to interact with.
     var store: SiteStoreType? { get set }
+    /// Start the WatchConnectivity session.
+    ///
+    /// Call this method after initialization to send/receive payload between the counterparts.
+    ///
+    func startSession()
     ///
     /// Send the updated application context payload to the counterpart app.
     ///
     /// - parameter applicationContext: The fresh application context payload.
     ///
     func updateApplicationContext(_ applicationContext: [String : Any]) throws
-    /// Start the WatchConnectivity session.
-    ///
-    /// Call this method after initialization to send/receive payload between the counterparts.
-    ///
-    func startSession()
 }
 
 

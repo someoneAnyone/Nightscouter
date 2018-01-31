@@ -83,7 +83,7 @@ open class AlarmManager: NSObject, SessionManagerType  {
         AlarmRule.snooze(seconds: 5)
     }
     
-    @objc public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         delayPost()
     }
 
@@ -93,11 +93,13 @@ open class AlarmManager: NSObject, SessionManagerType  {
 
     @objc func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
-        var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
+        var messageToSend: [String : Any] = DefaultKey.payloadAlarmUpdate
         
         let encoder = JSONEncoder()
         messageToSend[DefaultKey.alarm.rawValue] = try? encoder.encode(alarmObject)
-        store?.handleApplicationContextPayload(messageToSend)
+        FIXME()// this prevents a loop, but needs to be fixed and errors need to be reported.
+
+      //  store?.handleApplicationContextPayload(messageToSend)
     }
     
     @objc func postAlarmUpdateNotifiaction() {
