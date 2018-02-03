@@ -101,7 +101,7 @@ public extension MgdlValue {
             formattedNumber = self.bgDeltaFormatter.string(from: NSNumber(value: self)) ?? "?"
         }
         
-        var unitMarker: String = units.description
+        var unitMarker: String = units.rawValue
         if let appendString = appendString {
             unitMarker = appendString
         }

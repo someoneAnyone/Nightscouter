@@ -36,17 +36,17 @@ open class NSAssetKit : NSObject {
 
     //// Colors
 
-    open class var appLogoTintColor: UIColor { return Cache.appLogoTintColor }
-    open class var predefinedWarningColor: UIColor { return Cache.predefinedWarningColor }
-    open class var predefinedPostiveColor: UIColor { return Cache.predefinedPostiveColor }
-    open class var predefinedAlertColor: UIColor { return Cache.predefinedAlertColor }
-    open class var predefinedNeutralColor: UIColor { return Cache.predefinedNeutralColor }
-    open class var predefinedLogoColor: UIColor { return Cache.predefinedLogoColor }
-    open class var darkNavColor: UIColor { return Cache.darkNavColor }
+    @objc open class var appLogoTintColor: UIColor { return Cache.appLogoTintColor }
+    @objc open class var predefinedWarningColor: UIColor { return Cache.predefinedWarningColor }
+    @objc open class var predefinedPostiveColor: UIColor { return Cache.predefinedPostiveColor }
+    @objc open class var predefinedAlertColor: UIColor { return Cache.predefinedAlertColor }
+    @objc open class var predefinedNeutralColor: UIColor { return Cache.predefinedNeutralColor }
+    @objc open class var predefinedLogoColor: UIColor { return Cache.predefinedLogoColor }
+    @objc open class var darkNavColor: UIColor { return Cache.darkNavColor }
 
     //// Drawing Methods
 
-    open class func drawWatchFaceOnly(_ frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true) {
+    @objc open class func drawWatchFaceOnly(_ frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -406,7 +406,7 @@ open class NSAssetKit : NSObject {
         }
     }
 
-    open class func drawTextBlock(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), sgvText: String = "High", bg_delta: String = "+00 mg/dl", textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
+    @objc open class func drawTextBlock(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), sgvText: String = "High", bg_delta: String = "+00 mg/dl", textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -436,7 +436,7 @@ open class NSAssetKit : NSObject {
         let sgvLabelStyle = NSMutableParagraphStyle()
         sgvLabelStyle.alignment = .center
 
-        let sgvLabelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: textSizeForSgv), NSForegroundColorAttributeName: arrowTintHighlightColor, NSParagraphStyleAttributeName: sgvLabelStyle]
+        let sgvLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForSgv), NSAttributedStringKey.foregroundColor: arrowTintHighlightColor, NSAttributedStringKey.paragraphStyle: sgvLabelStyle]
 
         NSString(string: sgvText).draw(in: sgvLabelRect, withAttributes: sgvLabelFontAttributes)
 
@@ -446,7 +446,7 @@ open class NSAssetKit : NSObject {
         let deltaLabelStyle = NSMutableParagraphStyle()
         deltaLabelStyle.alignment = .center
 
-        let deltaLabelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: textSizeForDelta), NSForegroundColorAttributeName: arrowTintHighlightColor, NSParagraphStyleAttributeName: deltaLabelStyle]
+        let deltaLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedStringKey.foregroundColor: arrowTintHighlightColor, NSAttributedStringKey.paragraphStyle: deltaLabelStyle]
 
         let deltaLabelTextHeight: CGFloat = NSString(string: bg_delta).boundingRect(with: CGSize(width: deltaLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: deltaLabelFontAttributes, context: nil).size.height
         context.saveGState()
@@ -459,7 +459,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawWatchFaceComposite(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true, sgvText: String = "High", bg_delta: String = "+00 mg/dl", isUncomputable: Bool = true, computeAnimation: CGFloat = 0, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
+    @objc open class func drawWatchFaceComposite(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true, sgvText: String = "High", bg_delta: String = "+00 mg/dl", isUncomputable: Bool = true, computeAnimation: CGFloat = 0, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -495,7 +495,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawUncomputedCircle(_ frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), isUncomputable: Bool = true, computeAnimation: CGFloat = 0) {
+    @objc open class func drawUncomputedCircle(_ frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), isUncomputable: Bool = true, computeAnimation: CGFloat = 0) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -532,7 +532,7 @@ open class NSAssetKit : NSObject {
         }
     }
 
-    open class func drawNightscoutLogo(logoFrame: CGRect = CGRect(x: 0, y: 0, width: 133, height: 173), logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawNightscoutLogo(logoFrame: CGRect = CGRect(x: 0, y: 0, width: 133, height: 173), logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -547,7 +547,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawLogoSource(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawLogoSource(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// Color Declarations
         let logoHighlightColor = logoTintColor.colorWithHighlight(1)
 
@@ -783,7 +783,7 @@ open class NSAssetKit : NSObject {
         bezier37Path.fill()
     }
 
-    open class func drawSourceAppicon(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawSourceAppicon(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -887,7 +887,7 @@ open class NSAssetKit : NSObject {
         oval2Path.fill()
     }
 
-    open class func drawListIconSource() {
+    @objc open class func drawListIconSource() {
 
         //// Rectangle Drawing
         let rectanglePath = UIBezierPath(roundedRect: CGRect(x: 0, y: 0, width: 10, height: 10), byRoundingCorners: [UIRectCorner.topRight, UIRectCorner.bottomRight], cornerRadii: CGSize(width: 2, height: 2))
@@ -902,7 +902,7 @@ open class NSAssetKit : NSObject {
         rectangle2Path.fill()
     }
 
-    open class func drawListIcon() {
+    @objc open class func drawListIcon() {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -939,7 +939,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawSettingsIcon() {
+    @objc open class func drawSettingsIcon() {
 
         //// Group 2
         //// Bezier Drawing
@@ -1136,7 +1136,7 @@ open class NSAssetKit : NSObject {
         bezier2Path.fill()
     }
 
-    open class func drawAppStoreIcon(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawAppStoreIcon(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -1151,7 +1151,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawAppIconiPadPro(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawAppIconiPadPro(logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -1166,7 +1166,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawAlarmIcon() {
+    @objc open class func drawAlarmIcon() {
 
         //// Bezier 3 Drawing
         let bezier3Path = UIBezierPath()
@@ -1210,7 +1210,7 @@ open class NSAssetKit : NSObject {
         bezier6Path.stroke()
     }
 
-    open class func drawAlarmSliencedIcon() {
+    @objc open class func drawAlarmSliencedIcon() {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -1275,7 +1275,7 @@ open class NSAssetKit : NSObject {
         bezier7Path.stroke()
     }
 
-    open class func drawAnimatedAlarm(arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), alarmSwing: CGFloat = 0.5, alarmSlientVisible: Bool = false, alarmSnoozeRemaining: String = "--") {
+    @objc open class func drawAnimatedAlarm(arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), alarmSwing: CGFloat = 0.5, alarmSlientVisible: Bool = false, alarmSnoozeRemaining: String = "--") {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -1349,7 +1349,7 @@ open class NSAssetKit : NSObject {
         let textStyle = NSMutableParagraphStyle()
         textStyle.alignment = .center
 
-        let textFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: 9), NSForegroundColorAttributeName: arrowTintColor, NSParagraphStyleAttributeName: textStyle]
+        let textFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 9), NSAttributedStringKey.foregroundColor: arrowTintColor, NSAttributedStringKey.paragraphStyle: textStyle]
 
         let textTextHeight: CGFloat = NSString(string: alarmSnoozeRemaining).boundingRect(with: CGSize(width: textRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: textFontAttributes, context: nil).size.height
         context.saveGState()
@@ -1358,7 +1358,7 @@ open class NSAssetKit : NSObject {
         context.restoreGState()
     }
 
-    open class func drawTableViewBackgroundView(backgroundFrame: CGRect = CGRect(x: 0, y: 0, width: 240, height: 320)) {
+    @objc open class func drawTableViewBackgroundView(backgroundFrame: CGRect = CGRect(x: 0, y: 0, width: 240, height: 320)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -1382,7 +1382,7 @@ open class NSAssetKit : NSObject {
 
     //// Generated Images
 
-    open class func imageOfWatchFaceComposite(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true, sgvText: String = "High", bg_delta: String = "+00 mg/dl", isUncomputable: Bool = true, computeAnimation: CGFloat = 0, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) -> UIImage {
+    @objc open class func imageOfWatchFaceComposite(frame: CGRect = CGRect(x: 0, y: 0, width: 156, height: 195), arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), angle: CGFloat = 0, isArrowVisible: Bool = true, doubleUp: Bool = true, sgvText: String = "High", bg_delta: String = "+00 mg/dl", isUncomputable: Bool = true, computeAnimation: CGFloat = 0, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 27) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
             NSAssetKit.drawWatchFaceComposite(frame: CGRect(x: 0, y: 0, width: frame.size.width, height: frame.size.height), arrowTintColor: arrowTintColor, angle: angle, isArrowVisible: isArrowVisible, doubleUp: doubleUp, sgvText: sgvText, bg_delta: bg_delta, isUncomputable: isUncomputable, computeAnimation: computeAnimation, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta)
 
@@ -1392,7 +1392,7 @@ open class NSAssetKit : NSObject {
         return imageOfWatchFaceComposite
     }
 
-    open class var imageOfListIcon: UIImage {
+    @objc open class var imageOfListIcon: UIImage {
         if Cache.imageOfListIcon != nil {
             return Cache.imageOfListIcon!
         }
@@ -1406,7 +1406,7 @@ open class NSAssetKit : NSObject {
         return Cache.imageOfListIcon!
     }
 
-    open class var imageOfSettingsIcon: UIImage {
+    @objc open class var imageOfSettingsIcon: UIImage {
         if Cache.imageOfSettingsIcon != nil {
             return Cache.imageOfSettingsIcon!
         }
@@ -1420,7 +1420,7 @@ open class NSAssetKit : NSObject {
         return Cache.imageOfSettingsIcon!
     }
 
-    open class var imageOfAlarmIcon: UIImage {
+    @objc open class var imageOfAlarmIcon: UIImage {
         if Cache.imageOfAlarmIcon != nil {
             return Cache.imageOfAlarmIcon!
         }
@@ -1434,7 +1434,7 @@ open class NSAssetKit : NSObject {
         return Cache.imageOfAlarmIcon!
     }
 
-    open class var imageOfAlarmSliencedIcon: UIImage {
+    @objc open class var imageOfAlarmSliencedIcon: UIImage {
         if Cache.imageOfAlarmSliencedIcon != nil {
             return Cache.imageOfAlarmSliencedIcon!
         }
@@ -1448,7 +1448,7 @@ open class NSAssetKit : NSObject {
         return Cache.imageOfAlarmSliencedIcon!
     }
 
-    open class func imageOfAnimatedAlarm(arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), alarmSwing: CGFloat = 0.5, alarmSlientVisible: Bool = false, alarmSnoozeRemaining: String = "--") -> UIImage {
+    @objc open class func imageOfAnimatedAlarm(arrowTintColor: UIColor = UIColor(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000), alarmSwing: CGFloat = 0.5, alarmSlientVisible: Bool = false, alarmSnoozeRemaining: String = "--") -> UIImage {
         UIGraphicsBeginImageContextWithOptions(CGSize(width: 22, height: 22), false, 0)
             NSAssetKit.drawAnimatedAlarm(arrowTintColor: arrowTintColor, alarmSwing: alarmSwing, alarmSlientVisible: alarmSlientVisible, alarmSnoozeRemaining: alarmSnoozeRemaining)
 
@@ -1505,37 +1505,37 @@ open class NSAssetKit : NSObject {
 
 
 extension UIColor {
-    func colorWithHue(_ newHue: CGFloat) -> UIColor {
+    @objc func colorWithHue(_ newHue: CGFloat) -> UIColor {
         var saturation: CGFloat = 1.0, brightness: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(nil, saturation: &saturation, brightness: &brightness, alpha: &alpha)
         return UIColor(hue: newHue, saturation: saturation, brightness: brightness, alpha: alpha)
     }
-    func colorWithSaturation(_ newSaturation: CGFloat) -> UIColor {
+    @objc func colorWithSaturation(_ newSaturation: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, brightness: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(&hue, saturation: nil, brightness: &brightness, alpha: &alpha)
         return UIColor(hue: hue, saturation: newSaturation, brightness: brightness, alpha: alpha)
     }
-    func colorWithBrightness(_ newBrightness: CGFloat) -> UIColor {
+    @objc func colorWithBrightness(_ newBrightness: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, saturation: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(&hue, saturation: &saturation, brightness: nil, alpha: &alpha)
         return UIColor(hue: hue, saturation: saturation, brightness: newBrightness, alpha: alpha)
     }
-    func colorWithAlpha(_ newAlpha: CGFloat) -> UIColor {
+    @objc func colorWithAlpha(_ newAlpha: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, saturation: CGFloat = 1.0, brightness: CGFloat = 1.0
         self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: nil)
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: newAlpha)
     }
-    func colorWithHighlight(_ highlight: CGFloat) -> UIColor {
+    @objc func colorWithHighlight(_ highlight: CGFloat) -> UIColor {
         var red: CGFloat = 1.0, green: CGFloat = 1.0, blue: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return UIColor(red: red * (1-highlight) + highlight, green: green * (1-highlight) + highlight, blue: blue * (1-highlight) + highlight, alpha: alpha * (1-highlight) + highlight)
     }
-    func colorWithShadow(_ shadow: CGFloat) -> UIColor {
+    @objc func colorWithShadow(_ shadow: CGFloat) -> UIColor {
         var red: CGFloat = 1.0, green: CGFloat = 1.0, blue: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return UIColor(red: red * (1-shadow), green: green * (1-shadow), blue: blue * (1-shadow), alpha: alpha * (1-shadow) + shadow)
     }
-    func blendedColorWithFraction(_ fraction: CGFloat, ofColor color: UIColor) -> UIColor {
+    @objc func blendedColorWithFraction(_ fraction: CGFloat, ofColor color: UIColor) -> UIColor {
         var r1: CGFloat = 1.0, g1: CGFloat = 1.0, b1: CGFloat = 1.0, a1: CGFloat = 1.0
         var r2: CGFloat = 1.0, g2: CGFloat = 1.0, b2: CGFloat = 1.0, a2: CGFloat = 1.0
 

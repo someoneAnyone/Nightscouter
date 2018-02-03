@@ -82,7 +82,7 @@ class SiteDetailInterfaceController: WKInterfaceController {
     }
     
     fileprivate func setupNotifications() {
-        NotificationCenter.default.addObserver(forName: .NightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
+        NotificationCenter.default.addObserver(forName: .nightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
             print(">>> Entering \(#function) <<<")
             self.configureView()
         }

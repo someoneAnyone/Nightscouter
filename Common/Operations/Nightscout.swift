@@ -137,6 +137,7 @@ public class NightscoutDownloader {
         
         print(">>> Entering \(#function) for \(url) <<<")
         
+        // processingQueue.cancelAllOperations()
         
         self.hostURL = url
         self.apiSecret = password

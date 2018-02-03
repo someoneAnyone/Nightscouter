@@ -29,7 +29,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     }
     
     // Whenever this changes, it updates the attributed title of the refresh control.
-    var milliseconds: Double = 0 {
+    var milliseconds: Mills? = 0 {
         didSet{
             timeStamp = AppConfiguration.lastUpdatedFromPhoneDateFormatter.string(from: date)
             loadingLabel.setHidden(!self.sites.isEmpty)
@@ -65,7 +65,8 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     }
     
     fileprivate func setupNotifications() {
-        NotificationCenter.default.addObserver(forName: .NightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
+        
+        NotificationCenter.default.addObserver(forName: .nightscoutDataStaleNotification, object: nil, queue: .main) { (notif) in
             print(">>> Entering \(#function) <<<")
             self.milliseconds = Date().timeIntervalSince1970.millisecond
             self.updateButton()

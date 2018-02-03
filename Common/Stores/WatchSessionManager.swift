@@ -9,12 +9,12 @@
 import WatchConnectivity
 
 public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerType {
-    public static let sharedManager = WatchSessionManager()
+    @objc public static let sharedManager = WatchSessionManager()
     
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
     
-    let session: WCSession = WCSession.default()
+    @objc let session: WCSession = WCSession.default
     
     private override init() {
         super.init()
@@ -24,7 +24,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         stopSearching()
     }
     
-    public func startSession() {
+    @objc public func startSession() {
         if WCSession.isSupported() {
             session.delegate = self
             session.activate()
@@ -38,12 +38,12 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
     }
     
     private func startSearching() {
-        if !WCSession.default().receivedApplicationContext.isEmpty {
-            processApplicationContext(context: WCSession.default().receivedApplicationContext)
+        if !WCSession.default.receivedApplicationContext.isEmpty {
+            processApplicationContext(context: WCSession.default.receivedApplicationContext)
         }
     }
     
-    public func stopSearching() {
+    @objc public func stopSearching() {
         session.delegate = nil
     }
     
@@ -59,7 +59,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         }
     }
     
-    public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
+    @objc public func session(session: WCSession, didReceiveUserInfo userInfo: [String : AnyObject]) {
         print(">>> Entering \(#function) <<<")
         //print(": \(userInfo)")
         
@@ -99,7 +99,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
 
 extension WatchSessionManager {
     // Sender
-    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+    @objc public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
@@ -112,7 +112,7 @@ extension WatchSessionManager {
 }
 
 extension WatchSessionManager {
-    @discardableResult
+    @objc @discardableResult
     func processApplicationContext(context: [String : Any]) -> Bool {
         print(">>> Entering \(#function) <<<")
         
@@ -132,7 +132,7 @@ extension WatchSessionManager {
 }
 
 extension WatchSessionManager {
-    public func requestCompanionAppUpdate() {
+    @objc public func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
         
         let messageToSend = DefaultKey.payloadPhoneUpdate

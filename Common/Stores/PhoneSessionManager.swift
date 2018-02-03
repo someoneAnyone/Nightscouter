@@ -8,7 +8,7 @@ protocol WatchSessionManagerDelegate {
 
 public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerType {
     
-    public static let sharedManager = WatchSessionManager()
+    @objc public static let sharedManager = WatchSessionManager()
     
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
@@ -18,9 +18,9 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         super.init()
     }
     
-    private let session: WCSession? = WCSession.isSupported() ? WCSession.default() : nil
+    private let session: WCSession? = WCSession.isSupported() ? WCSession.default : nil
     
-    var validSession: WCSession? {
+    @objc var validSession: WCSession? {
         
         // paired - the user has to have their device paired to the watch
         // watchAppInstalled - the user must have your watch app installed
@@ -34,7 +34,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         return nil
     }
     
-    public func startSession() {
+    @objc public func startSession() {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
         #endif
@@ -47,7 +47,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         #endif
     }
     
-    public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
+    @objc public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
         if let session = validSession {
             do {
                 try session.updateApplicationContext(applicationContext)
@@ -57,7 +57,7 @@ public class WatchSessionManager: NSObject, WCSessionDelegate, SessionManagerTyp
         }
     }
     
-    @discardableResult
+    @objc @discardableResult
     func processApplicationContext(context: [String : Any]) -> Bool {
         print("processApplicationContext \(context)")
         

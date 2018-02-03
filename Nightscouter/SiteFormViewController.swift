@@ -78,7 +78,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         NotificationCenter.default.removeObserver(self);
     }
     
-    func textFieldDidUpdate(_ textField: UITextField)
+    @objc func textFieldDidUpdate(_ textField: UITextField)
     {
         checkValidSiteName()
     }
@@ -176,7 +176,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         NotificationCenter.default.addObserver(self, selector: #selector(SiteFormViewController.keyboardWillHide(_:)), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
     }
     
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         let info = (notification as NSNotification).userInfo!
         let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let animationDuration: TimeInterval = ((info[UIKeyboardAnimationDurationUserInfoKey])! as AnyObject).doubleValue
@@ -196,7 +196,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         })
     }
     
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         
         let info = (notification as NSNotification).userInfo!
         // let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()

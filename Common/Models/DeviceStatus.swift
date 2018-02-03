@@ -9,7 +9,7 @@
 import Foundation
 
 /// A record type provided by the Nightscout API, contains regarding the battery level of the uploading device.
-public struct DeviceStatus: CustomStringConvertible, Dateable {
+public struct DeviceStatus: CustomStringConvertible, Dateable, Codable {
     private let zeroSymbolForBattery: String = PlaceHolderStrings.battery
     
     /** 
@@ -20,7 +20,16 @@ public struct DeviceStatus: CustomStringConvertible, Dateable {
      
      */
     public let uploaderBattery: Int
-    public var milliseconds: Mills
+    public var milliseconds: Mills?
+    public var createdDate: Date?
+    public var pump: Pump?
+    
+    enum CodingKeys: String, CodingKey {
+        case uploaderBattery, pump
+        case milliseconds = "date"
+        case createdDate = "created_at"
+    }
+    
     public var batteryLevel: String {
         get {
             let numFormatter = NumberFormatter()
@@ -47,7 +56,7 @@ public struct DeviceStatus: CustomStringConvertible, Dateable {
      */
     public init() {
         uploaderBattery = 76
-        milliseconds = AppConfiguration.Constant.knownMilliseconds
+        milliseconds = 1268197200000 // AppConfiguration.Constant.knownMilliseconds
     }
     
     /**
@@ -85,4 +94,31 @@ extension DeviceStatus: Hashable {
     public var hashValue: Int {
         return uploaderBattery.hashValue + date.hashValue
     }
+}
+
+public struct Pump: Codable {
+    let battery: Battery
+    
+    struct Battery: Codable {
+        let percent: Double
+    }
+    
+    let clock: String
+    
+    let iob: InsulinOnBoard
+    
+    struct InsulinOnBoard: Codable {
+        let bolusiob: Double
+        let timestamp: String
+    }
+    
+    let reservoir: Double
+    let status: Status
+    
+    struct Status: Codable {
+        let bolusing: Bool
+        let status: String
+        let suspended: Bool
+    }
+
 }

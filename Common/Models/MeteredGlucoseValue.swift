@@ -8,10 +8,15 @@
 
 import Foundation
 
-public struct MeteredGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable {
-    public let milliseconds: Double
-    public let device: Device
+public struct MeteredGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable, Codable {
+    public let milliseconds: Mills?
+    public let device: Device?
     public let mgdl: MgdlValue
+    
+    enum CodingKeys: String, CodingKey {
+        case device, mgdl = "mbg"
+        case milliseconds = "date"
+    }
     
     public init() {
         milliseconds = AppConfiguration.Constant.knownMilliseconds
@@ -19,13 +24,13 @@ public struct MeteredGlucoseValue: CustomStringConvertible, Dateable, GlucoseVal
         mgdl = AppConfiguration.Constant.knownMgdl
     }
     
-    public init(milliseconds: Double, device: Device, mgdl: MgdlValue) {
+    public init(milliseconds: Mills, device: Device, mgdl: MgdlValue) {
         self.milliseconds = milliseconds
         self.device = device
         self.mgdl = mgdl
     }
     
     public var description: String {
-        return "{ MeteredGlucoseValue: { milliseconds: \(milliseconds),  device: \(device), mgdl: \(mgdl) } }"
+        return "{ MeteredGlucoseValue: { milliseconds: \(String(describing: milliseconds)),  device: \(device), mgdl: \(mgdl) } }"
     }
 }

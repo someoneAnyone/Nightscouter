@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         
         Theme.customizeAppAppearance(sharedApplication: UIApplication.shared, forWindow: window)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .NightscoutDataUpdatedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .nightscoutDataUpdatedNotification, object: nil)
         
         // If a shortcut was launched, display its information and take the appropriate action
         if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
@@ -120,10 +120,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     
     
     // AppDataManagerNotificationDidChange Handler
-    func dataManagerDidChange(_ notification: Notification) {
-        if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
-            setupNotificationSettings()
+    @objc func dataManagerDidChange(_ notification: Notification) {
+        
+        if sites.isEmpty { return }
+    
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            switch settings.authorizationStatus {
+            case .denied:
+                return
+            case .authorized:
+                return
+            case .notDetermined:
+                self.setupNotificationSettings()
+            }
         }
+        
+// Deprecated
+//        if UIApplication.shared.currentUserNotificationSettings?.types == .none || !sites.isEmpty{
+//            setupNotificationSettings()
+//        }
         
         UIApplication.shared.shortcutItems = nil
         for (index, site) in SitesDataSource.sharedInstance.sites.enumerated() {
@@ -263,8 +278,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         }
         
         // UIApplication.sharedApplication().registerForRemoteNotifications()
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+       
+        DispatchQueue.main.async {
+             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         UIApplication.shared.applicationIconBadgeNumber = 0
+        
+        }
         //UIApplication.shared.cancelAllLocalNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }

@@ -61,7 +61,7 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     func getTimelineEntries(for complication: CLKComplication, before date: Date, limit: Int, withHandler handler: @escaping ([CLKComplicationTimelineEntry]?) -> Void) {
         var timelineEntries = [CLKComplicationTimelineEntry]()
-        
+
         let entries = SitesDataSource.sharedInstance.primarySite?.complicationTimeline ?? []
         
         for entry in entries {
@@ -102,13 +102,12 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
     
     
     // MARK: - Placeholder Templates
-    /*
+
     func getLocalizableSampleTemplate(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
-        FIXME()
-        handler(nil)
+
+        getPlaceholderTemplate(for: complication, withHandler: handler)
     }
-     */
-    
+
     func getPlaceholderTemplate(for complication: CLKComplication, withHandler handler: @escaping (CLKComplicationTemplate?) -> Void) {
         
         // This method will be called once per supported complication, and the results will be cached

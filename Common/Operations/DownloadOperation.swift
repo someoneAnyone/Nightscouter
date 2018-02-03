@@ -10,30 +10,20 @@ import Foundation
 
 class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelegate  {
     
-    var request: URLRequest
+    @objc var request: URLRequest
     
-    var data: Data?
+    @objc var data: Data?
     var error: NightscoutRESTClientError?
-    var isBackground: Bool
-    var disGroup: DispatchGroup?
+    @objc var isBackground: Bool
+    @objc var disGroup: DispatchGroup?
     
-    var downloadTask: URLSessionDownloadTask?
+    @objc var downloadTask: URLSessionDownloadTask?
     
-    public init(withURLRequest request: URLRequest, isBackground background: Bool) {
+    @objc public init(withURLRequest request: URLRequest, isBackground background: Bool) {
         self.request = request
         self.isBackground = background
         
         super.init()
-        
-        self.name = "Download data from \(String(describing: request.url))"
-    }
-    
-    override func main() {
-        
-        if self.isCancelled { return }
-        
-        disGroup = DispatchGroup()
-        disGroup?.enter()
         
         let config = !isBackground ? URLSessionConfiguration.default :
             URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
@@ -42,45 +32,21 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         
         downloadTask = session.downloadTask(with: self.request)
         
-        /*
-         let disableddownloadTask = session.downloadTask(with: self.request) { (location, response, error) in
-         print(">>> downloadTask task for \(String(describing: self.request.url)) is complete. <<<")
-         //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
-         
-         if self.isCancelled {
-         self.disGroup.leave()
-         return
-         }
-         
-         if let err = error {
-         let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
-         self.error = apiError
-         self.disGroup.leave()
-         return
-         }
-         
-         // Is there a file at the location provided?
-         guard let location = location else {
-         let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
-         self.error = apiError
-         self.disGroup.leave()
-         return
-         }
-         
-         guard let dataFromLocation = try? Data(contentsOf: location) else {
-         let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
-         self.error = apiError
-         self.disGroup.leave()
-         return
-         }
-         
-         self.data = dataFromLocation
-         
-         self.disGroup.leave()
-         }
-         
-         */
+        self.name = "Download data from \(String(describing: request.url))"
+    }
+    
+    override func cancel() {
+        downloadTask?.cancel()
+        super.cancel()
+    }
+    
+    override func main() {
         
+        if self.isCancelled { return }
+        
+        disGroup = DispatchGroup()
+        disGroup?.enter()
+ 
         downloadTask?.resume()
         disGroup?.wait()
     }
@@ -128,6 +94,9 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         
         if let sessionId = session.configuration.identifier {
             print(sessionId)
+            
+            disGroup?.leave()
+
         }
     }
     

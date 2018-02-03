@@ -53,7 +53,8 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         }
         
         updateData()
-        NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .nightscoutDataStaleNotification, object: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -75,7 +76,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         // If there's no update required, use NCUpdateResult.NoData
         // If there's an update, use NCUpdateResult.NewData
         
-        completionHandler(NCUpdateResult.newData)
+        completionHandler(.newData)
     }
     
     @available(iOSApplicationExtension 10.0, *)
@@ -141,7 +142,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     // MARK: Private Methods
     
-    func updateData(){
+    @objc func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         if sites.isEmpty == false {
             
@@ -172,7 +173,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     
     func openApp(with indexPath: IndexPath) {
         if let context = extensionContext {
-            let site = sites[indexPath.row], _ = site.uuid.uuidString
+            let site = sites[indexPath.row], _ = site.uuid
             SitesDataSource.sharedInstance.lastViewedSiteIndex = indexPath.row
             
             let url = LinkBuilder.buildLink(forType: .link, withViewController: .siteListPageViewController)

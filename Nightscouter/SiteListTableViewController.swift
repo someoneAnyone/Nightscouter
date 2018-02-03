@@ -33,8 +33,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var milliseconds: Double = 0 {
         didSet{
-            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
-            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSForegroundColorAttributeName: Color.white])
+            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: Date(timeIntervalSince1970: milliseconds/1000)), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
+            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSAttributedStringKey.foregroundColor: Color.white])
             self.refreshControl?.endRefreshing()
         }
     }
@@ -304,7 +304,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         UIApplication.shared.isIdleTimerDisabled = false
     }
     
-    func updateUI() {
+    @objc func updateUI() {
         print(">>> Entering \(#function) <<<")
         print("Updating user interface at: \(Date())")
         self.tableView.reloadData()
@@ -349,9 +349,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func setupNotifications() {
         // Listen for global update timer.
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .NightscoutDataStaleNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListTableViewController.updateData), name: .nightscoutDataStaleNotification, object: nil)
         
-        NotificationCenter.default.addObserver(forName: .NightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
+        NotificationCenter.default.addObserver(forName: .nightscoutAlarmNotification, object: nil, queue: .main) { (notif) in
             if (notif.object as? AlarmObject) != nil {
                 self.updateUI()
             }
@@ -365,10 +365,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         let model = site.summaryViewModel
         
         cell.configure(withDataSource: model, delegate: model)
-        // FIXME:// this prevents a loop, but needs to be fixed and errors need to be reported.
+        FIXME()// this prevents a loop, but needs to be fixed and errors need to be reported.
         if site.updateNow {
-            
-            //            && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+            // && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)
         }
     }
@@ -391,7 +390,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     // MARK: Fetch data via REST API
     
-    func updateData(){
+    @objc func updateData(){
         // Do not allow refreshing to happen if there is no data in the sites array.
         DispatchQueue.main.async {
             
@@ -425,16 +424,17 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
                 return
             }
             
-            DispatchQueue.main.async {
+            
                 SitesDataSource.sharedInstance.updateSite(updatedSite)
-                self.milliseconds = updatedSite.milliseconds
+
+                self.milliseconds = updatedSite.milliseconds!
                 
                 UIApplication.shared.isNetworkActivityIndicatorVisible = false
-                if (self.tableView.numberOfRows(inSection: 0)-1) <= index {
-                    self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
-                } else {
-                    self.tableView.reloadData()
-                }
+
+            
+            DispatchQueue.main.async {
+
+                self.tableView.reloadData()
                 
                 if (self.refreshControl?.isRefreshing != nil) {
                     self.refreshControl?.endRefreshing()

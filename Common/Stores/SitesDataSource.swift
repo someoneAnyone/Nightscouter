@@ -8,10 +8,10 @@
 
 import Foundation
 
-public enum DefaultKey: String, RawRepresentable {
-    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, alarm
+public enum DefaultKey: String, RawRepresentable, Codable {
+    case sites, lastViewedSiteIndex, primarySiteUUID, lastDataUpdateDateFromPhone, updateData, action, error, alarm, version, watchRequestedUpdate
     
-    static var payloadAlarmUpdate: [String: String] {
+    static var payloadAlarmUpdate: [String : String] {
         return [DefaultKey.action.rawValue: DefaultKey.alarm.rawValue]
     }
     
@@ -21,6 +21,14 @@ public enum DefaultKey: String, RawRepresentable {
     
     static var payloadPhoneUpdateError: [String : String] {
         return [DefaultKey.action.rawValue: DefaultKey.error.rawValue]
+    }
+    
+    static var currentVersion: String {
+        return "3.3"
+    }
+    
+    static var lastVersion: String {
+        return "3.2"
     }
 }
 
@@ -32,22 +40,40 @@ public class SitesDataSource: SiteStoreType {
         
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
-        let iCloudManager = iCloudKeyValueStore()
-        iCloudManager.store = self
-        iCloudManager.startSession()
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).defaultsChanged(notif:)),
+            name: UserDefaults.didChangeNotification, object: nil
+        )
         
+        #if os(iOS)
+            
+            let iCloudManager = iCloudKeyValueStore()
+            iCloudManager.store = self
+            iCloudManager.startSession()
+            self.sessionManagers.append(iCloudManager)
+            
+        #endif
+        
+        // Need logic for !iOS | WatchOS
+        /*
         let watchConnectivityManager = WatchSessionManager.sharedManager
         watchConnectivityManager.store = self
         watchConnectivityManager.startSession()
+        */
+        
+        // Need logic for !iOS | WatchOS
+        let watchConnectivityManager = WatchConnectivityCordinator.shared
+        watchConnectivityManager.store = self
+        watchConnectivityManager.startSession()
+        self.sessionManagers.append(watchConnectivityManager)
         
         let alarmManager = AlarmManager.sharedManager
         alarmManager.store = self
         if !appIsInBackground {
             alarmManager.startSession()
         }
-        
-        self.sessionManagers = [iCloudManager, watchConnectivityManager, alarmManager]
-        
+        self.sessionManagers.append(alarmManager)
+
         print("found \(self.sites.count) sites in the store.")
         
         dataStaleTimer(nil)
@@ -66,19 +92,13 @@ public class SitesDataSource: SiteStoreType {
     
     public var storageLocation: StorageLocation { return .localKeyValueStore }
     
-    public var otherStorageLocations: SiteStoreType?
+//    public var otherStorageLocations: SiteStoreType?
     
     fileprivate var concurrentQueue = DispatchQueue(label: "com.nothingonline.nightscouter.sitesdatasource", attributes: .concurrent)
     
     public var sites: [Site] {
         get {
-            var internalSite: [Site] = []
-            concurrentQueue.sync {
-                if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-                    internalSite = sites.flatMap { Site.decode($0) }
-                }
-            }
-            return internalSite
+            return loadData()
         }
     }
     
@@ -87,7 +107,7 @@ public class SitesDataSource: SiteStoreType {
     public var lastViewedSiteIndex: Int {
         set {
             if lastViewedSiteIndex != newValue {
-                saveData([DefaultKey.lastViewedSiteIndex.rawValue: newValue])
+                saveData([DefaultKey.lastViewedSiteIndex.rawValue : newValue])
             }
         }
         
@@ -99,7 +119,7 @@ public class SitesDataSource: SiteStoreType {
     public var primarySite: Site? {
         set{
             if let site = newValue {
-                saveData([DefaultKey.primarySiteUUID.rawValue: site.uuid.uuidString])
+                saveData([DefaultKey.primarySiteUUID.rawValue : site.uuid.uuidString])
             } else {
                 defaults.removeObject(forKey: DefaultKey.primarySiteUUID.rawValue)
             }
@@ -113,6 +133,9 @@ public class SitesDataSource: SiteStoreType {
             return nil
         }
     }
+    
+    
+    
     
     // MARK: Array modification methods
     @discardableResult
@@ -129,38 +152,39 @@ public class SitesDataSource: SiteStoreType {
             initial.append(site)
         }
         
-        let siteDict = initial.map { $0.encode() }
         
-        saveData([DefaultKey.sites.rawValue: siteDict])
+        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
         
-        OperationQueue.main.addOperation {
-            self.postAddedContentNotification()
-        }
+        saveData(userInfo)
+    self.postNotificationOnMainQueue(name: .nightscoutDataAddedContentNotification, userInfo: userInfo)
         
         return initial.contains(site)
     }
     
     
     public func updateSite(_ site: Site) {
-        
         concurrentQueue.sync {
             var initial = self.sites
             
             let _ = initial.insertOrUpdate(site)
             
-            let siteDict = initial.map { $0.encode() }
+            let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
             
-            self.saveData([DefaultKey.sites.rawValue: siteDict])
+            saveData(userInfo)
         }
     }
     
     @discardableResult
     public func moveSite(fromIndex oldIndex: Int, toIndex newIndex: Int) -> Bool {
         var initial = sites
+        
         do {
             try initial.move(fromIndex: oldIndex, toIndex: newIndex)
-            let siteDict = initial.map { $0.encode() }
-            saveData([DefaultKey.sites.rawValue: siteDict])
+            
+            let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+            
+            saveData(userInfo)
+            
             return true
         } catch {
             return false
@@ -191,30 +215,32 @@ public class SitesDataSource: SiteStoreType {
             clearAllSites()
         }
         
-        let siteDict = initial.map { $0.encode() }
-        saveData([DefaultKey.sites.rawValue: siteDict])
+        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+        
+        saveData(userInfo)
         
         return success
     }
     
     @discardableResult
     public func clearAllSites() -> Bool {
-        var initial = sites
-        initial.removeAll()
         
         primarySite = nil
         defaults.removeObject(forKey: "currentSiteIndexInt")
         defaults.removeObject(forKey: "siteModelArray")
         defaults.removeObject(forKey: DefaultKey.sites.rawValue)
-        defaults.synchronize()
+        defaults.removeObject(forKey: DefaultKey.version.rawValue)
         
-        return initial.isEmpty
+        return defaults.synchronize()
+
     }
     
     public func handleApplicationContextPayload(_ payload: [String : Any]) {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
-            saveData([DefaultKey.sites.rawValue: sites])
+            var userInfo: [String: Encodable] = [:]
+            userInfo[DefaultKey.sites.rawValue] = sites as? Encodable
+            saveData(userInfo)
         } else {
             print("No sites were found.")
         }
@@ -233,7 +259,8 @@ public class SitesDataSource: SiteStoreType {
         }
         
         if let alarm = payload[DefaultKey.alarm.rawValue] as? [String: Any] {
-            if let alarmObject = AlarmObject.decode(alarm) {
+            let data = try? JSONSerialization.data(withJSONObject: alarm, options: .prettyPrinted)
+            if let alarmObject = try? JSONDecoder().decode(Alarm.self, from: data!){
                 print("Received and alarm from the monitor: \(alarmObject)")
             }
         } else {
@@ -246,28 +273,20 @@ public class SitesDataSource: SiteStoreType {
             }
         #endif
         
-        if let action = payload[DefaultKey.action.rawValue] as? String {
-            if action == DefaultKey.updateData.rawValue {
+        if let action = payload[DefaultKey.action.rawValue] as? DefaultKey {
+            if action == DefaultKey.updateData {
                 print("found an action: \(action)")
                 for _ in sites {
                     print("Why?")
                     fatalError()
                 }
-            } else if action == DefaultKey.error.rawValue {
+            } else if action == DefaultKey.error {
                 print("Received an error.")
                 
             } else {
                 print("Did not find an action.")
             }
         }
-    }
-    
-    public func loadData() -> [Site]? {
-        if let sites = defaults.array(forKey: DefaultKey.sites.rawValue) as? ArrayOfDictionaries {
-            return sites.flatMap { Site.decode($0) }
-        }
-        
-        return []
     }
     
     func createUpdateTimer() -> Timer {
@@ -280,33 +299,71 @@ public class SitesDataSource: SiteStoreType {
     @objc func dataStaleTimer(_ timer: Timer?) -> Void {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
-            // print("Posting NightscoutDataStaleNotification Notification at \(Date())")
+            print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
         if (self.timer == nil) {
             self.timer = createUpdateTimer()
         }
         
-        DispatchQueue.main.async {
-            self.postDataStaleNotification()
+        self.postNotificationOnMainQueue(name: .nightscoutDataStaleNotification, object: timer)
+    }
+    
+    public func loadData() -> [Site] {
+        
+        if defaults.string(forKey: DefaultKey.version.rawValue) != DefaultKey.currentVersion {
+            clearAllSites()
         }
         
+        guard let sitesDict = defaults.data(forKey: DefaultKey.sites.rawValue) else {
+            return []
+        }
+        
+        do {
+            return try PropertyListDecoder().decode([Site].self, from: sitesDict)
+        } catch {
+            print(error.localizedDescription)
+            
+            return []
+        }
     }
     
     public func saveData(_ dictionary: [String: Any]) {
         
-        var dictionaryToSend = dictionary
+        var dictionayToSave  = dictionary
         
-        var successfullSave: Bool = false
+        if let sites =  dictionayToSave[DefaultKey.sites.rawValue] as? [Site] {
+            let plist = PropertyListEncoder()
+            do {
+                dictionayToSave[DefaultKey.sites.rawValue] = try plist.encode(sites)
+            } catch {
+                print(error)
+            }
+        }
         
-        for (key, object) in dictionaryToSend {
+        dictionayToSave[DefaultKey.version.rawValue] = DefaultKey.currentVersion
+        
+        for (key, object) in dictionayToSave {
             defaults.set(object, forKey: key)
         }
+        
+        defaults.synchronize()
+        
+        self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
+    }
+    
+    @objc func defaultsChanged(notif: Notification) {
+    print(notif)
+    }
+    
+    public func send() {
+        
+        var dictionaryToSend: [String: Any] = [:]
         
         dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = Date()
         
         var successfullAppContextUpdate = true
-        
+
         sessionManagers.forEach({ (manager: SessionManagerType ) -> () in
             do {
                 try manager.updateApplicationContext(dictionaryToSend)
@@ -317,46 +374,29 @@ public class SitesDataSource: SiteStoreType {
         })
         
         if successfullAppContextUpdate {
-            successfullSave = defaults.synchronize()
             delayDataUpdateNotification()
         } else {
             fatalError("Unable to update the app context \(self)")
         }
         
-        if successfullSave == false {
-            print("Defaults were not able be to synchronized for some reason.")
-            //fatalError("Unable to save Data")
-        }
+       
     }
     
     var delayDataUpdateNotification: (()->()) {
-        return debounce(delay: 2, action: {
-            self.postDataUpdatedNotification()
+        return debounce(delay: 3, queue: DispatchQueue(label: "com.nothingonline.delay", qos: .userInitiated), action: {
+            self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
         })
-    }
-    
-    func postAddedContentNotification() {
-        print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutDataAddedContentNotification, object: nil)
-    }
-    
-    func postDataUpdatedNotification() {
-        print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutDataUpdatedNotification, object: nil)
-    }
-    
-    func postDataStaleNotification() {
-        print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutDataStaleNotification, object: nil)
     }
 }
 
+
+/// MOVE SOMEWHERE ELSE
 public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, action: @escaping (()->()) ) -> ()->() {
-    var lastFireTime   = DispatchTime.now()
-    let dispatchDelay  = DispatchTimeInterval.seconds(delay)
+    var lastFireTime = DispatchTime.now()
+    let dispatchDelay = DispatchTimeInterval.seconds(delay)
     
     return {
-        lastFireTime     = DispatchTime.now()
+        lastFireTime = DispatchTime.now()
         let dispatchTime: DispatchTime = lastFireTime + dispatchDelay
         queue.asyncAfter(deadline: dispatchTime) {
             let when: DispatchTime = lastFireTime + dispatchDelay
@@ -367,3 +407,34 @@ public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, acti
         }
     }
 }
+
+
+/// FIXME
+//public extension Encodable {
+//    public var dictionary: Any? {
+//        let encoder = JSONEncoder()
+//        do {
+//            let encodedPeople = try encoder.encode(self)
+//            return try? JSONSerialization.jsonObject(with: encodedPeople, options: []) as Any
+//        } catch {
+//            print(error)
+//            return nil
+//        }
+//    }
+//
+//    public var nsDictionary: NSDictionary? {
+//        return dictionary as? NSDictionary
+//    }
+//}
+//
+//extension Collection where Iterator.Element == [AnyHashable: AnyObject] {
+//    func toJSONString(options: JSONSerialization.WritingOptions = .prettyPrinted) -> String {
+//        if let arr = self as? [[String: Any]],
+//            let dat = try? JSONSerialization.data(withJSONObject: arr, options: options),
+//            let str = String(data: dat, encoding: .utf8) {
+//            return str
+//        }
+//        return "[]"
+//    }
+//}
+

@@ -125,10 +125,10 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     func setupNotifications() {
         // Listen for global update timer.
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: .NightscoutDataUpdatedNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteListPageViewController.updateNavigationController), name: .nightscoutDataUpdatedNotification, object: nil)
     }
     
-    func updateNavigationController() {
+    @objc func updateNavigationController() {
         navigationItem.title = pageViewController?.viewControllers!.first?.navigationItem.title
         navigationItem.rightBarButtonItems = pageViewController?.viewControllers!.first?.navigationItem.rightBarButtonItems
     }
