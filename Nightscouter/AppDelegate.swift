@@ -278,8 +278,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         }
         
         // UIApplication.sharedApplication().registerForRemoteNotifications()
-        UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+       
+        DispatchQueue.main.async {
+             UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
         UIApplication.shared.applicationIconBadgeNumber = 0
+        
+        }
         //UIApplication.shared.cancelAllLocalNotifications()
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
     }

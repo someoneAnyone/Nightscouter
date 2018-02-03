@@ -33,7 +33,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     var milliseconds: Double = 0 {
         didSet{
-            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: date), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
+            let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: Date(timeIntervalSince1970: milliseconds/1000)), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
             self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSAttributedStringKey.foregroundColor: Color.white])
             self.refreshControl?.endRefreshing()
         }

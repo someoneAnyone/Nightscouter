@@ -9,19 +9,21 @@
 import Foundation
 
 public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable, Codable {
-    public let device: Device, direction: Direction
+    public var device: Device?, direction: Direction?
     public let rssi: Int?, unfiltered: Double?, filtered: Double?, mgdl: MgdlValue
     public let noise: Noise?
     public let milliseconds: Mills?
+    public var key600: String? = ""
     
     enum CodingKeys: String, CodingKey {
         case device, direction, rssi, unfiltered, filtered, noise
         case mgdl = "sgv"
         case milliseconds = "date"
+        case key600
     }
     
     public var description: String {
-        return "{ SensorGlucoseValue: { device: \(device), mgdl: \(mgdl), date: \(date), direction: \(direction) } }"
+        return "{ SensorGlucoseValue: { device: \(device ?? Device.unknown), mgdl: \(mgdl), date: \(date), direction: \(direction ?? .none) } }"
     }
     
     public init() {

@@ -95,7 +95,7 @@ public enum DesiredColorState: String, CustomStringConvertible {
 
 // Records tagged with a device share this field.
 public protocol DeviceOwnable {
-    var device: Device { get }
+    var device: Device? { get }
 }
 
 public enum Device: String, Codable, CustomStringConvertible {
@@ -104,7 +104,7 @@ public enum Device: String, Codable, CustomStringConvertible {
     public var description: String {
         return self.rawValue
     }
-    
+
     public init() {
         self = .unknown
     }

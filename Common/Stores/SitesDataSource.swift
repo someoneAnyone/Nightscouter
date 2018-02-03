@@ -239,7 +239,7 @@ public class SitesDataSource: SiteStoreType {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
             var userInfo: [String: Encodable] = [:]
-            userInfo[DefaultKey.sites.rawValue] = sites
+            userInfo[DefaultKey.sites.rawValue] = sites as? Encodable
             saveData(userInfo)
         } else {
             print("No sites were found.")

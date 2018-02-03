@@ -62,7 +62,7 @@ extension SensorGlucoseValue: Chartable {
             let entry: SensorGlucoseValue = self
             // let dateForJson = chartDateFormatter.string(from: entry.date)
             
-            let chartObject = ChartPoint(color: chartColor, date: entry.date, filtered: entry.filtered ?? 0, noise: entry.noise ?? .none, sgv: entry.mgdl, type: "sgv", unfiltered: entry.unfiltered ?? 0, y: entry.mgdl, direction: entry.direction)
+            let chartObject = ChartPoint(color: chartColor, date: entry.date, filtered: entry.filtered ?? 0, noise: entry.noise ?? .none, sgv: entry.mgdl, type: "sgv", unfiltered: entry.unfiltered ?? 0, y: entry.mgdl, direction: entry.direction ?? .none)
             let jsonEncorder = JSONEncoder()
             jsonEncorder.dateEncodingStrategy = .formatted(chartDateFormatter)
             let item = try! jsonEncorder.encode(chartObject.self)

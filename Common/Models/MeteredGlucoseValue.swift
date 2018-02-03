@@ -10,7 +10,7 @@ import Foundation
 
 public struct MeteredGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable, Codable {
     public let milliseconds: Mills?
-    public let device: Device
+    public let device: Device?
     public let mgdl: MgdlValue
     
     enum CodingKeys: String, CodingKey {

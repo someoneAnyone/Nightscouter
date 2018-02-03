@@ -125,7 +125,7 @@ public extension ComplicationDataSourceGenerator {
                 rawString = rawFormattedString
             }
             
-            let compModel = ComplicationTimelineEntry(date: date, rawLabel: rawString, nameLabel: configuration.displayName, sgvLabel: sgvString, deltaLabel: deltaString, tintColor: sgvColor.colorValue, units: units, direction: sgv.direction, noise: sgv.noise ?? Noise.unknown)
+            let compModel = ComplicationTimelineEntry(date: date, rawLabel: rawString, nameLabel: configuration.displayName, sgvLabel: sgvString, deltaLabel: deltaString, tintColor: sgvColor.colorValue, units: units, direction: sgv.direction ?? .none, noise: sgv.noise ?? Noise.unknown)
             
             compModels.append(compModel)
         }

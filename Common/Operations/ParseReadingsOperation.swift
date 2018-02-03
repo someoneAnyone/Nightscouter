@@ -60,8 +60,12 @@ public class ParseReadingsOperation: Operation, NightscouterOperation {
                 
                 switch type {
                 case .sgv:
+                    do {
                     let sgvEntry = try decoder.decode(SensorGlucoseValue.self, from: entryData)
                     sensorGlucoseValues.append(sgvEntry)
+                    }catch {
+                        print(error)
+                    }
                 case .cal:
                     let calEntry = try decoder.decode(Calibration.self, from: entryData)
                     calibrations.append(calEntry)
