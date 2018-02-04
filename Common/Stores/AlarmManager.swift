@@ -97,8 +97,6 @@ open class AlarmManager: NSObject, SessionManagerType  {
         
         let encoder = JSONEncoder()
         messageToSend[DefaultKey.alarm.rawValue] = try? encoder.encode(alarmObject)
-        FIXME()// this prevents a loop, but needs to be fixed and errors need to be reported.
-
       //  store?.handleApplicationContextPayload(messageToSend)
     }
     

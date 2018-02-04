@@ -365,7 +365,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         let model = site.summaryViewModel
         
         cell.configure(withDataSource: model, delegate: model)
-        FIXME()// this prevents a loop, but needs to be fixed and errors need to be reported.
+        
+        // this prevents a loop, but needs to be fixed and errors need to be reported.
         if site.updateNow {
             // && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
             refreshDataFor(site, index: indexPath.row)

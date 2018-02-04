@@ -31,6 +31,6 @@ public struct MeteredGlucoseValue: CustomStringConvertible, Dateable, GlucoseVal
     }
     
     public var description: String {
-        return "{ MeteredGlucoseValue: { milliseconds: \(String(describing: milliseconds)),  device: \(device), mgdl: \(mgdl) } }"
+        return "{ MeteredGlucoseValue: { milliseconds: \(String(describing: milliseconds)),  device: \(device ?? Device.unknown), mgdl: \(mgdl) } }"
     }
 }
