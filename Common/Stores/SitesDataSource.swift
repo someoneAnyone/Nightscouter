@@ -40,10 +40,10 @@ public class SitesDataSource: SiteStoreType {
         
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(type(of:self).defaultsChanged(notif:)),
-            name: UserDefaults.didChangeNotification, object: nil
-        )
+//        NotificationCenter.default.addObserver(
+//            self, selector: #selector(type(of:self).defaultsChanged(notif:)),
+//            name: UserDefaults.didChangeNotification, object: nil
+//        )
         
         #if os(iOS)
             
@@ -65,7 +65,7 @@ public class SitesDataSource: SiteStoreType {
         let watchConnectivityManager = WatchConnectivityCordinator.shared
         watchConnectivityManager.store = self
         watchConnectivityManager.startSession()
-        self.sessionManagers.append(watchConnectivityManager)
+//        self.sessionManagers.append(watchConnectivityManager as! SessionManagerType)
         
         let alarmManager = AlarmManager.sharedManager
         alarmManager.store = self
@@ -77,6 +77,8 @@ public class SitesDataSource: SiteStoreType {
         print("found \(self.sites.count) sites in the store.")
         
         dataStaleTimer(nil)
+        
+        sites = loadData()
     }
     
     deinit {
@@ -92,22 +94,17 @@ public class SitesDataSource: SiteStoreType {
     
     public var storageLocation: StorageLocation { return .localKeyValueStore }
     
-//    public var otherStorageLocations: SiteStoreType?
-    
     fileprivate var concurrentQueue = DispatchQueue(label: "com.nothingonline.nightscouter.sitesdatasource", attributes: .concurrent)
     
-    public var sites: [Site] {
-        get {
-            return loadData()
-        }
-    }
+    public var sites: [Site] = []
     
     public var appIsInBackground: Bool = true
     
     public var lastViewedSiteIndex: Int {
         set {
             if lastViewedSiteIndex != newValue {
-                saveData([DefaultKey.lastViewedSiteIndex.rawValue : newValue])
+                defaults.set(newValue, forKey: DefaultKey.lastViewedSiteIndex.rawValue)
+                defaults.synchronize()
             }
         }
         
@@ -119,7 +116,7 @@ public class SitesDataSource: SiteStoreType {
     public var primarySite: Site? {
         set{
             if let site = newValue {
-                saveData([DefaultKey.primarySiteUUID.rawValue : site.uuid.uuidString])
+                defaults.set(site.uuid.uuidString, forKey: DefaultKey.primarySiteUUID.rawValue)
             } else {
                 defaults.removeObject(forKey: DefaultKey.primarySiteUUID.rawValue)
             }
@@ -133,8 +130,6 @@ public class SitesDataSource: SiteStoreType {
             return nil
         }
     }
-    
-    
     
     
     // MARK: Array modification methods
@@ -153,10 +148,14 @@ public class SitesDataSource: SiteStoreType {
         }
         
         
-        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+//        let siteData = NSKeyedArchiver.archivedData(withRootObject: initial)
         
-        saveData(userInfo)
-    self.postNotificationOnMainQueue(name: .nightscoutDataAddedContentNotification, userInfo: userInfo)
+        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+  
+        sites = initial
+        saveData()
+  
+        self.postNotificationOnMainQueue(name: .nightscoutAddedContentNotification, userInfo: userInfo)
         
         return initial.contains(site)
     }
@@ -170,7 +169,8 @@ public class SitesDataSource: SiteStoreType {
             
             let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
             
-            saveData(userInfo)
+            sites = initial
+            saveData()
         }
     }
     
@@ -181,9 +181,10 @@ public class SitesDataSource: SiteStoreType {
         do {
             try initial.move(fromIndex: oldIndex, toIndex: newIndex)
             
-            let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+//            let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
             
-            saveData(userInfo)
+            sites = initial
+            saveData()
             
             return true
         } catch {
@@ -201,9 +202,6 @@ public class SitesDataSource: SiteStoreType {
             return false
         }
         
-        /// Need to enabled this...
-        // AppConfiguration.keychain[site.uuid.UUIDString] = nil
-        
         if site == lastViewedSite {
             lastViewedSiteIndex = 0
         }
@@ -215,14 +213,14 @@ public class SitesDataSource: SiteStoreType {
             clearAllSites()
         }
         
-        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
+//        let userInfo: [String: [Site]] = [DefaultKey.sites.rawValue : initial]
         
-        saveData(userInfo)
+        sites = initial
+        saveData()
         
         return success
     }
     
-    @discardableResult
     public func clearAllSites() -> Bool {
         
         primarySite = nil
@@ -239,8 +237,8 @@ public class SitesDataSource: SiteStoreType {
         
         if let sites = payload[DefaultKey.sites.rawValue] as? ArrayOfDictionaries {
             var userInfo: [String: Encodable] = [:]
-            userInfo[DefaultKey.sites.rawValue] = sites
-            saveData(userInfo)
+            userInfo[DefaultKey.sites.rawValue] = sites as? Encodable
+//            saveData(userInfo)
         } else {
             print("No sites were found.")
         }
@@ -312,7 +310,7 @@ public class SitesDataSource: SiteStoreType {
     public func loadData() -> [Site] {
         
         if defaults.string(forKey: DefaultKey.version.rawValue) != DefaultKey.currentVersion {
-            clearAllSites()
+            _ = clearAllSites()
         }
         
         guard let sitesDict = defaults.data(forKey: DefaultKey.sites.rawValue) else {
@@ -321,6 +319,8 @@ public class SitesDataSource: SiteStoreType {
         
         do {
             return try PropertyListDecoder().decode([Site].self, from: sitesDict)
+            
+            
         } catch {
             print(error.localizedDescription)
             
@@ -328,65 +328,35 @@ public class SitesDataSource: SiteStoreType {
         }
     }
     
-    public func saveData(_ dictionary: [String: Any]) {
+    public func saveData() {
         
-        var dictionayToSave  = dictionary
-        
-        if let sites =  dictionayToSave[DefaultKey.sites.rawValue] as? [Site] {
-            let plist = PropertyListEncoder()
+        let plist = PropertyListEncoder()
             do {
-                dictionayToSave[DefaultKey.sites.rawValue] = try plist.encode(sites)
+                let encodedSites = try plist.encode(self.sites)
+                
+                defaults.set(encodedSites, forKey: DefaultKey.sites.rawValue)
+                defaults.set(DefaultKey.currentVersion, forKey: DefaultKey.version.rawValue)
+                defaults.synchronize()
+                
+                self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
             } catch {
                 print(error)
             }
         }
-        
-        dictionayToSave[DefaultKey.version.rawValue] = DefaultKey.currentVersion
-        
-        for (key, object) in dictionayToSave {
-            defaults.set(object, forKey: key)
-        }
-        
-        defaults.synchronize()
-        
-        self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
-    }
-    
-    @objc func defaultsChanged(notif: Notification) {
-    print(notif)
-    }
-    
-    public func send() {
-        
-        var dictionaryToSend: [String: Any] = [:]
-        
-        dictionaryToSend[DefaultKey.lastDataUpdateDateFromPhone.rawValue] = Date()
-        
-        var successfullAppContextUpdate = true
 
-        sessionManagers.forEach({ (manager: SessionManagerType ) -> () in
-            do {
-                try manager.updateApplicationContext(dictionaryToSend)
-            } catch {
-                successfullAppContextUpdate = false
-                fatalError("Something didn't go right, create a fix.")
-            }
-        })
-        
-        if successfullAppContextUpdate {
-            delayDataUpdateNotification()
-        } else {
-            fatalError("Unable to update the app context \(self)")
-        }
-        
-       
-    }
     
-    var delayDataUpdateNotification: (()->()) {
-        return debounce(delay: 3, queue: DispatchQueue(label: "com.nothingonline.delay", qos: .userInitiated), action: {
-            self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
-        })
-    }
+    
+//
+//    @objc func defaultsChanged(notif: Notification) {
+//        print(notif)
+//    }
+    
+    
+//    var delayDataUpdateNotification: (()->()) {
+//        return debounce(delay: 3, queue: DispatchQueue(label: "com.nothingonline.delay", qos: .userInitiated), action: {
+//            self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification)
+//        })
+//    }
 }
 
 
@@ -407,34 +377,3 @@ public func debounce(delay: Int, queue: DispatchQueue = DispatchQueue.main, acti
         }
     }
 }
-
-
-/// FIXME
-//public extension Encodable {
-//    public var dictionary: Any? {
-//        let encoder = JSONEncoder()
-//        do {
-//            let encodedPeople = try encoder.encode(self)
-//            return try? JSONSerialization.jsonObject(with: encodedPeople, options: []) as Any
-//        } catch {
-//            print(error)
-//            return nil
-//        }
-//    }
-//
-//    public var nsDictionary: NSDictionary? {
-//        return dictionary as? NSDictionary
-//    }
-//}
-//
-//extension Collection where Iterator.Element == [AnyHashable: AnyObject] {
-//    func toJSONString(options: JSONSerialization.WritingOptions = .prettyPrinted) -> String {
-//        if let arr = self as? [[String: Any]],
-//            let dat = try? JSONSerialization.data(withJSONObject: arr, options: options),
-//            let str = String(data: dat, encoding: .utf8) {
-//            return str
-//        }
-//        return "[]"
-//    }
-//}
-

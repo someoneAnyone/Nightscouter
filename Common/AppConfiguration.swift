@@ -10,10 +10,12 @@ import Foundation
 
 
 public extension Notification.Name {
-    static public let nightscoutDataAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
+    static public let dataDidFlow = Notification.Name("DataDidFlow")
+    static public let activationDidComplete = Notification.Name("ActivationDidComplete")
+    static public let reachabilityDidChange = Notification.Name("ReachabilityDidChange")
+    static public let nightscoutAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
     static public let nightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
     static public let nightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
-
     static public let nightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
 }
 

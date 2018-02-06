@@ -84,7 +84,7 @@ public protocol SiteStoreType {
     /// Save all site data to long-term storage.
     /// If the save fails we print and forcefully quit the app
     ///
-    func saveData(_ dictionary: [String: Any])
+//    func saveData(_ dictionary: [String: Any])
 
     ///
     /// Load all site data from long-term storage

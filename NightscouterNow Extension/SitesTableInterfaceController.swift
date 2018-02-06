@@ -8,6 +8,7 @@
 
 import WatchKit
 import NightscouterWatchOSKit
+import WatchConnectivity
 
 class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvider {
     
@@ -62,6 +63,10 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     deinit {
         NotificationCenter.default.removeObserver(self)
+        
+        NotificationCenter.default.removeObserver(self, name: .dataDidFlow, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .activationDidComplete, object: nil)
+        NotificationCenter.default.removeObserver(self, name: .reachabilityDidChange, object: nil)
     }
     
     fileprivate func setupNotifications() {
@@ -71,6 +76,60 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             self.milliseconds = Date().timeIntervalSince1970.millisecond
             self.updateButton()
         }
+        // Install notification observer.
+        //
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).dataDidFlow(_:)),
+            name: .dataDidFlow, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).activationDidComplete(_:)),
+            name: .activationDidComplete, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(type(of:self).reachabilityDidChange(_:)),
+            name: .reachabilityDidChange, object: nil
+        )
+        
+    }
+    
+    // .dataDidFlow notification handler.
+    // Update the UI based on the userInfo dictionary of the notification.
+    //
+    @objc func dataDidFlow(_ notification: Notification) {
+        // Notification should have userInfo, which contains channel, phrase, and timedColor.
+        //
+        guard let aUserInfo = notification.userInfo as? [String: Any],
+            let notificationChannel = aUserInfo[UserInfoKey.channel] as? Channel,
+            let phrase = aUserInfo[UserInfoKey.phrase] as? Phrase,
+            let siteData = aUserInfo[UserInfoKey.siteData] as? [String: Any] else { return }
+        
+        
+        SitesDataSource.sharedInstance.sites = try! PropertyListDecoder().decode([Site].self, from: siteData["siteData"] as! Data)
+        
+        
+        // If the data is from current channel, simple update color and time stamp, then return.
+        //
+        updateTableData()
+    }
+    
+    // .activationDidComplete notification handler.
+    //
+    @objc func activationDidComplete(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as? [String: Any],
+            let activationStatus = userInfo[UserInfoKey.activationStatus] as? WCSessionActivationState
+            else { return }
+        
+        print("\(#function): activationState:\(activationStatus.rawValue)")
+    }
+    
+    // .reachabilityDidChange notification handler.
+    //
+    @objc func reachabilityDidChange(_ notification: Notification) {
+        guard let userInfo = notification.userInfo as? [String: Any],
+            let isReachable = userInfo[UserInfoKey.reachable] as? Bool else { return }
+        
+        print("\(#function): isReachable:\(isReachable)")
     }
     
     fileprivate func updateTableData() {
