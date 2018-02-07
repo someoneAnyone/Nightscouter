@@ -77,6 +77,7 @@ open class AlarmManager: NSObject, SessionManagerType  {
     
     private override init() {
         super.init()
+        delayPost()
     }
     
     @objc public func startSession() {
@@ -84,7 +85,6 @@ open class AlarmManager: NSObject, SessionManagerType  {
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
-        delayPost()
     }
 
     @objc var delayPost = debounce(delay: 3) {

@@ -104,7 +104,8 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             let phrase = aUserInfo[UserInfoKey.phrase] as? Phrase,
             let siteData = aUserInfo[UserInfoKey.siteData] as? [String: Any] else { return }
         
-        
+        print(notificationChannel)
+        print(phrase)
         SitesDataSource.sharedInstance.sites = try! PropertyListDecoder().decode([Site].self, from: siteData["siteData"] as! Data)
         
         
@@ -195,15 +196,13 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             
             SitesDataSource.sharedInstance.updateSite(updatedSite)
             self.milliseconds = updatedSite.milliseconds
-            #if os(watchOS)
-                ///Complications need to be updated smartly... also background refresh needs to be taken into account
-                let complicationServer = CLKComplicationServer.sharedInstance()
-                if let activeComplications = complicationServer.activeComplications {
-                    for complication in activeComplications {
-                        complicationServer.reloadTimeline(for: complication)
-                    }
+            ///Complications need to be updated smartly... also background refresh needs to be taken into account
+            let complicationServer = CLKComplicationServer.sharedInstance()
+            if let activeComplications = complicationServer.activeComplications {
+                for complication in activeComplications {
+                    complicationServer.reloadTimeline(for: complication)
                 }
-            #endif
+            }
             
             self.updateTableData()
         }
