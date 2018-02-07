@@ -39,7 +39,7 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         downloadTask?.cancel()
         super.cancel()
     }
-    
+
     override func main() {
         
         if self.isCancelled { return }
@@ -48,7 +48,7 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         disGroup?.enter()
  
         downloadTask?.resume()
-        disGroup?.wait()
+        disGroup?.wait(timeout: .now() + 1)
     }
     
     //MARK: session delegate

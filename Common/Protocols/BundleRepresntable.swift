@@ -33,6 +33,9 @@ extension BundleRepresentable {
     }
     
     public var bundleIdentifier: URL? {
-        return URL(string: Bundle.main.bundleIdentifier!)
+        guard let bundleID = Bundle.main.bundleIdentifier else {
+            return nil
+        }
+        return URL(string: bundleID)
     }
 }
