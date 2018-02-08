@@ -46,9 +46,8 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         
         disGroup = DispatchGroup()
         disGroup?.enter()
- 
         downloadTask?.resume()
-        disGroup?.wait(timeout: .now() + 1)
+        disGroup?.wait()
     }
     
     //MARK: session delegate
