@@ -48,7 +48,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     override func awake(withContext context: Any?) {
         super.awake(withContext: context)
         print(">>> Entering \(#function) <<<")
-        
+                
         setupNotifications()
         
         updateTableData()

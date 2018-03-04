@@ -39,7 +39,7 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
     private init() {
         
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
-  
+        
         #if os(iOS)
             
             let iCloudManager = iCloudKeyValueStore()
@@ -235,7 +235,7 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
                 defaults.set(lastDataUpdateDateFromPhone,forKey: DefaultKey.lastDataUpdateDateFromPhone.rawValue)
             }
         #endif
-
+        
     }
     
     func createUpdateTimer() -> Timer {
@@ -251,10 +251,11 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
-        if (self.timer == nil) {
-            self.timer = createUpdateTimer()
+        DispatchQueue.main.async {
+            if (self.timer == nil) {
+                self.timer = self.createUpdateTimer()
+            }
         }
-        
         self.postNotificationOnMainQueue(name: .nightscoutDataStaleNotification, object: timer)
     }
     
@@ -289,14 +290,14 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             defaults.set(encodedSites, forKey: DefaultKey.sites.rawValue)
             defaults.set(DefaultKey.currentVersion, forKey: DefaultKey.version.rawValue)
             
-//            sessionManagers.forEach({ (manager) in
-//                do {
-//                    try manager.updateApplicationContext(dict)
-//                }catch {
-//                    print(error)
-//                }
-//            })
-//            
+            //            sessionManagers.forEach({ (manager) in
+            //                do {
+            //                    try manager.updateApplicationContext(dict)
+            //                }catch {
+            //                    print(error)
+            //                }
+            //            })
+            //
             defaults.synchronize()
             
             if appIsInBackground {
