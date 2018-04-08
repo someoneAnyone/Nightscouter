@@ -250,8 +250,9 @@ public class NightscoutDownloader {
         finishUp.addDependency(parseConfig)
         finishUp.addDependency(parseEntries)
         finishUp.addDependency(parseDevice)
-        
-        processingQueue.addOperation(finishUp)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { // change 2
+            self.processingQueue.addOperation(finishUp)
+        }
     }
     
 }
@@ -265,7 +266,6 @@ public extension Site {
     public func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         nightscouterAPI.isBackground = background
-        
         var updatedSite = self
         
         nightscouterAPI.networkRequest(forNightscoutURL: self.url, apiPassword: self.apiSecret) { (config, sgvs, cals, mbgs, devices, err) in

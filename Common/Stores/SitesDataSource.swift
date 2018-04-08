@@ -41,12 +41,12 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
         #if os(iOS)
-            
-            let iCloudManager = iCloudKeyValueStore()
-            iCloudManager.store = self
-            iCloudManager.startSession()
-            self.sessionManagers.append(iCloudManager)
-            
+        
+        let iCloudManager = iCloudKeyValueStore()
+        iCloudManager.store = self
+        iCloudManager.startSession()
+        self.sessionManagers.append(iCloudManager)
+        
         #endif
         
         // Need logic for !iOS | WatchOS
@@ -231,9 +231,9 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         }
         
         #if os(watchOS)
-            if let lastDataUpdateDateFromPhone = payload[DefaultKey.lastDataUpdateDateFromPhone.rawValue] as? Date {
-                defaults.set(lastDataUpdateDateFromPhone,forKey: DefaultKey.lastDataUpdateDateFromPhone.rawValue)
-            }
+        if let lastDataUpdateDateFromPhone = payload[DefaultKey.lastDataUpdateDateFromPhone.rawValue] as? Date {
+            defaults.set(lastDataUpdateDateFromPhone,forKey: DefaultKey.lastDataUpdateDateFromPhone.rawValue)
+        }
         #endif
         
     }
@@ -247,8 +247,8 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
     
     @objc func dataStaleTimer(_ timer: Timer?) -> Void {
         #if DEBUG
-            print(">>> Entering \(#function) <<<")
-            print("Posting NightscoutDataStaleNotification Notification at \(Date())")
+        print(">>> Entering \(#function) <<<")
+        print("Posting NightscoutDataStaleNotification Notification at \(Date())")
         #endif
         
         DispatchQueue.main.async {
@@ -290,14 +290,14 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             defaults.set(encodedSites, forKey: DefaultKey.sites.rawValue)
             defaults.set(DefaultKey.currentVersion, forKey: DefaultKey.version.rawValue)
             
-            //            sessionManagers.forEach({ (manager) in
-            //                do {
-            //                    try manager.updateApplicationContext(dict)
-            //                }catch {
-            //                    print(error)
-            //                }
-            //            })
-            //
+            sessionManagers.forEach({ (manager) in
+                do {
+                    try manager.updateApplicationContext(dict)
+                }catch {
+                    print(error)
+                }
+            })
+            
             defaults.synchronize()
             
             if appIsInBackground {
