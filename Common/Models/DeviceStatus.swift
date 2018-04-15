@@ -9,7 +9,7 @@
 import Foundation
 
 /// A record type provided by the Nightscout API, contains regarding the battery level of the uploading device.
-public struct DeviceStatus: CustomStringConvertible, Dateable, Codable {
+public struct DeviceStatus: CustomStringConvertible, Dateable, Encodable, Decodable {
     private let zeroSymbolForBattery: String = PlaceHolderStrings.battery
     
     /** 
@@ -122,3 +122,28 @@ public struct Pump: Codable {
     }
 
 }
+/*
+extension DeviceStatus: Decodable {
+    
+        // MARK: Decoder (custom)
+        
+        public init(from decoder: Decoder) throws {
+            let keyedContainer = try decoder.container(keyedBy: CodingKeys.self)
+            
+            let uploaderBattery = try keyedContainer.decodeIfPresent(Int.self, forKey: .uploaderBattery)
+            
+            let pump = try keyedContainer.decodeIfPresent(Pump.self, forKey: .pump)
+            
+            let createdDate = try keyedContainer.decodeIfPresent(Date.self, forKey: .createdDate)
+            
+            let mills  = try keyedContainer.decodeIfPresent(Mills.self, forKey: .milliseconds)
+            
+            
+            self.uploaderBattery = uploaderBattery ?? 0
+            self.milliseconds = mills
+            self.createdDate = createdDate ?? Date.distantPast
+            self.pump = pump
+
+        }
+    }
+*/

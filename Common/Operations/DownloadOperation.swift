@@ -39,14 +39,13 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         downloadTask?.cancel()
         super.cancel()
     }
-    
+
     override func main() {
         
         if self.isCancelled { return }
         
         disGroup = DispatchGroup()
         disGroup?.enter()
- 
         downloadTask?.resume()
         disGroup?.wait()
     }
