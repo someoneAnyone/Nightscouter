@@ -31,8 +31,8 @@ public struct Theme {
             UINavigationBar.appearance().barTintColor = navBarColor
             UINavigationBar.appearance().tintColor = Theme.AppColor.windowTintColor
             
-            let navBarAttributesDictionary: [String: Any]? = [ NSForegroundColorAttributeName: Theme.AppColor.navBarTextColor,
-                NSFontAttributeName: navBarFont]
+            let navBarAttributesDictionary: [NSAttributedStringKey: Any]? = [ NSAttributedStringKey.foregroundColor: Theme.AppColor.navBarTextColor,
+                NSAttributedStringKey.font: navBarFont]
             
             UINavigationBar.appearance().titleTextAttributes = navBarAttributesDictionary
         }

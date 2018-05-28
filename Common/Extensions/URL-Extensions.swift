@@ -129,7 +129,7 @@ public extension URL {
     
     public var deletedTrailingSlash: URL? {
         var urlString = self.absoluteString
-        if let i = urlString.characters.index(of: "/") {
+        if let i = urlString.index(of: "/") {
                      urlString.remove(at: i)
             return URL(string: urlString)
         }

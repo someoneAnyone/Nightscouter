@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct Site: Dateable, CustomStringConvertible {
+public struct Site: Dateable, Codable {
     public var configuration: ServerConfiguration?
     public var url: URL
     public var overrideScreenLock: Bool
@@ -20,16 +20,22 @@ public struct Site: Dateable, CustomStringConvertible {
     public var deviceStatuses: [DeviceStatus] = []
     public var complicationTimeline: [ComplicationTimelineEntry] = []
     
-    public var milliseconds: Mills {
+    public var milliseconds: Mills? {
         get {
             return updatedAt.timeIntervalSince1970.millisecond
         }
     }
     
     public var nextUpdate: Date {
-        
         if let sgvDate = sgvs.first?.date {
-            return sgvDate.addingTimeInterval(TimeInterval.FourMinutes)
+            let nextupDate = sgvDate.addingTimeInterval(TimeInterval.FourMinutes)
+            let lastupdatedPlusOne = updatedAt.addingTimeInterval(TimeInterval.OneMinute)
+            
+            if lastupdatedPlusOne > nextupDate {
+                return lastupdatedPlusOne
+            }
+            
+            return nextupDate
         }
         
         return updatedAt.addingTimeInterval(TimeInterval.FourMinutes)
@@ -49,9 +55,9 @@ public struct Site: Dateable, CustomStringConvertible {
     
     public var uuid: UUID
     
-    public var description: String {
-        return "{ Site: { url: \(url), configuration: \(configuration), lastConnectedDate: \(date), disabled: \(disabled), numberOfSgvs: \(sgvs.count), numberOfCals: \(cals.count), , numberOfMbgs: \(mbgs.count), numberOfTimeLineEntries: \(complicationTimeline.count) } }"
-    }
+//    public var description: String {
+//        return "{ Site: { url: \(url), configuration: \(configuration), lastConnectedDate: \(date), disabled: \(disabled), numberOfSgvs: \(sgvs.count), numberOfCals: \(cals.count), numberOfMbgs: \(mbgs.count), numberOfTimeLineEntries: \(complicationTimeline.count)}"
+//    }
     
     public init(){
         self.url = URL(string: "https://nscgm.herokuapp.com")!
@@ -125,12 +131,6 @@ extension Site {
     }
 }
 
-extension Site {
-    public var summaryViewModel: SiteSummaryModelViewModel {
-        return SiteSummaryModelViewModel(withSite: self)
-    }
-  
-}
 
 struct SiteChangeset {
     let configurationChanged: Bool
@@ -138,7 +138,7 @@ struct SiteChangeset {
     let calsChanged: Bool
     let mbgsChanged: Bool
     let deviceStatusesChanged: Bool
-    let complicationTimelineChanged: Bool
+//    let complicationTimelineChanged: Bool
     
     init(site: Site, otherSite: Site) {
         configurationChanged = site.configuration == otherSite.configuration
@@ -146,7 +146,7 @@ struct SiteChangeset {
         calsChanged = site.cals == otherSite.cals
         mbgsChanged = site.mbgs == otherSite.mbgs
         deviceStatusesChanged = site.deviceStatuses == otherSite.deviceStatuses
-        complicationTimelineChanged = site.complicationTimeline == otherSite.complicationTimeline
+//        complicationTimelineChanged = site.complicationTimeline == otherSite.complicationTimeline
     }
     
     init() {
@@ -155,6 +155,6 @@ struct SiteChangeset {
         calsChanged = false
         mbgsChanged = false
         deviceStatusesChanged = false
-        complicationTimelineChanged = false
+//        complicationTimelineChanged = false
     }
 }

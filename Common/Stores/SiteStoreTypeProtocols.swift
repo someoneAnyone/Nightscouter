@@ -13,7 +13,7 @@ public protocol SitesDataSourceProvider: Dateable {
 }
 
 public extension SitesDataSourceProvider {
-    var milliseconds: Double {
+    var milliseconds: Mills? {
         return AppConfiguration.Constant.knownMilliseconds.inThePast
     }
 }
@@ -84,13 +84,16 @@ public protocol SiteStoreType {
     /// Save all site data to long-term storage.
     /// If the save fails we print and forcefully quit the app
     ///
-    func saveData(_ dictionary: [String: Any])
-    
+//    func saveData(_ dictionary: [String: Any])
+
     ///
     /// Load all site data from long-term storage
     /// -returns Bool: True if things were successful.
     ///
-    func loadData() -> [Site]?
+    func loadData() -> [Site]
+    
+    func postNotificationOnMainQueue(name: NSNotification.Name, object: Any?,
+    userInfo: [AnyHashable : Any]?)
 }
 
 public extension SiteStoreType {
@@ -100,22 +103,32 @@ public extension SiteStoreType {
     var lastViewedSite: Site? {
         return sites[lastViewedSiteIndex]
     }
+    
+    // Post a notification on the main thread asynchronously.
+    //
+    func postNotificationOnMainQueue(name: NSNotification.Name, object: Any? = nil,
+                                         userInfo: [AnyHashable : Any]? = nil) {
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: name, object: object, userInfo: userInfo)
+        }
+    }
+
 }
 
 public protocol SessionManagerType {
     /// The store to interact with.
     var store: SiteStoreType? { get set }
+    /// Start the WatchConnectivity session.
+    ///
+    /// Call this method after initialization to send/receive payload between the counterparts.
+    ///
+    func startSession()
     ///
     /// Send the updated application context payload to the counterpart app.
     ///
     /// - parameter applicationContext: The fresh application context payload.
     ///
     func updateApplicationContext(_ applicationContext: [String : Any]) throws
-    /// Start the WatchConnectivity session.
-    ///
-    /// Call this method after initialization to send/receive payload between the counterparts.
-    ///
-    func startSession()
 }
 
 

@@ -11,10 +11,10 @@ import Foundation
 public class ParseConfigurationOperation: Operation, NightscouterOperation {
 
     internal var error: NightscoutRESTClientError?
-    internal var data: Data?
+    @objc internal var data: Data?
     var configuration: ServerConfiguration?
     
-    public convenience init(withJSONData data: Data?) {
+    @objc public convenience init(withJSONData data: Data?) {
         self.init()
         self.name = "Parse JSON for Nightscout Server Configuration"
         self.data = data
@@ -32,10 +32,12 @@ public class ParseConfigurationOperation: Operation, NightscouterOperation {
         if self.isCancelled { return }
 
         do {
-            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
-            let object: [String: Any] = try JSONSerialization.jsonObject(with: cleanedData, options: .allowFragments) as! [String: Any]
             
-            self.configuration = ServerConfiguration.decode(object)
+            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
+            let decoder = JSONDecoder()
+            let configuration = try decoder.decode(ServerConfiguration.self, from: cleanedData)
+
+            self.configuration = configuration
             
             return
         } catch let error {

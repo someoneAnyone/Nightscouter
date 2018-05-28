@@ -8,81 +8,95 @@
 
 import Foundation
 
-class DownloadOperation: Operation, URLSessionDelegate {
+class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelegate  {
     
-    var request: URLRequest
+    @objc var request: URLRequest
     
-    var data: Data?
+    @objc var data: Data?
     var error: NightscoutRESTClientError?
-    var isBackground: Bool
+    @objc var isBackground: Bool
+    @objc var disGroup: DispatchGroup?
     
-    public init(withURLRequest request: URLRequest, isBackground background: Bool) {
+    @objc var downloadTask: URLSessionDownloadTask?
+    
+    @objc public init(withURLRequest request: URLRequest, isBackground background: Bool) {
         self.request = request
         self.isBackground = background
         
         super.init()
         
-        self.name = "Download data from \(request.url)"
+        let config = !isBackground ? URLSessionConfiguration.default :
+            URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
+        
+        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
+        
+        downloadTask = session.downloadTask(with: self.request)
+        
+        self.name = "Download data from \(String(describing: request.url))"
     }
     
+    override func cancel() {
+        downloadTask?.cancel()
+        super.cancel()
+    }
+
     override func main() {
         
         if self.isCancelled { return }
         
-        let disGroup = DispatchGroup()
+        disGroup = DispatchGroup()
+        disGroup?.enter()
+        downloadTask?.resume()
+        disGroup?.wait()
+    }
+    
+    //MARK: session delegate
+    func urlSession(_ session: URLSession, didBecomeInvalidWithError error: Error?) {
+        print("session error: \(String(describing: error?.localizedDescription)).")
+        if let err = error {
+            let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
+            self.error = apiError
+            disGroup?.leave()
+            return
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         
-        disGroup.enter()
+        print("session \(session) has finished the download task \(downloadTask) of URL \(location).")
         
-        let config = !isBackground ? URLSessionConfiguration.default :
-            URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
-        
-        
-        let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-       
-        
-        let downloadTask = session.downloadTask(with: self.request) { (location, response, error) in
-            print(">>> downloadTask task for \(self.request.url) is complete. <<<")
-            //print(">>> downloadTask: {\nlocation: \(location),\nresponse: \(response),\nerror: \(error)\n} <<<")
-            
-            if self.isCancelled {
-                disGroup.leave()
-                return
-            }
-            
-            if let err = error {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
-                self.error = apiError
-                disGroup.leave()
-                return
-            }
-            
-            // Is there a file at the location provided?
-            guard let location = location else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .downloadedLocationIsMissing)
-                self.error = apiError
-                disGroup.leave()
-                return
-            }
-            
-            guard let dataFromLocation = try? Data(contentsOf: location) else {
-                let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
-                self.error = apiError
-                disGroup.leave()
-                return
-            }
-            
-            self.data = dataFromLocation
-            
-            disGroup.leave()
+        guard let dataFromLocation = try? Data(contentsOf: location) else {
+            let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
+            self.error = apiError
+            disGroup?.leave()
+            return
         }
         
-        downloadTask.resume()
+        self.data = dataFromLocation
+        disGroup?.leave()
         
-        disGroup.wait()
+        return
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        if let err = error {
+            let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
+            self.error = apiError
+            disGroup?.leave()
+            
+            return
+        }
     }
     
     func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-        print(#function)
-        return
+        print("background session \(session) finished events.")
+        
+        if let sessionId = session.configuration.identifier {
+            print(sessionId)
+            
+            disGroup?.leave()
+
+        }
     }
+    
 }

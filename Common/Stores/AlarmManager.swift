@@ -11,7 +11,7 @@ import Foundation
 
 open class AlarmManager: NSObject, SessionManagerType  {
     
-    public static let sharedManager = AlarmManager()
+    @objc public static let sharedManager = AlarmManager()
     
     /// The store that the session manager should interact with.
     public var store: SiteStoreType?
@@ -77,33 +77,32 @@ open class AlarmManager: NSObject, SessionManagerType  {
     
     private override init() {
         super.init()
+        delayPost()
     }
     
-    public func startSession() {
+    @objc public func startSession() {
         AlarmRule.snooze(seconds: 5)
     }
     
     public func updateApplicationContext(_ applicationContext: [String : Any]) throws {
-        delayPost()
     }
 
-    var delayPost = debounce(delay: 3) {
-        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
+    @objc var delayPost = debounce(delay: 3) {
+        NotificationCenter.default.post(name: .nightscoutAlarmNotification, object: AlarmManager.sharedManager.alarmObject)
     }
-}
 
-
-extension AlarmManager {
-    func requestCompanionAppUpdate() {
+    @objc func requestCompanionAppUpdate() {
         print(">>> Entering \(#function) <<<")
-        var messageToSend: [String: Any] = DefaultKey.payloadAlarmUpdate
-        messageToSend[DefaultKey.alarm.rawValue] = alarmObject?.encode()
-        store?.handleApplicationContextPayload(messageToSend)
+        var messageToSend: [String : Any] = DefaultKey.payloadAlarmUpdate
+        
+        let encoder = JSONEncoder()
+        messageToSend[DefaultKey.alarm.rawValue] = try? encoder.encode(alarmObject)
+      //  store?.handleApplicationContextPayload(messageToSend)
     }
     
-    func postAlarmUpdateNotifiaction() {
+    @objc func postAlarmUpdateNotifiaction() {
         print(">>> Entering \(#function) <<<")
-        NotificationCenter.default.post(name: .NightscoutAlarmNotification, object: self.alarmObject)
+        self.store?.postNotificationOnMainQueue(name: .nightscoutAlarmNotification, object: self.alarmObject)
     }
 }
 

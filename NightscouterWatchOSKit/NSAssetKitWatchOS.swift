@@ -28,17 +28,17 @@ open class NSAssetKitWatchOS : NSObject {
 
     //// Colors
 
-    open class var appLogoTintColor: UIColor { return Cache.appLogoTintColor }
-    open class var darkNavColor: UIColor { return Cache.darkNavColor }
-    open class var predefinedWarningColor: UIColor { return Cache.predefinedWarningColor }
-    open class var predefinedPostiveColor: UIColor { return Cache.predefinedPostiveColor }
-    open class var predefinedAlertColor: UIColor { return Cache.predefinedAlertColor }
-    open class var predefinedNeutralColor: UIColor { return Cache.predefinedNeutralColor }
-    open class var predefinedLogoColor: UIColor { return Cache.predefinedLogoColor }
+    @objc open class var appLogoTintColor: UIColor { return Cache.appLogoTintColor }
+    @objc open class var darkNavColor: UIColor { return Cache.darkNavColor }
+    @objc open class var predefinedWarningColor: UIColor { return Cache.predefinedWarningColor }
+    @objc open class var predefinedPostiveColor: UIColor { return Cache.predefinedPostiveColor }
+    @objc open class var predefinedAlertColor: UIColor { return Cache.predefinedAlertColor }
+    @objc open class var predefinedNeutralColor: UIColor { return Cache.predefinedNeutralColor }
+    @objc open class var predefinedLogoColor: UIColor { return Cache.predefinedLogoColor }
 
     //// Drawing Methods
 
-    open class func drawWatchFace(_ watchFrame: CGRect = CGRect(x: 0, y: 0, width: 134, height: 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) {
+    @objc open class func drawWatchFace(_ watchFrame: CGRect = CGRect(x: 0, y: 0, width: 134, height: 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -67,7 +67,7 @@ open class NSAssetKitWatchOS : NSObject {
         let sgvLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         sgvLabelStyle.alignment = .center
 
-        let sgvLabelFontAttributes = [NSFontAttributeName: UIFont(name: "HelveticaNeue-Thin", size: textSizeForSgv)!, NSForegroundColorAttributeName: arrowTintShadowColor, NSParagraphStyleAttributeName: sgvLabelStyle]
+        let sgvLabelFontAttributes = [NSAttributedStringKey.font: UIFont(name: "HelveticaNeue-Thin", size: textSizeForSgv)!, NSAttributedStringKey.foregroundColor: arrowTintShadowColor, NSAttributedStringKey.paragraphStyle: sgvLabelStyle]
 
         NSString(string: sgvString).draw(in: sgvLabelRect, withAttributes: sgvLabelFontAttributes)
 
@@ -77,7 +77,7 @@ open class NSAssetKitWatchOS : NSObject {
         let deltaLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         deltaLabelStyle.alignment = .center
 
-        let deltaLabelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: textSizeForDelta), NSForegroundColorAttributeName: arrowTintShadowColor, NSParagraphStyleAttributeName: deltaLabelStyle]
+        let deltaLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedStringKey.foregroundColor: arrowTintShadowColor, NSAttributedStringKey.paragraphStyle: deltaLabelStyle]
 
         let deltaLabelTextHeight: CGFloat = NSString(string: deltaString).boundingRect(with: CGSize(width: deltaLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: deltaLabelFontAttributes, context: nil).size.height
         context.saveGState()
@@ -92,7 +92,7 @@ open class NSAssetKitWatchOS : NSObject {
             let rawLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
             rawLabelStyle.alignment = .center
 
-            let rawLabelFontAttributes = [NSFontAttributeName: UIFont.systemFont(ofSize: textSizeForRaw), NSForegroundColorAttributeName: rawColor, NSParagraphStyleAttributeName: rawLabelStyle]
+            let rawLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForRaw), NSAttributedStringKey.foregroundColor: rawColor, NSAttributedStringKey.paragraphStyle: rawLabelStyle]
 
             let rawLabelTextHeight: CGFloat = NSString(string: rawString).boundingRect(with: CGSize(width: rawLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: rawLabelFontAttributes, context: nil).size.height
             context.saveGState()
@@ -159,7 +159,7 @@ open class NSAssetKitWatchOS : NSObject {
             //// Rectangle Drawing
             context.saveGState()
             context.translateBy(x: group2.minX + 60.51, y: group2.minY + 67)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let rectanglePath = UIBezierPath()
             rectanglePath.move(to: CGPoint(x: 10, y: -57))
@@ -176,11 +176,11 @@ open class NSAssetKitWatchOS : NSObject {
             //// Oval 2 Drawing
             context.saveGState()
             context.translateBy(x: group2.minX + 60.51, y: group2.minY + 67)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let oval2Rect = CGRect(x: -58.5, y: -58.5, width: 117, height: 117)
             let oval2Path = UIBezierPath()
-            oval2Path.addArc(withCenter: CGPoint(x: oval2Rect.midX, y: oval2Rect.midY), radius: oval2Rect.width / 2, startAngle: -210 * CGFloat(M_PI)/180, endAngle: 30 * CGFloat(M_PI)/180, clockwise: true)
+            oval2Path.addArc(withCenter: CGPoint(x: oval2Rect.midX, y: oval2Rect.midY), radius: oval2Rect.width / 2, startAngle: -210 * CGFloat(Double.pi)/180, endAngle: 30 * CGFloat(Double.pi)/180, clockwise: true)
 
             arrowTintShadowColor.setStroke()
             oval2Path.lineWidth = 4
@@ -200,11 +200,11 @@ open class NSAssetKitWatchOS : NSObject {
         //// Oval Drawing
         context.saveGState()
         context.translateBy(x: frame.minX + 0.50420 * frame.width, y: frame.minY + 0.50420 * frame.height)
-        context.rotate(by: -angle * CGFloat(M_PI) / 180)
+        context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
         let ovalRect = CGRect(x: -52.5, y: -52.5, width: 105, height: 105)
         let ovalPath = UIBezierPath()
-        ovalPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -220 * CGFloat(M_PI)/180, endAngle: 40 * CGFloat(M_PI)/180, clockwise: true)
+        ovalPath.addArc(withCenter: CGPoint(x: ovalRect.midX, y: ovalRect.midY), radius: ovalRect.width / 2, startAngle: -220 * CGFloat(Double.pi)/180, endAngle: 40 * CGFloat(Double.pi)/180, clockwise: true)
 
         arrowTintShadowColor.setStroke()
         ovalPath.lineWidth = 3
@@ -217,7 +217,7 @@ open class NSAssetKitWatchOS : NSObject {
             //// Rectangle 2 Drawing
             context.saveGState()
             context.translateBy(x: frame.minX + 0.50420 * frame.width, y: frame.minY + 0.50420 * frame.height)
-            context.rotate(by: -angle * CGFloat(M_PI) / 180)
+            context.rotate(by: -angle * CGFloat(Double.pi) / 180)
 
             let rectangle2Path = UIBezierPath()
             rectangle2Path.move(to: CGPoint(x: 8, y: -53))
@@ -232,7 +232,7 @@ open class NSAssetKitWatchOS : NSObject {
         }
     }
 
-    open class func drawSourceIcon(_ logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
+    @objc open class func drawSourceIcon(_ logoTintColor: UIColor = UIColor(red: 0.300, green: 0.300, blue: 0.300, alpha: 1.000)) {
         //// General Declarations
         let context = UIGraphicsGetCurrentContext()!
 
@@ -338,7 +338,7 @@ open class NSAssetKitWatchOS : NSObject {
 
     //// Generated Images
 
-    open class func imageOfWatchFace(_ watchFrame: CGRect = CGRect(x: 0, y: 0, width: 134, height: 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) -> UIImage {
+    @objc open class func imageOfWatchFace(_ watchFrame: CGRect = CGRect(x: 0, y: 0, width: 134, height: 134), arrowTintColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), rawColor: UIColor = UIColor(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000), isDoubleUp: Bool = false, isArrowVisible: Bool = false, isRawEnabled: Bool = true, textSizeForSgv: CGFloat = 39, textSizeForDelta: CGFloat = 10, textSizeForRaw: CGFloat = 12, deltaString: String = "-- --/--", sgvString: String = "---", rawString: String = "--- : -----", angle: CGFloat = 0) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(watchFrame.size, false, 0)
             NSAssetKitWatchOS.drawWatchFace(CGRect(x: 0, y: 0, width: watchFrame.size.width, height: watchFrame.size.height), arrowTintColor: arrowTintColor, rawColor: rawColor, isDoubleUp: isDoubleUp, isArrowVisible: isArrowVisible, isRawEnabled: isRawEnabled, textSizeForSgv: textSizeForSgv, textSizeForDelta: textSizeForDelta, textSizeForRaw: textSizeForRaw, deltaString: deltaString, sgvString: sgvString, rawString: rawString, angle: angle)
 
@@ -353,32 +353,32 @@ open class NSAssetKitWatchOS : NSObject {
 
 
 extension UIColor {
-    func colorWithHue(_ newHue: CGFloat) -> UIColor {
+    @objc func colorWithHue(_ newHue: CGFloat) -> UIColor {
         var saturation: CGFloat = 1.0, brightness: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(nil, saturation: &saturation, brightness: &brightness, alpha: &alpha)
         return UIColor(hue: newHue, saturation: saturation, brightness: brightness, alpha: alpha)
     }
-    func colorWithSaturation(_ newSaturation: CGFloat) -> UIColor {
+    @objc func colorWithSaturation(_ newSaturation: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, brightness: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(&hue, saturation: nil, brightness: &brightness, alpha: &alpha)
         return UIColor(hue: hue, saturation: newSaturation, brightness: brightness, alpha: alpha)
     }
-    func colorWithBrightness(_ newBrightness: CGFloat) -> UIColor {
+    @objc func colorWithBrightness(_ newBrightness: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, saturation: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getHue(&hue, saturation: &saturation, brightness: nil, alpha: &alpha)
         return UIColor(hue: hue, saturation: saturation, brightness: newBrightness, alpha: alpha)
     }
-    func colorWithAlpha(_ newAlpha: CGFloat) -> UIColor {
+    @objc func colorWithAlpha(_ newAlpha: CGFloat) -> UIColor {
         var hue: CGFloat = 1.0, saturation: CGFloat = 1.0, brightness: CGFloat = 1.0
         self.getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: nil)
         return UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: newAlpha)
     }
-    func colorWithHighlight(_ highlight: CGFloat) -> UIColor {
+    @objc func colorWithHighlight(_ highlight: CGFloat) -> UIColor {
         var red: CGFloat = 1.0, green: CGFloat = 1.0, blue: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return UIColor(red: red * (1-highlight) + highlight, green: green * (1-highlight) + highlight, blue: blue * (1-highlight) + highlight, alpha: alpha * (1-highlight) + highlight)
     }
-    func colorWithShadow(_ shadow: CGFloat) -> UIColor {
+    @objc func colorWithShadow(_ shadow: CGFloat) -> UIColor {
         var red: CGFloat = 1.0, green: CGFloat = 1.0, blue: CGFloat = 1.0, alpha: CGFloat = 1.0
         self.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
         return UIColor(red: red * (1-shadow), green: green * (1-shadow), blue: blue * (1-shadow), alpha: alpha * (1-shadow) + shadow)

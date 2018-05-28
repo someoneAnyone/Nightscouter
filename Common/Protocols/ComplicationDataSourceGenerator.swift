@@ -68,7 +68,7 @@ public extension ComplicationDataSourceGenerator {
         let thresholds: Thresholds = configuration.settings?.thresholds ?? Thresholds(bgHigh: 300, bgLow: 70, bgTargetBottom: 60, bgTargetTop: 250)
         
         // Iterate through provided Sensor Glucose Values to create a timeline.
-        for (index, sgv) in sgvs.enumerated() where index < 4 {
+        for (index, sgv) in sgvs.enumerated() where index < 2 {
             
             // Create a color for a given SGV value.
             let sgvColor = thresholds.desiredColorState(forValue: sgv.mgdl)
@@ -125,7 +125,7 @@ public extension ComplicationDataSourceGenerator {
                 rawString = rawFormattedString
             }
             
-            let compModel = ComplicationTimelineEntry(date: date, rawLabel: rawString, nameLabel: configuration.displayName, sgvLabel: sgvString, deltaLabel: deltaString, tintColor: sgvColor.colorValue, units: units, direction: sgv.direction, noise: sgv.noise)
+            let compModel = ComplicationTimelineEntry(date: date, rawLabel: rawString, nameLabel: configuration.displayName, sgvLabel: sgvString, deltaLabel: deltaString, tintColor: sgvColor.colorValue, units: units, direction: sgv.direction ?? .none, noise: sgv.noise ?? Noise.unknown)
             
             compModels.append(compModel)
         }

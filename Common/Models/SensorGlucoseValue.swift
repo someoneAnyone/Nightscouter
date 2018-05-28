@@ -8,14 +8,22 @@
 
 import Foundation
 
-public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable {
-    public let device: Device, direction: Direction
-    public let rssi: Int, unfiltered: Double, filtered: Double, mgdl: MgdlValue
-    public let noise: Noise
-    public let milliseconds: Double
+public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValueHolder, DeviceOwnable, Codable {
+    public var device: Device?, direction: Direction?
+    public let rssi: Int?, unfiltered: Double?, filtered: Double?, mgdl: MgdlValue
+    public let noise: Noise?
+    public let milliseconds: Mills?
+    public var key600: String? = ""
+    
+    enum CodingKeys: String, CodingKey {
+        case device, direction, rssi, unfiltered, filtered, noise
+        case mgdl = "sgv"
+        case milliseconds = "date"
+        case key600
+    }
     
     public var description: String {
-        return "{ SensorGlucoseValue: { device: \(device), mgdl: \(mgdl), date: \(date), direction: \(direction) } }"
+        return "{ SensorGlucoseValue: { device: \(device ?? Device.unknown), mgdl: \(mgdl), date: \(date), direction: \(direction ?? .none) } }"
     }
     
     public init() {
@@ -29,7 +37,7 @@ public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValu
         milliseconds = Date().timeIntervalSince1970.millisecond//AppConfiguration.Constant.knownMilliseconds
     }
        
-    public init(direction: Direction, device: Device, rssi: Int, unfiltered: Double, filtered: Double, mgdl: MgdlValue, noise: Noise, milliseconds: Double) {
+    public init(direction: Direction, device: Device, rssi: Int, unfiltered: Double, filtered: Double, mgdl: MgdlValue, noise: Noise, milliseconds: Mills) {
         self.direction = direction
         self.filtered = filtered
         self.unfiltered = unfiltered
@@ -83,8 +91,8 @@ extension ReservedValues {
     }
 }
 
-public enum Direction : String, CustomStringConvertible, RawRepresentable {
-    case none = "None", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange", Not_Computable = "NOT_COMPUTABLE"
+public enum Direction : String, CustomStringConvertible, RawRepresentable, Codable {
+    case none = "NONE", DoubleUp = "DoubleUp", SingleUp = "SingleUp", FortyFiveUp = "FortyFiveUp", Flat = "Flat", FortyFiveDown = "FortyFiveDown", SingleDown = "SingleDown", DoubleDown = "DoubleDown", NotComputable = "NOT COMPUTABLE", RateOutOfRange = "RateOutOfRange", Not_Computable = "NOT_COMPUTABLE"
     
     public var description : String {
         switch(self) {
@@ -170,7 +178,7 @@ extension Direction {
     }
 }
 
-public enum Noise : Int, CustomStringConvertible {
+public enum Noise: Int, Codable, CustomStringConvertible {
     case none = 0, clean = 1, light = 2, medium = 3, heavy = 4, unknown = 5
     
     public var description: String {

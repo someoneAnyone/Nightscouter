@@ -25,7 +25,7 @@ public extension CompassControl {
         shouldLookStale(look: dataSource.lookStale)
     }
     
-    public func shouldLookStale(look stale: Bool = true) {
+    @objc public func shouldLookStale(look stale: Bool = true) {
         if stale {
             let compass = CompassControl()
             self.alpha = 0.5

@@ -56,14 +56,10 @@
 		171CDBAA1D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */; };
 		171CDBAB1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */; };
 		171CDBAC1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */; };
-		171CDBAD1D91C56500D7D52D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB691D91C56500D7D52D /* JSONParser.swift */; };
-		171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB691D91C56500D7D52D /* JSONParser.swift */; };
 		171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */; };
 		171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */; };
 		171CDBB11D91C56500D7D52D /* Chartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6C1D91C56500D7D52D /* Chartable.swift */; };
 		171CDBB21D91C56500D7D52D /* Chartable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6C1D91C56500D7D52D /* Chartable.swift */; };
-		171CDBB31D91C56500D7D52D /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6D1D91C56500D7D52D /* Codables.swift */; };
-		171CDBB41D91C56500D7D52D /* Codables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6D1D91C56500D7D52D /* Codables.swift */; };
 		171CDBB51D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */; };
 		171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */; };
 		171CDBB71D91C56500D7D52D /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB6F1D91C56500D7D52D /* Protocols.swift */; };
@@ -82,8 +78,6 @@
 		171CDBC71D91C56600D7D52D /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB791D91C56500D7D52D /* AlarmManager.swift */; };
 		171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB791D91C56500D7D52D /* AlarmManager.swift */; };
 		171CDBC91D91C56600D7D52D /* iCloudKeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */; };
-		171CDBCA1D91C56600D7D52D /* iCloudKeyValueStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */; };
-		171CDBCB1D91C56600D7D52D /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */; };
 		171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */; };
 		171CDBCE1D91C56600D7D52D /* SitesDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */; };
 		171CDBCF1D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */; };
@@ -109,11 +103,9 @@
 		177FAB991D92BF8000B612B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
 		177FAB9A1D92BF8100B612B3 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB751D91C56500D7D52D /* Localizable.strings */; };
 		177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 177FAB9B1D92BFFB00B612B3 /* NSAssetKit.swift */; };
-		177FAB9D1D92C71D00B612B3 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */; };
 		178A9BFC1D6C8EC100267FCA /* SiteListTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFB1D6C8EC100267FCA /* SiteListTableViewController.swift */; };
 		178A9BFE1D6C8EF700267FCA /* BannerMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178A9BFD1D6C8EF700267FCA /* BannerMessage.swift */; };
 		178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */; };
-		179620261C5DBF2800617898 /* GlanceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */; };
 		17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BD1C3C1BF123E30014EE38 /* NSAssetKitWatchOS.swift */; };
 		17C95CB01B40AD0B0035922A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CAD1B40AD0B0035922A /* Assets.xcassets */; };
 		17C95CB51B40AD400035922A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17C95CB31B40AD400035922A /* LaunchScreen.xib */; };
@@ -124,6 +116,10 @@
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
+		831A0FB41FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */; };
+		831A0FB51FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */; };
+		834E3683202ABB1000D2E428 /* SessionDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E3681202ABAD700D2E428 /* SessionDataProvider.swift */; };
+		834E3684202ABB1100D2E428 /* SessionDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E3681202ABAD700D2E428 /* SessionDataProvider.swift */; };
 		8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
 		8352D5C21D9F6A4F00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
 		8366F57B1D99FC6A000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
@@ -298,10 +294,8 @@
 		171CDB761D91C56500D7D52D /* LocalizedStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		171CDB791D91C56500D7D52D /* AlarmManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmManager.swift; sourceTree = "<group>"; };
 		171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = iCloudKeyValueStore.swift; sourceTree = "<group>"; };
-		171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SitesDataSource.swift; sourceTree = "<group>"; };
 		171CDB7D1D91C56500D7D52D /* SiteStoreTypeProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SiteStoreTypeProtocols.swift; path = ../Stores/SiteStoreTypeProtocols.swift; sourceTree = "<group>"; };
-		171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		171CDBD51D91C99700D7D52D /* AppTheme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppTheme.swift; sourceTree = "<group>"; };
 		1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmProtocols.swift; sourceTree = "<group>"; };
 		1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlarmObject.swift; sourceTree = "<group>"; };
@@ -334,7 +328,9 @@
 		17F22E5A1BEF9E600041E0B0 /* NightscouterWatchOSKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscouterWatchOSKit.h; sourceTree = "<group>"; };
 		17F22E5C1BEF9E600041E0B0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteUpdateRowController.swift; sourceTree = "<group>"; };
+		831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityCordinator.swift; sourceTree = "<group>"; };
 		833E8D9B1D932C4B00ED30BD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = NightscouterKit/Info.plist; sourceTree = SOURCE_ROOT; };
+		834E3681202ABAD700D2E428 /* SessionDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SessionDataProvider.swift; path = Common/Models/SessionDataProvider.swift; sourceTree = SOURCE_ROOT; };
 		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadOperation.swift; sourceTree = "<group>"; };
 		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -345,7 +341,6 @@
 		83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		83883D891BC1F7E900BD1A9C /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ExtensionDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
-		83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlanceController.swift; sourceTree = "<group>"; };
 		83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = ComplicationController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83883D911BC1F7E900BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		83883D931BC1F7E900BD1A9C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -489,16 +484,15 @@
 		171CDB581D91C56500D7D52D /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				83BA44DF1F8DC708009BC928 /* ViewModels */,
 				171CDB591D91C56500D7D52D /* AlarmRule.swift */,
 				1724B9F41D9AE8D500D2CD2B /* AlarmObject.swift */,
 				171CDB5A1D91C56500D7D52D /* Calibration.swift */,
-				171CDB5B1D91C56500D7D52D /* ComplicationTimelineEntry.swift */,
 				171CDB5C1D91C56500D7D52D /* DeviceStatus.swift */,
 				171CDB5D1D91C56500D7D52D /* MeteredGlucoseValue.swift */,
 				171CDB5E1D91C56500D7D52D /* SensorGlucoseValue.swift */,
 				171CDB5F1D91C56500D7D52D /* ServerConfiguration.swift */,
 				171CDB601D91C56500D7D52D /* Site.swift */,
-				171CDB611D91C56500D7D52D /* SiteSummaryModelViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -506,8 +500,8 @@
 		171CDB621D91C56500D7D52D /* Operations */ = {
 			isa = PBXGroup;
 			children = (
-				8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */,
 				171CDB631D91C56500D7D52D /* Nightscout.swift */,
+				8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */,
 				171CDB641D91C56500D7D52D /* ParseConfigurationOperation.swift */,
 				171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */,
 				171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */,
@@ -518,6 +512,7 @@
 		171CDB671D91C56500D7D52D /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
+				171CDB6D1D91C56500D7D52D /* Codables.swift */,
 				171CDB691D91C56500D7D52D /* JSONParser.swift */,
 			);
 			path = Parsers;
@@ -531,7 +526,6 @@
 				1724B9F11D9ABBC200D2CD2B /* AlarmProtocols.swift */,
 				171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */,
 				171CDB6C1D91C56500D7D52D /* Chartable.swift */,
-				171CDB6D1D91C56500D7D52D /* Codables.swift */,
 				171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */,
 				171CDB6F1D91C56500D7D52D /* Protocols.swift */,
 				171CDB701D91C56500D7D52D /* UpdatableUserInterfaceType.swift */,
@@ -559,9 +553,9 @@
 				175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */,
 				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
-				171CDB7B1D91C56500D7D52D /* PhoneSessionManager.swift */,
 				171CDB7C1D91C56500D7D52D /* SitesDataSource.swift */,
-				171CDB7E1D91C56500D7D52D /* WatchSessionManager.swift */,
+				831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */,
+				834E3681202ABAD700D2E428 /* SessionDataProvider.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -629,7 +623,6 @@
 				178AACD01BEFE90000B0DEBC /* SiteDetailInterfaceController.swift */,
 				83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */,
 				83883D8F1BC1F7E900BD1A9C /* ComplicationController.swift */,
-				83883D8D1BC1F7E900BD1A9C /* GlanceController.swift */,
 				83883D8B1BC1F7E900BD1A9C /* NotificationController.swift */,
 			);
 			name = "View Controllers";
@@ -754,6 +747,15 @@
 				83883D861BC1F7E900BD1A9C /* PushNotificationPayload.apns */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		83BA44DF1F8DC708009BC928 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				171CDB5B1D91C56500D7D52D /* ComplicationTimelineEntry.swift */,
+				171CDB611D91C56500D7D52D /* SiteSummaryModelViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		83F16A171BF1A4A500610E99 /* Views */ = {
@@ -934,13 +936,13 @@
 			attributes = {
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 0700;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Peter Ina";
 				TargetAttributes = {
 					170825E21B2CBABB00304F8F = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = F754VXZDPA;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -957,13 +959,13 @@
 					1771B0411B75235B006C1F5E = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					17F22E571BEF9E600041E0B0 = {
 						CreatedOnToolsVersion = 7.1;
 						DevelopmentTeam = F754VXZDPA;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					83883D731BC1F7E800BD1A9C = {
@@ -979,7 +981,7 @@
 					83883D7F1BC1F7E800BD1A9C = {
 						CreatedOnToolsVersion = 7.0.1;
 						DevelopmentTeam = F754VXZDPA;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -996,7 +998,7 @@
 					83F4C5771B7C201700C74285 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = F754VXZDPA;
-						LastSwiftMigration = 0810;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.ApplicationGroups.iOS = {
@@ -1188,11 +1190,9 @@
 				171CDB7F1D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDB8F1D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDB8B1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
-				171CDBB31D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB931D91C56500D7D52D /* Calibration.swift in Sources */,
 				171CDBC71D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDBA51D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
-				171CDBAD1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBA11D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				171CDB951D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
@@ -1206,7 +1206,9 @@
 				171CDBB71D91C56500D7D52D /* Protocols.swift in Sources */,
 				171CDBB11D91C56500D7D52D /* Chartable.swift in Sources */,
 				171CDBD61D91C99700D7D52D /* AppTheme.swift in Sources */,
+				831A0FB41FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */,
 				171CDBC31D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
+				834E3683202ABB1000D2E428 /* SessionDataProvider.swift in Sources */,
 				171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */,
 				171CDBA31D91C56500D7D52D /* Nightscout.swift in Sources */,
@@ -1217,7 +1219,6 @@
 				177FAB961D92BE7400B612B3 /* CompassControl+Convience.swift in Sources */,
 				171CDBBB1D91C56600D7D52D /* ViewModelProtocols.swift in Sources */,
 				171CDB871D91C56500D7D52D /* Extensions.swift in Sources */,
-				171CDBCB1D91C56600D7D52D /* PhoneSessionManager.swift in Sources */,
 				171CDB8D1D91C56500D7D52D /* URL-Extensions.swift in Sources */,
 				171CDB9B1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB831D91C56500D7D52D /* Color-Extensions.swift in Sources */,
@@ -1238,21 +1239,19 @@
 				171CDBAC1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */,
 				171CDB801D91C56500D7D52D /* AppConfiguration.swift in Sources */,
 				171CDBA21D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
-				171CDBAE1D91C56500D7D52D /* JSONParser.swift in Sources */,
 				171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				1724B9F61D9AE8F300D2CD2B /* AlarmObject.swift in Sources */,
+				831A0FB51FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */,
 				171CDB9C1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB8C1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
 				171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
 				171CDBA81D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
-				177FAB9D1D92C71D00B612B3 /* WatchSessionManager.swift in Sources */,
 				171CDB901D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDBA61D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDB981D91C56500D7D52D /* DeviceStatus.swift in Sources */,
 				171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
-				171CDBB41D91C56500D7D52D /* Codables.swift in Sources */,
 				171CDB961D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
 				177CCF821D9C2AE500F22512 /* AlarmProtocols.swift in Sources */,
 				171CDB841D91C56500D7D52D /* Color-Extensions.swift in Sources */,
@@ -1272,7 +1271,7 @@
 				171CDBBA1D91C56600D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
 				171CDB9E1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
 				171CDBD41D91C76C00D7D52D /* Protocols.swift in Sources */,
-				171CDBCA1D91C56600D7D52D /* iCloudKeyValueStore.swift in Sources */,
+				834E3684202ABB1100D2E428 /* SessionDataProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1282,7 +1281,6 @@
 			files = (
 				83883D8C1BC1F7E900BD1A9C /* NotificationController.swift in Sources */,
 				83883DAA1BC2055700BD1A9C /* SitesTableInterfaceController.swift in Sources */,
-				179620261C5DBF2800617898 /* GlanceController.swift in Sources */,
 				83883D8A1BC1F7E900BD1A9C /* ExtensionDelegate.swift in Sources */,
 				178AACD11BEFE90000B0DEBC /* SiteDetailInterfaceController.swift in Sources */,
 				17DA13261BF4D65F00A89DA4 /* SiteEmptyRowController.swift in Sources */,
@@ -1367,14 +1365,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1397,7 +1403,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1414,14 +1420,22 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1438,7 +1452,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -1462,7 +1476,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1480,7 +1494,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.nothingonline.Nightscouter;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -1512,7 +1526,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1538,7 +1552,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.nothingonline.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1563,11 +1577,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -1590,11 +1604,11 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
-				WATCHOS_DEPLOYMENT_TARGET = 2.0;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1616,7 +1630,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -1638,7 +1652,7 @@
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1660,9 +1674,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -1683,9 +1697,9 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1710,7 +1724,7 @@
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1728,7 +1742,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};

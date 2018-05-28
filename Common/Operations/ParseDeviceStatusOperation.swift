@@ -11,19 +11,21 @@ import Foundation
 public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
     
     internal var error: NightscoutRESTClientError?
-    internal var data: Data?
+    @objc internal var data: Data?
     
     var deviceStatus: [DeviceStatus] = []
     
-    public convenience init(withJSONData data: Data) {
+    @objc public convenience init(withJSONData data: Data) {
         self.init()
         self.name = "Parse JSON for Nightscout Device Status"
         self.data = data
     }
-
+    
     public override func main() {
         guard let data = data else {
-            print("We expect data to be set at this point in the NightscouterOperation")
+            let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown("We expect data to be set at this point in the NightscouterOperation"))
+            self.error = apiError
+            
             return
         }
         
@@ -37,15 +39,14 @@ public class ParseDeviceStatusOperation: Operation, NightscouterOperation {
         if self.isCancelled { return }
         
         do {
-            let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
+            // let cleanedData = stringVersion.replacingOccurrences(of: "+", with: "").data(using: .utf8)!
             
-            let deviceLogs: [[String: Any]] = try JSONSerialization.jsonObject(with: cleanedData, options: .allowFragments) as! [[String: Any]]
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
             
-            for deviceRecord in deviceLogs {
-                if let d = DeviceStatus.decode(deviceRecord){
-                    deviceStatus.append(d)
-                }
-            }
+            let deviceRecords = try decoder.decode([DeviceStatus].self, from: stringVersion.data(using: .utf8)!)
+            
+            deviceStatus.append(contentsOf: deviceRecords)
             
             return
         } catch let error {

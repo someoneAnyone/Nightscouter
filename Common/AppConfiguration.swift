@@ -10,20 +10,23 @@ import Foundation
 
 
 public extension Notification.Name {
-    static public let NightscoutDataAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
-    static public let NightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
-    static public let NightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
-
-    static public let NightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
+    static public let dataDidFlow = Notification.Name("DataDidFlow")
+    static public let activationDidComplete = Notification.Name("ActivationDidComplete")
+    static public let reachabilityDidChange = Notification.Name("ReachabilityDidChange")
+    static public let nightscoutAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
+    static public let nightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
+    static public let nightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
+    static public let nightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
 }
 
-public typealias ArrayOfDictionaries = [[String: AnyObject]]
+public typealias ArrayOfDictionaries = [[String: Any]]
+public typealias ArrayOfData = [Data]
 
-@available(*, deprecated: 1.0, message: "I'm not deprecated, please ***FIXME**")
+@available(*, deprecated: 1.0, message: "I'm not really deprecated, please ***FIXME**")
 public func FIXME() { }
 
 // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.
-public struct PlaceHolderStrings {
+public struct PlaceHolderStrings: Codable {
     public static let displayName: String = "----"
     public static let urlName: String = "- --- ---"
     public static let sgv: String = "---"
@@ -69,14 +72,13 @@ public struct LinkBuilder {
 
 
 /// These match what is in the info plist. Do not change without updating.
-public enum CommonUseCasesForShortcuts: String {
+public enum CommonUseCasesForShortcuts: String, Codable {
     case ShowDetail, AddNew, AddNewWhenEmpty, ShowList
     
     public init?(shortcutItemString: String){
         
         let newString = shortcutItemString.components(separatedBy: ".")
 
-        
         self = CommonUseCasesForShortcuts(rawValue: newString.last!)!
     }
     
@@ -94,7 +96,7 @@ public enum CommonUseCasesForShortcuts: String {
     }
 }
 
-public enum StoryboardIdentifier: String, RawRepresentable {
+public enum StoryboardIdentifier: String, Codable, RawRepresentable {
     case formViewController, formViewNavigationController, sitesTableViewController, siteListPageViewController, siteDetailViewController, siteSettingsNavigationViewController
     public static let allValues = [formViewController, formViewNavigationController, sitesTableViewController, siteListPageViewController, siteDetailViewController, siteSettingsNavigationViewController]
     public static let deepLinkable = [formViewNavigationController, formViewController, siteListPageViewController, sitesTableViewController]
@@ -110,16 +112,45 @@ public class AppConfiguration {
 //        return Keychain(service: applicationName).synchronizable(true)
 //    }
     
-    private struct Defaults {
-        static let firstLaunchKey = "AppConfiguration.Defaults.firstLaunchKey"
-        static let storageOptionKey = "AppConfiguration.Defaults.storageOptionKey"
-        static let storedUbiquityIdentityToken = "AppConfiguration.Defaults.storedUbiquityIdentityToken"
-    }
+//    private struct Defaults {
+//        static let firstLaunchKey = "AppConfiguration.Defaults.firstLaunchKey"
+//        static let storageOptionKey = "AppConfiguration.Defaults.storageOptionKey"
+//        static let storedUbiquityIdentityToken = "AppConfiguration.Defaults.storedUbiquityIdentityToken"
+//    }
+    
+    public static let appGroupContainerURL: URL? = {
+        // 1
+        let fileManager = FileManager.default
+        guard let groupURL = fileManager
+            .containerURL(forSecurityApplicationGroupIdentifier: AppConfiguration.sharedApplicationGroupSuiteName) else {
+                return nil
+        }
+        
+        let storagePathUrl = groupURL.appendingPathComponent("Nightscout Storage")
+        let storagePath = storagePathUrl.path
+        // 2
+        if !fileManager.fileExists(atPath: storagePath) {
+            do {
+                try fileManager.createDirectory(atPath: storagePath,
+                                                withIntermediateDirectories: false,
+                                                attributes: nil)
+            } catch let error {
+                print("error creating filepath: \(error)")
+                return nil
+            }
+        }
+        // 3
+        return storagePathUrl
+    }()
+
     
     public struct Constant {
         public static let knownMilliseconds: Mills = 1268197200000
         public static let knownMgdl: MgdlValue = 100
     }
+    
+    
+    // DATE FORMATTERS
     
     /**
      Formatter used to display the date and time that data was last updated.

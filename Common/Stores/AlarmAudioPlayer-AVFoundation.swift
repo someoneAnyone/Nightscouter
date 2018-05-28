@@ -34,7 +34,8 @@ open class AlarmAudioPlayer: AudioCordinator {
             if oldValue != alarmObject {
                 do {
                     self.audioPlayer = try AVAudioPlayer(contentsOf: alarmObject.audioFileURL)
-                    _ = audioPlayer?.prepareToPlay()
+                    
+                    audioPlayer?.prepareToPlay()
                     // print("readyToPlayAlarm: \(readyToPlay), will play: \(alarmObject.audioFileURL)")
                     
                     if alarmObject.isSnoozed {
@@ -43,7 +44,7 @@ open class AlarmAudioPlayer: AudioCordinator {
                         play()
                     }
                     
-                } catch _ {
+                } catch {
                     return
                 }
             }

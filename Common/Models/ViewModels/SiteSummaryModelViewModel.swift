@@ -235,3 +235,9 @@ public struct SiteSummaryModelViewModel: SiteSummaryModelViewModelDataSource, Si
         self.batteryHidden = site.deviceStatuses.isEmpty
     }
 }
+
+extension Site {
+    public var summaryViewModel: SiteSummaryModelViewModel {
+        return SiteSummaryModelViewModel(withSite: self)
+    }
+}

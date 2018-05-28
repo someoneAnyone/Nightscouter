@@ -116,7 +116,7 @@ class BannerMessage: UIView {
         
         // Define constratints for StackView
         let stackBottomConstraint = NSLayoutConstraint(item: mainStack, attribute: .bottom, relatedBy: .equal, toItem: mainStack.superview, attribute: .bottom, multiplier: 1, constant: 0)
-        stackBottomConstraint.priority = 999
+        stackBottomConstraint.priority = UILayoutPriority(rawValue: 999)
         
         let stackTopConstraint = NSLayoutConstraint(item: mainStack, attribute: .top , relatedBy: .equal, toItem: mainStack.superview, attribute: .top ,  multiplier: 1, constant: 0)
         //let stackWidthConstraint = NSLayoutConstraint(item: mainStack, attribute: .Width , relatedBy: .Equal, toItem: mainStack.superview, attribute: .Width ,  multiplier: 1, constant: 0)
@@ -129,7 +129,7 @@ class BannerMessage: UIView {
         
         let stackHeightConstraint = NSLayoutConstraint(item: mainStack, attribute: .height , relatedBy: .greaterThanOrEqual, toItem: nil, attribute: .height ,  multiplier: 1, constant: 50)
         
-        stackHeightConstraint.priority = 999
+        stackHeightConstraint.priority = UILayoutPriority(rawValue: 999)
         stackHeightConstraint.isActive = !isHidden
         
         
