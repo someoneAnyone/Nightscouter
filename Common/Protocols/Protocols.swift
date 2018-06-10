@@ -99,7 +99,7 @@ public protocol DeviceOwnable {
 }
 
 public enum Device: String, Codable, CustomStringConvertible {
-    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846"
+    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846", xDripLimiTTer = "xDrip-LimiTTer"
     
     public var description: String {
         return self.rawValue
