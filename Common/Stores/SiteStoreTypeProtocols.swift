@@ -101,6 +101,9 @@ public extension SiteStoreType {
     /// Uses the last viewed site index (Int) to fetch a site from the store.
     ///
     var lastViewedSite: Site? {
+        if sites.count <= lastViewedSiteIndex {
+            return nil
+        }
         return sites[lastViewedSiteIndex]
     }
     

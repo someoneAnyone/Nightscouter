@@ -184,15 +184,18 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
     public func deleteSite(_ site: Site) -> Bool {
         
         var initial = sites
+        
+        
+        if site == lastViewedSite {
+            lastViewedSiteIndex = 0
+        }
+        
         let success = initial.remove(site)
         
         if success == false {
             return false
         }
         
-        if site == lastViewedSite {
-            lastViewedSiteIndex = 0
-        }
         
         if initial.isEmpty {
             lastViewedSiteIndex = 0
