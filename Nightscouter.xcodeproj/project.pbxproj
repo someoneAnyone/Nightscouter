@@ -280,10 +280,8 @@
 		171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDeviceStatusOperation.swift; sourceTree = "<group>"; };
 		171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseReadingsOperation.swift; sourceTree = "<group>"; };
 		171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationDataSourceGenerator.swift; sourceTree = "<group>"; };
-		171CDB691D91C56500D7D52D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleRepresntable.swift; sourceTree = "<group>"; };
 		171CDB6C1D91C56500D7D52D /* Chartable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chartable.swift; sourceTree = "<group>"; };
-		171CDB6D1D91C56500D7D52D /* Codables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Codables.swift; sourceTree = "<group>"; };
 		171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryRepresentable.swift; sourceTree = "<group>"; };
 		171CDB6F1D91C56500D7D52D /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		171CDB701D91C56500D7D52D /* UpdatableUserInterfaceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatableUserInterfaceType.swift; sourceTree = "<group>"; };
@@ -457,7 +455,6 @@
 				171CDB4F1D91C56500D7D52D /* Extensions */,
 				171CDB581D91C56500D7D52D /* Models */,
 				171CDB621D91C56500D7D52D /* Operations */,
-				171CDB671D91C56500D7D52D /* Parsers */,
 				171CDB6A1D91C56500D7D52D /* Protocols */,
 				171CDB721D91C56500D7D52D /* Resources */,
 				171CDB781D91C56500D7D52D /* Stores */,
@@ -507,15 +504,6 @@
 				171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */,
 			);
 			path = Operations;
-			sourceTree = "<group>";
-		};
-		171CDB671D91C56500D7D52D /* Parsers */ = {
-			isa = PBXGroup;
-			children = (
-				171CDB6D1D91C56500D7D52D /* Codables.swift */,
-				171CDB691D91C56500D7D52D /* JSONParser.swift */,
-			);
-			path = Parsers;
 			sourceTree = "<group>";
 		};
 		171CDB6A1D91C56500D7D52D /* Protocols */ = {
