@@ -167,9 +167,19 @@ extension Settings {
         alarmUrgentLowMins  = try values.decode([Double].self, forKey: .alarmUrgentLowMins)
         alarmWarnMins = try values.decode([Double].self, forKey: .alarmWarnMins)
         alarmTimeagoWarn = try values.decode(Bool.self, forKey: .alarmTimeagoWarn)
-        alarmTimeagoWarnMins  = 15//try values.decodeIfPresent(Double.self, forKey: .alarmTimeagoWarnMins) ?? 15
         alarmTimeagoUrgent = try values.decode(Bool.self, forKey: .alarmTimeagoUrgent)
-        alarmTimeagoUrgentMins  = 30//try values.decodeIfPresent(Double.self, forKey: .alarmTimeagoUrgentMins) ?? 30
+        
+        do {
+            alarmTimeagoWarnMins = try values.decode(Double.self, forKey: .alarmTimeagoWarnMins) * 10
+        } catch {
+            alarmTimeagoWarnMins = 15
+        }
+        
+        do {
+            alarmTimeagoUrgentMins = try values.decode(Double.self, forKey: .alarmTimeagoUrgentMins) * 10
+        } catch {
+            alarmTimeagoUrgentMins = 30
+        }
         
         thresholds = try values.decode(Thresholds.self, forKey: .thresholds)
         enable = try values.decode([Plugin].self, forKey: .enable)
