@@ -225,12 +225,12 @@ public class NightscoutDownloader {
             device = parseDevice.deviceStatus
             deviceError = parseDevice.error
             
-//            if let deviceError = deviceError {
-//                self.processingQueue.cancelAllOperations()
-//                OperationQueue.main.addOperation {
-//                    completion(configuration, sgvs, cals, mbgs, nil, deviceError)
-//                }
-//            }
+            if let _ = deviceError {
+                // self.processingQueue.cancelAllOperations()
+                OperationQueue.main.addOperation {
+                 //   completion(configuration, sgvs, cals, mbgs, nil, deviceError)
+                }
+            }
         }
         
         deviceAdaptor.addDependency(fetchDevice)

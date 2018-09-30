@@ -280,10 +280,8 @@
 		171CDB651D91C56500D7D52D /* ParseDeviceStatusOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseDeviceStatusOperation.swift; sourceTree = "<group>"; };
 		171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParseReadingsOperation.swift; sourceTree = "<group>"; };
 		171CDB681D91C56500D7D52D /* ComplicationDataSourceGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComplicationDataSourceGenerator.swift; sourceTree = "<group>"; };
-		171CDB691D91C56500D7D52D /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		171CDB6B1D91C56500D7D52D /* BundleRepresntable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BundleRepresntable.swift; sourceTree = "<group>"; };
 		171CDB6C1D91C56500D7D52D /* Chartable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chartable.swift; sourceTree = "<group>"; };
-		171CDB6D1D91C56500D7D52D /* Codables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Codables.swift; sourceTree = "<group>"; };
 		171CDB6E1D91C56500D7D52D /* DictionaryRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DictionaryRepresentable.swift; sourceTree = "<group>"; };
 		171CDB6F1D91C56500D7D52D /* Protocols.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		171CDB701D91C56500D7D52D /* UpdatableUserInterfaceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UpdatableUserInterfaceType.swift; sourceTree = "<group>"; };
@@ -348,7 +346,6 @@
 		83883DA01BC1F94C00BD1A9C /* NightscouterNow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NightscouterNow.entitlements; sourceTree = "<group>"; };
 		83883DA91BC2055700BD1A9C /* SitesTableInterfaceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = SitesTableInterfaceController.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		83883DAB1BC2089000BD1A9C /* SiteRowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteRowController.swift; sourceTree = "<group>"; };
-		839DBD081BC0170300691B75 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		83F4C5731B7C176400C74285 /* Nightscouter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Nightscouter.entitlements; sourceTree = "<group>"; };
 		83F4C5781B7C201700C74285 /* NightscouterToday.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NightscouterToday.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		83F4C57C1B7C201800C74285 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -412,7 +409,6 @@
 			isa = PBXGroup;
 			children = (
 				1713D5A61C11388700A52345 /* LICENSE */,
-				839DBD081BC0170300691B75 /* .travis.yml */,
 				17B1E57C1B5A89EF0093BC72 /* README.md */,
 				171CDB4D1D91C56500D7D52D /* Common */,
 				17BD1C351BF0EEAB0014EE38 /* External Assets */,
@@ -457,7 +453,6 @@
 				171CDB4F1D91C56500D7D52D /* Extensions */,
 				171CDB581D91C56500D7D52D /* Models */,
 				171CDB621D91C56500D7D52D /* Operations */,
-				171CDB671D91C56500D7D52D /* Parsers */,
 				171CDB6A1D91C56500D7D52D /* Protocols */,
 				171CDB721D91C56500D7D52D /* Resources */,
 				171CDB781D91C56500D7D52D /* Stores */,
@@ -507,15 +502,6 @@
 				171CDB661D91C56500D7D52D /* ParseReadingsOperation.swift */,
 			);
 			path = Operations;
-			sourceTree = "<group>";
-		};
-		171CDB671D91C56500D7D52D /* Parsers */ = {
-			isa = PBXGroup;
-			children = (
-				171CDB6D1D91C56500D7D52D /* Codables.swift */,
-				171CDB691D91C56500D7D52D /* JSONParser.swift */,
-			);
-			path = Parsers;
 			sourceTree = "<group>";
 		};
 		171CDB6A1D91C56500D7D52D /* Protocols */ = {

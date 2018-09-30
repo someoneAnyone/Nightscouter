@@ -16,7 +16,6 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
     public let apiEnabled: Bool
     public let careportalEnabled: Bool
     public let boluscalcEnabled: Bool
-    public let head: String
     public let settings: Settings?
     
     public var description: String {
@@ -27,8 +26,7 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         dict["serverTime"] = serverTime
         dict["careportalEnabled"] = careportalEnabled
         dict["boluscalcEnabled"] = boluscalcEnabled
-        dict["settings"] = settings//?.dictionary
-        dict["head"] = head
+        dict["settings"] = settings
         dict["version"] = version
         dict["name"] = name
         
@@ -47,22 +45,15 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         let placeholderAlarm1: [Double] = [15, 30, 45, 60]
         let placeholderAlarm2: [Double] = [30, 60, 90, 120]
         
-        
         let alrm = Alarm(urgentHigh: true, urgentHighMins: placeholderAlarm2, high: true, highMins: placeholderAlarm2, low: true, lowMins: placeholderAlarm1, urgentLow: true, urgentLowMins: placeholderAlarm1, warnMins: placeholderAlarm2)
         let timeAgo = TimeAgoAlert(warn: true, warnMins: 60.0 * 10, urgent: true, urgentMins: 60.0 * 15)
-        //let plugins: [String] = [Plugin.delta.rawValue, Plugin.rawbg.rawValue]
         let plugins: [Plugin] = [Plugin.delta, Plugin.rawbg]
 
         let thre = Thresholds(bgHigh: 300, bgLow: 70, bgTargetBottom: 60, bgTargetTop: 250)
-        let atype = [AlarmType.predict]
         
-//        let s = Settings(units: .mgdl, timeFormat: 12, nightMode: false, editMode: false, showRawbg: .never, customTitle: "NightscoutDefault", theme: "color", alarms: alrm, timeAgo: timeAgo, scaleY: "log", language: "en", showPlugins: plugins, showForecast: "", heartbeat: 60, baseURL: "", authDefaultRoles: "", thresholds: thre, DEFAULT_FEATURES: [""], alarmType: atype, enable: plugins)
-        
-        let s = Settings(units: .mgdl, timeFormat: 12, nightMode: false, editMode: false, showRawbg: .never, customTitle: "NightscoutDefault", theme: "color", alarmUrgentHigh: alrm.urgentHigh, alarmUrgentHighMins: alrm.urgentHighMins, alarmHigh: alrm.high, alarmHighMins: alrm.highMins, alarmLow: alrm.low, alarmLowMins: alrm.lowMins, alarmUrgentLow: alrm.urgentLow, alarmUrgentLowMins: alrm.urgentLowMins, alarmWarnMins: alrm.warnMins, alarmTimeagoWarn: timeAgo.warn, alarmTimeagoWarnMins: timeAgo.warnMins, alarmTimeagoUrgent: timeAgo.urgent, alarmTimeagoUrgentMins: timeAgo.urgentMins, scaleY: "log", language: "en", showPlugins: plugins.description, showForecast: "", heartbeat: 60, baseURL: "", authDefaultRoles: "", thresholds: thre, DEFAULT_FEATURES: [""], alarmTypes: atype, enable: plugins)
-        
+        let s = Settings(units: .mgdl, showRawbg: .never, customTitle: "NightscoutDefault", alarmUrgentHigh: true, alarmUrgentHighMins: alrm.urgentLowMins, alarmHigh: alrm.urgentHigh, alarmHighMins: alrm.warnMins, alarmLow: alrm.low, alarmLowMins: alrm.lowMins, alarmUrgentLow: alrm.urgentLow, alarmUrgentLowMins: alrm.urgentLowMins, alarmWarnMins: alrm.warnMins, alarmTimeagoWarn: timeAgo.warn, alarmTimeagoWarnMins: timeAgo.urgentMins, alarmTimeagoUrgent: timeAgo.urgent, alarmTimeagoUrgentMins: timeAgo.urgentMins, thresholds: thre, enable: plugins)
         self.settings = s
-        
-        self.head = "EMPTY"
+
     }
     
     public init(status: String, version: String, name: String, serverTime: String, api: Bool, carePortal: Bool, boluscalc: Bool, settings: Settings?, head: String) {
@@ -74,7 +65,6 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         self.careportalEnabled = carePortal
         self.boluscalcEnabled = boluscalc
         self.settings = settings
-        self.head = head
     }
 }
 
@@ -87,7 +77,6 @@ public func ==(lhs: ServerConfiguration, rhs: ServerConfiguration) -> Bool {
         lhs.apiEnabled == rhs.apiEnabled &&
         lhs.careportalEnabled == rhs.careportalEnabled &&
         lhs.boluscalcEnabled == rhs.boluscalcEnabled &&
-        lhs.head == rhs.head &&
         lhs.settings == rhs.settings
 }
 
@@ -129,17 +118,14 @@ extension ServerConfiguration {
 
 public struct Settings: Codable {
     public let units: GlucoseUnit
-    public let timeFormat: Int
-    public let nightMode: Bool
-    public let editMode: Bool
+
     public let showRawbg: RawBGMode
     public let customTitle: String
-    public let theme: String
 
     public var alarms: Alarm {
         return Alarm(urgentHigh: alarmUrgentHigh, urgentHighMins: alarmUrgentHighMins, high: alarmHigh, highMins: alarmHighMins, low: alarmLow, lowMins: alarmLowMins, urgentLow: alarmUrgentLow, urgentLowMins: alarmUrgentLowMins, warnMins: alarmWarnMins)
     }
-
+    
     public let alarmUrgentHigh: Bool
     public let alarmUrgentHighMins: [Double]
     public let alarmHigh: Bool
@@ -150,54 +136,64 @@ public struct Settings: Codable {
     public let alarmUrgentLowMins: [Double]
     public let alarmWarnMins: [Double]
     public let alarmTimeagoWarn: Bool
-    public let alarmTimeagoWarnMins: Double
+    public var alarmTimeagoWarnMins: Double = 15
     public let alarmTimeagoUrgent: Bool
-    public let alarmTimeagoUrgentMins: Double
+    public var alarmTimeagoUrgentMins: Double = 30
     
     public var timeAgo: TimeAgoAlert {
         return TimeAgoAlert(warn: alarmTimeagoWarn, warnMins: TimeInterval(alarmTimeagoWarnMins * 10), urgent: alarmTimeagoUrgent, urgentMins: TimeInterval(alarmTimeagoUrgentMins * 10))
     }
-    public let scaleY: String
-    public let language: String
-    public let showPlugins: String
-    public let showForecast: String
-    public let heartbeat: Int
-    public let baseURL: String
-    public let authDefaultRoles: String
-    
+
     public let thresholds: Thresholds
-    public let DEFAULT_FEATURES: [String]
-    public let alarmTypes: [AlarmType]
     public let enable: [Plugin]
-//    public let enable: [String]
     
-    
-//    public var description: String {
-//        let dict = ["units": units.description, "timeFormat": timeFormat, "nightMode": nightMode.description, "showRawbg": showRawbg.rawValue, "customTitle": customTitle, "theme": theme, "alarms": alarms.description, "language": language, "baseURL": baseURL] as [String : Any]
-//        return dict.description
-//    }
-    
+}
+
+extension Settings {
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+       
+        units = try values.decode(GlucoseUnit.self, forKey: .units)
+        showRawbg = try values.decode(RawBGMode.self, forKey: .showRawbg)
+        customTitle = try values.decode(String.self, forKey: .customTitle)
+        
+        alarmUrgentHigh = try values.decode(Bool.self, forKey: .alarmUrgentHigh)
+        alarmUrgentHighMins = try values.decode([Double].self, forKey: .alarmUrgentHighMins)
+        alarmHigh = try values.decode(Bool.self, forKey: .alarmHigh)
+        alarmHighMins = try values.decode([Double].self, forKey: .alarmHighMins)
+        alarmLow = try values.decode(Bool.self, forKey: .alarmLow)
+        alarmLowMins = try values.decode([Double].self, forKey: .alarmLowMins)
+        alarmUrgentLow = try values.decode(Bool.self, forKey: .alarmUrgentLow)
+        alarmUrgentLowMins  = try values.decode([Double].self, forKey: .alarmUrgentLowMins)
+        alarmWarnMins = try values.decode([Double].self, forKey: .alarmWarnMins)
+        alarmTimeagoWarn = try values.decode(Bool.self, forKey: .alarmTimeagoWarn)
+        alarmTimeagoUrgent = try values.decode(Bool.self, forKey: .alarmTimeagoUrgent)
+        
+        do {
+            alarmTimeagoWarnMins = try values.decode(Double.self, forKey: .alarmTimeagoWarnMins) * 10
+        } catch {
+            alarmTimeagoWarnMins = 15
+        }
+        
+        do {
+            alarmTimeagoUrgentMins = try values.decode(Double.self, forKey: .alarmTimeagoUrgentMins) * 10
+        } catch {
+            alarmTimeagoUrgentMins = 30
+        }
+        
+        thresholds = try values.decode(Thresholds.self, forKey: .thresholds)
+        enable = try values.decode([Plugin].self, forKey: .enable)
+    }
 }
 
 extension Settings: Equatable {}
 public func ==(lhs: Settings, rhs: Settings) -> Bool {
     return lhs.units == rhs.units &&
-        lhs.timeFormat == rhs.timeFormat &&
-        lhs.nightMode == rhs.nightMode &&
-        lhs.editMode == rhs.editMode &&
-        lhs.showRawbg == rhs.showRawbg &&
         lhs.customTitle == rhs.customTitle &&
-        lhs.theme == rhs.theme &&
         lhs.alarms == rhs.alarms &&
         lhs.timeAgo == rhs.timeAgo &&
-        lhs.scaleY == rhs.scaleY &&
-        lhs.language == rhs.language &&
-        lhs.showPlugins == rhs.showPlugins &&
         lhs.enable == rhs.enable &&
-        lhs.thresholds == rhs.thresholds &&
-        lhs.baseURL == rhs.baseURL &&
-        lhs.alarmTypes == rhs.alarmTypes &&
-        lhs.heartbeat == rhs.heartbeat
+        lhs.thresholds == rhs.thresholds
 }
 
 public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
