@@ -132,6 +132,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
                 return
             case .notDetermined:
                 self.setupNotificationSettings()
+            case .provisional:
+                self.setupNotificationSettings()
             }
         }
         
