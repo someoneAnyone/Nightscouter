@@ -98,17 +98,22 @@ public protocol DeviceOwnable {
     var device: Device? { get }
 }
 
-public enum Device: String, Codable, CustomStringConvertible {
-    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846", xDripLimiTTer = "xDrip-LimiTTer"
-    
-    public var description: String {
-        return self.rawValue
-    }
+public typealias Device = String
 
-    public init() {
-        self = .unknown
-    }
+extension Device {
+    static var unknown = "unknown"
 }
+//public enum Device: String, Codable, CustomStringConvertible {
+//    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846", xDripLimiTTer = "xDrip-LimiTTer"
+//
+//    public var description: String {
+//        return self.rawValue
+//    }
+//
+//    public init() {
+//        self = .unknown
+//    }
+//}
 
 // TODO: Create Struct to hold wacth or now data like delta, current bg, raw and battery....
 public protocol DeltaDisplayable {

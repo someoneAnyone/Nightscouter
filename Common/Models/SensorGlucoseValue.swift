@@ -27,7 +27,7 @@ public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValu
     }
     
     public init() {
-        device = Device.testDevice
+        device = Device.unknown
         direction = Direction.Flat
         rssi = 188
         unfiltered = 186624
