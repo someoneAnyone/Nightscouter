@@ -216,7 +216,7 @@ public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
     case profile
     case timeago
     case alexa
-    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors
+    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors, bwpcage, bgi
     
     public var description: String {
         return self.rawValue
