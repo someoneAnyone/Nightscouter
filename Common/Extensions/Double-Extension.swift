@@ -10,7 +10,7 @@ import Foundation
 
 public extension Range
 {
-    public var randomInt: Int
+    var randomInt: Int
         {
         get
         {
@@ -30,13 +30,13 @@ public extension Range
 }
 
 public extension MgdlValue {
-    public var toMmol: Double {
+    var toMmol: Double {
         get{
             return (self / 18)
         }
     }
     
-    public var toMgdl: Double {
+    var toMgdl: Double {
         get{
             return floor(self * 18)
         }
@@ -49,7 +49,7 @@ public extension MgdlValue {
         return numberFormat
     }
     
-    public var formattedForMgdl: String {
+    var formattedForMgdl: String {
         if let reserved  = ReservedValues(mgdl: self) {
             return reserved.description
         }
@@ -67,7 +67,7 @@ public extension MgdlValue {
         return numberFormat
     }
     
-    public var formattedForMmol: String {
+    var formattedForMmol: String {
         
         if let reserved  = ReservedValues(mgdl: self) {
             return reserved.description
@@ -87,7 +87,7 @@ public extension MgdlValue {
         return numberFormat
     }
     
-    public func formattedBGDelta(forUnits units: GlucoseUnit, appendString: String? = nil) -> String {
+    func formattedBGDelta(forUnits units: GlucoseUnit, appendString: String? = nil) -> String {
         var formattedNumber: String = ""
         switch units {
         case .mmol:
@@ -108,7 +108,7 @@ public extension MgdlValue {
         return formattedNumber + " " + unitMarker
     }
     
-    public var formattedForBGDelta: String {
+    var formattedForBGDelta: String {
         return self.bgDeltaFormatter.string(from: NSNumber(value: self))!
     }
 }
@@ -120,17 +120,17 @@ public extension Double {
 }
 
 public extension Double {
-    public mutating func millisecondsToSecondsTimeInterval() -> TimeInterval {
+    mutating func millisecondsToSecondsTimeInterval() -> TimeInterval {
         let milliseconds = self/1000
         let rounded = milliseconds.rounded(.toNearestOrAwayFromZero)
         return rounded
     }
     
-    public var inThePast: TimeInterval {
+    var inThePast: TimeInterval {
         return -self
     }
     
-    public mutating func toDateUsingMilliseconds() -> Date {
+    mutating func toDateUsingMilliseconds() -> Date {
         let date = Date(timeIntervalSince1970:millisecondsToSecondsTimeInterval())
         return date
     }
@@ -138,7 +138,7 @@ public extension Double {
 }
 
 public extension TimeInterval {
-   public var millisecond: Double {
+    var millisecond: Double {
         return self*1000
     }
 }

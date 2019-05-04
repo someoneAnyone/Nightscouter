@@ -403,7 +403,7 @@ public struct TimeAgoAlert: Codable, CustomStringConvertible {
 }
 
 public extension TimeAgoAlert {
-    public func isDataStaleWith(interval sinceNow: TimeInterval) -> (warn: Bool, urgent: Bool) {
+    func isDataStaleWith(interval sinceNow: TimeInterval) -> (warn: Bool, urgent: Bool) {
         return isDataStaleWith(interval: sinceNow, warn: self.warnMins, urgent: self.urgentMins)
     }
     

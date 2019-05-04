@@ -10,19 +10,19 @@ import Foundation
 
 
 public extension Notification.Name {
-    static public let dataDidFlow = Notification.Name("DataDidFlow")
-    static public let activationDidComplete = Notification.Name("ActivationDidComplete")
-    static public let reachabilityDidChange = Notification.Name("ReachabilityDidChange")
-    static public let nightscoutAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
-    static public let nightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
-    static public let nightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
-    static public let nightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
+    static let dataDidFlow = Notification.Name("DataDidFlow")
+    static let activationDidComplete = Notification.Name("ActivationDidComplete")
+    static let reachabilityDidChange = Notification.Name("ReachabilityDidChange")
+    static let nightscoutAddedContentNotification = Notification.Name("com.nothingonline.nightscouter.data.addedContent")
+    static let nightscoutDataUpdatedNotification = Notification.Name("com.nothingonline.nightscouter.data.updatedContent")
+    static let nightscoutDataStaleNotification = Notification.Name("com.nothingonline.nightscouter.data.staleContent")
+    static let nightscoutAlarmNotification = Notification.Name("com.nothingonline.nightscouter.alarm.update")
 }
 
 public typealias ArrayOfDictionaries = [[String: Any]]
 public typealias ArrayOfData = [Data]
 
-@available(*, deprecated: 1.0, message: "I'm not really deprecated, please ***FIXME**")
+@available(*, deprecated, message: "I'm not really deprecated, please ***FIXME**")
 public func FIXME() { }
 
 // TODO: Locallize these strings and move them to centeral location so all view can have consistent placeholder text.

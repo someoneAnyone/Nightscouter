@@ -10,7 +10,7 @@ import Foundation
 
 public extension Calendar {
         
-    public func stringRepresentationOfElapsedTimeFromDate(_ startDate: Date, endDate: Date) -> String {
+    func stringRepresentationOfElapsedTimeFromDate(_ startDate: Date, endDate: Date) -> String {
     
         // TODO:// Fix
         if (!(startDate.timeIntervalSince1970 < 0) && !(endDate.timeIntervalSince1970 < 0)){
@@ -104,7 +104,7 @@ public extension Calendar {
         return "Nothing"
     }
     
-    public func stringRepresentationOfElapsedTimeSinceNow(_ date:Date) -> String {
+    func stringRepresentationOfElapsedTimeSinceNow(_ date:Date) -> String {
         return self.stringRepresentationOfElapsedTimeFromDate(date, endDate: Date())
     }
 }

@@ -20,7 +20,7 @@ public protocol Dateable {
 }
 
 public extension Dateable {
-    public var date: Date {
+    var date: Date {
         return Date(timeIntervalSince1970: (TimeInterval(milliseconds ?? 1268197200000) / 1000))
     }
 }
@@ -44,9 +44,9 @@ public protocol GlucoseValueHolder {
 }
 
 public extension GlucoseValueHolder {
-    public var reservedValueUpperEndValue: MgdlValue { return 17 }
+    var reservedValueUpperEndValue: MgdlValue { return 17 }
     
-    public var isGlucoseValueOk: Bool {
+    var isGlucoseValueOk: Bool {
         return mgdl >= reservedValueUpperEndValue
     }
 }
@@ -198,12 +198,12 @@ public extension DesiredColorState {
     ]
     
     #if os(iOS) || os(watchOS) || os(tvOS)
-    public var colorValue: UIColor {
+    var colorValue: UIColor {
         return DesiredColorState.colorMapping[self]!
     }
     #elseif os(OSX)
-    public var colorValue: NSColor {
-    return DesiredColorState.colorMapping[self]!
+    var colorValue: NSColor {
+        return DesiredColorState.colorMapping[self]!
     }
     #endif
 }

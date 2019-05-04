@@ -263,7 +263,7 @@ public extension Site {
         return NightscoutDownloader.sharedInstance
     }
     
-    public func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
+    func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         nightscouterAPI.isBackground = background
         var updatedSite = self

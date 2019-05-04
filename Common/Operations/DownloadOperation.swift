@@ -24,9 +24,12 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         self.isBackground = background
         
         super.init()
+        let appBundleName = Bundle.main.bundleURL.lastPathComponent.lowercased().replacingOccurrences(of: " ", with: ".")
+        let sessionIdentifier: String = "\(NightscoutRESTClientError.errorDomain).\(appBundleName)"
         
         let config = !isBackground ? URLSessionConfiguration.default :
-            URLSessionConfiguration.background(withIdentifier: NightscoutRESTClientError.errorDomain)
+            URLSessionConfiguration.background(withIdentifier: sessionIdentifier)
+        config.sharedContainerIdentifier = AppConfiguration.sharedApplicationGroupSuiteName
         
         let session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
         

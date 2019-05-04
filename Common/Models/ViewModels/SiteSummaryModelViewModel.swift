@@ -19,7 +19,7 @@ public struct SiteAlarmModel {
 
 public extension Site {
     
-    public var alarmDetails: SiteAlarmModel {
+    var alarmDetails: SiteAlarmModel {
         get {
             guard let configuration = configuration, let settings = configuration.settings, let latestSgv = sgvs.first else {
                 return SiteAlarmModel()

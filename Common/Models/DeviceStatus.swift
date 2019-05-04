@@ -78,7 +78,7 @@ public struct DeviceStatus: CustomStringConvertible, Dateable, Encodable, Decoda
     }
     
     public var description: String {
-        return "{ DeviceStatus: { uploaderBattery: \(uploaderBattery),  batteryLevel: \(batteryLevel) } }"
+        return "{ DeviceStatus: { uploaderBattery: \(uploaderBattery ?? 0),  batteryLevel: \(batteryLevel) } }"
     }
 }
 

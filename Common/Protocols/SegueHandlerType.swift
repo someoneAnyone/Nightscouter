@@ -64,7 +64,7 @@ public extension SegueHandlerType where Self: Controller, SegueIdentifier.RawVal
      method that takes in a `SegueIdentifier` enum parameter rather than a
      `String`.
      */
-    public func performSegue(withIdentifier segueIdentifier: SegueIdentifier,
+    func performSegue(withIdentifier segueIdentifier: SegueIdentifier,
                              sender: Any?) {
         performSegue(withIdentifier: segueIdentifier.rawValue, sender: sender)
     }

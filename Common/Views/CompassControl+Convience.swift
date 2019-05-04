@@ -17,7 +17,7 @@ public extension CompassControl {
         self.delta = bgdelta//bgdelta.formattedBGDelta(forUnits: GlucoseUnit(rawValue: units))//"\(bgdelta.formattedForBGDelta) \(units)"
     }
     
-    public func configure(withDataSource dataSource: CompassViewDataSource, delegate: CompassViewDelegate?) {
+    func configure(withDataSource dataSource: CompassViewDataSource, delegate: CompassViewDelegate?) {
         direction = dataSource.direction
         delta = dataSource.detailText
         sgvText = dataSource.text
@@ -25,7 +25,7 @@ public extension CompassControl {
         shouldLookStale(look: dataSource.lookStale)
     }
     
-    @objc public func shouldLookStale(look stale: Bool = true) {
+    @objc func shouldLookStale(look stale: Bool = true) {
         if stale {
             let compass = CompassControl()
             self.alpha = 0.5

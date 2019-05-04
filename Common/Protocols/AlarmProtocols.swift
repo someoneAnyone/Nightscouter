@@ -49,7 +49,7 @@ public protocol Snoozable {
             return al
         }
         
-        public func presentSnoozePopup(forViewController viewController: UIViewController) {
+        func presentSnoozePopup(forViewController viewController: UIViewController) {
             
             if AlarmRule.isSnoozed {
                 AlarmRule.disableSnooze()
@@ -94,7 +94,7 @@ public protocol Snoozable {
             }
         }
         
-        public func snooze(forMiutes minutes : Int) {
+        func snooze(forMiutes minutes : Int) {
             AlarmRule.snooze(minutes)
             audioManager.stop()
             audioManager.unmuteVolume()
