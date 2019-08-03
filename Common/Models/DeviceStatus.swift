@@ -94,8 +94,9 @@ extension DeviceStatus: ColorBoundable {
 }
 
 extension DeviceStatus: Hashable {
-    public var hashValue: Int {
-        return uploaderBattery.hashValue + date.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uploaderBattery)
+        hasher.combine(date)
     }
 }
 
