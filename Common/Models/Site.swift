@@ -92,8 +92,11 @@ public func ==(lhs: Site, rhs: Site) -> Bool {
 }
 
 extension Site: Hashable {
-    public var hashValue: Int {
-        return uuid.hashValue + sgvs.count.hashValue + cals.count.hashValue + deviceStatuses.count.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uuid)
+        hasher.combine(sgvs.count)
+        hasher.combine(cals.count)
+        hasher.combine(deviceStatuses)
     }
 }
 

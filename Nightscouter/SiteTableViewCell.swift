@@ -54,6 +54,9 @@ class SiteTableViewCell: UITableViewCell {
         siteNameLabel.text = dataSource.nameLabel
         siteUrlLabel.text = dataSource.urlLabel
         
+//        siteUrlLabel.isHidden = true
+
+        
         siteColorBlockView.backgroundColor = delegate?.sgvColor
         
         siteCompassControl.configure(withDataSource: dataSource, delegate: delegate)

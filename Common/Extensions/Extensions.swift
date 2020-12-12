@@ -9,16 +9,16 @@
 import Foundation
 // Provide a private typealias for a platform specific color.
 #if os(iOS)
-    import UIKit
-    typealias CollectionView = UICollectionView
+import UIKit
+typealias CollectionView = UICollectionView
 #elseif os(OSX)
-    import Cocoa
-    typealias CollectionView = NSCollectionView
+import Cocoa
+typealias CollectionView = NSCollectionView
 #endif
 
 #if os(iOS)
 public extension UINavigationItem {
-    @objc public func update(with newItem: UINavigationItem) {
+    @objc func update(with newItem: UINavigationItem) {
         self.backBarButtonItem = newItem.backBarButtonItem
         self.rightBarButtonItem = newItem.rightBarButtonItem
         self.rightBarButtonItems = newItem.rightBarButtonItems
@@ -34,15 +34,15 @@ public extension UINavigationItem {
 
 
 public extension UIEdgeInsets {
-    public init(with uniformInset: CGFloat) {
+    init(with uniformInset: CGFloat) {
         self.init(top: uniformInset, left: uniformInset, bottom: uniformInset, right: uniformInset)
     }
     
-    public var totalHorizontal: CGFloat {
+    var totalHorizontal: CGFloat {
         return left + right
     }
     
-    public var totalVertical: CGFloat {
+    var totalVertical: CGFloat {
         return top + bottom
     }
 }
@@ -77,17 +77,17 @@ extension CALayer {
 }
 
 public extension UIView {
-    @objc public class func fromNib(nibNameOrNil: String? = nil) -> Self {
+    @objc  class func fromNib(nibNameOrNil: String? = nil) -> Self {
         return fromNib(nibNameOrNil: nibNameOrNil, type: self)
     }
     
-    public class func fromNib<T : UIView>(nibNameOrNil: String? = nil, type: T.Type) -> T {
+    class func fromNib<T : UIView>(nibNameOrNil: String? = nil, type: T.Type) -> T {
         let v: T? = fromNib(nibNameOrNil: nibNameOrNil, type: T.self)
         
         return v!
     }
     
-    public class func fromNib<T : UIView>(nibNameOrNil: String? = nil, type: T.Type) -> T? {
+    class func fromNib<T : UIView>(nibNameOrNil: String? = nil, type: T.Type) -> T? {
         var view: T?
         let name: String
         if let nibName = nibNameOrNil {
@@ -105,12 +105,12 @@ public extension UIView {
         return view
     }
     
-    @objc public class var nibName: String {
+    @objc class var nibName: String {
         let name = "\(self)".components(separatedBy: ".").first ?? ""
         return name
     }
     
-    @objc public class var nib: UINib? {
+    @objc class var nib: UINib? {
         if let _ = Bundle.main.path(forResource: nibName, ofType: "nib") {
             return UINib(nibName: nibName, bundle: nil)
         } else {
@@ -121,14 +121,14 @@ public extension UIView {
 #endif
 
 public extension CollectionView {
-    @objc public var indexPathOfItemAtCenter: IndexPath? {
+    @objc var indexPathOfItemAtCenter: IndexPath? {
         let visiblePoint = CGPoint(x: self.center.x + self.contentOffset.x, y: self.center.y + self.contentOffset.y)
         return self.indexPathForItem(at: visiblePoint)
     }
 }
 
 public extension IndexPath {
-    public static var zero: IndexPath {
+    static var zero: IndexPath {
         return IndexPath(item: 0, section: 0)
     }
 }

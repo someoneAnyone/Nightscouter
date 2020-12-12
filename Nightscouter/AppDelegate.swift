@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
     var launchedShortcutItem: String?
     
     // MARK: AppDelegate Lifecycle
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function)<<")
         #endif
@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate.dataManagerDidChange(_:)), name: .nightscoutDataUpdatedNotification, object: nil)
         
         // If a shortcut was launched, display its information and take the appropriate action
-        if let shortcutItem = launchOptions?[UIApplicationLaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
+        if let shortcutItem = launchOptions?[UIApplication.LaunchOptionsKey.shortcutItem] as? UIApplicationShortcutItem {
             launchedShortcutItem = shortcutItem.type
         }
         
@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         completionHandler(.newData)
     }
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey: Any]) -> Bool {
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any]) -> Bool {
         #if DEBUG
             print(">>> Entering \(#function) <<<")
             print("Recieved URL: \(url) with options: \(options)")
@@ -132,6 +132,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
                 return
             case .notDetermined:
                 self.setupNotificationSettings()
+            case .provisional:
+                self.setupNotificationSettings()
+            case .ephemeral:
+                self.setupNotificationSettings()
+            @unknown default:
+                return
             }
         }
         
@@ -147,7 +153,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
             
             let useCase = CommonUseCasesForShortcuts.ShowDetail.applicationShortcutItemType
             
-            let shortcut = UIApplicationShortcutItem(type: useCase, localizedTitle: model.nameLabel, localizedSubtitle: model.urlLabel, icon: nil, userInfo: ["uuid": site.uuid.uuidString, "siteIndex": index])
+            let shortcut = UIApplicationShortcutItem(type: useCase, localizedTitle: model.nameLabel, localizedSubtitle: model.urlLabel, icon: nil, userInfo: ["uuid": site.uuid.uuidString as NSSecureCoding, "siteIndex": index as NSSecureCoding])
             
             UIApplication.shared.shortcutItems?.append(shortcut)
         }
@@ -226,7 +232,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
                     switch (storyboardIdentifier) {
                     case .sitesTableViewController:
                         
-                        if let UUIDString = pathComponents[safe: 2], let uuid = UUID(uuidString: UUIDString), let site = (SitesDataSource.sharedInstance.sites.filter { $0.uuid == uuid }.first), let index = SitesDataSource.sharedInstance.sites.index(of: site) {
+                        if let UUIDString = pathComponents[safe: 2], let uuid = UUID(uuidString: UUIDString), let site = (SitesDataSource.sharedInstance.sites.filter { $0.uuid == uuid }.first), let index = SitesDataSource.sharedInstance.sites.firstIndex(of: site) {
                             
                             SitesDataSource.sharedInstance.lastViewedSiteIndex = index
                         }
@@ -280,7 +286,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, SitesDataSourceProvider, 
         // UIApplication.sharedApplication().registerForRemoteNotifications()
        
         DispatchQueue.main.async {
-            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalMinimum)
+            UIApplication.shared.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
             UIApplication.shared.applicationIconBadgeNumber = 0
         }
         

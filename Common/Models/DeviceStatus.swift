@@ -19,15 +19,18 @@ public struct DeviceStatus: CustomStringConvertible, Dateable, Encodable, Decoda
      var batteryLevel: String { get }
      
      */
-    public let uploaderBattery: Int
+    public let uploaderBattery: Int?
     public var milliseconds: Mills?
     public var createdDate: Date?
+    
+    public var created_at: String?
+    
     public var pump: Pump?
     
     enum CodingKeys: String, CodingKey {
         case uploaderBattery, pump
         case milliseconds = "date"
-        case createdDate = "created_at"
+        case createdDate
     }
     
     public var batteryLevel: String {
@@ -38,7 +41,7 @@ public struct DeviceStatus: CustomStringConvertible, Dateable, Encodable, Decoda
             numFormatter.numberStyle = .percent
             numFormatter.zeroSymbol = zeroSymbolForBattery
             
-            let precentage = NSNumber(value: Float(uploaderBattery)/100)
+            let precentage = NSNumber(value: Float(uploaderBattery ?? 0)/100)
             
             return numFormatter.string(from: precentage) ?? zeroSymbolForBattery
         }
@@ -75,7 +78,7 @@ public struct DeviceStatus: CustomStringConvertible, Dateable, Encodable, Decoda
     }
     
     public var description: String {
-        return "{ DeviceStatus: { uploaderBattery: \(uploaderBattery),  batteryLevel: \(batteryLevel) } }"
+        return "{ DeviceStatus: { uploaderBattery: \(uploaderBattery ?? 0),  batteryLevel: \(batteryLevel) } }"
     }
 }
 
@@ -86,39 +89,41 @@ extension DeviceStatus: ColorBoundable {
     public var top: Double { return 101.0 }
     
     public var desiredColorState: DesiredColorState {
-        return self.desiredColorState(forValue: Double(self.uploaderBattery))
+        return self.desiredColorState(forValue: Double(self.uploaderBattery ?? 0))
     }
 }
 
 extension DeviceStatus: Hashable {
-    public var hashValue: Int {
-        return uploaderBattery.hashValue + date.hashValue
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(uploaderBattery)
+        hasher.combine(date)
     }
 }
 
 public struct Pump: Codable {
-    let battery: Battery
+    let battery: Battery?
     
     struct Battery: Codable {
         let percent: Double
     }
     
-    let clock: String
+    let clock: String?
     
-    let iob: InsulinOnBoard
+    let iob: InsulinOnBoard?
     
     struct InsulinOnBoard: Codable {
         let bolusiob: Double
         let timestamp: String
     }
     
-    let reservoir: Double
-    let status: Status
+    let reservoir: Double?
+    let status: Status?
     
     struct Status: Codable {
-        let bolusing: Bool
-        let status: String
-        let suspended: Bool
+        let bolusing: Bool?
+        let status: String?
+        let suspended: Bool?
+        let timestamp: String?
     }
 
 }

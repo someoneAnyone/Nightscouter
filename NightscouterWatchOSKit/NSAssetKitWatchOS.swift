@@ -67,7 +67,7 @@ open class NSAssetKitWatchOS : NSObject {
         let sgvLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         sgvLabelStyle.alignment = .center
 
-        let sgvLabelFontAttributes = [NSAttributedStringKey.font: UIFont(name: "HelveticaNeue-Thin", size: textSizeForSgv)!, NSAttributedStringKey.foregroundColor: arrowTintShadowColor, NSAttributedStringKey.paragraphStyle: sgvLabelStyle]
+        let sgvLabelFontAttributes = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: textSizeForSgv)!, NSAttributedString.Key.foregroundColor: arrowTintShadowColor, NSAttributedString.Key.paragraphStyle: sgvLabelStyle]
 
         NSString(string: sgvString).draw(in: sgvLabelRect, withAttributes: sgvLabelFontAttributes)
 
@@ -77,7 +77,7 @@ open class NSAssetKitWatchOS : NSObject {
         let deltaLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
         deltaLabelStyle.alignment = .center
 
-        let deltaLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedStringKey.foregroundColor: arrowTintShadowColor, NSAttributedStringKey.paragraphStyle: deltaLabelStyle]
+        let deltaLabelFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedString.Key.foregroundColor: arrowTintShadowColor, NSAttributedString.Key.paragraphStyle: deltaLabelStyle]
 
         let deltaLabelTextHeight: CGFloat = NSString(string: deltaString).boundingRect(with: CGSize(width: deltaLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: deltaLabelFontAttributes, context: nil).size.height
         context.saveGState()
@@ -92,7 +92,7 @@ open class NSAssetKitWatchOS : NSObject {
             let rawLabelStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
             rawLabelStyle.alignment = .center
 
-            let rawLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForRaw), NSAttributedStringKey.foregroundColor: rawColor, NSAttributedStringKey.paragraphStyle: rawLabelStyle]
+            let rawLabelFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: textSizeForRaw), NSAttributedString.Key.foregroundColor: rawColor, NSAttributedString.Key.paragraphStyle: rawLabelStyle]
 
             let rawLabelTextHeight: CGFloat = NSString(string: rawString).boundingRect(with: CGSize(width: rawLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: rawLabelFontAttributes, context: nil).size.height
             context.saveGState()

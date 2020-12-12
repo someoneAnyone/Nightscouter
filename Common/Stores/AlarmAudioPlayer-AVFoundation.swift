@@ -68,8 +68,8 @@ open class AlarmAudioPlayer: AudioCordinator {
         
         if !isPlaying && (alarmObject != nil) {
             do {
-                try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategorySoloAmbient)
-                try AVAudioSession.sharedInstance().setActive(true, with: .notifyOthersOnDeactivation)
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.soloAmbient)))
+                try AVAudioSession.sharedInstance().setActive(true, options: .notifyOthersOnDeactivation)
                 
                 // Play endless loops
                 audioPlayer?.numberOfLoops = -1
@@ -97,4 +97,9 @@ open class AlarmAudioPlayer: AudioCordinator {
     public func muteVolume() {
         audioPlayer?.volume = 0
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }

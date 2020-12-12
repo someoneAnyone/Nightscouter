@@ -164,13 +164,13 @@ public class NightscoutDownloader {
         }
         
         parseConfig.completionBlock = {
-            configuration = parseConfig.configuration
+            configuration = parseConfig.configuration ?? ServerConfiguration(name: url.host?.components(separatedBy: ".").first ?? "Unknown")
             serverConfigError = parseConfig.error
             
-            if let serverConfigError = serverConfigError {
-                self.processingQueue.cancelAllOperations()
+            if let _ = serverConfigError {
                 OperationQueue.main.addOperation {
-                    completion(nil, nil, nil, nil, nil, serverConfigError)
+//                    self.processingQueue.cancelAllOperations()
+                    completion(nil, nil, nil, nil, nil, nil)
                 }
             }
         }
@@ -226,8 +226,9 @@ public class NightscoutDownloader {
             deviceError = parseDevice.error
             
             if let _ = deviceError {
-                // self.processingQueue.cancelAllOperations()
                 OperationQueue.main.addOperation {
+                    // self.processingQueue.cancelAllOperations()
+
                  //   completion(configuration, sgvs, cals, mbgs, nil, deviceError)
                 }
             }
@@ -263,7 +264,7 @@ public extension Site {
         return NightscoutDownloader.sharedInstance
     }
     
-    public func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
+    func fetchDataFromNetwork(useBackground background: Bool = false, completion:@escaping (_ updatedSite: Site, _ error: NightscoutRESTClientError?) -> Void) {
         
         nightscouterAPI.isBackground = background
         var updatedSite = self

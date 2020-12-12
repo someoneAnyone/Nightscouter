@@ -20,7 +20,7 @@ public protocol Dateable {
 }
 
 public extension Dateable {
-    public var date: Date {
+    var date: Date {
         return Date(timeIntervalSince1970: (TimeInterval(milliseconds ?? 1268197200000) / 1000))
     }
 }
@@ -44,9 +44,9 @@ public protocol GlucoseValueHolder {
 }
 
 public extension GlucoseValueHolder {
-    public var reservedValueUpperEndValue: MgdlValue { return 17 }
+    var reservedValueUpperEndValue: MgdlValue { return 17 }
     
-    public var isGlucoseValueOk: Bool {
+    var isGlucoseValueOk: Bool {
         return mgdl >= reservedValueUpperEndValue
     }
 }
@@ -98,17 +98,22 @@ public protocol DeviceOwnable {
     var device: Device? { get }
 }
 
-public enum Device: String, Codable, CustomStringConvertible {
-    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846", xDripLimiTTer = "xDrip-LimiTTer"
-    
-    public var description: String {
-        return self.rawValue
-    }
+public typealias Device = String
 
-    public init() {
-        self = .unknown
-    }
+extension Device {
+    static var unknown = "unknown"
 }
+//public enum Device: String, Codable, CustomStringConvertible {
+//    case unknown, dexcom = "dexcom", xDripDexcomShare = "xDrip-DexcomShare", watchFace = "watchFace", share2 = "share2", testDevice = "testDevice", paradigm = "connect://paradigm", medtronic = "medtronic-600://6214-1016846", xDripLimiTTer = "xDrip-LimiTTer"
+//
+//    public var description: String {
+//        return self.rawValue
+//    }
+//
+//    public init() {
+//        self = .unknown
+//    }
+//}
 
 // TODO: Create Struct to hold wacth or now data like delta, current bg, raw and battery....
 public protocol DeltaDisplayable {
@@ -193,12 +198,12 @@ public extension DesiredColorState {
     ]
     
     #if os(iOS) || os(watchOS) || os(tvOS)
-    public var colorValue: UIColor {
+    var colorValue: UIColor {
         return DesiredColorState.colorMapping[self]!
     }
     #elseif os(OSX)
-    public var colorValue: NSColor {
-    return DesiredColorState.colorMapping[self]!
+    var colorValue: NSColor {
+        return DesiredColorState.colorMapping[self]!
     }
     #endif
 }

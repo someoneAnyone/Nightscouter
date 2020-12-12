@@ -19,7 +19,7 @@ public struct SiteAlarmModel {
 
 public extension Site {
     
-    public var alarmDetails: SiteAlarmModel {
+    var alarmDetails: SiteAlarmModel {
         get {
             guard let configuration = configuration, let settings = configuration.settings, let latestSgv = sgvs.first else {
                 return SiteAlarmModel()
@@ -188,11 +188,11 @@ public struct SiteSummaryModelViewModel: SiteSummaryModelViewModelDataSource, Si
                 
                 rawString = PlaceHolderStrings.raw
                 rawColorVar = .neutral
-                rawNoise = .none
+                rawNoise = Noise.none
                 
                 deltaString = PlaceHolderStrings.delta
                 
-                direction = .none
+                direction = Direction.none
                 sgvString = PlaceHolderStrings.sgv
                 sgvColorVar = .neutral
                 lastReadingColorVar = DesiredColorState.warning

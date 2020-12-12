@@ -53,7 +53,7 @@ public extension ComplicationDataSourceGenerator {
         return cals[safe: index]
     }
     
-    public func generateComplicationData(with serverConfiguration: ServerConfiguration, sensorGlucoseValues: [SensorGlucoseValue], calibrations: [Calibration]) -> [ComplicationTimelineEntry] {
+    func generateComplicationData(with serverConfiguration: ServerConfiguration, sensorGlucoseValues: [SensorGlucoseValue], calibrations: [Calibration]) -> [ComplicationTimelineEntry] {
         
         let configuration = serverConfiguration
         let sgvs = sensorGlucoseValues

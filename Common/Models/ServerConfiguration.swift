@@ -11,12 +11,12 @@ import Foundation
 public struct ServerConfiguration: Codable, CustomStringConvertible {
     public let status: String
     public let version: String
-    public let name: String
+    public var name: String
     public let serverTime: String
     public let apiEnabled: Bool
     public let careportalEnabled: Bool
     public let boluscalcEnabled: Bool
-    public let settings: Settings?
+    public var settings: Settings?
     
     public var description: String {
         var dict = [String: Any]()
@@ -67,6 +67,17 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         self.settings = settings
     }
 }
+
+
+extension ServerConfiguration {
+    public init(name: String) {
+        var c = ServerConfiguration()
+        c.settings?.customTitle = name
+        
+        self = c
+    }
+}
+
 
 extension ServerConfiguration: Equatable { }
 public func ==(lhs: ServerConfiguration, rhs: ServerConfiguration) -> Bool {
@@ -120,7 +131,7 @@ public struct Settings: Codable {
     public let units: GlucoseUnit
 
     public let showRawbg: RawBGMode
-    public let customTitle: String
+    public var customTitle: String
 
     public var alarms: Alarm {
         return Alarm(urgentHigh: alarmUrgentHigh, urgentHighMins: alarmUrgentHighMins, high: alarmHigh, highMins: alarmHighMins, low: alarmLow, lowMins: alarmLowMins, urgentLow: alarmUrgentLow, urgentLowMins: alarmUrgentLowMins, warnMins: alarmWarnMins)
@@ -216,7 +227,7 @@ public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
     case profile
     case timeago
     case alexa
-    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors
+    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors, bwpcage, bgi
     
     public var description: String {
         return self.rawValue
@@ -403,7 +414,7 @@ public struct TimeAgoAlert: Codable, CustomStringConvertible {
 }
 
 public extension TimeAgoAlert {
-    public func isDataStaleWith(interval sinceNow: TimeInterval) -> (warn: Bool, urgent: Bool) {
+    func isDataStaleWith(interval sinceNow: TimeInterval) -> (warn: Bool, urgent: Bool) {
         return isDataStaleWith(interval: sinceNow, warn: self.warnMins, urgent: self.urgentMins)
     }
     

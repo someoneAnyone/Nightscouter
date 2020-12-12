@@ -87,7 +87,7 @@ extension SiteDetailViewController {
         print(">>> Entering \(#function) <<<")
         let updateData = "updateData(\(self.data))"
         if let configuration = site?.configuration {
-            let updateUnits = "updateUnits(\(configuration.displayUnits.hashValue))"
+            let updateUnits = "updateUnits(\(configuration.displayUnits))"
             webView.stringByEvaluatingJavaScript(from: updateUnits)
         }
         webView.stringByEvaluatingJavaScript(from: updateData)

@@ -11,7 +11,7 @@ import Foundation
 //  Copyright (c) 2014 NitWit Studios. All rights reserved.
 public extension URL
 {
-    public struct ValidationQueue {
+    struct ValidationQueue {
         public static var queue = OperationQueue()
     }
     
@@ -22,7 +22,7 @@ public extension URL
         case couldNotCreateURL(String)
     }
     
-    public static func validateUrl(_ urlString: String?) throws -> URL {
+    static func validateUrl(_ urlString: String?) throws -> URL {
         // Description: This function will validate the format of a URL, re-format if necessary, then attempt to make a header request to verify the URL actually exists and responds.
         // Return Value: This function has no return value but uses a closure to send the response to the caller.
         var formattedUrlString : String?
@@ -62,7 +62,7 @@ public extension URL
         return finalURL
     }
     
-    public static func validateUrl(_ urlString: String?, completion:@escaping (_ success: Bool,_ urlString: String? , _ error: String) -> Void)
+    static func validateUrl(_ urlString: String?, completion:@escaping (_ success: Bool,_ urlString: String? , _ error: String) -> Void)
     {
         let parsedURL = try? validateUrl(urlString)
         
@@ -114,11 +114,11 @@ public extension URL
 // inspired by https://github.com/ReactiveCocoa/ReactiveCocoaIO/blob/master/ReactiveCocoaIO/NSURL%2BTrailingSlash.m
 // MARK: Detect and remove trailing forward slash in URL.
 public extension URL {
-   public var hasTrailingSlash: Bool {
+    var hasTrailingSlash: Bool {
         return self.absoluteString.hasSuffix("/")
     }
     
-    public var appendTrailingSlash: URL? {
+    var appendTrailingSlash: URL? {
         
         if !self.hasTrailingSlash, let newURL = URL(string: self.absoluteString + "/") {
             return newURL
@@ -127,9 +127,9 @@ public extension URL {
         return nil
     }
     
-    public var deletedTrailingSlash: URL? {
+    var deletedTrailingSlash: URL? {
         var urlString = self.absoluteString
-        if let i = urlString.index(of: "/") {
+        if let i = urlString.firstIndex(of: "/") {
                      urlString.remove(at: i)
             return URL(string: urlString)
         }

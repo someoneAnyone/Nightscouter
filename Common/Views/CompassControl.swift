@@ -113,7 +113,7 @@ public extension CompassControl {
 
 // MARK: - Methods
 public extension CompassControl {
-    public func configireDrawRect( _ isDoubleUp:Bool = false, isArrowVisible:Bool = true, isUncomputable:Bool = false, angle:CGFloat?=0, sgvText:String?=nil ){
+    func configireDrawRect( _ isDoubleUp:Bool = false, isArrowVisible:Bool = true, isUncomputable:Bool = false, angle:CGFloat?=0, sgvText:String?=nil ){
         self.isDoubleUp = isDoubleUp
         self.isArrowVisible = isArrowVisible
         self.isUncomputable = isUncomputable

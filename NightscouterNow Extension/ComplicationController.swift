@@ -157,6 +157,9 @@ class ComplicationController: NSObject, CLKComplicationDataSource {
             circularSmall.line2TextProvider = CLKSimpleTextProvider(text: PlaceHolderStrings.delta)
             
             template = circularSmall
+        
+        default:
+            template = nil
         }
         
         handler(template)
@@ -244,7 +247,8 @@ extension ComplicationController {
             circularSmall.tintColor = tintColor
             
             template = circularSmall
-            
+        default:
+            template = nil
         }
         
         return template
