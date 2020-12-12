@@ -39,7 +39,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         urlTextField.placeholder = LocalizedString.genericURLLabel.localized
         
         // Add notification observer for text field updates
-        urlTextField.addTarget(self, action: #selector(SiteFormViewController.textFieldDidUpdate(_:)), for: UIControlEvents.editingChanged)
+        urlTextField.addTarget(self, action: #selector(SiteFormViewController.textFieldDidUpdate(_:)), for: UIControl.Event.editingChanged)
         
         urlTextField.delegate = self
         
@@ -172,17 +172,17 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
     // MARK: Keyboard Notifications
     
     func observeKeyboard() {
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteFormViewController.keyboardWillShow(_:)), name:NSNotification.Name.UIKeyboardWillShow, object: nil);
-        NotificationCenter.default.addObserver(self, selector: #selector(SiteFormViewController.keyboardWillHide(_:)), name:NSNotification.Name.UIKeyboardWillHide, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteFormViewController.keyboardWillShow(_:)), name:UIResponder.keyboardWillShowNotification, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(SiteFormViewController.keyboardWillHide(_:)), name:UIResponder.keyboardWillHideNotification, object: nil);
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
         let info = (notification as NSNotification).userInfo!
-        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let animationDuration: TimeInterval = ((info[UIKeyboardAnimationDurationUserInfoKey])! as AnyObject).doubleValue
+        let keyboardFrame: CGRect = (info[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+        let animationDuration: TimeInterval = ((info[UIResponder.keyboardAnimationDurationUserInfoKey])! as AnyObject).doubleValue
         
         let orientation = UIDevice.current.orientation
-        let isPortrait = UIDeviceOrientationIsPortrait(orientation)
+        let isPortrait = orientation.isPortrait
         let height = isPortrait ? keyboardFrame.size.height : keyboardFrame.size.width
         
         self.middleLayoutContraint.constant = -(height * 0.1)
@@ -200,7 +200,7 @@ class SiteFormViewController: UIViewController, UITextFieldDelegate, UINavigatio
         
         let info = (notification as NSNotification).userInfo!
         // let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).CGRectValue()
-        let animationDuration: TimeInterval = ((info[UIKeyboardAnimationDurationUserInfoKey])! as AnyObject).doubleValue
+        let animationDuration: TimeInterval = ((info[UIResponder.keyboardAnimationDurationUserInfoKey])! as AnyObject).doubleValue
         
         self.middleLayoutContraint.constant = 0
         UIView.animate(withDuration: animationDuration, animations: { () -> Void in

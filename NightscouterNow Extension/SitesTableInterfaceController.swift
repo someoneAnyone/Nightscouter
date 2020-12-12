@@ -197,12 +197,12 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
             SitesDataSource.sharedInstance.updateSite(updatedSite)
             self.milliseconds = updatedSite.milliseconds
             ///Complications need to be updated smartly... also background refresh needs to be taken into account
-            let complicationServer = CLKComplicationServer.sharedInstance()
-            if let activeComplications = complicationServer.activeComplications {
-                for complication in activeComplications {
-                    complicationServer.reloadTimeline(for: complication)
-                }
-            }
+//            let complicationServer = CLKComplicationServer.sharedInstance()
+//            if let activeComplications = complicationServer.activeComplications {
+//                for complication in activeComplications {
+//                    complicationServer.reloadTimeline(for: complication)
+//                }
+//            }
             
             self.updateTableData()
         }

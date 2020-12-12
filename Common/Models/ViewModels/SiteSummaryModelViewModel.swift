@@ -188,11 +188,11 @@ public struct SiteSummaryModelViewModel: SiteSummaryModelViewModelDataSource, Si
                 
                 rawString = PlaceHolderStrings.raw
                 rawColorVar = .neutral
-                rawNoise = .none
+                rawNoise = Noise.none
                 
                 deltaString = PlaceHolderStrings.delta
                 
-                direction = .none
+                direction = Direction.none
                 sgvString = PlaceHolderStrings.sgv
                 sgvColorVar = .neutral
                 lastReadingColorVar = DesiredColorState.warning

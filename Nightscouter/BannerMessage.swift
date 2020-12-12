@@ -96,7 +96,7 @@ class BannerMessage: UIView {
         let blurredEffectView = self.blurredEffectView
         
         mainStack = UIStackView(arrangedSubviews:[label, line])
-        mainStack.sendSubview(toBack: blurredEffectView)
+        mainStack.sendSubviewToBack(blurredEffectView)
         mainStack.axis = .vertical
         mainStack.spacing = 2
         

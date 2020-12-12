@@ -34,7 +34,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         
         tableView.backgroundColor = Color.clear
         tableView.estimatedRowHeight = TableViewConstants.todayRowHeight
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = Color(white: 1.0, alpha: 0.5)
         

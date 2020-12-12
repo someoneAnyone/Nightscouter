@@ -11,12 +11,12 @@ import Foundation
 public struct ServerConfiguration: Codable, CustomStringConvertible {
     public let status: String
     public let version: String
-    public let name: String
+    public var name: String
     public let serverTime: String
     public let apiEnabled: Bool
     public let careportalEnabled: Bool
     public let boluscalcEnabled: Bool
-    public let settings: Settings?
+    public var settings: Settings?
     
     public var description: String {
         var dict = [String: Any]()
@@ -67,6 +67,17 @@ public struct ServerConfiguration: Codable, CustomStringConvertible {
         self.settings = settings
     }
 }
+
+
+extension ServerConfiguration {
+    public init(name: String) {
+        var c = ServerConfiguration()
+        c.settings?.customTitle = name
+        
+        self = c
+    }
+}
+
 
 extension ServerConfiguration: Equatable { }
 public func ==(lhs: ServerConfiguration, rhs: ServerConfiguration) -> Bool {
@@ -120,7 +131,7 @@ public struct Settings: Codable {
     public let units: GlucoseUnit
 
     public let showRawbg: RawBGMode
-    public let customTitle: String
+    public var customTitle: String
 
     public var alarms: Alarm {
         return Alarm(urgentHigh: alarmUrgentHigh, urgentHighMins: alarmUrgentHighMins, high: alarmHigh, highMins: alarmHighMins, low: alarmLow, lowMins: alarmLowMins, urgentLow: alarmUrgentLow, urgentLowMins: alarmUrgentLowMins, warnMins: alarmWarnMins)

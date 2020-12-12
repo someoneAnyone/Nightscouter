@@ -47,7 +47,7 @@ public extension Array {
 extension Array where Element: Equatable {
     @discardableResult
     public mutating func insertOrUpdate(_ object: Element) -> Bool {
-        if let index = self.index(of: object) {
+        if let index = self.firstIndex(of: object) {
             self[index] = object
         } else {
             self.append(object)
@@ -63,7 +63,7 @@ extension Array where Element: Equatable {
     }
     
     public mutating func remove(_ object: Element) -> Bool {
-        if let index = self.index(of: object) {
+        if let index = self.firstIndex(of: object) {
             self.remove(at: index)
         }
         

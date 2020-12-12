@@ -436,7 +436,7 @@ open class NSAssetKit : NSObject {
         let sgvLabelStyle = NSMutableParagraphStyle()
         sgvLabelStyle.alignment = .center
 
-        let sgvLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForSgv), NSAttributedStringKey.foregroundColor: arrowTintHighlightColor, NSAttributedStringKey.paragraphStyle: sgvLabelStyle]
+        let sgvLabelFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: textSizeForSgv), NSAttributedString.Key.foregroundColor: arrowTintHighlightColor, NSAttributedString.Key.paragraphStyle: sgvLabelStyle]
 
         NSString(string: sgvText).draw(in: sgvLabelRect, withAttributes: sgvLabelFontAttributes)
 
@@ -446,7 +446,7 @@ open class NSAssetKit : NSObject {
         let deltaLabelStyle = NSMutableParagraphStyle()
         deltaLabelStyle.alignment = .center
 
-        let deltaLabelFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedStringKey.foregroundColor: arrowTintHighlightColor, NSAttributedStringKey.paragraphStyle: deltaLabelStyle]
+        let deltaLabelFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: textSizeForDelta), NSAttributedString.Key.foregroundColor: arrowTintHighlightColor, NSAttributedString.Key.paragraphStyle: deltaLabelStyle]
 
         let deltaLabelTextHeight: CGFloat = NSString(string: bg_delta).boundingRect(with: CGSize(width: deltaLabelRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: deltaLabelFontAttributes, context: nil).size.height
         context.saveGState()
@@ -1349,7 +1349,7 @@ open class NSAssetKit : NSObject {
         let textStyle = NSMutableParagraphStyle()
         textStyle.alignment = .center
 
-        let textFontAttributes = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 9), NSAttributedStringKey.foregroundColor: arrowTintColor, NSAttributedStringKey.paragraphStyle: textStyle]
+        let textFontAttributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 9), NSAttributedString.Key.foregroundColor: arrowTintColor, NSAttributedString.Key.paragraphStyle: textStyle]
 
         let textTextHeight: CGFloat = NSString(string: alarmSnoozeRemaining).boundingRect(with: CGSize(width: textRect.width, height: CGFloat.infinity), options: NSStringDrawingOptions.usesLineFragmentOrigin, attributes: textFontAttributes, context: nil).size.height
         context.saveGState()

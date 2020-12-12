@@ -41,7 +41,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         pageViewController!.setViewControllers(viewControllers, direction: .forward, animated: false, completion: {done in })
         pageViewController!.dataSource = self.modelController
         
-        addChildViewController(self.pageViewController!)
+        addChild(self.pageViewController!)
         view.addSubview(self.pageViewController!.view)
         
         // Set the page view controller's bounds using an inset rect so that self's view is visible around the edges of the pages.
@@ -51,7 +51,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
         }
         
         pageViewController!.view.frame = pageViewRect
-        pageViewController!.didMove(toParentViewController: self)
+        pageViewController!.didMove(toParent: self)
         
         // Add the page view controller's gesture recognizers to the book view controller's view so that the gestures are started more easily.
         view.gestureRecognizers = pageViewController!.gestureRecognizers
@@ -90,7 +90,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     // MARK: - UIPageViewController delegate methods
     
-    func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewControllerSpineLocation {
+    func pageViewController(_ pageViewController: UIPageViewController, spineLocationFor orientation: UIInterfaceOrientation) -> UIPageViewController.SpineLocation {
         if (orientation == .portrait) || (orientation == .portraitUpsideDown) || (UIDevice.current.userInterfaceIdiom == .phone) {
             // In portrait orientation or on iPhone: Set the spine position to "min" and the page view controller's view controllers array to contain just one view controller. Setting the spine position to 'UIPageViewControllerSpineLocationMid' in landscape orientation sets the doubleSided property to YES, so set it to NO here.
             let currentViewController: UIViewController = self.pageViewController!.viewControllers![0]

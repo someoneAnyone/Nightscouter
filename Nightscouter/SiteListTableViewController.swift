@@ -34,7 +34,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     var milliseconds: Double = 0 {
         didSet{
             let str = String(format:LocalizedString.lastUpdatedDateLabel.localized, AppConfiguration.lastUpdatedDateFormatter.string(from: Date(timeIntervalSince1970: milliseconds/1000)), AppConfiguration.lastUpdatedDateFormatter.string(from: date.addingTimeInterval(TimeInterval.FourMinutes)))
-            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSAttributedStringKey.foregroundColor: Color.white])
+            self.refreshControl?.attributedTitle = NSAttributedString(string:str, attributes: [NSAttributedString.Key.foregroundColor: Color.white])
             self.refreshControl?.endRefreshing()
         }
     }
@@ -102,7 +102,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     }
     
     // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
             let site = sites[indexPath.row]
@@ -206,7 +206,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             }
             
             if let incomingSite = sender as? Site{
-                if let indexOfSite = sites.index(of: incomingSite) {
+                if let indexOfSite = sites.firstIndex(of: incomingSite) {
                     SitesDataSource.sharedInstance.lastViewedSiteIndex = indexOfSite
                 }
             }
@@ -262,9 +262,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     @IBAction func goToSettings(_ sender: AnyObject?) {
         print(">>> Entering \(#function) <<<")
-        let settingsUrl = URL(string: UIApplicationOpenSettingsURLString)
+        let settingsUrl = URL(string: UIApplication.openSettingsURLString)
         //UIApplication.shared.openURL(settingsUrl!)
-        UIApplication.shared.open(settingsUrl!, options: Dictionary(), completionHandler: nil)
+        UIApplication.shared.open(settingsUrl!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary(Dictionary()), completionHandler: nil)
     }
     
     
@@ -280,7 +280,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         // Configure table view properties.
         tableView.tableHeaderView = nil
         tableView.estimatedRowHeight = 180
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundView = BackgroundView() // TODO: Move this out to a theme manager.
         tableView.separatorColor = NSAssetKit.darkNavColor
         
@@ -498,4 +498,9 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             // ...
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }
