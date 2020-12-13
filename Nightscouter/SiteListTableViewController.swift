@@ -132,15 +132,19 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         accessoryIndexPath = indexPath
     }
     
-    override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let action = UITableViewRowAction(style: .destructive, title: LocalizedString.tableViewCellRemove.localized) { (action, aIndexPath) in
-            self.tableView(tableView, commit: .delete, forRowAt: aIndexPath)
-        }
+    
+    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let action = UIContextualAction(style: .destructive, title: LocalizedString.tableViewCellRemove.localized, handler: { [weak self] (action, view, block) in
+            self?.tableView(tableView, commit: .delete, forRowAt: indexPath)
+        })
+        
         action.backgroundColor = NSAssetKit.predefinedAlertColor
         
-        return [action]
+        return UISwipeActionsConfiguration(actions: [action])
+        
+        
     }
-    
+
     override func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
         return LocalizedString.tableViewCellRemove.localized
     }
@@ -158,7 +162,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         switch segueIdentifierForSegue(segue) {
         case .EditExisting:
             #if DEBUG
-                print("Editing existing site")
+            print("Editing existing site")
             #endif
             isEditing = false
             let siteDetailViewController = segue.destination as! SiteFormViewController
@@ -171,19 +175,19 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
         case .AddNew:
             #if DEBUG
-                print("Adding new site")
+            print("Adding new site")
             #endif
             self.setEditing(false, animated: true)
             
         case .AddNewWhenEmpty:
             #if DEBUG
-                print("Adding new site when empty")
+            print("Adding new site when empty")
             #endif
             self.setEditing(false, animated: true)
             
         case .ShowDetail:
             #if DEBUG
-                print("Show detail view")
+            print("Show detail view")
             #endif
             
             let siteDetailViewController = segue.destination as! SiteDetailViewController
@@ -196,7 +200,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
         case .ShowPageView:
             #if DEBUG
-                print("Show page view.")
+            print("Show page view.")
             #endif
             
             // Get the cell that generated this segue.
@@ -426,15 +430,15 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             }
             
             
-                SitesDataSource.sharedInstance.updateSite(updatedSite)
-
-                self.milliseconds = updatedSite.milliseconds!
-                
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
-
+            SitesDataSource.sharedInstance.updateSite(updatedSite)
+            
+            self.milliseconds = updatedSite.milliseconds!
+            
+            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+            
             
             DispatchQueue.main.async {
-
+                
                 self.tableView.reloadData()
                 
                 if (self.refreshControl?.isRefreshing != nil) {
@@ -502,5 +506,5 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
 
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
+    return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }

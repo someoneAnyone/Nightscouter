@@ -43,7 +43,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         if #available(iOSApplicationExtension 10.0, *) {
             extensionContext?.widgetLargestAvailableDisplayMode =  (tableView.numberOfRows(inSection: 0) == 1) ? .compact : .expanded
             
-            let effect = UIVibrancyEffect.widgetPrimary()
+            let effect = UIVibrancyEffect.widgetEffect(forVibrancyStyle: .fill)
             tableView.separatorEffect = effect
         } else {
             
