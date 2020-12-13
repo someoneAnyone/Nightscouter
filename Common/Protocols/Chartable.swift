@@ -67,7 +67,7 @@ extension SensorGlucoseValue: Chartable {
             jsonEncorder.dateEncodingStrategy = .formatted(chartDateFormatter)
             let item = try! jsonEncorder.encode(chartObject.self)
             
-            return String(data: item, encoding: .utf8) ?? "{}"
+            return String(data: item, encoding: .utf8) ?? "[{}]"
         }
     }
 }

@@ -227,11 +227,19 @@ public enum Plugin: String, Codable, CustomStringConvertible, RawRepresentable {
     case profile
     case timeago
     case alexa
-    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors, bwpcage, bgi
+    case bridge, bgnow, devicestatus, boluscalc, food, sage, iage, mmconnect, pump, openaps, loop, cors, bwpcage, bgi, unknown
     
     public var description: String {
         return self.rawValue
     }
+}
+
+extension Plugin {
+    public init(from decoder: Decoder) throws {
+          let container = try decoder.singleValueContainer()
+          let type = try container.decode(String.self)
+          self = Plugin(rawValue: type) ?? .unknown
+      }
 }
 
 public enum GlucoseUnit: String, Codable, RawRepresentable, CustomStringConvertible {
