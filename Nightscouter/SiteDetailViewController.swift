@@ -8,8 +8,9 @@
 
 import UIKit
 import NightscouterKit
+import WebKit
 
-class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff {
+class SiteDetailViewController: UIViewController, WKNavigationDelegate, AlarmStuff {
     
     // MARK: IBOutlets
     @IBOutlet weak var siteCompassControl: CompassControl?
@@ -20,7 +21,7 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff 
     @IBOutlet weak var siteRawHeader: UILabel?
     @IBOutlet weak var siteRawLabel: UILabel?
     @IBOutlet weak var siteNameLabel: UILabel?
-    @IBOutlet weak var siteWebView: UIWebView?
+    @IBOutlet weak var siteWebView: WKWebView?
     @IBOutlet weak var siteActivityView: UIActivityIndicatorView?
     
     @IBOutlet fileprivate weak var snoozeAlarmButton: UIBarButtonItem!
@@ -83,17 +84,24 @@ class SiteDetailViewController: UIViewController, UIWebViewDelegate, AlarmStuff 
 
 // MARK: WebKit WebView Delegates
 extension SiteDetailViewController {
-    func webViewDidFinishLoad(_ webView: UIWebView) {
+    
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         print(">>> Entering \(#function) <<<")
-        let updateData = "updateData(\(self.data))"
+        let updateData = """
+updateData(\(self.data))
+"""
         if let configuration = site?.configuration {
-            let updateUnits = "updateUnits(\(configuration.displayUnits))"
-            webView.stringByEvaluatingJavaScript(from: updateUnits)
+            let updateUnits = """
+updateUnits(\(configuration.displayUnits))
+"""
+            webView.evaluateJavaScript(updateUnits, completionHandler: nil)
         }
-        webView.stringByEvaluatingJavaScript(from: updateData)
-        webView.isHidden = false
+        
+        webView.evaluateJavaScript(updateData, completionHandler: nil)
+        
         siteActivityView?.stopAnimating()
     }
+
 }
 
 extension SiteDetailViewController {
@@ -122,7 +130,7 @@ extension SiteDetailViewController {
         }
         
         setupNotifications()
-
+        
         updateData()
     }
     
@@ -190,7 +198,7 @@ extension SiteDetailViewController {
         
         let cancelAction = UIAlertAction(title: LocalizedString.generalCancelLabel.localized, style: .cancel) { (action) in
             #if DEBUG
-                print("Canceled action: \(action)")
+            print("Canceled action: \(action)")
             #endif
         }
         alertController.addAction(cancelAction)
@@ -204,7 +212,7 @@ extension SiteDetailViewController {
         let yesAction = UIAlertAction(title: "\(yesString)\(LocalizedString.generalYesLabel.localized)", style: .default) { (action) -> Void in
             self.updateScreenOverride(true)
             #if DEBUG
-                print("Yes action: \(action)")
+            print("Yes action: \(action)")
             #endif
         }
         alertController.addAction(yesAction)
@@ -218,7 +226,7 @@ extension SiteDetailViewController {
         let noAction = UIAlertAction(title: "\(noString)\(LocalizedString.generalNoLabel.localized)", style: .destructive) { (action) -> Void in
             self.updateScreenOverride(false)
             #if DEBUG
-                print("No action: \(action)")
+            print("No action: \(action)")
             #endif
         }
         alertController.addAction(noAction)
@@ -233,7 +241,7 @@ extension SiteDetailViewController {
         
         self.present(alertController, animated: true) {
             #if DEBUG
-                print("presentViewController: \(alertController.debugDescription)")
+            print("presentViewController: \(alertController.debugDescription)")
             #endif
         }
     }
@@ -310,9 +318,10 @@ extension SiteDetailViewController {
     }
     
     func loadWebView () {
-        self.siteWebView?.delegate = self
+        self.siteWebView?.navigationDelegate = self
         self.siteWebView?.scrollView.bounces = false
         self.siteWebView?.scrollView.isScrollEnabled = false
+        self.siteWebView?.isOpaque = false
         
         let filePath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "html")
         let defaultDBPath = "\(String(describing: Bundle.main.resourcePath))\\html"
@@ -325,7 +334,7 @@ extension SiteDetailViewController {
             }
         }
         let request = URLRequest(url: URL(fileURLWithPath: filePath!))
-        self.siteWebView?.loadRequest(request)
+        self.siteWebView?.load(request)
     }
     
     func updateScreenOverride(_ shouldOverride: Bool) {

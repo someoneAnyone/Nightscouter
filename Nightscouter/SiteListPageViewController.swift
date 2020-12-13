@@ -19,7 +19,7 @@ class SiteListPageViewController: UIViewController, UIPageViewControllerDelegate
     
     var currentIndex: Int {
         set {
-            SitesDataSource.sharedInstance.lastViewedSiteIndex = currentIndex
+            SitesDataSource.sharedInstance.lastViewedSiteIndex = newValue
         }
         get {
             return SitesDataSource.sharedInstance.lastViewedSiteIndex
