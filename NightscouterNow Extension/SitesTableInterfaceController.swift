@@ -33,7 +33,7 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     var milliseconds: Mills? = 0 {
         didSet{
             timeStamp = AppConfiguration.lastUpdatedFromPhoneDateFormatter.string(from: date)
-            loadingLabel.setHidden(!self.sites.isEmpty)
+//            loadingLabel.setHidden(!self.sites.isEmpty)
         }
     }
     
@@ -111,6 +111,9 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         
         // If the data is from current channel, simple update color and time stamp, then return.
         //
+        
+        SitesDataSource.sharedInstance.saveData()
+        
         updateTableData()
     }
     
@@ -120,6 +123,8 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
         guard let userInfo = notification.userInfo as? [String: Any],
             let activationStatus = userInfo[UserInfoKey.activationStatus] as? WCSessionActivationState
             else { return }
+
+        SitesDataSource.sharedInstance.loadData()
         
         print("\(#function): activationState:\(activationStatus.rawValue)")
     }
@@ -135,9 +140,9 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     
     fileprivate func updateTableData() {
         print(">>> Entering \(#function) <<<")
-        
+        self.loadingLabel.setHidden(true)
+
         if self.sites.isEmpty {
-            self.loadingLabel.setHidden(true)
             
             self.tableView.setNumberOfRows(1, withRowType: RowIdentifier.rowEmptyTypeIdentifier)
             let row = self.tableView.rowController(at: 0) as? SiteEmptyRowController
@@ -145,9 +150,10 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
                 row.messageLabel.setText(LocalizedString.emptyTableViewCellTitle.localized)
             }
             
+
         } else {
             self.tableView.setHidden(false)
-            
+
             var rowSiteType = self.sites.map{ _ in RowIdentifier.rowSiteTypeIdentifier }
             rowSiteType.append(RowIdentifier.rowUpdateTypeIdentifier)
             

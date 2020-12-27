@@ -81,10 +81,10 @@ class WatchConnectivityCordinator: NSObject, SessionDataProvider {
             WCSession.default.activate()
          
             
-//            NotificationCenter.default.addObserver(
-//                self, selector: #selector(type(of:self).dataUpdated(_:)),
-//                name: .nightscoutDataUpdatedNotification, object: nil
-//            )
+            NotificationCenter.default.addObserver(
+                self, selector: #selector(type(of:self).dataUpdated(_:)),
+                name: .nightscoutDataUpdatedNotification, object: nil
+            )
             
         }
     }
@@ -103,6 +103,8 @@ class WatchConnectivityCordinator: NSObject, SessionDataProvider {
                                        UserInfoKey.phrase: Phrase.updated]
         do {
             try WCSession.default.updateApplicationContext(payload)
+            self.postNotificationOnMainQueue(name: .dataDidFlow, userInfo: userInfo)
+
         }
         catch {
             userInfo[UserInfoKey.error] = error.localizedDescription
@@ -313,8 +315,10 @@ extension WatchConnectivityCordinator: WCSessionDelegate {
     func session(_ session: WCSession, didReceiveMessageData messageData: Data) {
         var userInfo: [String : Any] = [UserInfoKey.channel: Channel.sendMessageData,
                                         UserInfoKey.phrase: Phrase.received]
+
+        let data = try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(messageData)
         
-        let data = NSKeyedUnarchiver.unarchiveObject(with: messageData)
+//        let data = NSKeyedUnarchiver.unarchiveObject(with: messageData)
         if let siteData = data as? [String: Any] {
             userInfo[UserInfoKey.siteData] = siteData
         }

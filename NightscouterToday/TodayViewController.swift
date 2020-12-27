@@ -38,20 +38,19 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = Color(white: 1.0, alpha: 0.5)
         
-        //self.sites = SitesDataSource.sharedInstance.sites
         
-        if #available(iOSApplicationExtension 10.0, *) {
+//        if #available(iOSApplicationExtension 10.0, *) {
             extensionContext?.widgetLargestAvailableDisplayMode =  (tableView.numberOfRows(inSection: 0) == 1) ? .compact : .expanded
-            
-            let effect = UIVibrancyEffect.widgetEffect(forVibrancyStyle: .fill)
-            tableView.separatorEffect = effect
-        } else {
-            
-            let effect = UIVibrancyEffect.notificationCenter()
-            tableView.separatorEffect = effect
-            preferredContentSize = tableView.contentSize
-        }
-        
+//
+//            let effect = UIVibrancyEffect.widgetEffect(forVibrancyStyle: .fill)
+//            tableView.separatorEffect = effect
+//        } else {
+//
+//            let effect = UIVibrancyEffect.notificationCenter()
+//            tableView.separatorEffect = effect
+//            preferredContentSize = tableView.contentSize
+//        }
+//
         updateData()
 
         NotificationCenter.default.addObserver(self, selector: #selector(TodayViewController.updateData), name: .nightscoutDataStaleNotification, object: nil)
@@ -118,12 +117,9 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
             
             contentCell.configure(withDataSource: model, delegate: model)
             
-            let os = ProcessInfo().operatingSystemVersion
-            if os.majorVersion >= 10 {
-                contentCell.contentView.backgroundColor = Color(hexString: "1e1e1f")
-            }
+//            contentCell.contentView.backgroundColor = NSAssetKit.darkNavColor
             
-            if site.updateNow && date.timeIntervalSinceNow < TimeInterval.FourMinutes.inThePast {
+            if site.updateNow {
                 refreshDataFor(site, index: indexPath.row)
             }
             
@@ -132,7 +128,7 @@ class TodayViewController: UITableViewController, NCWidgetProviding, SitesDataSo
     }
     
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        cell.layer.backgroundColor = Color.clear.cgColor
+//        cell.layer.backgroundColor = Color.clear.cgColor
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

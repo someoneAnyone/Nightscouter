@@ -154,7 +154,7 @@ extension SiteDetailViewController {
     
     func updateData() {
         guard let site = self.site else { return }
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         self.siteActivityView?.startAnimating()
         site.fetchDataFromNetwork() { (updatedSite, err) in
@@ -169,7 +169,7 @@ extension SiteDetailViewController {
             self.site = updatedSite
             
             DispatchQueue.main.async {
-                UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//                UIApplication.shared.isNetworkActivityIndicatorVisible = false
                 self.siteActivityView?.stopAnimating()
                 self.updateUI()
             }

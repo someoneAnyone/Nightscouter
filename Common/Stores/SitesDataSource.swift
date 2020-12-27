@@ -40,6 +40,7 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
+        sites = loadData()
         #if os(iOS)
         
         let iCloudManager = iCloudKeyValueStore()
@@ -66,7 +67,9 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         
         dataStaleTimer(nil)
         
-        sites = loadData()
+//        sites = loadData()
+        
+        
     }
     
     deinit {
@@ -264,15 +267,23 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
     
     public func loadData() -> [Site] {
         
+        #if os(iOS)
         if defaults.string(forKey: DefaultKey.version.rawValue) != DefaultKey.currentVersion {
             _ = clearAllSites()
         }
+        #endif
         
         guard let sitesDict = defaults.data(forKey: DefaultKey.sites.rawValue) else {
             return []
         }
         
         do {
+            
+            sessionManagers.forEach ({ manager in
+                
+                manager.startSession()
+            })
+            
             return try PropertyListDecoder().decode([Site].self, from: sitesDict)
             
         } catch {
@@ -280,6 +291,9 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             
             return []
         }
+        
+        
+        
     }
     
     public func saveData() {
@@ -303,11 +317,11 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             
             defaults.synchronize()
             
-            if appIsInBackground {
-                WatchConnectivityCordinator.shared.send(dataProvider: self, channel: .transferCurrentComplicationUserInfo)
-            } else {
+//            if appIsInBackground {
+//                WatchConnectivityCordinator.shared.send(dataProvider: self, channel: .transferCurrentComplicationUserInfo)
+//            } else {
                 WatchConnectivityCordinator.shared.send(dataProvider: self, channel: .sendMessage)
-            }
+//            }
             
             self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification, object: self, userInfo: dict)
         } catch {

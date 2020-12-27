@@ -381,6 +381,8 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
         // If the sites array is empty show a vesion of the form that does not allow escape.
         if sites.isEmpty{
             let vc = storyboard?.instantiateViewController(withIdentifier: StoryboardIdentifier.formViewController.rawValue) as! SiteFormViewController
+            
+            vc.isModalInPresentation = true
             self.parent!.present(vc, animated: true, completion: { () -> Void in
                 // println("Finished presenting SiteFormViewController.")
             })
@@ -419,7 +421,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
     
     func refreshDataFor(_ site: Site, index: Int){
         /// Tie into networking code.
-        UIApplication.shared.isNetworkActivityIndicatorVisible = true
+//        UIApplication.shared.isNetworkActivityIndicatorVisible = true
         
         site.fetchDataFromNetwork() { (updatedSite, err) in
             if let error = err {
@@ -434,7 +436,7 @@ class SiteListTableViewController: UITableViewController, SitesDataSourceProvide
             
             self.milliseconds = updatedSite.milliseconds!
             
-            UIApplication.shared.isNetworkActivityIndicatorVisible = false
+//            UIApplication.shared.isNetworkActivityIndicatorVisible = false
             
             
             DispatchQueue.main.async {

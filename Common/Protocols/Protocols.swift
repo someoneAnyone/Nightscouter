@@ -190,7 +190,7 @@ fileprivate func calculateRawBG(fromSensorGlucoseValue sgv: SensorGlucoseValue, 
 public extension DesiredColorState {
     
     private static let colorMapping = [
-        DesiredColorState.neutral: Color(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000),
+        DesiredColorState.neutral: Color.gray, //Color(red: 0.851, green: 0.851, blue: 0.851, alpha: 1.000),
         DesiredColorState.alert: Color(red: 1.000, green: 0.067, blue: 0.310, alpha: 1.000),
         DesiredColorState.positive: Color(red: 0.016, green: 0.871, blue: 0.443, alpha: 1.000),
         DesiredColorState.warning: Color(red: 1.000, green: 0.902, blue: 0.125, alpha: 1.000),
