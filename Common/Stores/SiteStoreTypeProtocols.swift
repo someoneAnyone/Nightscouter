@@ -26,7 +26,7 @@ public extension SitesDataSourceProvider {
  - CloudKit: Cloud kit records.
  */
 public enum StorageLocation: String {
-    case localKeyValueStore, iCLoudKeyValueStore, cloudKit
+    case localKeyValueStore, iCLoudKeyValueStore, cloudKit, watchConnectivity
 }
 
 // move to a protocol for storage conformance

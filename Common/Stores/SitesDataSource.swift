@@ -32,7 +32,7 @@ public enum DefaultKey: String, RawRepresentable, Codable {
     }
 }
 
-public class SitesDataSource: SiteStoreType, SessionDataProvider {
+public class SitesDataSource: SiteStoreType, SiteDataProvider {
     
     public static let sharedInstance = SitesDataSource()
     
@@ -41,6 +41,7 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         self.defaults = UserDefaults(suiteName: AppConfiguration.sharedApplicationGroupSuiteName ) ?? UserDefaults.standard
         
         sites = loadData()
+        
         #if os(iOS)
         
         let iCloudManager = iCloudKeyValueStore()
@@ -50,11 +51,17 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         
         #endif
         
-        // Need logic for !iOS | WatchOS
-        let watchConnectivityManager = WatchConnectivityCordinator.shared
-        watchConnectivityManager.store = self
-        watchConnectivityManager.startSession()
-        //        self.sessionManagers.append(watchConnectivityManager as! SessionManagerType)
+        let watchSessionDelegater = SessionDelegater.shared
+        watchSessionDelegater.store = self
+        watchSessionDelegater.startSession()
+        self.sessionManagers.append(watchSessionDelegater)
+        
+//
+//        // Need logic for !iOS | WatchOS
+//        let watchConnectivityManager = WatchConnectivityCordinator.shared
+//        watchConnectivityManager.store = self
+//        watchConnectivityManager.startSession()
+//        //        self.sessionManagers.append(watchConnectivityManager as! SessionManagerType)
         
         let alarmManager = AlarmManager.sharedManager
         alarmManager.store = self
@@ -67,7 +74,6 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         
         dataStaleTimer(nil)
         
-//        sites = loadData()
         
         
     }
@@ -279,10 +285,9 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
         
         do {
             
-            sessionManagers.forEach ({ manager in
-                
-                manager.startSession()
-            })
+//            sessionManagers.forEach ({ manager in
+//                manager.startSession()
+//            })
             
             return try PropertyListDecoder().decode([Site].self, from: sitesDict)
             
@@ -309,19 +314,22 @@ public class SitesDataSource: SiteStoreType, SessionDataProvider {
             
             sessionManagers.forEach({ (manager) in
                 do {
-                    try manager.updateApplicationContext(dict)
-                }catch {
+                    try manager.updateApplicationContext(appContext)
+                } catch {
                     print(error)
                 }
             })
             
             defaults.synchronize()
             
-//            if appIsInBackground {
-//                WatchConnectivityCordinator.shared.send(dataProvider: self, channel: .transferCurrentComplicationUserInfo)
-//            } else {
-                WatchConnectivityCordinator.shared.send(dataProvider: self, channel: .sendMessage)
-//            }
+            
+            #if os(iOS)
+            if appIsInBackground {
+                SessionDelegater.shared.transferCurrentComplicationUserInfo(appContext)
+            } else {
+                SessionDelegater.shared.sendMessage(appContext)
+            }
+            #endif
             
             self.postNotificationOnMainQueue(name: .nightscoutDataUpdatedNotification, object: self, userInfo: dict)
         } catch {

@@ -116,16 +116,28 @@
 		17F22E5F1BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; };
 		17F22E601BEF9E600041E0B0 /* NightscouterWatchOSKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 17F22E581BEF9E600041E0B0 /* NightscouterWatchOSKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		17FF96DB1C7651F4000B3002 /* SiteUpdateRowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF96D91C76507C000B3002 /* SiteUpdateRowController.swift */; };
-		831A0FB41FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */; };
-		831A0FB51FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831A0FB31FCA168500B45BF2 /* WatchConnectivityCordinator.swift */; };
-		834E3683202ABB1000D2E428 /* SessionDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E3681202ABAD700D2E428 /* SessionDataProvider.swift */; };
-		834E3684202ABB1100D2E428 /* SessionDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834E3681202ABAD700D2E428 /* SessionDataProvider.swift */; };
 		8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
 		8352D5C21D9F6A4F00A51FFB /* DownloadOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */; };
 		8366F57B1D99FC6A000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
 		8366F57C1D99FC6B000A800A /* alarm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB731D91C56500D7D52D /* alarm.mp3 */; };
 		8366F57F1D9A1735000A800A /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB741D91C56500D7D52D /* alarm2.mp3 */; };
 		8366F5801D9A1776000A800A /* alarm2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 171CDB741D91C56500D7D52D /* alarm2.mp3 */; };
+		838532B925AA11CB00DD842F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B225AA11CB00DD842F /* Logger.swift */; };
+		838532BA25AA11CB00DD842F /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B225AA11CB00DD842F /* Logger.swift */; };
+		838532BB25AA11CB00DD842F /* SessionTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B325AA11CB00DD842F /* SessionTransfer.swift */; };
+		838532BC25AA11CB00DD842F /* SessionTransfer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B325AA11CB00DD842F /* SessionTransfer.swift */; };
+		838532BD25AA11CB00DD842F /* CommandStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B425AA11CB00DD842F /* CommandStatus.swift */; };
+		838532BE25AA11CB00DD842F /* CommandStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B425AA11CB00DD842F /* CommandStatus.swift */; };
+		838532BF25AA11CB00DD842F /* SiteDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B525AA11CB00DD842F /* SiteDataProvider.swift */; };
+		838532C025AA11CB00DD842F /* SiteDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B525AA11CB00DD842F /* SiteDataProvider.swift */; };
+		838532C125AA11CB00DD842F /* FileTransferObservers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B625AA11CB00DD842F /* FileTransferObservers.swift */; };
+		838532C225AA11CB00DD842F /* FileTransferObservers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B625AA11CB00DD842F /* FileTransferObservers.swift */; };
+		838532C325AA11CB00DD842F /* SessionCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B725AA11CB00DD842F /* SessionCommands.swift */; };
+		838532C425AA11CB00DD842F /* SessionCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B725AA11CB00DD842F /* SessionCommands.swift */; };
+		838532C525AA11CB00DD842F /* SessionDelegater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B825AA11CB00DD842F /* SessionDelegater.swift */; };
+		838532C625AA11CB00DD842F /* SessionDelegater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532B825AA11CB00DD842F /* SessionDelegater.swift */; };
+		838532CB25AA12AD00DD842F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532CA25AA12AD00DD842F /* Data.swift */; };
+		838532CC25AA12AD00DD842F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838532CA25AA12AD00DD842F /* Data.swift */; };
 		83883D781BC1F7E800BD1A9C /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 83883D761BC1F7E800BD1A9C /* Interface.storyboard */; };
 		83883D7A1BC1F7E800BD1A9C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 83883D791BC1F7E800BD1A9C /* Assets.xcassets */; };
 		83883D811BC1F7E900BD1A9C /* NightscouterNow Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 83883D801BC1F7E800BD1A9C /* NightscouterNow Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -334,6 +346,14 @@
 		8352A8BD1BC220EB003D7F74 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS2.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		8352D5BF1D9F6A4B00A51FFB /* DownloadOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadOperation.swift; sourceTree = "<group>"; };
 		83632F1121DC500E004147C9 /* privacy_policy.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = privacy_policy.md; sourceTree = "<group>"; };
+		838532B225AA11CB00DD842F /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		838532B325AA11CB00DD842F /* SessionTransfer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionTransfer.swift; sourceTree = "<group>"; };
+		838532B425AA11CB00DD842F /* CommandStatus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommandStatus.swift; sourceTree = "<group>"; };
+		838532B525AA11CB00DD842F /* SiteDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteDataProvider.swift; sourceTree = "<group>"; };
+		838532B625AA11CB00DD842F /* FileTransferObservers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileTransferObservers.swift; sourceTree = "<group>"; };
+		838532B725AA11CB00DD842F /* SessionCommands.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionCommands.swift; sourceTree = "<group>"; };
+		838532B825AA11CB00DD842F /* SessionDelegater.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDelegater.swift; sourceTree = "<group>"; };
+		838532CA25AA12AD00DD842F /* Data.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		83883D741BC1F7E800BD1A9C /* NightscouterNow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NightscouterNow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		83883D771BC1F7E800BD1A9C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
 		83883D791BC1F7E800BD1A9C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -461,6 +481,7 @@
 				171CDB721D91C56500D7D52D /* Resources */,
 				171CDB781D91C56500D7D52D /* Stores */,
 				177FAB911D92BC6800B612B3 /* Views */,
+				838532B125AA11CB00DD842F /* WatchComms */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -540,6 +561,7 @@
 		171CDB781D91C56500D7D52D /* Stores */ = {
 			isa = PBXGroup;
 			children = (
+				838532CA25AA12AD00DD842F /* Data.swift */,
 				175707711D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift */,
 				171CDB791D91C56500D7D52D /* AlarmManager.swift */,
 				171CDB7A1D91C56500D7D52D /* iCloudKeyValueStore.swift */,
@@ -703,6 +725,20 @@
 				833E8D9B1D932C4B00ED30BD /* Info.plist */,
 			);
 			name = "iOS Framework";
+			sourceTree = "<group>";
+		};
+		838532B125AA11CB00DD842F /* WatchComms */ = {
+			isa = PBXGroup;
+			children = (
+				838532B225AA11CB00DD842F /* Logger.swift */,
+				838532B325AA11CB00DD842F /* SessionTransfer.swift */,
+				838532B425AA11CB00DD842F /* CommandStatus.swift */,
+				838532B525AA11CB00DD842F /* SiteDataProvider.swift */,
+				838532B625AA11CB00DD842F /* FileTransferObservers.swift */,
+				838532B725AA11CB00DD842F /* SessionCommands.swift */,
+				838532B825AA11CB00DD842F /* SessionDelegater.swift */,
+			);
+			path = WatchComms;
 			sourceTree = "<group>";
 		};
 		83883D751BC1F7E800BD1A9C /* Watch App */ = {
@@ -1175,6 +1211,7 @@
 			files = (
 				171CDBAB1D91C56500D7D52D /* ComplicationDataSourceGenerator.swift in Sources */,
 				175707721D9AB5EB00D5AAA6 /* AlarmAudioPlayer-AVFoundation.swift in Sources */,
+				838532BD25AA11CB00DD842F /* CommandStatus.swift in Sources */,
 				171CDB851D91C56500D7D52D /* Double-Extension.swift in Sources */,
 				1724B9F31D9ABC1F00D2CD2B /* AlarmProtocols.swift in Sources */,
 				1724B9FA1D9AE9CE00D2CD2B /* SegueHandlerType.swift in Sources */,
@@ -1187,6 +1224,7 @@
 				171CDBA51D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDBA11D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBCD1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
+				838532C525AA11CB00DD842F /* SessionDelegater.swift in Sources */,
 				171CDB951D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
 				177FAB971D92BE7400B612B3 /* ColorBlockView.swift in Sources */,
 				1724B9F71D9AE8F400D2CD2B /* AlarmObject.swift in Sources */,
@@ -1198,9 +1236,10 @@
 				171CDBB71D91C56500D7D52D /* Protocols.swift in Sources */,
 				171CDBB11D91C56500D7D52D /* Chartable.swift in Sources */,
 				171CDBD61D91C99700D7D52D /* AppTheme.swift in Sources */,
-				831A0FB41FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */,
+				838532C325AA11CB00DD842F /* SessionCommands.swift in Sources */,
 				171CDBC31D91C56600D7D52D /* LocalizedStrings.swift in Sources */,
-				834E3683202ABB1000D2E428 /* SessionDataProvider.swift in Sources */,
+				838532C125AA11CB00DD842F /* FileTransferObservers.swift in Sources */,
+				838532BF25AA11CB00DD842F /* SiteDataProvider.swift in Sources */,
 				171CDBAF1D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				8352D5C11D9F6A4E00A51FFB /* DownloadOperation.swift in Sources */,
 				171CDBA31D91C56500D7D52D /* Nightscout.swift in Sources */,
@@ -1215,8 +1254,11 @@
 				171CDB9B1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB831D91C56500D7D52D /* Color-Extensions.swift in Sources */,
 				171CDBA91D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */,
+				838532B925AA11CB00DD842F /* Logger.swift in Sources */,
 				177FAB9C1D92BFFB00B612B3 /* NSAssetKit.swift in Sources */,
+				838532CB25AA12AD00DD842F /* Data.swift in Sources */,
 				171CDBA71D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
+				838532BB25AA11CB00DD842F /* SessionTransfer.swift in Sources */,
 				171CDB9F1D91C56500D7D52D /* Site.swift in Sources */,
 				171CDB9D1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
 			);
@@ -1233,26 +1275,31 @@
 				171CDBA21D91C56500D7D52D /* SiteSummaryModelViewModel.swift in Sources */,
 				171CDBB01D91C56500D7D52D /* BundleRepresntable.swift in Sources */,
 				1724B9F61D9AE8F300D2CD2B /* AlarmObject.swift in Sources */,
-				831A0FB51FCA168500B45BF2 /* WatchConnectivityCordinator.swift in Sources */,
 				171CDB9C1D91C56500D7D52D /* SensorGlucoseValue.swift in Sources */,
 				171CDB8C1D91C56500D7D52D /* Date-Extensions.swift in Sources */,
 				171CDBB61D91C56500D7D52D /* DictionaryRepresentable.swift in Sources */,
 				171CDBA81D91C56500D7D52D /* ParseDeviceStatusOperation.swift in Sources */,
+				838532C025AA11CB00DD842F /* SiteDataProvider.swift in Sources */,
 				171CDB901D91C56500D7D52D /* String-Extensions.swift in Sources */,
 				171CDBA61D91C56500D7D52D /* ParseConfigurationOperation.swift in Sources */,
 				171CDB981D91C56500D7D52D /* DeviceStatus.swift in Sources */,
+				838532CC25AA12AD00DD842F /* Data.swift in Sources */,
 				171CDBC81D91C56600D7D52D /* AlarmManager.swift in Sources */,
 				171CDB8A1D91C56500D7D52D /* Calendar-Extension.swift in Sources */,
 				171CDBD01D91C56600D7D52D /* SiteStoreTypeProtocols.swift in Sources */,
+				838532C425AA11CB00DD842F /* SessionCommands.swift in Sources */,
 				171CDB961D91C56500D7D52D /* ComplicationTimelineEntry.swift in Sources */,
 				177CCF821D9C2AE500F22512 /* AlarmProtocols.swift in Sources */,
+				838532BC25AA11CB00DD842F /* SessionTransfer.swift in Sources */,
 				171CDB841D91C56500D7D52D /* Color-Extensions.swift in Sources */,
+				838532C625AA11CB00DD842F /* SessionDelegater.swift in Sources */,
 				171CDB821D91C56500D7D52D /* Array-Extensions.swift in Sources */,
 				171CDBB21D91C56500D7D52D /* Chartable.swift in Sources */,
 				171CDBA01D91C56500D7D52D /* Site.swift in Sources */,
 				171CDB9A1D91C56500D7D52D /* MeteredGlucoseValue.swift in Sources */,
 				171CDB921D91C56500D7D52D /* AlarmRule.swift in Sources */,
 				171CDBAA1D91C56500D7D52D /* ParseReadingsOperation.swift in Sources */,
+				838532BA25AA11CB00DD842F /* Logger.swift in Sources */,
 				171CDBA41D91C56500D7D52D /* Nightscout.swift in Sources */,
 				17BD1C3D1BF123E30014EE38 /* NSAssetKitWatchOS.swift in Sources */,
 				171CDB941D91C56500D7D52D /* Calibration.swift in Sources */,
@@ -1261,9 +1308,10 @@
 				171CDBCE1D91C56600D7D52D /* SitesDataSource.swift in Sources */,
 				8352D5C21D9F6A4F00A51FFB /* DownloadOperation.swift in Sources */,
 				171CDBBA1D91C56600D7D52D /* UpdatableUserInterfaceType.swift in Sources */,
+				838532C225AA11CB00DD842F /* FileTransferObservers.swift in Sources */,
 				171CDB9E1D91C56500D7D52D /* ServerConfiguration.swift in Sources */,
+				838532BE25AA11CB00DD842F /* CommandStatus.swift in Sources */,
 				171CDBD41D91C76C00D7D52D /* Protocols.swift in Sources */,
-				834E3684202ABB1100D2E428 /* SessionDataProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

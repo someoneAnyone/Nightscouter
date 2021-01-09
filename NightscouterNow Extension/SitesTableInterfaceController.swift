@@ -99,20 +99,17 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     @objc func dataDidFlow(_ notification: Notification) {
         // Notification should have userInfo, which contains channel, phrase, and timedColor.
         //
-        guard let aUserInfo = notification.userInfo as? [String: Any],
-            let notificationChannel = aUserInfo[UserInfoKey.channel] as? Channel,
-            let phrase = aUserInfo[UserInfoKey.phrase] as? Phrase,
-            let siteData = aUserInfo[UserInfoKey.siteData] as? [String: Any] else { return }
+        guard let commandStatus = notification.object as? CommandStatus else {
+            return
+        }
         
-        print(notificationChannel)
-        print(phrase)
-        SitesDataSource.sharedInstance.sites = try! PropertyListDecoder().decode([Site].self, from: siteData["siteData"] as! Data)
+
         
+        SitesDataSource.sharedInstance.sites = commandStatus.timedSites?.sites ?? []
+        print(commandStatus)
         
-        // If the data is from current channel, simple update color and time stamp, then return.
-        //
-        
-        SitesDataSource.sharedInstance.saveData()
+
+        //SitesDataSource.sharedInstance.saveData()
         
         updateTableData()
     }
@@ -120,22 +117,22 @@ class SitesTableInterfaceController: WKInterfaceController, SitesDataSourceProvi
     // .activationDidComplete notification handler.
     //
     @objc func activationDidComplete(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as? [String: Any],
-            let activationStatus = userInfo[UserInfoKey.activationStatus] as? WCSessionActivationState
-            else { return }
-
-        SitesDataSource.sharedInstance.loadData()
         
-        print("\(#function): activationState:\(activationStatus.rawValue)")
+        guard (notification.object as? WCSessionActivationState) != WCSessionActivationState.activated else {
+            return
+        }
+
+//        _ = SitesDataSource.sharedInstance.loadData()
+        
+        print("\(#function): activationState:\(notification)")
     }
     
     // .reachabilityDidChange notification handler.
     //
     @objc func reachabilityDidChange(_ notification: Notification) {
-        guard let userInfo = notification.userInfo as? [String: Any],
-            let isReachable = userInfo[UserInfoKey.reachable] as? Bool else { return }
+      
         
-        print("\(#function): isReachable:\(isReachable)")
+        print("\(#function): isReachable:\(notification)")
     }
     
     fileprivate func updateTableData() {

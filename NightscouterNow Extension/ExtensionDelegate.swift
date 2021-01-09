@@ -14,6 +14,10 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     
     private var wcBackgroundTasks = [WKWatchConnectivityRefreshBackgroundTask]()
     
+
+    var dataStore = SitesDataSource.sharedInstance
+    
+    
     override init() {
         
         super.init()
@@ -46,24 +50,24 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         }
     }
     
-    // Compelete the background tasks, and schedule a snapshot refresh.
-    //
-    func completeBackgroundTasks() {
-        guard !wcBackgroundTasks.isEmpty else { return }
-        
-        let session = WCSession.default
-        guard session.activationState == .activated && !session.hasContentPending else { return }
-        
-        wcBackgroundTasks.forEach { $0.setTaskCompleted() }
-        
-        if (WKExtension.shared().applicationState == .background) {
-            SitesDataSource.sharedInstance.appIsInBackground = true
-            for site in SitesDataSource.sharedInstance.sites {
-                site.fetchDataFromNetwork(useBackground: true, completion: { (updatedSite, error) in
-                    SitesDataSource.sharedInstance.updateSite(updatedSite)
-                })
-            }
-        }
+//    // Compelete the background tasks, and schedule a snapshot refresh.
+//    //
+//    func completeBackgroundTasks() {
+//        guard !wcBackgroundTasks.isEmpty else { return }
+//
+//        let session = WCSession.default
+//        guard session.activationState == .activated && !session.hasContentPending else { return }
+//
+//        wcBackgroundTasks.forEach { $0.setTaskCompleted() }
+//
+//        if (WKExtension.shared().applicationState == .background) {
+//            SitesDataSource.sharedInstance.appIsInBackground = true
+//            for site in SitesDataSource.sharedInstance.sites {
+//                site.fetchDataFromNetwork(useBackground: true, completion: { (updatedSite, error) in
+//                    SitesDataSource.sharedInstance.updateSite(updatedSite)
+//                })
+//            }
+//        }
         
         // Use FileLogger to log the tasks for debug purpose. A real app may remove the log
         // to save the precious background time.
@@ -74,22 +78,22 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
         //
         
         
-        let date = Date(timeIntervalSinceNow: 1)
-        WKExtension.shared().scheduleSnapshotRefresh(withPreferredDate: date, userInfo: nil) { error in
-            
-            if let error = error {
-                print("scheduleSnapshotRefresh error: \(error)!")
-            }
-        }
-        
-        WKExtension.shared().scheduleBackgroundRefresh(withPreferredDate: Date(timeIntervalSinceNow: TimeInterval.OneHour), userInfo: nil) { (error: Error?) in
-            if let error = error {
-                print("Error occured while scheduling background refresh: \(error.localizedDescription)")
-            }
-        }
-        
-        wcBackgroundTasks.removeAll()
-    }
+//        let date = Date(timeIntervalSinceNow: 1)
+//        WKExtension.shared().scheduleSnapshotRefresh(withPreferredDate: date, userInfo: nil) { error in
+//
+//            if let error = error {
+//                print("scheduleSnapshotRefresh error: \(error)!")
+//            }
+//        }
+//
+//        WKExtension.shared().scheduleBackgroundRefresh(withPreferredDate: Date(timeIntervalSinceNow: TimeInterval.OneHour), userInfo: nil) { (error: Error?) in
+//            if let error = error {
+//                print("Error occured while scheduling background refresh: \(error.localizedDescription)")
+//            }
+//        }
+//
+//        wcBackgroundTasks.removeAll()
+//    }
     
     func applicationDidFinishLaunching() {
         #if DEBUG
@@ -123,22 +127,71 @@ class ExtensionDelegate: NSObject, WKExtensionDelegate {
     // If the tasks are completed before the WCSessionDelegate methods are called, the data will be delivered
     // the app is running next time, so no data lost.
     //
+//    func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
+//        for task in backgroundTasks {
+//
+//            // Use FileLogger to log the tasks for debug purpose. A real app may remove the log
+//            // to save the precious background time.
+//            //
+//            if let wcTask = task as? WKWatchConnectivityRefreshBackgroundTask {
+//                wcBackgroundTasks.append(wcTask)
+////                FileLogger.shared.append(line: "\(#function):\(wcTask.description) was appended!")
+//            }
+//            else {
+//                task.setTaskCompleted()
+////                FileLogger.shared.append(line: "\(#function):\(task.description) was completed!")
+//            }
+//        }
+//        completeBackgroundTasks()
+//    }
+}
+
+extension ExtensionDelegate {
+    
+    // An array to keep the background tasks.
+    //
+    
+    // Compelete the background tasks, and schedule a snapshot refresh.
+    //
+    func completeBackgroundTasks() {
+        guard !wcBackgroundTasks.isEmpty else { return }
+
+        guard WCSession.default.activationState == .activated,
+            WCSession.default.hasContentPending == false else { return }
+        
+        wcBackgroundTasks.forEach { $0.setTaskCompletedWithSnapshot(false) }
+        
+        // Use Logger to log the tasks for debug purpose. A real app may remove the log
+        // to save the precious background time.
+        //
+        Logger.shared.append(line: "\(#function):\(wcBackgroundTasks) was completed!")
+
+        // Schedule a snapshot refresh if the UI is updated by background tasks.
+        //
+        let date = Date(timeIntervalSinceNow: 1)
+        WKExtension.shared().scheduleSnapshotRefresh(withPreferredDate: date, userInfo: nil) { error in
+            
+            if let error = error {
+                print("scheduleSnapshotRefresh error: \(error)!")
+            }
+        }
+        wcBackgroundTasks.removeAll()
+    }
+    
     func handle(_ backgroundTasks: Set<WKRefreshBackgroundTask>) {
         for task in backgroundTasks {
             
-            // Use FileLogger to log the tasks for debug purpose. A real app may remove the log
+            // Use Logger to log the tasks for debug purpose. A real app may remove the log
             // to save the precious background time.
             //
             if let wcTask = task as? WKWatchConnectivityRefreshBackgroundTask {
                 wcBackgroundTasks.append(wcTask)
-//                FileLogger.shared.append(line: "\(#function):\(wcTask.description) was appended!")
-            }
-            else {
-                task.setTaskCompleted()
-//                FileLogger.shared.append(line: "\(#function):\(task.description) was completed!")
+                Logger.shared.append(line: "\(#function):\(wcTask.description) was appended!")
+            } else {
+                task.setTaskCompletedWithSnapshot(false)
+                Logger.shared.append(line: "\(#function):\(task.description) was completed!")
             }
         }
         completeBackgroundTasks()
     }
 }
-
