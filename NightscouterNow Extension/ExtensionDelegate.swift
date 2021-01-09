@@ -164,7 +164,7 @@ extension ExtensionDelegate {
         // Use Logger to log the tasks for debug purpose. A real app may remove the log
         // to save the precious background time.
         //
-        Logger.shared.append(line: "\(#function):\(wcBackgroundTasks) was completed!")
+        //Logger.shared.append(line: "\(#function):\(wcBackgroundTasks) was completed!")
 
         // Schedule a snapshot refresh if the UI is updated by background tasks.
         //
@@ -186,7 +186,14 @@ extension ExtensionDelegate {
             //
             if let wcTask = task as? WKWatchConnectivityRefreshBackgroundTask {
                 wcBackgroundTasks.append(wcTask)
-                Logger.shared.append(line: "\(#function):\(wcTask.description) was appended!")
+                SitesDataSource.sharedInstance.appIsInBackground = true
+                          for site in SitesDataSource.sharedInstance.sites {
+                              site.fetchDataFromNetwork(useBackground: true, completion: { (updatedSite, error) in
+                                  SitesDataSource.sharedInstance.updateSite(updatedSite)
+                              })
+                          }
+                
+//                Logger.shared.append(line: "\(#function):\(wcTask.description) was appended!")
             } else {
                 task.setTaskCompletedWithSnapshot(false)
                 Logger.shared.append(line: "\(#function):\(task.description) was completed!")
