@@ -50,7 +50,7 @@ public struct SensorGlucoseValue: CustomStringConvertible, Dateable, GlucoseValu
 }
 
 public enum ReservedValues: MgdlValue, CustomStringConvertible {
-    case noGlucose=0, sensoreNotActive=1, minimalDeviation=2, noAntenna=3, sensorNotCalibrated=5, countsDeviation=6, absoluteDeviation=9, powerDeviation=10, badRF=12, hupHolland=17, low=30
+    case noGlucose=0, sensoreNotActive=1, minimalDeviation=2, noAntenna=3, sensorNotCalibrated=5, countsDeviation=6, absoluteDeviation=9, powerDeviation=10, badRF=12, hupHolland=17, low=30, high=400
     
     public var description: String {
         switch (self) {
@@ -76,6 +76,8 @@ public enum ReservedValues: MgdlValue, CustomStringConvertible {
             return "MH"
         case .low:
             return LocalizedString.sgvLowString.localized
+        case .high:
+            return "High"
         }
     }
 }
@@ -84,8 +86,9 @@ extension ReservedValues {
     init?(mgdl: MgdlValue) {
         if mgdl >= 30 && mgdl < 40 {
             self.init(rawValue: 30)
+        } else if mgdl > 401 {
+            self.init(mgdl: 401)
         } else {
-            
             self.init(rawValue: mgdl)
         }
     }
