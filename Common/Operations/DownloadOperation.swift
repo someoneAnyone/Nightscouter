@@ -42,15 +42,19 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         downloadTask?.cancel()
         super.cancel()
     }
-
+    
     override func main() {
         
         if self.isCancelled { return }
         
-        disGroup = DispatchGroup()
-        disGroup?.enter()
-        downloadTask?.resume()
-        disGroup?.wait()
+        if !isBackground {
+            disGroup = DispatchGroup()
+            disGroup?.enter()
+            downloadTask?.resume()
+            disGroup?.wait()
+        } else {
+            downloadTask?.resume()
+        }
     }
     
     //MARK: session delegate
@@ -59,7 +63,10 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         if let err = error {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
             self.error = apiError
-            disGroup?.leave()
+            if !isBackground {
+                disGroup?.leave()
+            }
+               
             return
         }
     }
@@ -71,12 +78,18 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         guard let dataFromLocation = try? Data(contentsOf: location) else {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .couldNotCreateDataFromDownloadedFile)
             self.error = apiError
-            disGroup?.leave()
+            if !isBackground {
+                disGroup?.leave()
+            }
+                        
             return
         }
         
         self.data = dataFromLocation
-        disGroup?.leave()
+        
+        if !isBackground {
+            disGroup?.leave()
+        }
         
         return
     }
@@ -85,7 +98,10 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         if let err = error {
             let apiError = NightscoutRESTClientError(line: #line, column: #column, kind: .unknown(err.localizedDescription))
             self.error = apiError
-            disGroup?.leave()
+            
+            if !isBackground {
+                disGroup?.leave()
+            }
             
             return
         }
@@ -96,9 +112,11 @@ class DownloadOperation: Operation, URLSessionDelegate, URLSessionDownloadDelega
         
         if let sessionId = session.configuration.identifier {
             print(sessionId)
+        
+            if !isBackground {
+                disGroup?.leave()
+            }
             
-            disGroup?.leave()
-
         }
     }
     
